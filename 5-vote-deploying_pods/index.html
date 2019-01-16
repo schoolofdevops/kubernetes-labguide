@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Launching Pods - Kubernetes Lab Guide</title>
+  <title>Lab K103 - Kubernetes LaunchPods - Kubernetes Lab Guide</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -17,7 +17,7 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Launching Pods";
+    var mkdocs_page_name = "Lab K103 - Kubernetes LaunchPods";
     var mkdocs_page_input_path = "5-vote-deploying_pods.md";
     var mkdocs_page_url = null;
   </script>
@@ -55,27 +55,23 @@
           
             <li class="toctree-l1">
 		
-    <span class="caption-text">Setup</span>
+    <span class="caption-text">Just Enough Docker</span>
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../minikube/">Using minikube to setup single node environment</a>
+    <a class="" href="../docker/operating-containers/">Lab D101 - Operating Containers</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../2_kube_cluster_vagrant/">Provisioning VMs with Vagrant</a>
+    <a class="" href="../docker/dockerizing-voteapp/">Lab D102 - Building and Publishing Docker Images</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../3_install_kubernetes/">Setup Kubernetes Cluster</a>
+    <a class="" href="../docker/docker-networking/">Lab D103 - Docker Networking</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../kube_visualizer/">Kuberentes Visualizer</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../quickdive.md">Kubernetes Quickdive</a>
+    <a class="" href="../docker/docker-volumes/">Lab D104 - Docker Volumes</a>
                 </li>
     </ul>
 	    </li>
@@ -84,32 +80,32 @@
 		
     <span class="caption-text">Kubernetes Fundamentals</span>
     <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../3_install_kubernetes/">Lab K101 - Setup Kubernetes Cluster</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../quickdive/">Lab K102 - Kubernetes Quickdive</a>
+                </li>
                 <li class=" current">
                     
-    <a class="current" href="./">Launching Pods</a>
+    <a class="current" href="./">Lab K103 - Kubernetes LaunchPods</a>
     <ul class="subnav">
             
-    <li class="toctree-l3"><a href="#deploying-pods">Deploying Pods</a></li>
+    <li class="toctree-l3"><a href="#lab-k103-launching-pods-with-kubernetes">Lab K103: Launching Pods with Kubernetes</a></li>
     
         <ul>
         
-            <li><a class="toctree-l4" href="#probes">Probes</a></li>
-        
             <li><a class="toctree-l4" href="#resource-configs">Resource Configs</a></li>
         
-            <li><a class="toctree-l4" href="#launching-and-operating-a-pod">Launching and operating a Pod</a></li>
+            <li><a class="toctree-l4" href="#launching-and-operating-pods">Launching and operating Pods</a></li>
         
-            <li><a class="toctree-l4" href="#lab-examine-pods-from-the-dashboard">Lab: Examine pods from the dashboard</a></li>
-        
-            <li><a class="toctree-l4" href="#port-forwarding">Port Forwarding</a></li>
-        
-            <li><a class="toctree-l4" href="#troubleshooting-tip">Troubleshooting Tip</a></li>
-        
-            <li><a class="toctree-l4" href="#attach-a-volume-to-the-pod">Attach a Volume to the Pod</a></li>
+            <li><a class="toctree-l4" href="#adding-a-volume-for-data-persistence">Adding a Volume for data persistence</a></li>
         
             <li><a class="toctree-l4" href="#creating-multi-container-pods">Creating Multi Container Pods</a></li>
         
-            <li><a class="toctree-l4" href="#exercise">Exercise</a></li>
+            <li><a class="toctree-l4" href="#adding-resource-requests-and-limits">Adding Resource requests and limits</a></li>
         
         </ul>
     
@@ -254,7 +250,7 @@
         
       
     
-    <li>Launching Pods</li>
+    <li>Lab K103 - Kubernetes LaunchPods</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -264,20 +260,8 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="deploying-pods">Deploying Pods</h1>
-<p>Life of a pod</p>
-<ul>
-<li>Pending : in progress</li>
-<li>Running</li>
-<li>Succeeded : successfully exited</li>
-<li>Failed</li>
-<li>Unknown</li>
-</ul>
-<h3 id="probes">Probes</h3>
-<ul>
-<li>livenessProbe : Containers are Alive</li>
-<li>readinessProbe : Ready to Serve Traffic</li>
-</ul>
+                <h1 id="lab-k103-launching-pods-with-kubernetes">Lab K103: Launching Pods with Kubernetes</h1>
+<p>In this lab, you would learn how to launch applications using  the basic deployment unit of kubernetes i.e. <strong>pods</strong>. This time, you are going to do it by writing declarative configs with <em>yaml</em> syntax.</p>
 <h3 id="resource-configs">Resource Configs</h3>
 <p>Each entity created with kubernetes is a resource including pod, service, deployments, replication controller etc. Resources can be defined as YAML or JSON.  Here is the syntax to create a YAML specification.</p>
 <p><strong>AKMS</strong> =&gt; Resource Configs Specs</p>
@@ -287,13 +271,17 @@ metadata:
 spec:
 </code></pre>
 
-<p>Spec Schema: https://kubernetes.io/docs/user-guide/pods/multi-container/</p>
-<p>To list supported version of apis</p>
-<pre><code>kubectl api-versions
+<p>Use this <a href="https://kubernetes.io/docs/reference/">Kubernetes API Reference Document</a> while writing the API specs. This is the most important reference  while working with kubernetes, so its highly advisible that you bookmark it for the version of kubernetes that you use.</p>
+<p>To find the versino of kubernetes use the following command,</p>
+<pre><code>kubectl version -o yaml
+</code></pre>
+
+<p>To list API objects, use the following commands,</p>
+<pre><code>kubectl api-resources
 </code></pre>
 
 <h4 id="writing-pod-spec">Writing Pod Spec</h4>
-<p>Lets now create the  Pod config by adding the kind and specs to schme given in the file vote-pod.yaml as follows.</p>
+<p>Lets now create the  Pod config by adding the kind and specs to schma given in the file vote-pod.yaml as follows.</p>
 <p>Filename: k8s-code/pods/vote-pod.yaml</p>
 <pre><code>apiVersion:
 kind: Pod
@@ -301,8 +289,26 @@ metadata:
 spec:
 </code></pre>
 
-<p>Lets edit this and add the pod specs</p>
-<p>Filename: k8s-code/pods/vote-pod.yaml</p>
+<p>Following are the specs to launch the vote application,</p>
+<ul>
+<li>pod:<ul>
+<li>name: vote</li>
+<li>labels:<ul>
+<li>app: python</li>
+<li>role: vote</li>
+<li>version: v1</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>container<ul>
+<li>name: app</li>
+<li>image: schoolofdevops/vote:v1</li>
+</ul>
+</li>
+</ul>
+<p>Refer to the <a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.13/#pod-v1-core">Pod Spec</a> find out the relevant properties and add it to the <strong>vote-pod.yaml</strong> provided in the supporting code repo.</p>
+<p><code>Filename: k8s-code/pods/vote-pod.yaml</code></p>
 <pre><code>apiVersion: v1
 kind: Pod
 metadata:
@@ -315,13 +321,10 @@ spec:
   containers:
     - name: app
       image: schoolofdevops/vote:v1
-      ports:
-        - containerPort: 80
-          protocol: TCP
 </code></pre>
 
-<p><a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.9/#pod-v1-core">Use this link to refer to pod spec</a></p>
-<h3 id="launching-and-operating-a-pod">Launching and operating a Pod</h3>
+<p><a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.13/#pod-v1-core">Use this example link to refer to pod spec</a></p>
+<h3 id="launching-and-operating-pods">Launching and operating Pods</h3>
 <p>To launch a monitoring screen to see whats being launched, use the following command in a new terminal window where kubectl is configured.</p>
 <pre><code>watch -n 1  kubectl get pods,deploy,rs,svc
 
@@ -333,12 +336,12 @@ kubectl apply --help
 kubectl apply -f FILE
 </code></pre>
 
-<p>To Launch pod using configs above,</p>
+<p>To <strong>launch</strong> pod using configs above,</p>
 <pre><code>kubectl apply -f vote-pod.yaml
 
 </code></pre>
 
-<p>To view pods</p>
+<p>To <strong>view</strong> pods</p>
 <pre><code>kubectl get pods
 
 kubectl get po -o wide
@@ -350,50 +353,7 @@ kubectl get pods vote
 <pre><code>kubectl describe pods vote
 </code></pre>
 
-<p>[Output:]</p>
-<pre><code>Name:           vote
-Namespace:      default
-Node:           kube-3/192.168.0.80
-Start Time:     Tue, 07 Feb 2017 16:16:40 +0000
-Labels:         app=voting
-Status:         Running
-IP:             10.40.0.2
-Controllers:    &lt;none&gt;
-Containers:
-  vote:
-    Container ID:       docker://48304b35b9457d627b341e424228a725d05c2ed97cc9970bbff32a1b365d9a5d
-    Image:              schoolofdevops/vote:latest
-    Image ID:           docker-pullable://schoolofdevops/vote@sha256:3d89bfc1993d4630a58b831a6d44ef73d2be76a7862153e02e7a7c0cf2936731
-    Port:               80/TCP
-    State:              Running
-      Started:          Tue, 07 Feb 2017 16:16:52 +0000
-    Ready:              True
-    Restart Count:      0
-    Volume Mounts:
-      /var/run/secrets/kubernetes.io/serviceaccount from default-token-2n6j1 (ro)
-    Environment Variables:      &lt;none&gt;
-Conditions:
-  Type          Status
-  Initialized   True
-  Ready         True
-  PodScheduled  True
-Volumes:
-  default-token-2n6j1:
-    Type:       Secret (a volume populated by a Secret)
-    SecretName: default-token-2n6j1
-QoS Class:      BestEffort
-Tolerations:    &lt;none&gt;
-Events:
-  FirstSeen     LastSeen        Count   From                    SubObjectPath           Type            Reason          Message
-  ---------     --------        -----   ----                    -------------           --------        ------          -------
-  21s           21s             1       {default-scheduler }                            Normal          Scheduled       Successfully assigned vote to kube-3
-  20s           20s             1       {kubelet kube-3}        spec.containers{vote}   Normal          Pulling         pulling image &quot;schoolofdevops/vote:latest&quot;
-  10s           10s             1       {kubelet kube-3}        spec.containers{vote}   Normal          Pulled          Successfully pulled image &quot;schoolofdevops/vote:latest&quot;
-  9s            9s              1       {kubelet kube-3}        spec.containers{vote}   Normal          Created         Created container with docker id 48304b35b945; Security:[seccomp=unconfined]
-  9s            9s              1       {kubelet kube-3}        spec.containers{vote}   Normal          Started         Started container with docker id 48304b35b945
-</code></pre>
-
-<p>Commands to operate the pod</p>
+<p>Commands to  <strong>operate</strong> the pod</p>
 <pre><code>
 kubectl logs vote
 
@@ -402,7 +362,7 @@ kubectl exec -it vote  sh
 
 </code></pre>
 
-<p>Inside the container in a pod</p>
+<p>Run the following commands inside the container in a pod after running exec command as above</p>
 <pre><code>ifconfig
 cat /etc/issue
 hostname
@@ -410,64 +370,8 @@ cat /proc/cpuinfo
 ps aux
 </code></pre>
 
-<h3 id="lab-examine-pods-from-the-dashboard">Lab: Examine pods from the dashboard</h3>
-<h3 id="port-forwarding">Port Forwarding</h3>
-<p>This works if you have setup <strong>kubectl</strong> on a local laptop.</p>
-<pre><code>kubectl port-forward --help
-kubectl port-forward vote 8000:80
-</code></pre>
-
-<h2 id="troubleshooting-tip">Troubleshooting Tip</h2>
-<p>If you would like to know whats the current status of the pod, and if its in a error state, find out the cause of the error, following command could be very handy.</p>
-<pre><code>kubectl get pod vote -o yaml
-</code></pre>
-
-<p>Lets learn by example. Update pod spec and change the image to something that does not exist.</p>
-<pre><code>kubectl edit pod vote
-</code></pre>
-
-<p>This will open a editor. Go to the line which defines image  and change it to a tag that does not exist</p>
-<p>e.g.</p>
-<pre><code>spec:
-  containers:
-  - image: schoolofdevops/vote:srgwegew
-    imagePullPolicy: Always
-</code></pre>
-
-<p>where tag <strong>srgwegew</strong> does not exist. As soon as you save this file, kubernetes will apply the change.</p>
-<p>Now check the status,</p>
-<pre><code>kubectl get pods  
-
-NAME      READY     STATUS             RESTARTS   AGE
-vote      0/1       ImagePullBackOff   0          27m
-</code></pre>
-
-<p>The above output will only show the status, with a vague error. To find the exact error, lets get the stauts of the pod.</p>
-<p>Observe the <strong>status</strong> field.  </p>
-<pre><code>kubectl get pod vote -o yaml
-</code></pre>
-
-<p>Now the status field shows a detailed information, including what the exact error. Observe the following snippet...</p>
-<pre><code>status:
-...
-containerStatuses:
-....
-state:
-  waiting:
-    message: 'rpc error: code = Unknown desc = Error response from daemon: manifest
-      for schoolofdevops/vote:latst not found'
-    reason: ErrImagePull
-hostIP: 139.59.232.248
-</code></pre>
-
-<p>This will help you to pinpoint to the exact cause and fix it quickly.</p>
-<p>Now that you  are done experimenting with pod, delete it with the following command,</p>
-<pre><code>kubectl delete pod vote
-
-kubectl get pods
-</code></pre>
-
-<h2 id="attach-a-volume-to-the-pod">Attach a Volume to the Pod</h2>
+<p><code>use ^d or exit to log out</code></p>
+<h2 id="adding-a-volume-for-data-persistence">Adding a Volume for data persistence</h2>
 <p>Lets create a pod for database and attach a volume to it. To achieve this we will need to</p>
 <ul>
 <li>create a <strong>volumes</strong> definition</li>
@@ -578,8 +482,62 @@ df -h
 
 </code></pre>
 
-<h2 id="exercise">Exercise</h2>
-<p>Create a pod definition for redis and deploy.</p>
+<h2 id="adding-resource-requests-and-limits">Adding Resource requests and limits</h2>
+<p>We can control the amount of resource requested and also put a limit on the maximum a container in a pod could take up.  This can be done by adding to the existing pod spec as below. Refer to <a href="https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/">official document on resource management</a> here. </p>
+<p><code>Filename: vote-pod.yaml</code></p>
+<pre><code>apiVersion: v1
+kind: Pod
+metadata:
+  name: vote
+  labels:
+    app: python
+    role: vote
+    version: v1
+spec:
+  containers:
+    - name: app
+      image: schoolofdevops/vote:v1
+      resources:
+        requests:
+          memory: &quot;64Mi&quot;
+          cpu: &quot;50m&quot;
+        limits:
+          memory: &quot;128Mi&quot;
+          cpu: &quot;250m&quot;
+</code></pre>
+
+<p>Lets apply the changes now</p>
+<pre><code>kubectl apply -f vote-pod.yaml
+</code></pre>
+
+<p>If you already have <strong>vote</strong> pod running, you may see an output similar to below,</p>
+<p>[sample output]</p>
+<pre><code>The Pod &quot;vote&quot; is invalid: spec: Forbidden: pod updates may not change fields other than `spec.containers[*].image`, `spec.initContainers[*].image`, `spec.activeDeadlineSeconds` or `spec.tolerations` (only additions to existing tolerations)
+{&quot;Volumes&quot;:[{&quot;Name&quot;:&quot;default-token-snbj4&quot;,&quot;HostPath&quot;:null,&quot;EmptyDir&quot;:null,&quot;GCEPersistentDisk&quot;:null,&quot;AWSElasticBlockStore&quot;:null,&quot;GitRepo&quot;:null,&quot;Secret&quot;:{&quot;SecretName&quot;:&quot;default-token-snbj4&quot;,&quot;Items&quot;:null,&quot;DefaultMode&quot;:420,&quot;Optional&quot;:null},&quot;NFS&quot;:null,&quot;ISCSI&quot;:null,&quot;Glusterfs&quot;:null,&quot;PersistentVolumeClaim&quot;:null,&quot;RBD&quot;:null,&quot;Quobyte&quot;:null,&quot;FlexVolume&quot;:null,&quot;Cinder&quot;:null,&quot;CephFS&quot;:null,&quot;Flocker&quot;:null,&quot;DownwardAPI&quot;:null,&quot;FC&quot;:null,&quot;AzureFile&quot;:null,&quot;ConfigMap&quot;:null,&quot;VsphereVolume&quot;:null,&quot;AzureDisk&quot;:null,&quot;PhotonPersistentDisk&quot;:null,&quot;Projected&quot;:null,&quot;PortworxVolume&quot;:null,&quot;ScaleIO&quot;:null,&quot;StorageOS&quot;:null}],&quot;InitContainers&quot;:null,&quot;Containers&quot;:[{&quot;Name&quot;:&quot;app&quot;,&quot;Image&quot;:&quot;schoolofdevops/vote:v1&quot;,&quot;Command&quot;:null,&quot;Args&quot;:null,&quot;WorkingDir&quot;:&quot;&quot;,&quot;Ports&quot;:null,&quot;EnvFrom&quot;:null,&quot;Env&quot;:null,&quot;Resources&quot;:{&quot;Limits&quot;:
+....
+...
+</code></pre>
+
+<p>From the above output, its clear that not all the fields are mutable(except for a few e.g labels). Container based deployments primarily follow concept of <strong>immutable deployments</strong>. So to bring your change into effect, you need to re create the pod as,</p>
+<pre><code>kubectl delete pod vote
+
+kubectl apply -f vote-pod.yaml
+
+kubectl describe pod vote
+</code></pre>
+
+<p>From the output of the describe command above, you could confirm the resource constraints you added are in place.</p>
+<h4 id="exercise">Exercise</h4>
+<ul>
+<li>Try to change the <em>resources.request.memory</em> to a value greater than the available memory on the node. Observe what happens when you create the pod with the modified configurations.</li>
+</ul>
+<h3 id="deleting-pods">Deleting Pods</h3>
+<p>Now that you  are done experimenting with pod, <strong>delete</strong> it with the following command,</p>
+<pre><code>kubectl delete pod vote web db
+
+kubectl get pods
+</code></pre>
+
 <h4 id="reading-list">Reading List</h4>
 <ul>
 <li><a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.9/#pod-v1-core">PodSpec:</a></li>
@@ -596,7 +554,7 @@ df -h
         <a href="../replication/" class="btn btn-neutral float-right" title="Making application highly available">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../kube_visualizer/" class="btn btn-neutral" title="Kuberentes Visualizer"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../quickdive/" class="btn btn-neutral" title="Lab K102 - Kubernetes Quickdive"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -622,7 +580,7 @@ df -h
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../kube_visualizer/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../quickdive/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
         <span style="margin-left: 15px"><a href="../replication/" style="color: #fcfcfc">Next &raquo;</a></span>

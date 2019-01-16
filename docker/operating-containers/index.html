@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+  <title>Lab D101 - Operating Containers - Kubernetes Lab Guide</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Lab D101 - Operating Containers";
+    var mkdocs_page_input_path = "docker/operating-containers.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> Kubernetes Lab Guide</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../..">Home</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Just Enough Docker</span>
+    <ul class="subnav">
+                <li class=" current">
+                    
+    <a class="current" href="./">Lab D101 - Operating Containers</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#lab-getting-started-with-docker-operations">Lab: Getting Started with Docker Operations</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#using-docker-cli">Using docker cli</a></li>
+        
+            <li><a class="toctree-l4" href="#stream-events-from-the-docker-daemon">Stream events from the docker daemon</a></li>
+        
+            <li><a class="toctree-l4" href="#launching-our-first-container">Launching our first container</a></li>
+        
+            <li><a class="toctree-l4" href="#checking-status-of-the-containers">Checking Status of the containers</a></li>
+        
+            <li><a class="toctree-l4" href="#running-containers-in-interactive-mode">Running Containers in Interactive Mode</a></li>
+        
+            <li><a class="toctree-l4" href="#making-containers-persist">Making Containers Persist</a></li>
+        
+            <li><a class="toctree-l4" href="#launching-a-container-with-a-pre-built-app-image">Launching a container with a pre built app image</a></li>
+        
+            <li><a class="toctree-l4" href="#renaming-the-container">Renaming the container</a></li>
+        
+            <li><a class="toctree-l4" href="#ready-to-vote">Ready to  vote ?</a></li>
+        
+            <li><a class="toctree-l4" href="#finding-everything-about-the-running-container">Finding Everything about the running  container</a></li>
+        
+            <li><a class="toctree-l4" href="#copying-files-between-container-and-client-host">Copying files between container and client host</a></li>
+        
+            <li><a class="toctree-l4" href="#checking-the-stats">Checking the Stats</a></li>
+        
+            <li><a class="toctree-l4" href="#controlling-resources">Controlling Resources</a></li>
+        
+            <li><a class="toctree-l4" href="#checking-disk-utilisation-by">Checking disk utilisation by</a></li>
+        
+            <li><a class="toctree-l4" href="#stopping-and-removing-containers">Stopping and Removing Containers</a></li>
+        
+            <li><a class="toctree-l4" href="#launching-containers-with-elevated-privileges">Launching Containers with Elevated  Privileges</a></li>
+        
+        </ul>
+    
+
+    </ul>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../dockerizing-voteapp/">Lab D102 - Building and Publishing Docker Images</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../docker-networking/">Lab D103 - Docker Networking</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../docker-volumes/">Lab D104 - Docker Volumes</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Kubernetes Fundamentals</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../3_install_kubernetes/">Lab K101 - Setup Kubernetes Cluster</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../quickdive/">Lab K102 - Kubernetes Quickdive</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../5-vote-deploying_pods/">Lab K103 - Kubernetes LaunchPods</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../replication/">Making application highly available</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../7-vote-exposing_app_with_service/">Publishing appliaction and Service Discovery</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../6-vote-kubernetes_deployment/">Defining Update Strategy</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../11_deploying_sample_app/">Mini Project</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../9-vote-configmaps_and_secrets/">Managing Configurations and Secrets</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../vote-persistent-volumes/">Making Data Persist</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Advanced Kubernetes</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../kubespray-prereqs/">Kubespray HA lab setup with Vagrant</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../cluster_setup_kubespray/">HA setup with Kubespray</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../configuring_authentication_and_authorization/">Authentication and Authorization (RBAC)</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../advanced_pod_scheduling/">Advanced Pod Scheduling</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../pod-adv-specs/">Pod Resource and Security Specs</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../pods-health-probes/">Adding health checks with Probes</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../ingress/">Application Routing with Ingress Controllers</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../10_kubernetes_autoscaling/">Auto Scaling Capacity with HPA</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../13_redis_statefulset/">Creating Replicated Redis Cluster with Statefulsets</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../network_policies/">Access Control with Network Policies</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../cluster-administration/">Cluster Administration</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../helm/">Helm Charts</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Additional Topics</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../vote-deployement_strategies/">Building Deployment Strategies</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../12_troubleshooting/">Troubleshooting Tips</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../logging/">Logging</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">References</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../rbac-resource-group-mapping/">RBAC apiGroups to Resource Mapping</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">Kubernetes Lab Guide</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Just Enough Docker &raquo;</li>
+        
+      
+    
+    <li>Lab D101 - Operating Containers</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="lab-getting-started-with-docker-operations">Lab: Getting Started with Docker Operations</h1>
+<p>In this chapter, we are going to learn about docker shell, the command line utility and how to use it to
+launch containers. We will also learn what it means to run a container, its lifecycle and perform basic
+operations such as creating, starting, stopping, removing, pausing containers and checking the status etc.</p>
+<h3 id="using-docker-cli">Using docker cli</h3>
+<p>We can use docker cli to interact with docker daemon. Various functions of docker command is given below. Try this yourself by runnig <strong>$sudo docker</strong> command  </p>
+<pre><code>docker
+</code></pre>
+
+<p>[Output]  </p>
+<pre><code>Usage: docker [OPTIONS] COMMAND [arg...]
+       docker [ --help | -v | --version ]
+
+A self-sufficient runtime for containers.
+
+Options:
+
+  --config=~/.docker              Location of client config files
+  -D, --debug                     Enable debug mode
+  -H, --host=[]                   Daemon socket(s) to connect to
+  -h, --help                      Print usage
+  -l, --log-level=info            Set the logging level
+  --tls                           Use TLS; implied by --tlsverify
+  --tlscacert=~/.docker/ca.pem    Trust certs signed only by this CA
+  --tlscert=~/.docker/cert.pem    Path to TLS certificate file
+  --tlskey=~/.docker/key.pem      Path to TLS key file
+  --tlsverify                     Use TLS and verify the remote
+  -v, --version                   Print version information and quit
+
+Commands:
+    attach    Attach to a running container
+    build     Build an image from a Dockerfile
+    commit    Create a new image from a container's changes
+    cp        Copy files/folders between a container and the local filesystem
+    create    Create a new container
+    diff      Inspect changes on a container's filesystem
+    events    Get real time events from the server
+    exec      Run a command in a running container
+    export    Export a container's filesystem as a tar archive
+    history   Show the history of an image
+    images    List images
+    import    Import the contents from a tarball to create a filesystem image
+    info      Display system-wide information
+    inspect   Return low-level information on a container, image or task
+    kill      Kill one or more running containers
+    load      Load an image from a tar archive or STDIN
+    login     Log in to a Docker registry.
+    logout    Log out from a Docker registry.
+    logs      Fetch the logs of a container
+    network   Manage Docker networks
+    node      Manage Docker Swarm nodes
+    pause     Pause all processes within one or more containers
+    port      List port mappings or a specific mapping for the container
+    ps        List containers
+    pull      Pull an image or a repository from a registry
+    push      Push an image or a repository to a registry
+    rename    Rename a container
+    restart   Restart a container
+    rm        Remove one or more containers
+    rmi       Remove one or more images
+    run       Run a command in a new container
+    save      Save one or more images to a tar archive (streamed to STDOUT by default)
+    search    Search the Docker Hub for images
+    service   Manage Docker services
+    start     Start one or more stopped containers
+    stats     Display a live stream of container(s) resource usage statistics
+    stop      Stop one or more running containers
+    swarm     Manage Docker Swarm
+    tag       Tag an image into a repository
+    top       Display the running processes of a container
+    unpause   Unpause all processes within one or more containers
+    update    Update configuration of one or more containers
+    version   Show the Docker version information
+    volume    Manage Docker volumes
+    wait      Block until a container stops, then print its exit code
+
+</code></pre>
+
+<h4 id="getting-information-about-docker-setup">Getting Information about Docker Setup</h4>
+<p>We can get the information about our Docker setup in several ways. Namely,  </p>
+<pre><code>docker version
+
+docker -v
+
+docker system info
+</code></pre>
+
+<p>The <strong>docker system info</strong> command gives a lot of useful information like total number of containers and images along with information about host resource utilization  etc.</p>
+<h3 id="stream-events-from-the-docker-daemon">Stream events from the docker daemon</h3>
+<p>Docker <strong>events</strong> serves us with the stream of events or interactions that are happening with the docker daemon. This does not stream the log data of application inside the container. That is done by <strong>docker logs</strong> command. Let us see how this command works<br />
+Open an another terminal. Let us call the old terminal as <strong>Terminal 1</strong> and the newer one as <strong>Terminal 2</strong>.</p>
+<p>From Terminal 1, execute <strong>docker events</strong>. Now you are getting the data stream from docker daemon  </p>
+<pre><code>docker system events
+</code></pre>
+
+<h3 id="launching-our-first-container">Launching our first container</h3>
+<p>Now we have a basic understanding of docker command and sub commands, let us dive straight into launching our very first <strong>container</strong>  </p>
+<pre><code>docker run alpine:3.4 uptime
+</code></pre>
+
+<p>Where,  </p>
+<ul>
+<li>we are using docker <strong>client</strong> to  </li>
+<li>run a application/command <strong>uptime</strong> using    </li>
+<li>an image by name <strong>alpine:3.4</strong>  </li>
+</ul>
+<p>[Output]  </p>
+<pre><code>Unable to find image 'alpine:3.4' locally
+3.4: Pulling from library/alpine
+81033e7c1d6a: Pull complete
+Digest: sha256:2532609239f3a96fbc30670716d87c8861b8a1974564211325633ca093b11c0b
+Status: Downloaded newer image for alpine:3.4
+
+ 15:24:34 up  7:36,  load average: 0.00, 0.03, 0.04
+</code></pre>
+
+<p><strong>What happened?</strong>  </p>
+<p>This command will  </p>
+<ul>
+<li>Pull the <strong>alpine</strong> image file from <strong>docker hub</strong>, a cloud registry</li>
+<li>Create a runtime environment/ container with the above image   </li>
+<li>Launch a program (called <strong>uptime</strong>) inside that container  </li>
+<li>Stream that output to the terminal  </li>
+<li>Stop the container once the program is exited</li>
+</ul>
+<p><strong>Where did my container go?</strong>  </p>
+<pre><code>docker container  ps
+
+docker container  ps -l
+</code></pre>
+
+<p>The point here to remember is that, when that executable stops running inside the container, the container itself will stop.</p>
+<p>Let's see what happens when we run that command again,  </p>
+<p>[Output]  </p>
+<pre><code>docker run alpine uptime
+ 07:48:06 up  3:15,  load average: 0.00, 0.00, 0.00
+</code></pre>
+
+<p>Now docker no longer pulls the image again from registry, because <strong>it has stored the image locally</strong> from the previous run. So once an image is pulled, we can make use of that image to create and run as many container as we want without the need of downloading the image again. However it has created a new instance of the iamge/container.</p>
+<h3 id="checking-status-of-the-containers">Checking Status of the containers</h3>
+<p>We have understood how docker run commands works. But what if you want to see list of running containers and history of containers that had run and exited? This can be done by executing the following commands  </p>
+<pre><code>docker ps
+</code></pre>
+
+<p>[Output]  </p>
+<pre><code>CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+</code></pre>
+
+<p>This command doesn't give us any information. Because, <strong>docker ps</strong> command will only show list of container(s) which are <strong>running</strong>  </p>
+<pre><code>docker ps -l
+</code></pre>
+
+<p>[Output]  </p>
+<pre><code>CONTAINER ID        IMAGE               COMMAND             CREATED              STATUS                          PORTS               NAMES
+988f4d90d604        alpine              &quot;uptime&quot;            About a minute ago   Exited (0) About a minute ago                       fervent_hypatia
+</code></pre>
+
+<p>the <strong>-l</strong> flag shows the last run container along with other details like image it used, command it executed, return code of that command, etc.,  </p>
+<pre><code>docker ps -n 2
+</code></pre>
+
+<p>[Output]  </p>
+<pre><code>NAMES
+988f4d90d604        alpine              &quot;uptime&quot;            About a minute ago   Exited (0) About a minute ago                       fervent_hypatia
+acea3023dca4        alpine              &quot;uptime&quot;            3 minutes ago        Exited (0) 3 minutes ago                            mad_darwin
+</code></pre>
+
+<p>Docker gives us the flexibility to show the desirable number of last run containers. This can be achieved by using <strong>-n #no_of_results</strong> flag  </p>
+<pre><code>docker ps -a
+</code></pre>
+
+<p>[Output]  </p>
+<pre><code>CONTAINER ID        IMAGE                        COMMAND                  CREATED              STATUS                          PORTS                  NAMES
+988f4d90d604        alpine                       &quot;uptime&quot;                 About a minute ago   Exited (0) About a minute ago                          fervent_hypatia
+acea3023dca4        alpine                       &quot;uptime&quot;                 4 minutes ago        Exited (0) 4 minutes ago                               mad_darwin
+60ffa94e69ec        ubuntu:14.04.3               &quot;bash&quot;                   27 hours ago         Exited (0) 26 hours ago                                infallible_meninsky
+dd75c04e7d2b        schoolofdevops/ghost:0.3.1   &quot;/entrypoint.sh npm s&quot;   4 days ago           Exited (0) 3 days ago                                  kickass_bardeen
+c082972f66d6        schoolofdevops/ghost:0.3.1   &quot;/entrypoint.sh npm s&quot;   4 days ago           Exited (0) 3 days ago           0.0.0.0:80-&gt;2368/tcp   sodcblog
+
+</code></pre>
+
+<p>This command will show all the container we have run so far.  </p>
+<h3 id="running-containers-in-interactive-mode">Running Containers in Interactive Mode</h3>
+<p>We can interact with docker containers by giving -it flags at the run time. These flags stand for<br />
+  * i - Interactive<br />
+  * t - tty</p>
+<pre><code>docker run -it alpine:3.4 sh
+</code></pre>
+
+<p>[Output]  </p>
+<pre><code>Unable to find image 'alpine:3.4' locally
+latest: Pulling from library/alpine
+ff3a5c916c92: Already exists
+Digest: sha256:7df6db5aa61ae9480f52f0b3a06a140ab98d427f86d8d5de0bedab9b8df6b1c0
+Status: Downloaded newer image for alpine:latest
+/ #
+</code></pre>
+
+<p>As you see, we have landed straight into <strong>sh</strong> shell of that container. This is the result of using <strong>-it</strong> flags and mentioning that container to run the <strong>sh</strong> shell. Don't try to exit that container yet. We have to execute some other commands in it to understand the next topic  </p>
+<p>Namespaced:</p>
+<p>Like a full fledged OS, Docker container has its own namespaces<br />
+This enables Docker container to isolate itself from the host as well as other containers  </p>
+<p>Run the following commands and see that alpine container has its own namespaces and not inheriting much from <strong>host OS</strong>  </p>
+<p>NAMESPACED  </p>
+<p>[Run the following commands inside the container]  </p>
+<pre><code>cat /etc/issue
+
+ps aux
+
+ifconfig
+
+hostname
+</code></pre>
+
+<p>Shared(NON NAMESPACED):  </p>
+<p>We have understood that containers have their own namespaces. But will they share something to some extent? the answer is <strong>YES</strong>. Let's run the following commands on both the container and the host machine  </p>
+<p>[Run the following commands inside the container]  </p>
+<pre><code>uptime
+
+uname -a
+
+cat /proc/cpuinfo
+
+date
+
+free
+</code></pre>
+
+<p>As you can see, the container uses the same Linux Kernel from the host machine. Just like <strong>uname</strong> command, the following commands share the same information as well. In order to avoid repetition, we will see the output of container alone.</p>
+<p>Now exit out of that container by running <strong>exit</strong> or by pressing <strong>ctrl+d</strong>  </p>
+<h3 id="making-containers-persist">Making Containers Persist</h3>
+<h4 id="running-containers-in-detached-mode">Running Containers in Detached Mode</h4>
+<p>So far, we have run the containers interactively. But this is not always the case. Sometimes you may want to start a container  without interacting with it. This can be achieved by using <strong>"detached mode"</strong> (<strong>-d</strong>) flag. Hence the container will launch the deafault application inside and run in the background. This saves a lot of time, we don't have to wait till the applications launches successfully. It will happen behind the screen. Let us run the following command to see this in action  </p>
+<p>[Command]  </p>
+<pre><code>docker run -idt schoolofdevops/loop program
+</code></pre>
+
+<p>-d , --detach : detached mode  </p>
+<p>[Output]  </p>
+<pre><code>2533adf280ac4838b446e4ee1151f52793e6ac499d2e631b2c752459bb18ad5f
+</code></pre>
+
+<p>This will run the container in detached mode. We are only given with full container id as the output  </p>
+<p>Let us check whether this container is running or not<br />
+[Command]  </p>
+<pre><code>docker ps
+</code></pre>
+
+<p>[Output]  </p>
+<pre><code>CONTAINER ID        IMAGE                 COMMAND             CREATED             STATUS              PORTS               NAMES
+2533adf280ac        schoolofdevops/loop   &quot;program&quot;           37 seconds ago      Up 36 seconds                           prickly_bose
+</code></pre>
+
+<p>As we can see in the output, the container is running in the background  </p>
+<h4 id="checking-logs">Checking Logs</h4>
+<p>To check the logs, find out the container id/name and run the following commands, replacing 08f0242aa61c with your container id</p>
+<p>[Commands]  </p>
+<pre><code>docker container ps
+
+docker container logs &lt;container_id/name&gt;
+
+docker container logs -f  &lt;container_id/name&gt;
+</code></pre>
+
+<h4 id="connecting-to-running-container-to-execute-commands">Connecting to running container to execute commands</h4>
+<p>We can connect to the containers which are running in detached mode by using these following commands<br />
+[Command]  </p>
+<pre><code>docker exec -it &lt;container_id/name&gt; sh
+</code></pre>
+
+<p>[Output]  </p>
+<pre><code>/ #
+</code></pre>
+
+<p>You could try running any commands on the shell
+e.g.</p>
+<pre><code>apk update
+apk add vim
+ps aux
+</code></pre>
+
+<p>Now exit the container.  </p>
+<h3 id="launching-a-container-with-a-pre-built-app-image">Launching a container with a pre built app image</h3>
+<p>To launch vote container run the following command. Don't bother about the new flag <strong>-P</strong> now. We will explain about that flag later in this chapter  </p>
+<pre><code>docker container run  -idt -P  schoolofdevops/vote
+</code></pre>
+
+<p>[Output]  </p>
+<pre><code>Unable to find image 'schoolofdevops/vote:latest' locally
+latest: Pulling from schoolofdevops/vote
+Digest: sha256:9195942ea654fa8d8aeb37900be5619215c08e7e1bef0b7dfe4c04a9cc20a8c2
+Status: Downloaded newer image for schoolofdevops/vote:latest
+7d58ecc05754b5fd192c4ecceae334ac22565684c6923ea332bff5c88e3fca2b
+</code></pre>
+
+<p>Lets check the status of the container  </p>
+<pre><code>docker ps -l
+</code></pre>
+
+<p>[Output]  </p>
+<pre><code>CONTAINER ID        IMAGE                 COMMAND                  CREATED             STATUS              PORTS                   NAMES
+7d58ecc05754        schoolofdevops/vote   &quot;gunicorn app:app -b…&quot;   27 seconds ago      Up 26 seconds       0.0.0.0:32768-&gt;80/tcp   peaceful_varahamihira
+</code></pre>
+
+<h3 id="renaming-the-container">Renaming the container</h3>
+<p>We can rename the container by using following command  </p>
+<pre><code>docker rename 7d58ecc05754 vote
+</code></pre>
+
+<p>[replace 7d58ecc05754 with the actual container id on your system ]</p>
+<p>We have changed container's automatically generated name to <strong>vote</strong>. This new name can be of your choice. The point to understand is this command takes two arguments. The <strong>Old_name followed by New_name</strong>
+Run docker ps command to check the effect of changes  </p>
+<pre><code>docker ps
+</code></pre>
+
+<p>[Output]  </p>
+<pre><code>CONTAINER ID        IMAGE                 COMMAND                  CREATED             STATUS              PORTS                   NAMES
+7d58ecc05754        schoolofdevops/vote   &quot;gunicorn app:app -b…&quot;   3 minutes ago       Up 3 minutes        0.0.0.0:32768-&gt;80/tcp   vote
+</code></pre>
+
+<p>As you can see here, the container is renamed to <strong>vote</strong>. This makes referencing container in cli very much easier.  </p>
+<h3 id="ready-to-vote">Ready to  vote ?</h3>
+<p>Let's see what this <strong>vote</strong> application does by connecting to that application. For that we need,  </p>
+<ul>
+<li>Host machine's IP  </li>
+<li>Container's port which is mapped to a host's port</li>
+</ul>
+<p>Let's find out the port mapping of container to host. Docker provides subcommand called <strong>port</strong> which does this job  </p>
+<pre><code>docker port vote  
+</code></pre>
+
+<p>[Output]  </p>
+<pre><code>80/tcp -&gt; 0.0.0.0:32768
+</code></pre>
+
+<p>So whatever traffic the host gets in port <strong>2368</strong> will be mapped to container's port <strong>32768</strong>  </p>
+<p>Let's connect to http://IP_ADDRESS:PORT to see the actual application  </p>
+<h3 id="finding-everything-about-the-running-container">Finding Everything about the running  container</h3>
+<p>This topic discusses about finding metadata of containers. These metadata include various parameters like,<br />
+  * State of the container<br />
+  * Mounts<br />
+  * Configuration<br />
+  * Network, etc.,  </p>
+<h4 id="inspecting">Inspecting</h4>
+<p>Lets try this inspect subcommand in action  </p>
+<pre><code>docker inspect vote
+</code></pre>
+
+<p>Data output by above command contains detailed descriptino of the container an its properties. is represented in JSON format which makes filtering these results easier.  </p>
+<h3 id="copying-files-between-container-and-client-host">Copying files between container and client host</h3>
+<p>We can copy files/directories form host to container and vice-versa  <br />
+Let us create a file on the host  </p>
+<pre><code>touch testfile
+</code></pre>
+
+<p>To copy the testfile <strong>from host machine to ghsot contanier</strong>, try  </p>
+<pre><code>docker cp testfile vote:/opt  
+</code></pre>
+
+<p>This command will copy testfile to vote container's <strong>/opt</strong> directory  and will not give any output. To verify the file has been copies or not, let us log into container by running,  </p>
+<pre><code>docker exec -it vote bash
+</code></pre>
+
+<p>Change directory into /opt and list the files  </p>
+<pre><code>cd /opt  
+ls
+</code></pre>
+
+<p>[Output]  </p>
+<pre><code>testfile
+</code></pre>
+
+<p>There you can see that file has been successfully copied. Now exit the container  </p>
+<p>Now you may try to cp some files <strong>from the container to the host machine</strong>  </p>
+<pre><code>docker cp vote:/app  .  
+ls  
+</code></pre>
+
+<h3 id="checking-the-stats">Checking the Stats</h3>
+<p>Docker <strong>stats</strong> command returns a data stream of resource utilization used by containers. The flag <strong>--no-stream</strong> disables data stream and displays only first result  </p>
+<pre><code>docker stats --no-stream=true vote
+
+docker stats
+</code></pre>
+
+<h3 id="controlling-resources">Controlling Resources</h3>
+<p>Docker provides us the granularity to control each container's <strong>resource utilization</strong>. We have several commands in the inventory to achieve this  </p>
+<h4 id="putting-limits-on-running-containers">Putting limits on Running Containers</h4>
+<p>First, let us monitor the utilization</p>
+<pre><code>docker stats
+</code></pre>
+
+<p>You can see that <strong>Memory</strong> attribute has <strong>max</strong> as its value, which  means unlimited usage of host's RAM. We can put a cap on that by using <strong>update</strong> command  </p>
+<pre><code>docker update --memory 400M --memory-swap -1 vote   
+</code></pre>
+
+<p>[Output]  </p>
+<pre><code>vote
+</code></pre>
+
+<p>Let us check whether the change has taken effect or not with docker stats terminal   </p>
+<pre><code>docker stat
+</code></pre>
+
+<p>As you can see, the memory utilization of the container is changed from xxxx (unlimited) to 400 mb  </p>
+<h4 id="limiting-resources-while-launching-new-containers">Limiting Resources while launching new containers</h4>
+<p>The following resources can be limited using the <em>update</em> command<br />
+  * CPU
+  * Memory
+  * Disk IO
+  * Capabilities  </p>
+<p>Open two terminals, lets call them T1, and T2<br />
+In T1, start monitoring the stats  </p>
+<pre><code>docker stats
+</code></pre>
+
+<p>[Output]  </p>
+<pre><code>CONTAINER           CPU %               MEM USAGE / LIMIT     MM %               NET I/O             BLOCK I/O             PIDS
+b28efeef41f8        0.16%               190.1 MiB / 400 MiB   47.51%              1.296 kB / 648 B    86.02 kB / 45.06 kB   0
+CONTAINER           CPU %               MEM USAGE / LIMIT     MEM %               NET I/O             BLOCK I/O             PIDS
+b28efeef41f8        0.01%               190.1 MiB / 400 MiB   47.51%              1.296 kB / 648 B    86.02 kB / 45.06 kB   0
+</code></pre>
+
+<p>From T2, launch containers  with different CPU shares as well as <strong>cpus</strong> configurations. Default CPU shares are set to 1024. This is a relative weight. Observe docker stats command after every launch to see the effect of your configurations.</p>
+<pre><code>[CPU Shares]
+
+docker run -d --cpu-shares 1024 schoolofdevops/stresstest stress --cpu 2
+
+docker run -d --cpu-shares 1024 schoolofdevops/stresstest stress --cpu 2
+
+docker run -d --cpu-shares 512 schoolofdevops/stresstest stress --cpu 2
+
+docker run -d --cpu-shares 512 schoolofdevops/stresstest stress --cpu 2
+
+docker run -d --cpu-shares 4096 schoolofdevops/stresstest stress --cpu 2
+
+
+[CPUs]
+
+docker run -d --cpus 0.2 schoolofdevops/stresstest stress --cpu 2
+
+
+</code></pre>
+
+<p>Close the T2 terminal once you are done with this lab.  </p>
+<h3 id="checking-disk-utilisation-by">Checking disk utilisation by</h3>
+<pre><code>
+docker system df
+
+</code></pre>
+
+<p>[output]</p>
+<pre><code>docker system df
+TYPE                TOTAL               ACTIVE              SIZE                RECLAIMABLE
+Images              7                   5                   1.031GB             914.5MB (88%)
+Containers          8                   4                   27.97MB             27.73MB (99%)
+Local Volumes       3                   2                   0B                  0B
+Build Cache                                                 0B                  0B
+</code></pre>
+
+<p>To prune, you could possibly use</p>
+<pre><code>docker container prune
+
+docker system prune
+</code></pre>
+
+<p>e.g.</p>
+<pre><code>docker system prune
+WARNING! This will remove:
+        - all stopped containers
+        - all networks not used by at least one container
+        - all dangling images
+        - all build cache
+Are you sure you want to continue? [y/N]
+N
+</code></pre>
+
+<p>Make sure you understand what all will be removed before using this command.</p>
+<h3 id="stopping-and-removing-containers">Stopping and Removing Containers</h3>
+<p>We have learnt about interacting with a container, running a container, pausing and unpausing a container, creating and starting a container. But what if you want to stop the container or remove the container itself  </p>
+<h4 id="stop-a-container">Stop a container</h4>
+<p>A container can be stopped using <strong>stop</strong> command. This command will stop the application inside that container hence the container itself will be stopped. This command basically sends a <strong>SIGTERM</strong> signal to the container (graceful shutdown)  </p>
+<p>[Command]  </p>
+<pre><code>docker stop &lt;container_id/name&gt;
+</code></pre>
+
+<h4 id="kill-a-container">Kill a container</h4>
+<p>This command will send <strong>SIGKILL</strong> signal and kills the container ungracefully  </p>
+<p>[Command]  </p>
+<pre><code>docker kill &lt;container_id/name&gt;
+</code></pre>
+
+<p>If you want to remove a container, then execute the following command. Before running this command, run docker ps -a to see the list of pre run containers. Choose a container of your wish and then execute docker rm command. Then run docker ps -a again to check the removed container list or not  </p>
+<p>[Command]  </p>
+<pre><code>docker rm &lt;container_id/name&gt;
+docker rm -f &lt;container_id/name&gt;
+
+</code></pre>
+
+<h4 id="exercises">Exercises</h4>
+<h3 id="launching-containers-with-elevated-privileges">Launching Containers with Elevated  Privileges</h3>
+<p>When the operator executes docker run --privileged, Docker will enable to access to all devices on the host as well as set some configuration in AppArmor or SELinux to allow the container nearly all the same access to the host as processes running outside containers on the host.</p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../dockerizing-voteapp/" class="btn btn-neutral float-right" title="Lab D102 - Building and Publishing Docker Images">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../.." class="btn btn-neutral" title="Home"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../.." style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../dockerizing-voteapp/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '../..';</script>
+    <script src="../../js/theme.js" defer></script>
+      <script src="../../search/main.js" defer></script>
+
+</body>
+</html>

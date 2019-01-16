@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+  <title>Lab D103 - Docker Networking - Kubernetes Lab Guide</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Lab D103 - Docker Networking";
+    var mkdocs_page_input_path = "docker/docker-networking.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> Kubernetes Lab Guide</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../..">Home</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Just Enough Docker</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../operating-containers/">Lab D101 - Operating Containers</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../dockerizing-voteapp/">Lab D102 - Building and Publishing Docker Images</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">Lab D103 - Docker Networking</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#lab-docker-networking">Lab: Docker Networking</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#host-networking">Host Networking</a></li>
+        
+            <li><a class="toctree-l4" href="#observe-docker-bridge-routing-and-port-mapping">Observe docker bridge, routing and port mapping</a></li>
+        
+        </ul>
+    
+
+    </ul>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../docker-volumes/">Lab D104 - Docker Volumes</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Kubernetes Fundamentals</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../3_install_kubernetes/">Lab K101 - Setup Kubernetes Cluster</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../quickdive/">Lab K102 - Kubernetes Quickdive</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../5-vote-deploying_pods/">Lab K103 - Kubernetes LaunchPods</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../replication/">Making application highly available</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../7-vote-exposing_app_with_service/">Publishing appliaction and Service Discovery</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../6-vote-kubernetes_deployment/">Defining Update Strategy</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../11_deploying_sample_app/">Mini Project</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../9-vote-configmaps_and_secrets/">Managing Configurations and Secrets</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../vote-persistent-volumes/">Making Data Persist</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Advanced Kubernetes</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../kubespray-prereqs/">Kubespray HA lab setup with Vagrant</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../cluster_setup_kubespray/">HA setup with Kubespray</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../configuring_authentication_and_authorization/">Authentication and Authorization (RBAC)</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../advanced_pod_scheduling/">Advanced Pod Scheduling</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../pod-adv-specs/">Pod Resource and Security Specs</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../pods-health-probes/">Adding health checks with Probes</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../ingress/">Application Routing with Ingress Controllers</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../10_kubernetes_autoscaling/">Auto Scaling Capacity with HPA</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../13_redis_statefulset/">Creating Replicated Redis Cluster with Statefulsets</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../network_policies/">Access Control with Network Policies</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../cluster-administration/">Cluster Administration</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../helm/">Helm Charts</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Additional Topics</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../vote-deployement_strategies/">Building Deployment Strategies</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../12_troubleshooting/">Troubleshooting Tips</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../logging/">Logging</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">References</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../rbac-resource-group-mapping/">RBAC apiGroups to Resource Mapping</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">Kubernetes Lab Guide</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Just Enough Docker &raquo;</li>
+        
+      
+    
+    <li>Lab D103 - Docker Networking</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="lab-docker-networking">Lab: Docker Networking</h1>
+<h3 id="host-networking">Host Networking</h3>
+<ul>
+<li>bridge</li>
+<li>host</li>
+<li>peer</li>
+<li>none</li>
+</ul>
+<p>Examine the existing network</p>
+<pre><code>docker network ls
+
+NETWORK ID          NAME                DRIVER              SCOPE
+b3d405dd37e4        bridge              bridge              local
+7527c821537c        host                host                local
+773bea4ca095        none                null                local
+</code></pre>
+
+<p>Creating new network</p>
+<pre><code>docker network create -d bridge mynet
+</code></pre>
+
+<p>validate</p>
+<pre><code>docker network ls
+NETWORK ID          NAME                DRIVER              SCOPE
+b3d405dd37e4        bridge              bridge              local
+7527c821537c        host                host                local
+4e0d9b1a39f8        mynet               bridge              local
+773bea4ca095        none                null                local
+</code></pre>
+
+<pre><code>docker network inspect mynet
+
+
+[
+   {
+       &quot;Name&quot;: &quot;mynet&quot;,
+       &quot;Id&quot;: &quot;4e0d9b1a39f859af4811986534c91527146bc9d2ce178e5de02473c0f8ce62d5&quot;,
+       &quot;Created&quot;: &quot;2018-05-03T04:44:19.187296148Z&quot;,
+       &quot;Scope&quot;: &quot;local&quot;,
+       &quot;Driver&quot;: &quot;bridge&quot;,
+       &quot;EnableIPv6&quot;: false,
+       &quot;IPAM&quot;: {
+           &quot;Driver&quot;: &quot;default&quot;,
+           &quot;Options&quot;: {},
+           &quot;Config&quot;: [
+               {
+                   &quot;Subnet&quot;: &quot;172.18.0.0/16&quot;,
+                   &quot;Gateway&quot;: &quot;172.18.0.1&quot;
+               }
+           ]
+       },
+       &quot;Internal&quot;: false,
+       &quot;Attachable&quot;: false,
+       &quot;Ingress&quot;: false,
+       &quot;ConfigFrom&quot;: {
+           &quot;Network&quot;: &quot;&quot;
+       },
+       &quot;ConfigOnly&quot;: false,
+       &quot;Containers&quot;: {},
+       &quot;Options&quot;: {},
+       &quot;Labels&quot;: {}
+   }
+]
+</code></pre>
+
+<h4 id="launching-containers-in-different-bridges">Launching containers in different bridges</h4>
+<p>Launch two containers <strong>nt01</strong> and <strong>nt02</strong> in <strong>default</strong> bridge network</p>
+<pre><code>docker container run -idt --name nt01 alpine sh
+docker container run -idt --name nt02 alpine sh
+</code></pre>
+
+<p>Launch two containers <strong>nt03</strong> and <strong>nt04</strong> in <strong>mynet</strong> bridge network</p>
+<pre><code>docker container run -idt --name nt03 --net mynet alpine sh
+docker container run -idt --name nt04 --net mynet alpine sh
+</code></pre>
+
+<p>Now, lets examine if they can interconnect,</p>
+<pre><code>
+docker exec nt01 ifconfig eth0
+docker exec nt02 ifconfig eth0
+docker exec nt03 ifconfig eth0
+docker exec nt04 ifconfig eth0
+
+</code></pre>
+
+<p>This is what I see</p>
+<p>nt01 :  172.17.0.18</p>
+<p>nt02 :  172.17.0.19</p>
+<p>nt03 :  172.18.0.2</p>
+<p>nt04 :  172.18.0.3</p>
+<p>Create a table with the ips on your host.  Once you do that,</p>
+<p>Try to,</p>
+<ul>
+<li>ping from <strong>nt01</strong> to <strong>nt02</strong>  </li>
+<li>ping from <strong>nt01</strong> to <strong>nt03</strong>  </li>
+<li>ping from <strong>nt03</strong> to <strong>nt04</strong>  </li>
+<li>ping from <strong>nt03</strong> to <strong>nt02</strong>  </li>
+</ul>
+<p>e.g.</p>
+<p>[replace ip addresses as per your setup]</p>
+<pre><code>docker exec nt01  ping 172.17.0.19
+
+docker exec nt01  ping 172.18.0.2
+
+docker exec nt03  ping 172.17.0.19
+
+docker exec nt03  ping 172.18.0.2
+
+
+</code></pre>
+
+<p>Clearly, these two are two differnt subnets/networks even though running on the same host. <strong>nt01</strong> and <strong>nt02</strong> can connect with each other, whereas <strong>nt03</strong>  and <strong>nt04</strong> can connect. But connection between containers attached to two different subnets is not possible.</p>
+<h4 id="using-none-network-driver">Using None Network Driver</h4>
+<pre><code>docker container run -idt --name nt05 --net none alpine sh
+
+docker exec -it nt05 sh
+
+ifconfig
+</code></pre>
+
+<h4 id="using-host-network-driver">Using Host Network Driver</h4>
+<pre><code>docker container run -idt --name nt05 --net host  alpine sh
+
+docker exec -it nt05 sh
+
+ifconfig
+</code></pre>
+
+<h3 id="observe-docker-bridge-routing-and-port-mapping">Observe docker bridge, routing and port mapping</h3>
+<p>Exercise: Read about <a href="https://github.com/nicolaka/netshoot"><strong>netshoot</strong> utility here</a></p>
+<p>Launch netshoot and connect to the host network</p>
+<pre><code>
+docker run -it --net host --privileged  nicolaka/netshoot
+
+</code></pre>
+
+<p>Examine port mapping,</p>
+<pre><code>iptables -nvL -t nat
+</code></pre>
+
+<p>Traverse host port to container ip and port.</p>
+<p>Observe docker bridge and routing with the following command,</p>
+<pre><code>brctl show
+
+ip route show
+
+</code></pre>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../docker-volumes/" class="btn btn-neutral float-right" title="Lab D104 - Docker Volumes">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../dockerizing-voteapp/" class="btn btn-neutral" title="Lab D102 - Building and Publishing Docker Images"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../dockerizing-voteapp/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../docker-volumes/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '../..';</script>
+    <script src="../../js/theme.js" defer></script>
+      <script src="../../search/main.js" defer></script>
+
+</body>
+</html>
