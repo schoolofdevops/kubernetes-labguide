@@ -1,4 +1,4 @@
-# Creating a Deployment
+# LAB K106 - Defining Release Strategy with  Deployment
 
 A Deployment is a higher level abstraction which sits on top of replica sets and allows you to manage the way applications are deployed, rolled back at a controlled rate.
 
@@ -15,10 +15,7 @@ cp vote-rs.yaml vote-deploy.yaml
 
 Deployment spec (deployment.spec) contains everything that replica set has + strategy. Lets add it as follows,
 
-
-
-
-File: vote-deploy.yaml
+`file: vote-deploy.yaml`
 
 ```
 apiVersion: apps/v1
@@ -32,28 +29,31 @@ spec:
       maxSurge: 2
       maxUnavailable: 1
   revisionHistoryLimit: 4
-  paused: false
-  replicas: 8
+  replicas: 12
   minReadySeconds: 20
   selector:
     matchLabels:
       role: vote
     matchExpressions:
-      - {key: version, operator: In, values: [v1, v2, v3]}
+      - {key: version, operator: In, values: [v1, v2, v3, v4, v5]}
   template:
     metadata:
       name: vote
       labels:
         app: python
         role: vote
-        version: v2
+        version: v1
     spec:
       containers:
         - name: app
-          image: schoolofdevops/vote:v2
-          ports:
-            - containerPort: 80
-              protocol: TCP
+          image: schoolofdevops/vote:v1
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "128Mi"
+              cpu: "250m"
 ```
 
 
@@ -95,7 +95,7 @@ vote   3         3         3            1           3m
 To scale a deployment in Kubernetes:
 
 ```
-kubectl scale deployment/vote --replicas=12
+kubectl scale deployment/vote --replicas=15
 
 kubectl rollout status deployment/vote
 
@@ -104,8 +104,8 @@ kubectl rollout status deployment/vote
 Sample output:
 ```
 
-Waiting for rollout to finish: 5 of 12 updated replicas are available...
-Waiting for rollout to finish: 6 of 12 updated replicas are available...
+Waiting for rollout to finish: 5 of 15 updated replicas are available...
+Waiting for rollout to finish: 6 of 15 updated replicas are available...
 deployment "vote" successfully rolled out
 ```
 
@@ -115,7 +115,7 @@ You could also update the deployment by editing it.
 kubectl edit deploy/vote
 ```
 
-[change replicas to 15 from the editor, save and observe]
+[change replicas to 8 from the editor, save and observe]
 
 
 
@@ -125,20 +125,16 @@ Now, update the deployment spec to apply
 
 file: vote-deploy.yaml
 ```
-spec:
+
 ...
-  replicas: 15
-...
-labels:
-   app: python
-   role: vote
-   version: v3
-...
-template:   
+template:
+  metadata:
+    labels:
+      version: v2   
   spec:
     containers:
       - name: app
-        image: schoolofdevops/vote:v3
+        image: schoolofdevops/vote:v2
 
 ```
 
@@ -161,6 +157,8 @@ kubectl rollout history deploy/vote
 kubectl rollout history deploy/vote --revision=1
 
 ```
+
+Try updating the version of the image from v2 to v3,v4,v5. Repeat a few times to observe how it rolls out a new version.  
 
 ## Undo and Rollback
 
@@ -192,5 +190,5 @@ Find out the previous revision with sane configs.
 To undo to a sane version (for example revision 3)
 
 ```
-kubectl rollout undo deploy/vote --to-revision=3
+kubectl rollout undo deploy/vote --to-revision=2
 ```

@@ -14,8 +14,8 @@ pages:
      - Lab K105 - Load Balancing and Service Discovery with Services: "7-vote-exposing_app_with_service.md"
      - Lab K106 - Defining Release Strategy with Deployments: "6-vote-kubernetes_deployment.md"
      - Mini Project: "11_deploying_sample_app.md"
-     - Managing Configurations and Secrets: "9-vote-configmaps_and_secrets.md"
-     - Making Data Persist: "vote-persistent-volumes.md"
+     - Lab K107 - Configurations Management with ConfigMaps and Secrets: "9-vote-configmaps_and_secrets.md"
+     - Lab K108 - Peristent Volumes: "vote-persistent-volumes.md"
   - Advanced Kubernetes:
      - Kubespray HA lab setup with Vagrant: "kubespray-prereqs.md"
      - HA setup with Kubespray: "cluster_setup_kubespray.md"
