@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Setup Kubernetes Cluster - Kubernetes Lab Guide</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Setup Kubernetes Cluster";
+    var mkdocs_page_input_path = "3_install_kubernetes.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> Kubernetes Lab Guide</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="..">Home</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Setup</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../minikube/">Using minikube to setup single node environment</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../2_kube_cluster_vagrant/">Provisioning VMs with Vagrant</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">Setup Kubernetes Cluster</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#kubeadm-bring-your-own-nodes-byon">Kubeadm : Bring Your Own Nodes (BYON)</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#compatibility">Compatibility</a></li>
+        
+            <li><a class="toctree-l4" href="#base-setup-skip-if-using-vagrant">Base Setup (Skip if using vagrant)</a></li>
+        
+            <li><a class="toctree-l4" href="#initializing-master">Initializing Master</a></li>
+        
+            <li><a class="toctree-l4" href="#installing-cni-with-weave">Installing CNI with Weave</a></li>
+        
+            <li><a class="toctree-l4" href="#validating-the-setup">Validating the Setup</a></li>
+        
+            <li><a class="toctree-l4" href="#enable-kubernetes-dashboard">Enable Kubernetes Dashboard</a></li>
+        
+            <li><a class="toctree-l4" href="#check-out-the-supporting-code">Check out the supporting code</a></li>
+        
+        </ul>
+    
+
+    </ul>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../kube_visualizer/">Kuberentes Visualizer</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../quickdive.md">Kubernetes Quickdive</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Kubernetes Fundamentals</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../5-vote-deploying_pods/">Launching Pods</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../replication/">Making application highly available</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../7-vote-exposing_app_with_service/">Publishing appliaction and Service Discovery</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../6-vote-kubernetes_deployment/">Defining Update Strategy</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../11_deploying_sample_app/">Mini Project</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../9-vote-configmaps_and_secrets/">Managing Configurations and Secrets</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../vote-persistent-volumes/">Making Data Persist</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Advanced Kubernetes</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../kubespray-prereqs/">Kubespray HA lab setup with Vagrant</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../cluster_setup_kubespray/">HA setup with Kubespray</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../configuring_authentication_and_authorization/">Authentication and Authorization (RBAC)</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../advanced_pod_scheduling/">Advanced Pod Scheduling</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../pod-adv-specs/">Pod Resource and Security Specs</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../pods-health-probes/">Adding health checks with Probes</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../ingress/">Application Routing with Ingress Controllers</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../10_kubernetes_autoscaling/">Auto Scaling Capacity with HPA</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../13_redis_statefulset/">Creating Replicated Redis Cluster with Statefulsets</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../network_policies/">Access Control with Network Policies</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../cluster-administration/">Cluster Administration</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../helm/">Helm Charts</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Additional Topics</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../vote-deployement_strategies/">Building Deployment Strategies</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../12_troubleshooting/">Troubleshooting Tips</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../logging/">Logging</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">References</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../rbac-resource-group-mapping/">RBAC apiGroups to Resource Mapping</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">Kubernetes Lab Guide</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Setup &raquo;</li>
+        
+      
+    
+    <li>Setup Kubernetes Cluster</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="kubeadm-bring-your-own-nodes-byon">Kubeadm : Bring Your Own Nodes (BYON)</h1>
+<p>This documents describes how to setup kubernetes from scratch on your own nodes, without using a managed service. This setup uses <strong>kubeadm</strong> to install and configure kubernetes cluster.</p>
+<h2 id="compatibility">Compatibility</h2>
+<p>Kubernetes is an open-source system for automating deployment, scaling, and management of containerized applications.</p>
+<p>The below steps are applicable for the below mentioned OS</p>
+<table>
+<thead>
+<tr>
+<th>OS</th>
+<th>Version</th>
+<th>Codename</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Ubuntu</strong></td>
+<td><strong>16.04</strong></td>
+<td><strong>Xenial</strong></td>
+</tr>
+</tbody>
+</table>
+<h2 id="base-setup-skip-if-using-vagrant">Base Setup (Skip if using vagrant)</h2>
+<p><strong>Skip this step and scroll to Initializing Master if you have setup nodes with vagrant</strong></p>
+<p>On all nodes which would be part of this cluster, you need to do the base setup as described in the following steps. To simplify this, you could also   <a href="https://gist.github.com/initcron/40b71211cb693f541ce35fe3fb1adb11">download and run this script</a></p>
+<h3 id="create-kubernetes-repository">Create Kubernetes Repository</h3>
+<p>We need to create a repository to download Kubernetes.</p>
+<pre><code>curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+</code></pre>
+
+<pre><code>cat &lt;&lt;EOF &gt; /etc/apt/sources.list.d/kubernetes.list
+deb http://apt.kubernetes.io/ kubernetes-xenial main
+EOF
+</code></pre>
+
+<h3 id="installation-of-the-packages">Installation of the packages</h3>
+<p>We should update the machines before installing so that we can update the repository.</p>
+<pre><code>apt-get update -y
+</code></pre>
+
+<p>Installing all the packages with dependencies:</p>
+<pre><code>apt-get install -y docker.io kubelet kubeadm kubectl kubernetes-cni
+</code></pre>
+
+<pre><code>rm -rf /var/lib/kubelet/*
+</code></pre>
+
+<h3 id="setup-sysctl-configs">Setup sysctl configs</h3>
+<p>In order for many container networks to work, the following needs to be enabled on each node.</p>
+<pre><code>sysctl net.bridge.bridge-nf-call-iptables=1
+</code></pre>
+
+<p>The above steps has to be followed in all the nodes.</p>
+<h2 id="initializing-master">Initializing Master</h2>
+<p>This tutorial assumes <strong>kube-01</strong>  as the master and used kubeadm as a tool to install and setup the cluster. This section also assumes that you are using vagrant based setup provided along with this tutorial. If not, please update the IP address of the master accordingly.</p>
+<p>To initialize master, run this on kube-01</p>
+<pre><code>kubeadm init --apiserver-advertise-address 192.168.56.101 --pod-network-cidr=192.168.0.0/16
+
+</code></pre>
+
+<h3 id="initialization-of-the-nodes-previously-minions">Initialization of the Nodes (Previously Minions)</h3>
+<p>After master being initialized, it should display the command which could be used on all worker/nodes to join the k8s cluster.</p>
+<p>e.g.</p>
+<pre><code>kubeadm join --token c04797.8db60f6b2c0dd078 192.168.12.10:6443 --discovery-token-ca-cert-hash sha256:88ebb5d5f7fdfcbbc3cde98690b1dea9d0f96de4a7e6bf69198172debca74cd0
+</code></pre>
+
+<p>Copy and paste it on all node.</p>
+<h5 id="troubleshooting-tips">Troubleshooting Tips</h5>
+<p>If you lose  the join token, you could retrieve it using</p>
+<pre><code>kubeadm token list
+</code></pre>
+
+<p>On successfully joining the master, you should see output similar to following,</p>
+<pre><code>root@kube-03:~# kubeadm join --token c04797.8db60f6b2c0dd078 159.203.170.84:6443 --discovery-token-ca-cert-hash sha256:88ebb5d5f7fdfcbbc3cde98690b1dea9d0f96de4a7e6bf69198172debca74cd0
+[kubeadm] WARNING: kubeadm is in beta, please do not use it for production clusters.
+[preflight] Running pre-flight checks
+[discovery] Trying to connect to API Server &quot;159.203.170.84:6443&quot;
+[discovery] Created cluster-info discovery client, requesting info from &quot;https://159.203.170.84:6443&quot;
+[discovery] Requesting info from &quot;https://159.203.170.84:6443&quot; again to validate TLS against the pinned public key
+[discovery] Cluster info signature and contents are valid and TLS certificate validates against pinned roots, will use API Server &quot;159.203.170.84:6443&quot;
+[discovery] Successfully established connection with API Server &quot;159.203.170.84:6443&quot;
+[bootstrap] Detected server version: v1.8.2
+[bootstrap] The server supports the Certificates API (certificates.k8s.io/v1beta1)
+
+Node join complete:
+* Certificate signing request sent to master and response
+  received.
+* Kubelet informed of new secure connection details.
+
+Run 'kubectl get nodes' on the master to see this machine join.
+</code></pre>
+
+<h3 id="setup-the-admin-client-kubectl">Setup the admin client - Kubectl</h3>
+<p>On Master Node</p>
+<pre><code>mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+</code></pre>
+
+<h2 id="installing-cni-with-weave">Installing CNI with Weave</h2>
+<p>Installing overlay network is necessary for the pods to communicate with each other across the hosts. It is necessary to do this before you try to deploy any applications to your cluster.</p>
+<p>There are various overlay networking drivers available for kubernetes. We are going to use <strong>Weave Net</strong>.</p>
+<pre><code>
+export kubever=$(kubectl version | base64 | tr -d '\n')
+kubectl apply -f &quot;https://cloud.weave.works/k8s/net?k8s-version=$kubever&quot;
+</code></pre>
+
+<h2 id="validating-the-setup">Validating the Setup</h2>
+<p>You could validate the status of this cluster, health of pods and whether all the components are up or not by using a few or all of the following commands.</p>
+<p>To check if nodes are ready</p>
+<pre><code>kubectl get nodes
+kubectl get cs
+
+</code></pre>
+
+<p>[ Expected output ]</p>
+<pre><code>root@kube-01:~# kubectl get nodes
+NAME      STATUS    ROLES     AGE       VERSION
+kube-01   Ready     master    9m        v1.8.2
+kube-02   Ready     &lt;none&gt;    4m        v1.8.2
+kube-03   Ready     &lt;none&gt;    4m        v1.8.2
+</code></pre>
+
+<p>Additional Status Commands</p>
+<pre><code>kubectl version
+
+kubectl cluster-info
+
+kubectl get pods -n kube-system
+
+kubectl get events
+
+</code></pre>
+
+<p>It will take a few minutes to have the cluster up and running with all the services.</p>
+<h3 id="possible-issues">Possible Issues</h3>
+<ul>
+<li>Nodes are node in Ready status</li>
+<li>kube-dns is crashing constantly</li>
+<li>Some of the systems services are not up</li>
+</ul>
+<p>Most of the times, kubernetes does self heal, unless its a issue with system resources not being adequate. Upgrading resources or launching it on bigger capacity VM/servers solves it. However, if the issues persist, you could try following techniques,</p>
+<p>Troubleshooting Tips</p>
+<p>Check events</p>
+<pre><code>kubectl get events
+</code></pre>
+
+<p>Check Logs</p>
+<pre><code>kubectl get pods -n kube-system
+
+[get the name of the pod which has a problem]
+
+kubectl logs &lt;pod&gt; -n kube-system
+
+</code></pre>
+
+<p>e.g.</p>
+<pre><code>root@kube-01:~# kubectl logs kube-dns-545bc4bfd4-dh994 -n kube-system
+Error from server (BadRequest): a container name must be specified for pod kube-dns-545bc4bfd4-dh994, choose one of:
+[kubedns dnsmasq sidecar]
+
+
+root@kube-01:~# kubectl logs kube-dns-545bc4bfd4-dh994  kubedns  -n kube-system
+I1106 14:41:15.542409       1 dns.go:48] version: 1.14.4-2-g5584e04
+I1106 14:41:15.543487       1 server.go:70] Using
+
+....
+
+</code></pre>
+
+<h2 id="enable-kubernetes-dashboard">Enable Kubernetes Dashboard</h2>
+<p>After the Pod networks is installled, We can install another add-on service which is Kubernetes Dashboard.</p>
+<p>Installing Dashboard:</p>
+<pre><code>kubectl apply -f https://gist.githubusercontent.com/initcron/32ff89394c881414ea7ef7f4d3a1d499/raw/4863613585d05f9360321c7141cc32b8aa305605/kube-dashboard.yaml
+
+</code></pre>
+
+<p>This will create a pod for the Kubernetes Dashboard.</p>
+<p>To access the Dashboard in th browser, run the below command</p>
+<pre><code>kubectl describe svc kubernetes-dashboard -n kube-system
+</code></pre>
+
+<p>Sample output:</p>
+<pre><code>kubectl describe svc kubernetes-dashboard -n kube-system
+Name:                   kubernetes-dashboard
+Namespace:              kube-system
+Labels:                 app=kubernetes-dashboard
+Selector:               app=kubernetes-dashboard
+Type:                   NodePort
+IP:                     10.98.148.82
+Port:                   &lt;unset&gt; 80/TCP
+NodePort:               &lt;unset&gt; 31000/TCP
+Endpoints:              10.40.0.1:9090
+Session Affinity:       None
+</code></pre>
+
+<p>Now check for the node port, here it is 31000, and go to the browser, and access the dashboard with the following URL
+<code>do not use the IP above, use master node IP instead</code></p>
+<pre><code>http://NODEIP:31000
+</code></pre>
+
+<p>The Dashboard Looks like:</p>
+<p><img alt="Kubernetes Dashboard.\label{fig:captioned_image}" src="../images/Kubernetes-Dashboard.png" /></p>
+<h2 id="check-out-the-supporting-code">Check out the supporting code</h2>
+<p>Before we proceed further, please checkout the code from the following git repo. This would offer the supporting code for the exercises that follow.</p>
+<pre><code>git clone https://github.com/schoolofdevops/k8s-code.git
+</code></pre>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../kube_visualizer/" class="btn btn-neutral float-right" title="Kuberentes Visualizer">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../2_kube_cluster_vagrant/" class="btn btn-neutral" title="Provisioning VMs with Vagrant"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../2_kube_cluster_vagrant/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../kube_visualizer/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+
+</body>
+</html>

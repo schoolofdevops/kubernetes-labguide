@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Publishing appliaction and Service Discovery - Kubernetes Lab Guide</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Publishing appliaction and Service Discovery";
+    var mkdocs_page_input_path = "7-vote-exposing_app_with_service.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> Kubernetes Lab Guide</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="..">Home</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Setup</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../minikube/">Using minikube to setup single node environment</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../2_kube_cluster_vagrant/">Provisioning VMs with Vagrant</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../3_install_kubernetes/">Setup Kubernetes Cluster</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../kube_visualizer/">Kuberentes Visualizer</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../quickdive.md">Kubernetes Quickdive</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Kubernetes Fundamentals</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../5-vote-deploying_pods/">Launching Pods</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../replication/">Making application highly available</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">Publishing appliaction and Service Discovery</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#exposing-application-with-a-service">Exposing Application with  a Service</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#setting-up-monitoring">Setting up monitoring</a></li>
+        
+            <li><a class="toctree-l4" href="#writing-service-spec">Writing Service Spec</a></li>
+        
+            <li><a class="toctree-l4" href="#exposing-the-app-with-externalip">Exposing the app with ExternalIP</a></li>
+        
+            <li><a class="toctree-l4" href="#internal-service-discovery">Internal Service Discovery</a></li>
+        
+        </ul>
+    
+
+    </ul>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../6-vote-kubernetes_deployment/">Defining Update Strategy</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../11_deploying_sample_app/">Mini Project</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../9-vote-configmaps_and_secrets/">Managing Configurations and Secrets</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../vote-persistent-volumes/">Making Data Persist</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Advanced Kubernetes</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../kubespray-prereqs/">Kubespray HA lab setup with Vagrant</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../cluster_setup_kubespray/">HA setup with Kubespray</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../configuring_authentication_and_authorization/">Authentication and Authorization (RBAC)</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../advanced_pod_scheduling/">Advanced Pod Scheduling</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../pod-adv-specs/">Pod Resource and Security Specs</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../pods-health-probes/">Adding health checks with Probes</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../ingress/">Application Routing with Ingress Controllers</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../10_kubernetes_autoscaling/">Auto Scaling Capacity with HPA</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../13_redis_statefulset/">Creating Replicated Redis Cluster with Statefulsets</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../network_policies/">Access Control with Network Policies</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../cluster-administration/">Cluster Administration</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../helm/">Helm Charts</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Additional Topics</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../vote-deployement_strategies/">Building Deployment Strategies</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../12_troubleshooting/">Troubleshooting Tips</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../logging/">Logging</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">References</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../rbac-resource-group-mapping/">RBAC apiGroups to Resource Mapping</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">Kubernetes Lab Guide</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Kubernetes Fundamentals &raquo;</li>
+        
+      
+    
+    <li>Publishing appliaction and Service Discovery</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="exposing-application-with-a-service">Exposing Application with  a Service</h1>
+<p>Types of Services:   </p>
+<ul>
+<li>ClusterIP</li>
+<li>NodePort</li>
+<li>LoadBalancer</li>
+<li>ExternalName</li>
+</ul>
+<p><img alt="kubernetes service.\label{fig:captioned_image}" src="images/k8s_service.jpg" /></p>
+<pre><code>kubectl get pods
+kubectl get svc
+</code></pre>
+
+<p>Sample Output:</p>
+<pre><code>NAME                READY     STATUS    RESTARTS   AGE
+voting-appp-1j52x   1/1       Running   0          12m
+voting-appp-pr2xz   1/1       Running   0          9m
+voting-appp-qpxbm   1/1       Running   0          15m
+</code></pre>
+
+<h3 id="setting-up-monitoring">Setting up monitoring</h3>
+<p>If you are not running a monitoring screen, start it in a new terminal with the following command.</p>
+<pre><code>watch -n 1 kubectl get  pod,deploy,rs,svc
+</code></pre>
+
+<h2 id="writing-service-spec">Writing Service Spec</h2>
+<p>Lets start writing the  meta information for service.  </p>
+<p>Filename: vote-svc.yaml</p>
+<pre><code>---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vote
+  labels:
+    role: vote
+spec:
+</code></pre>
+
+<p>And then add the spec to it. Refer to Service (v1 core) api at this <img alt="page" src="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/" /></p>
+<pre><code>---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vote
+  labels:
+    role: vote
+spec:
+  selector:
+    role: vote
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30000
+  type: NodePort
+
+</code></pre>
+
+<p>Save the file.</p>
+<p>Now to create a service:</p>
+<pre><code>kubectl apply -f vote-svc.yaml --dry-run
+kubectl apply -f vote-svc.yaml
+kubectl get svc
+</code></pre>
+
+<p>Now to check which port the pod is connected</p>
+<pre><code>kubectl describe service vote
+</code></pre>
+
+<p>Check for the Nodeport here</p>
+<p>Sample Output</p>
+<pre><code>Name:                     vote
+Namespace:                instavote
+Labels:                   role=svc
+                          tier=front
+Annotations:              kubectl.kubernetes.io/last-applied-configuration={&quot;apiVersion&quot;:&quot;v1&quot;,&quot;kind&quot;:&quot;Service&quot;,&quot;metadata&quot;:{&quot;annotations&quot;:{},&quot;labels&quot;:{&quot;role&quot;:&quot;svc&quot;,&quot;tier&quot;:&quot;front&quot;},&quot;name&quot;:&quot;vote&quot;,&quot;namespace&quot;:&quot;instavote&quot;},&quot;spec&quot;:{...
+Selector:                 app=vote
+Type:                     NodePort
+IP:                       10.108.108.157
+Port:                     &lt;unset&gt;  80/TCP
+TargetPort:               80/TCP
+NodePort:                 &lt;unset&gt;  31429/TCP
+Endpoints:                10.38.0.4:80,10.38.0.5:80,10.38.0.6:80 + 2 more...
+Session Affinity:         None
+External Traffic Policy:  Cluster
+Events:                   &lt;none&gt;
+</code></pre>
+
+<p>Go to browser and check hostip:NodePort</p>
+<p>Here the node port is 31429.</p>
+<p>Sample output will be:</p>
+<p><img alt="Vote" src="../images/vote-rc.png" /></p>
+<h2 id="exposing-the-app-with-externalip">Exposing the app with ExternalIP</h2>
+<pre><code>spec:
+  selector:
+    role: vote
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  type: NodePort
+  externalIPs:
+    - xx.xx.xx.xx
+    - yy.yy.yy.yy
+</code></pre>
+
+<p>Where</p>
+<p>replace xx.xx.xx.xx and yy.yy.yy.yy with IP addresses of the nodes on two of the kubernetes hosts.</p>
+<p>apply</p>
+<pre><code>kubectl  get svc
+kubectl apply -f vote-svc.yaml
+kubectl  get svc
+kubectl describe svc vote
+</code></pre>
+
+<p>[sample output]</p>
+<pre><code>NAME      TYPE       CLUSTER-IP      EXTERNAL-IP                    PORT(S)        AGE
+vote      NodePort   10.107.71.204   206.189.150.190,159.65.8.227   80:30000/TCP   11m
+</code></pre>
+
+<p>where,</p>
+<p>EXTERNAL-IP column shows which IPs the application is been exposed on. You could go to http://<IPADDRESS>:<SERVICE_PORT> to access this application.  e.g. http://206.189.150.190:80 where you should replace 206.189.150.190 with the actual IP address of the node that you exposed this on.</p>
+<h2 id="internal-service-discovery">Internal Service Discovery</h2>
+<ul>
+<li>Visit the vote app from browser</li>
+<li>Attemp to vote by clicking on one of the options</li>
+</ul>
+<p>observe what happens. Does it go through?  </p>
+<p>Debugging,</p>
+<pre><code>kubectl get pod
+kubectl exec vote-xxxx ping redis
+
+</code></pre>
+
+<p>[replace xxxx with the actual pod id of one of the vote pods ]</p>
+<p>keep the above command on a watch. You should create a new terminal to run the watch command.</p>
+<p>e.g.</p>
+<pre><code>watch  kubectl exec vote-kvc7j ping redis
+</code></pre>
+
+<p>where, vote-kvc7j is one of the vote pods that I am running. Replace this with the actual pod id.</p>
+<p>Now create <strong>redis</strong> service</p>
+<pre><code>kubectl apply -f redis-svc.yaml
+
+kubectl get svc
+
+kubectl describe svc redis
+</code></pre>
+
+<p>Watch the ping and observe if its able to resolve <strong>redis</strong> by hostname and its pointing to an IP address.</p>
+<p>e.g.</p>
+<pre><code>PING redis (10.102.77.6): 56 data bytes
+</code></pre>
+
+<p>where <strong>10.102.77.6</strong> is the ClusterIP assigned to the service.  </p>
+<p>What happened here?</p>
+<ul>
+<li>Service <strong>redis</strong> was created with a ClusterIP e.g. 10.102.77.6</li>
+<li>A DNS entry was created for this service. The fqdn of the service is <strong>redis.instavote.svc.cluster.local</strong> and it takes the form of 
+  my-svc.my-namespace.svc.cluster.local</li>
+<li>Each pod points to  internal  DNS server running in the cluster. You could see the details of this by running the following commands</li>
+</ul>
+<pre><code>kubectl exec vote-xxxx cat /etc/resolv.conf
+</code></pre>
+
+<p>[replace vote-xxxx with actual pod id]</p>
+<p>[sample output]</p>
+<pre><code>nameserver 10.96.0.10
+search instavote.svc.cluster.local svc.cluster.local cluster.local
+options ndots:5
+</code></pre>
+
+<p>where <strong>10.96.0.10</strong> is the ClusterIP assigned to the DNS service. You could co relate that with,</p>
+<pre><code>kubectl get svc -n kube-system
+
+
+NAME                   TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)         AGE
+kube-dns               ClusterIP   10.96.0.10     &lt;none&gt;        53/UDP,53/TCP   1h
+kubernetes-dashboard   NodePort    10.104.42.73   &lt;none&gt;        80:31000/TCP    23m
+
+</code></pre>
+
+<p>where, <strong>10.96.0.10</strong> is the ClusterIP assigned to <strong>kube-dns</strong> and matches the configuration in <strong>/etc/resolv.conf</strong> above.</p>
+<h5 id="creating-endpoints-for-redis">Creating Endpoints for Redis</h5>
+<p>Service is been created, but you still need to launch the actual pods running <strong>redis</strong> application.</p>
+<p>Create the endpoints now,</p>
+<pre><code>kubectl apply -f redis-deploy.yaml
+kubectl describe svc redis
+
+</code></pre>
+
+<p>[sample output]</p>
+<pre><code>Name:              redis
+Namespace:         instavote
+Labels:            role=redis
+                   tier=back
+Annotations:       kubectl.kubernetes.io/last-applied-configuration={&quot;apiVersion&quot;:&quot;v1&quot;,&quot;kind&quot;:&quot;Service&quot;,&quot;metadata&quot;:{&quot;annotations&quot;:{},&quot;labels&quot;:{&quot;role&quot;:&quot;redis&quot;,&quot;tier&quot;:&quot;back&quot;},&quot;name&quot;:&quot;redis&quot;,&quot;namespace&quot;:&quot;instavote&quot;},&quot;spec&quot;...
+Selector:          app=redis
+Type:              ClusterIP
+IP:                10.102.77.6
+Port:              &lt;unset&gt;  6379/TCP
+TargetPort:        6379/TCP
+Endpoints:         10.32.0.6:6379,10.46.0.6:6379
+Session Affinity:  None
+Events:            &lt;none&gt;
+</code></pre>
+
+<p>Again, visit the vote app from browser, attempt to register your vote  and observe what happens now.</p>
+<h5 id="reading">Reading</h5>
+<ul>
+<li><a href="https://kubernetes.io/docs/tasks/debug-application-cluster/debug-service/">Debugging Services</a></li>
+<li><a href="https://kubernetes.io/docs/concepts/services-networking/service/">Kubernetes Services Documentation</a></li>
+<li><a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#service-v1-core">Service API Specs for Kubernetes Version 1.10</a></li>
+</ul>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../6-vote-kubernetes_deployment/" class="btn btn-neutral float-right" title="Defining Update Strategy">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../replication/" class="btn btn-neutral" title="Making application highly available"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../replication/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../6-vote-kubernetes_deployment/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+
+</body>
+</html>

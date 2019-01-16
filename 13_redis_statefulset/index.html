@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Creating Replicated Redis Cluster with Statefulsets - Kubernetes Lab Guide</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Creating Replicated Redis Cluster with Statefulsets";
+    var mkdocs_page_input_path = "13_redis_statefulset.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> Kubernetes Lab Guide</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="..">Home</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Setup</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../minikube/">Using minikube to setup single node environment</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../2_kube_cluster_vagrant/">Provisioning VMs with Vagrant</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../3_install_kubernetes/">Setup Kubernetes Cluster</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../kube_visualizer/">Kuberentes Visualizer</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../quickdive.md">Kubernetes Quickdive</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Kubernetes Fundamentals</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../5-vote-deploying_pods/">Launching Pods</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../replication/">Making application highly available</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../7-vote-exposing_app_with_service/">Publishing appliaction and Service Discovery</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../6-vote-kubernetes_deployment/">Defining Update Strategy</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../11_deploying_sample_app/">Mini Project</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../9-vote-configmaps_and_secrets/">Managing Configurations and Secrets</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../vote-persistent-volumes/">Making Data Persist</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Advanced Kubernetes</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../kubespray-prereqs/">Kubespray HA lab setup with Vagrant</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../cluster_setup_kubespray/">HA setup with Kubespray</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../configuring_authentication_and_authorization/">Authentication and Authorization (RBAC)</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../advanced_pod_scheduling/">Advanced Pod Scheduling</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../pod-adv-specs/">Pod Resource and Security Specs</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../pods-health-probes/">Adding health checks with Probes</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../ingress/">Application Routing with Ingress Controllers</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../10_kubernetes_autoscaling/">Auto Scaling Capacity with HPA</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">Creating Replicated Redis Cluster with Statefulsets</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#deploying-redis-cluster-with-statefulsets">Deploying Redis Cluster with StatefulSets</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#redis-service">Redis Service</a></li>
+        
+            <li><a class="toctree-l4" href="#redis-configmap">Redis ConfigMap</a></li>
+        
+            <li><a class="toctree-l4" href="#redis-initcontainers">Redis initContainers</a></li>
+        
+            <li><a class="toctree-l4" href="#redis-statefulsets">Redis Statefulsets</a></li>
+        
+        </ul>
+    
+
+    </ul>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../network_policies/">Access Control with Network Policies</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../cluster-administration/">Cluster Administration</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../helm/">Helm Charts</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Additional Topics</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../vote-deployement_strategies/">Building Deployment Strategies</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../12_troubleshooting/">Troubleshooting Tips</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../logging/">Logging</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">References</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../rbac-resource-group-mapping/">RBAC apiGroups to Resource Mapping</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">Kubernetes Lab Guide</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Advanced Kubernetes &raquo;</li>
+        
+      
+    
+    <li>Creating Replicated Redis Cluster with Statefulsets</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="deploying-redis-cluster-with-statefulsets">Deploying Redis Cluster with StatefulSets</h1>
+<p>What will you learn  </p>
+<ul>
+<li>Statefulsets  </li>
+<li>initContainers</li>
+</ul>
+<h3 id="redis-service">Redis Service</h3>
+<p>We will use Redis as Statefulsets for our Vote application.
+It is similar to Deployment, but Statefulsets requires a <code>Service Name</code>.
+So we will create a <code>headless service</code> (service without endpoints) first.</p>
+<p><code>file: redis-svc.yml</code></p>
+<pre><code>kind: Service
+metadata:
+  name: redis
+  labels:
+    app: redis
+spec:
+  type: ClusterIP
+  ports:
+  - name: redis
+    port: 6379
+    targetPort: redis
+  clusterIP: None
+  selector:
+    app: redis
+    role: master
+</code></pre>
+
+<p>apply</p>
+<pre><code>kubectl apply -f redis-svc.yml
+</code></pre>
+
+<p><em>Note: clusterIP's value is set to None</em>.</p>
+<h3 id="redis-configmap">Redis ConfigMap</h3>
+<p>Redis ConfigMap has two sections.
+  * master.conf - for Redis master
+  * slave.conf - for Redis slave</p>
+<p><code>file: redis-cm.yml</code></p>
+<pre><code>apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: redis
+data:
+  master.conf: |
+    bind 0.0.0.0
+    protected-mode yes
+    port 6379
+    tcp-backlog 511
+    timeout 0
+    tcp-keepalive 300
+    daemonize no
+    supervised no
+    pidfile /var/run/redis_6379.pid
+    loglevel notice
+    logfile &quot;&quot;
+  slave.conf: |
+    slaveof redis-0.redis 6379
+</code></pre>
+
+<p>apply</p>
+<pre><code>kubectl apply -f redis-svc.yml
+</code></pre>
+
+<h3 id="redis-initcontainers">Redis initContainers</h3>
+<p>We have to deploy redis master/slave set up from one statefulset cluster. This requires two different redis cofigurations , which needs to be described in one Pod template. This complexity can be resolved by using init containers. These init containers copy the appropriate redis configuration by analysing the hostname of the pod. If the Pod's (host)name has <code>0</code> as <strong>Ordinal number</strong>, then it is choosen as the master and master.conf is copied to /etc/ directory. Other Pods will get slave.conf as configuration.</p>
+<p><code>file: redis-sts.yml</code></p>
+<pre><code>[...]
+      initContainers:
+      - name: init-redis
+        image: redis:4.0.9
+        command:
+        - bash
+        - &quot;-c&quot;
+        - |
+          set -ex
+          # Generate mysql server-id from pod ordinal index.
+          [[ `hostname` =~ -([0-9]+)$ ]] || exit 1
+          ordinal=${BASH_REMATCH[1]}
+          # Copy appropriate conf.d files from config-map to emptyDir.
+          if [[ $ordinal -eq 0 ]]; then
+            cp /mnt/config-map/master.conf /etc/redis.conf
+          else
+            cp /mnt/config-map/slave.conf /etc/redis.conf
+          fi
+        volumeMounts:
+        - name: conf
+          mountPath: /etc
+          subPath: redis.conf
+        - name: config-map
+          mountPath: /mnt/config-map
+</code></pre>
+
+<h3 id="redis-statefulsets">Redis Statefulsets</h3>
+<p>These redis containers are started after initContainers are succefully ran. One thing to note here, these containers mount the same volume, <code>conf</code>, from the initContainers which has the proper Redis configuration.</p>
+<p><code>file: redis-sts.yaml</code></p>
+<pre><code>[...]
+      containers:
+      - name: redis
+        image: redis:4.0.9
+        command: [&quot;redis-server&quot;]
+        args: [&quot;/etc/redis.conf&quot;]
+        env:
+        - name: ALLOW_EMPTY_PASSWORD
+          value: &quot;yes&quot;
+        ports:
+        - name: redis
+          containerPort: 6379
+        volumeMounts:
+        - name: redis-data
+          mountPath: /data
+        - name: conf
+          mountPath: /etc/
+          subPath: redis.conf
+</code></pre>
+
+<p>To apply</p>
+<pre><code>kubectl apply -f redis-sts.yml
+</code></pre>
+
+<h5 id="reading-list">Reading List</h5>
+<ul>
+<li><a href="https://redis.io/topics/replication">Redis Replication</a></li>
+<li><a href="https://kubernetes.io/docs/tasks/run-application/run-replicated-stateful-application/">Run Replicated Statefulsets Applications</a></li>
+<li><a href="https://kubernetes.io/docs/concepts/workloads/pods/init-containers/">Init Containers</a></li>
+</ul>
+<p><strong>Search Keywords</strong></p>
+<ul>
+<li>init containers</li>
+<li>kubernetes statefulsets</li>
+<li>redis replication</li>
+</ul>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../network_policies/" class="btn btn-neutral float-right" title="Access Control with Network Policies">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../10_kubernetes_autoscaling/" class="btn btn-neutral" title="Auto Scaling Capacity with HPA"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../10_kubernetes_autoscaling/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../network_policies/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+
+</body>
+</html>

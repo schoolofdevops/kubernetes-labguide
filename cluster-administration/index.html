@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Cluster Administration - Kubernetes Lab Guide</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Cluster Administration";
+    var mkdocs_page_input_path = "cluster-administration.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> Kubernetes Lab Guide</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="..">Home</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Setup</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../minikube/">Using minikube to setup single node environment</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../2_kube_cluster_vagrant/">Provisioning VMs with Vagrant</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../3_install_kubernetes/">Setup Kubernetes Cluster</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../kube_visualizer/">Kuberentes Visualizer</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../quickdive.md">Kubernetes Quickdive</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Kubernetes Fundamentals</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../5-vote-deploying_pods/">Launching Pods</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../replication/">Making application highly available</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../7-vote-exposing_app_with_service/">Publishing appliaction and Service Discovery</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../6-vote-kubernetes_deployment/">Defining Update Strategy</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../11_deploying_sample_app/">Mini Project</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../9-vote-configmaps_and_secrets/">Managing Configurations and Secrets</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../vote-persistent-volumes/">Making Data Persist</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Advanced Kubernetes</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../kubespray-prereqs/">Kubespray HA lab setup with Vagrant</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../cluster_setup_kubespray/">HA setup with Kubespray</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../configuring_authentication_and_authorization/">Authentication and Authorization (RBAC)</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../advanced_pod_scheduling/">Advanced Pod Scheduling</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../pod-adv-specs/">Pod Resource and Security Specs</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../pods-health-probes/">Adding health checks with Probes</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../ingress/">Application Routing with Ingress Controllers</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../10_kubernetes_autoscaling/">Auto Scaling Capacity with HPA</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../13_redis_statefulset/">Creating Replicated Redis Cluster with Statefulsets</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../network_policies/">Access Control with Network Policies</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">Cluster Administration</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#kubernetes-cluster-administration">Kubernetes Cluster Administration</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#defining-quotas">Defining Quotas</a></li>
+        
+            <li><a class="toctree-l4" href="#nodes-maintenance">Nodes  Maintenance</a></li>
+        
+        </ul>
+    
+
+    </ul>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../helm/">Helm Charts</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Additional Topics</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../vote-deployement_strategies/">Building Deployment Strategies</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../12_troubleshooting/">Troubleshooting Tips</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../logging/">Logging</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">References</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../rbac-resource-group-mapping/">RBAC apiGroups to Resource Mapping</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">Kubernetes Lab Guide</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Advanced Kubernetes &raquo;</li>
+        
+      
+    
+    <li>Cluster Administration</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="kubernetes-cluster-administration">Kubernetes Cluster Administration</h1>
+<h2 id="defining-quotas">Defining Quotas</h2>
+<pre><code>kubectl create namespace staging
+
+</code></pre>
+
+<p><code>file: staging-quota.yaml</code></p>
+<pre><code>apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: staging
+  namespace: staging
+spec:
+  hard:
+    requests.cpu: &quot;0.5&quot;
+    requests.memory: 500Mi
+    limits.cpu: &quot;2&quot;
+    limits.memory: 2Gi
+    count/deployments.apps: 1
+</code></pre>
+
+<pre><code>kubectl apply -f quota.yaml
+kubectl get quota -n staging
+kubectl describe  quota -n staging
+</code></pre>
+
+<p><code>file: nginx-deploy.yaml</code></p>
+<pre><code>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  namespace: staging
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      name: nginx
+      labels:
+        app: web
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        resources:
+          limits:
+            memory: &quot;500Mi&quot;
+            cpu: &quot;500m&quot;
+          requests:
+            memory: &quot;200Mi&quot;
+            cpu: &quot;200m&quot;
+</code></pre>
+
+<pre><code>kubectl apply -f nginx-deploy.yaml
+kubectl describe  quota -n staging
+
+kubectl run dep2 --image=nginx -n staging
+
+</code></pre>
+
+<h2 id="nodes-maintenance">Nodes  Maintenance</h2>
+<p>Cordon</p>
+<pre><code>$ kubectl get pods -o wide
+NAME                      READY     STATUS    RESTARTS   AGE       IP             NODE
+db-66496667c9-qggzd       1/1       Running   0          5h        10.233.74.74   node4
+redis-5bf748dbcf-ckn65    1/1       Running   0          42m       10.233.71.26   node3
+redis-5bf748dbcf-vxppx    1/1       Running   0          1h        10.233.74.79   node4
+result-5c7569bcb7-4fptr   1/1       Running   0          5h        10.233.71.18   node3
+result-5c7569bcb7-s4rdx   1/1       Running   0          5h        10.233.74.75   node4
+vote-56bf599b9c-22lpw     1/1       Running   0          1h        10.233.74.80   node4
+vote-56bf599b9c-4l6bc     1/1       Running   0          50m       10.233.74.83   node4
+vote-56bf599b9c-bqsrq     1/1       Running   0          50m       10.233.74.82   node4
+vote-56bf599b9c-xw7zc     1/1       Running   0          50m       10.233.74.81   node4
+worker-6cc8dbd4f8-6bkfg   1/1       Running   0          39m       10.233.75.15   node2
+
+
+
+$ kubectl cordon node4
+node/node4 cordoned
+
+
+$ kubectl get pods -o wide
+NAME                      READY     STATUS    RESTARTS   AGE       IP             NODE
+db-66496667c9-qggzd       1/1       Running   0          5h        10.233.74.74   node4
+redis-5bf748dbcf-ckn65    1/1       Running   0          43m       10.233.71.26   node3
+redis-5bf748dbcf-vxppx    1/1       Running   0          1h        10.233.74.79   node4
+result-5c7569bcb7-4fptr   1/1       Running   0          5h        10.233.71.18   node3
+result-5c7569bcb7-s4rdx   1/1       Running   0          5h        10.233.74.75   node4
+vote-56bf599b9c-22lpw     1/1       Running   0          1h        10.233.74.80   node4
+vote-56bf599b9c-4l6bc     1/1       Running   0          51m       10.233.74.83   node4
+vote-56bf599b9c-bqsrq     1/1       Running   0          51m       10.233.74.82   node4
+vote-56bf599b9c-xw7zc     1/1       Running   0          51m       10.233.74.81   node4
+worker-6cc8dbd4f8-6bkfg   1/1       Running   0          40m       10.233.75.15   node2
+
+
+$ kubectl get nodes -o wide
+NAME      STATUS                     ROLES         AGE       VERSION   EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION      CONTAINER-RUNTIME
+node1     Ready                      master,node   1d        v1.10.4   &lt;none&gt;        Ubuntu 16.04.4 LTS   4.4.0-130-generic   docker://17.3.2
+node2     Ready                      master,node   1d        v1.10.4   &lt;none&gt;        Ubuntu 16.04.4 LTS   4.4.0-124-generic   docker://17.3.2
+node3     Ready                      node          1d        v1.10.4   &lt;none&gt;        Ubuntu 16.04.4 LTS   4.4.0-130-generic   docker://17.3.2
+node4     Ready,SchedulingDisabled   node          1d        v1.10.4   &lt;none&gt;        Ubuntu 16.04.4 LTS   4.4.0-124-generic   docker://17.3.2
+
+
+
+$ kubectl uncordon node4
+node/node4 uncordoned
+
+
+$ kubectl get nodes -o wide
+NAME      STATUS    ROLES         AGE       VERSION   EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION      CONTAINER-RUNTIME
+node1     Ready     master,node   1d        v1.10.4   &lt;none&gt;        Ubuntu 16.04.4 LTS   4.4.0-130-generic   docker://17.3.2
+node2     Ready     master,node   1d        v1.10.4   &lt;none&gt;        Ubuntu 16.04.4 LTS   4.4.0-124-generic   docker://17.3.2
+node3     Ready     node          1d        v1.10.4   &lt;none&gt;        Ubuntu 16.04.4 LTS   4.4.0-130-generic   docker://17.3.2
+node4     Ready     node          1d        v1.10.4   &lt;none&gt;        Ubuntu 16.04.4 LTS   4.4.0-124-generic   docker://17.3.2
+</code></pre>
+
+<h3 id="drain-a-node">Drain a Node</h3>
+<pre><code>$ kubectl drain node3
+node/node3 cordoned
+error: unable to drain node &quot;node3&quot;, aborting command...
+
+There are pending nodes to be drained:
+ node3
+error: pods with local storage (use --delete-local-data to override): kubernetes-dashboard-55fdfd74b4-jdgch; DaemonSet-managed pods (use --ignore-daemonsets to ignore): calico-node-4f8xc
+
+
+
+$ kubectl get nodes -o wide
+NAME      STATUS                     ROLES         AGE       VERSION   EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION      CONTAINER-RUNTIME
+node1     Ready                      master,node   1d        v1.10.4   &lt;none&gt;        Ubuntu 16.04.4 LTS   4.4.0-130-generic   docker://17.3.2
+node2     Ready                      master,node   1d        v1.10.4   &lt;none&gt;        Ubuntu 16.04.4 LTS   4.4.0-124-generic   docker://17.3.2
+node3     Ready,SchedulingDisabled   node          1d        v1.10.4   &lt;none&gt;        Ubuntu 16.04.4 LTS   4.4.0-130-generic   docker://17.3.2
+node4     Ready                      node          1d        v1.10.4   &lt;none&gt;        Ubuntu 16.04.4 LTS   4.4.0-124-generic   docker://17.3.2
+
+
+
+$ kubectl uncordon node3
+
+$ kubectl get nodes -o wide
+NAME      STATUS    ROLES         AGE       VERSION   EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION      CONTAINER-RUNTIME
+node1     Ready     master,node   1d        v1.10.4   &lt;none&gt;        Ubuntu 16.04.4 LTS   4.4.0-130-generic   docker://17.3.2
+node2     Ready     master,node   1d        v1.10.4   &lt;none&gt;        Ubuntu 16.04.4 LTS   4.4.0-124-generic   docker://17.3.2
+node3     Ready     node          1d        v1.10.4   &lt;none&gt;        Ubuntu 16.04.4 LTS   4.4.0-130-generic   docker://17.3.2
+node4     Ready     node          1d        v1.10.4   &lt;none&gt;        Ubuntu 16.04.4 LTS   4.4.0-124-generic   docker://17.3.2
+
+
+</code></pre>
+
+<p>Drain with options</p>
+<pre><code>kubectl drain node4 --ignore-daemonsets=true
+node/node4 cordoned
+WARNING: Ignoring DaemonSet-managed pods: calico-node-hnw87
+pod/nginx-65899c769f-lphtq evicted
+pod/vote-56bf599b9c-22lpw evicted
+pod/vote-56bf599b9c-bqsrq evicted
+pod/vote-56bf599b9c-xw7zc evicted
+pod/nginx-65899c769f-kq9qb evicted
+pod/nginx-65899c769f-b59jq evicted
+pod/vote-56bf599b9c-4l6bc evicted
+pod/redis-5bf748dbcf-vxppx evicted
+pod/db-66496667c9-qggzd evicted
+pod/result-5c7569bcb7-s4rdx evicted
+</code></pre>
+
+<pre><code>$ kubectl get pods  -o wide
+NAME                      READY     STATUS    RESTARTS   AGE       IP               NODE
+db-66496667c9-wvrrg       1/1       Running   0          1m        10.233.75.18     node2
+redis-5bf748dbcf-ckn65    1/1       Running   0          52m       10.233.71.26     node3
+redis-5bf748dbcf-qbx2t    1/1       Running   0          1m        10.233.75.17     node2
+result-5c7569bcb7-4fptr   1/1       Running   0          5h        10.233.71.18     node3
+result-5c7569bcb7-h5222   1/1       Running   0          1m        10.233.102.142   node1
+vote-56bf599b9c-fvcqt     1/1       Running   0          1m        10.233.71.31     node3
+vote-56bf599b9c-k6s7q     1/1       Running   0          1m        10.233.71.30     node3
+vote-56bf599b9c-kv9qp     1/1       Running   0          1m        10.233.71.29     node3
+vote-56bf599b9c-zz746     1/1       Running   0          1m        10.233.71.32     node3
+worker-6cc8dbd4f8-6bkfg   1/1       Running   1          49m       10.233.75.15     node2
+
+
+$ kubectl get pods -n kube-system -o wide
+NAME                                    READY     STATUS    RESTARTS   AGE       IP                NODE
+calico-node-4f8xc                       1/1       Running   2          1d        128.199.249.122   node3
+calico-node-gbgxs                       1/1       Running   2          1d        128.199.224.141   node1
+calico-node-hnw87                       1/1       Running   4          1d        128.199.248.156   node4
+calico-node-tq46l                       1/1       Running   0          39m       128.199.248.240   node2
+kube-apiserver-node1                    1/1       Running   3          23h       128.199.224.141   node1
+kube-apiserver-node2                    1/1       Running   2          1d        128.199.248.240   node2
+kube-controller-manager-node1           1/1       Running   3          23h       128.199.224.141   node1
+kube-controller-manager-node2           1/1       Running   1          1d        128.199.248.240   node2
+kube-dns-6d6674c7c6-2gqhv               3/3       Running   0          22h       10.233.71.15      node3
+kube-dns-6d6674c7c6-9d2zg               3/3       Running   0          22h       10.233.102.131    node1
+kube-proxy-node1                        1/1       Running   2          23h       128.199.224.141   node1
+kube-proxy-node2                        1/1       Running   2          1d        128.199.248.240   node2
+kube-proxy-node3                        1/1       Running   3          1d        128.199.249.122   node3
+kube-proxy-node4                        1/1       Running   2          1d        128.199.248.156   node4
+kube-scheduler-node1                    1/1       Running   3          23h       128.199.224.141   node1
+kube-scheduler-node2                    1/1       Running   1          1d        128.199.248.240   node2
+kubedns-autoscaler-679b8b455-tkntk      1/1       Running   2          1d        10.233.71.14      node3
+kubernetes-dashboard-55fdfd74b4-jdgch   1/1       Running   4          1d        10.233.71.12      node3
+nginx-proxy-node3                       1/1       Running   3          1d        128.199.249.122   node3
+nginx-proxy-node4                       1/1       Running   2          1d        128.199.248.156   node4
+tiller-deploy-5c688d5f9b-8hbpv          1/1       Running   0          22h       10.233.71.16      node3
+
+
+$ kubectl get nodes -o wide
+NAME      STATUS                     ROLES         AGE       VERSION   EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION      CONTAINER-RUNTIME
+node1     Ready                      master,node   1d        v1.10.4   &lt;none&gt;        Ubuntu 16.04.4 LTS   4.4.0-130-generic   docker://17.3.2
+node2     Ready                      master,node   1d        v1.10.4   &lt;none&gt;        Ubuntu 16.04.4 LTS   4.4.0-124-generic   docker://17.3.2
+node3     Ready                      node          1d        v1.10.4   &lt;none&gt;        Ubuntu 16.04.4 LTS   4.4.0-130-generic   docker://17.3.2
+node4     Ready,SchedulingDisabled   node          1d        v1.10.4   &lt;none&gt;        Ubuntu 16.04.4 LTS   4.4.0-124-generic   docker://17.3.2
+
+
+$ kubectl uncordon node4
+node/node4 uncordoned
+
+
+$ kubectl get pods  -o wide
+NAME                      READY     STATUS    RESTARTS   AGE       IP               NODE
+db-66496667c9-wvrrg       1/1       Running   0          2m        10.233.75.18     node2
+redis-5bf748dbcf-ckn65    1/1       Running   0          53m       10.233.71.26     node3
+redis-5bf748dbcf-qbx2t    1/1       Running   0          2m        10.233.75.17     node2
+result-5c7569bcb7-4fptr   1/1       Running   0          5h        10.233.71.18     node3
+result-5c7569bcb7-h5222   1/1       Running   0          2m        10.233.102.142   node1
+vote-56bf599b9c-fvcqt     1/1       Running   0          2m        10.233.71.31     node3
+vote-56bf599b9c-k6s7q     1/1       Running   0          2m        10.233.71.30     node3
+vote-56bf599b9c-kv9qp     1/1       Running   0          2m        10.233.71.29     node3
+vote-56bf599b9c-zz746     1/1       Running   0          2m        10.233.71.32     node3
+worker-6cc8dbd4f8-6bkfg   1/1       Running   1          50m       10.233.75.15     node2
+
+
+
+$ kubectl delete pods vote-56bf599b9c-k6s7q vote-56bf599b9c-k6s7q vote-56bf599b9c-zz746
+pod &quot;vote-56bf599b9c-k6s7q&quot; deleted
+pod &quot;vote-56bf599b9c-k6s7q&quot; deleted
+pod &quot;vote-56bf599b9c-zz746&quot; deleted
+
+
+$ kubectl get pods  -o wide
+NAME                      READY     STATUS    RESTARTS   AGE       IP               NODE
+db-66496667c9-wvrrg       1/1       Running   0          3m        10.233.75.18     node2
+redis-5bf748dbcf-ckn65    1/1       Running   0          54m       10.233.71.26     node3
+redis-5bf748dbcf-qbx2t    1/1       Running   0          3m        10.233.75.17     node2
+result-5c7569bcb7-4fptr   1/1       Running   0          5h        10.233.71.18     node3
+result-5c7569bcb7-h5222   1/1       Running   0          3m        10.233.102.142   node1
+vote-56bf599b9c-dzgsf     1/1       Running   0          17s       10.233.74.86     node4
+vote-56bf599b9c-fvcqt     1/1       Running   0          3m        10.233.71.31     node3
+vote-56bf599b9c-kv9qp     1/1       Running   0          3m        10.233.71.29     node3
+vote-56bf599b9c-ptd29     1/1       Running   0          17s       10.233.74.85     node4
+worker-6cc8dbd4f8-6bkfg   1/1       Running   1          51m       10.233.75.15     node2
+</code></pre>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../helm/" class="btn btn-neutral float-right" title="Helm Charts">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../network_policies/" class="btn btn-neutral" title="Access Control with Network Policies"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../network_policies/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../helm/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+
+</body>
+</html>

@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>HA setup with Kubespray - Kubernetes Lab Guide</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "HA setup with Kubespray";
+    var mkdocs_page_input_path = "cluster_setup_kubespray.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> Kubernetes Lab Guide</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="..">Home</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Setup</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../minikube/">Using minikube to setup single node environment</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../2_kube_cluster_vagrant/">Provisioning VMs with Vagrant</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../3_install_kubernetes/">Setup Kubernetes Cluster</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../kube_visualizer/">Kuberentes Visualizer</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../quickdive.md">Kubernetes Quickdive</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Kubernetes Fundamentals</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../5-vote-deploying_pods/">Launching Pods</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../replication/">Making application highly available</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../7-vote-exposing_app_with_service/">Publishing appliaction and Service Discovery</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../6-vote-kubernetes_deployment/">Defining Update Strategy</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../11_deploying_sample_app/">Mini Project</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../9-vote-configmaps_and_secrets/">Managing Configurations and Secrets</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../vote-persistent-volumes/">Making Data Persist</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Advanced Kubernetes</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../kubespray-prereqs/">Kubespray HA lab setup with Vagrant</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">HA setup with Kubespray</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#high-available-kubernetes-cluster-setup-using-kubespray">High Available Kubernetes Cluster Setup using Kubespray</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#prerequisites">Prerequisites</a></li>
+        
+            <li><a class="toctree-l4" href="#architecture-of-a-high-available-kubernetes-cluster">Architecture of a high available kubernetes cluster</a></li>
+        
+            <li><a class="toctree-l4" href="#preparing-the-nodes">Preparing the nodes</a></li>
+        
+            <li><a class="toctree-l4" href="#setup-ansible-control-node-and-kubespray">Setup Ansible Control node and Kubespray</a></li>
+        
+            <li><a class="toctree-l4" href="#customise-kubernetes-cluster-configs">Customise Kubernetes Cluster Configs</a></li>
+        
+            <li><a class="toctree-l4" href="#provisioning-kubernetes-cluster-with-kubespray">Provisioning  kubernetes cluster with kubespray</a></li>
+        
+            <li><a class="toctree-l4" href="#kubectl-configs">Kubectl Configs</a></li>
+        
+            <li><a class="toctree-l4" href="#check-the-state-of-the-cluster">Check the State of the Cluster</a></li>
+        
+            <li><a class="toctree-l4" href="#access-kubernetes-cluster-remotely-optional">Access Kubernetes Cluster Remotely (Optional)</a></li>
+        
+            <li><a class="toctree-l4" href="#deploy-kubernetes-objects">Deploy Kubernetes Objects</a></li>
+        
+        </ul>
+    
+
+    </ul>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../configuring_authentication_and_authorization/">Authentication and Authorization (RBAC)</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../advanced_pod_scheduling/">Advanced Pod Scheduling</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../pod-adv-specs/">Pod Resource and Security Specs</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../pods-health-probes/">Adding health checks with Probes</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../ingress/">Application Routing with Ingress Controllers</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../10_kubernetes_autoscaling/">Auto Scaling Capacity with HPA</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../13_redis_statefulset/">Creating Replicated Redis Cluster with Statefulsets</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../network_policies/">Access Control with Network Policies</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../cluster-administration/">Cluster Administration</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../helm/">Helm Charts</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Additional Topics</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../vote-deployement_strategies/">Building Deployment Strategies</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../12_troubleshooting/">Troubleshooting Tips</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../logging/">Logging</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">References</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../rbac-resource-group-mapping/">RBAC apiGroups to Resource Mapping</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">Kubernetes Lab Guide</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Advanced Kubernetes &raquo;</li>
+        
+      
+    
+    <li>HA setup with Kubespray</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="high-available-kubernetes-cluster-setup-using-kubespray">High Available Kubernetes Cluster Setup using Kubespray</h1>
+<p>Kubespray is an <em>Ansible</em> based kubernetes provisioner. It helps us to setup a production grade, highly available and highly scalable Kubernetes cluster.</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<h3 id="hardware-pre-requisites">Hardware Pre requisites</h3>
+<ul>
+<li>4 Nodes: Virtual/Physical Machines  </li>
+<li>Memory: 2GB   </li>
+<li>CPU: 1 Core</li>
+<li>Hard disk: 20GB available  </li>
+</ul>
+<h3 id="software-pre-requisites">Software Pre Requisites</h3>
+<p><code>On All Nodes</code></p>
+<ul>
+<li>Ubuntu 16.04 OS  </li>
+<li>Python  </li>
+<li>SSH Server</li>
+<li>Privileged user</li>
+</ul>
+<p><code>On Ansible Control  Node</code>    </p>
+<ul>
+<li>Ansible version  2.4 or greater  </li>
+<li>Jinja  </li>
+</ul>
+<h3 id="networking-pre-requisites">Networking Pre Requisites</h3>
+<ul>
+<li>Internet access to download docker images and install softwares</li>
+<li>IPv4 Forwarding should be enabled  </li>
+<li>Firewall should allow ssh access as well as ports required by Kubernetes. Internally open all the ports between node.</li>
+</ul>
+<h2 id="architecture-of-a-high-available-kubernetes-cluster">Architecture of a high available kubernetes cluster</h2>
+<h2 id="preparing-the-nodes">Preparing the nodes</h2>
+<p>Run instructions in the section <code>On all nodes</code> in the cluster. This includes Ansible controller too.</p>
+<h3 id="install-python">Install Python</h3>
+<p>Ansible needs python to be installed on all the machines.</p>
+<pre><code>sudo apt update
+sudo apt install python
+</code></pre>
+
+<h3 id="enable-ipv4-forwarding">Enable IPv4 Forwarding</h3>
+<p><code>On all nodes</code></p>
+<p>Enalbe IPv4 forwarding by uncommenting the following line</p>
+<pre><code>echo &quot;net.ipv4.ip_forward=1&quot; &gt;&gt; /etc/sysctl.conf
+</code></pre>
+
+<p>Disable Swap</p>
+<pre><code>swapoff -a
+</code></pre>
+
+<h3 id="setup-passwordless-ssh-between-ansible-controller-and-kubernetes-nodes">Setup passwordless SSH between ansible controller and kubernetes nodes</h3>
+<p><code>On control node</code></p>
+<p>Ansible uses passwordless ssh<sup>1</sup> to create the cluster. Let us see how to set it up from your <em>control node</em>.</p>
+<p>Generate ssh keypair if not present already using the following command.</p>
+<pre><code>ssh-keygen -t rsa
+
+Generating public/private rsa key pair.
+Enter file in which to save the key (/home/ubuntu/.ssh/id_rsa):
+Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
+Your identification has been saved in /home/ubuntu/.ssh/id_rsa.
+Your public key has been saved in /home/ubuntu/.ssh/id_rsa.pub.
+The key fingerprint is:
+SHA256:yC4Tl6RYc+saTPcLKFdGlTLOWOIuDgO1my/NrMBnRxA ubuntu@node1
+The key's randomart image is:
++---[RSA 2048]----+
+|   E    ..       |
+|  . o +..        |
+| . +o*+o         |
+|. .o+Bo+         |
+|. .++.X S        |
+|+ +ooX .         |
+|.=.OB.+ .        |
+| .=o*= . .       |
+|  .o.   .        |
++----[SHA256]-----+
+</code></pre>
+
+<p>Just leave the fields to defaults. This command will generate a public key and private key for you.</p>
+<p>Copy over the public key to all nodes.</p>
+<p>Example,  assuming <strong>ubuntu</strong> as the user which has a privileged access on the node with ip address <strong>10.10.1.101</strong>,</p>
+<pre><code>ssh-copy-id ubuntu@10.10.1.101
+</code></pre>
+
+<p>This will copy our newly generated public key to the remote machine. After running this command you will be able to SSH into the machine directly without using a password. Replace <em>10.40.1.26</em> with your respective machine's IP.</p>
+<p>e.g.</p>
+<pre><code>ssh ubuntu@10.10.1.101
+</code></pre>
+
+<p>Make sure to copy the public key to all kubernetes nodes. <code>Replace username with the actual user on your system</code>.
+If the above mentioned command fails, then copy your public key and paste it in the remote machine's <code>~/.ssh/authorized_keys</code> file.</p>
+<p>e.g. (Only if ssh-copy-id fails)</p>
+<pre><code>cat ~/.ssh/id_rsa.pub
+ssh ubunut@10.10.1.101
+vim ~/.ssh/authorized_keys
+# Paste the public key
+</code></pre>
+
+<h2 id="setup-ansible-control-node-and-kubespray">Setup Ansible Control node and Kubespray</h2>
+<p><code>On control node</code></p>
+<h3 id="set-locale">Set Locale</h3>
+<pre><code>export LC_ALL=&quot;en_US.UTF-8&quot;
+export LC_CTYPE=&quot;en_US.UTF-8&quot;
+sudo dpkg-reconfigure locales
+</code></pre>
+
+<p>Do no select any other locale in the menu. Just press (<strong>OK</strong>) in the next two screens.</p>
+<h3 id="setup-kubespray">Setup kubespray</h3>
+<p>Kubespray is hosted on GitHub. Let us the clone the <a href="https://github.com/kubernetes-incubator/kubespray.git">official repository</a>.</p>
+<pre><code>git clone https://github.com/kubernetes-incubator/kubespray.git
+cd kubespray
+</code></pre>
+
+<h3 id="install-prerequisites">Install Prerequisites</h3>
+<p>Install the python dependencies. <strong>This step installs Ansible as well. You do not need to install Ansible separately</strong>.</p>
+<pre><code>sudo apt install python-pip -y
+sudo pip install -r requirements.txt
+</code></pre>
+
+<h3 id="set-remote-user-for-ansible">Set Remote User for Ansible</h3>
+<p>Add the following section in ansible.cfg file</p>
+<pre><code>remote_user=ubuntu
+</code></pre>
+
+<p>If the user you are going to connect is differnt, use that instead.</p>
+<p>Your <em>ansible.cfg</em> file should look like this.</p>
+<pre><code>[ssh_connection]
+pipelining=True
+ssh_args = -o ControlMaster=auto -o ControlPersist=30m -o ConnectionAttempts=100 -o UserKnownHostsFile=/dev/null
+#control_path = ~/.ssh/ansible-%%r@%%h:%%p
+[defaults]
+host_key_checking=False
+gathering = smart
+fact_caching = jsonfile
+fact_caching_connection = /tmp
+stdout_callback = skippy
+library = ./library
+callback_whitelist = profile_tasks
+roles_path = roles:$VIRTUAL_ENV/usr/local/share/kubespray/roles:$VIRTUAL_ENV/usr/local/share/ansible/roles
+deprecation_warnings=False
+remote_user=ubuntu
+</code></pre>
+
+<h3 id="create-inventory">Create Inventory</h3>
+<pre><code>cp -rfp inventory/sample inventory/prod
+</code></pre>
+
+<p>where <strong>prod</strong> is the custom configuration name. Replace is with whatever name you would like to assign to the current cluster.</p>
+<p>To build the inventory file, execute the inventory script along with the IP addresses of our cluster as arguments</p>
+<pre><code>CONFIG_FILE=inventory/prod/hosts.ini python3 contrib/inventory_builder/inventory.py 10.10.1.101 10.10.1.102 10.10.1.103 10.10.1.104
+</code></pre>
+
+<p>Where replace the IP addresses (e.g. 10.10.1.101) with the actual IPs of your nodes</p>
+<p>Once its run, you should see an inventory file generated which may look similar to below</p>
+<p><code>file: inventory/prod/hosts.ini</code></p>
+<pre><code>[all]
+node1    ansible_host=10.10.1.101 ip=10.10.1.101
+node2    ansible_host=10.10.1.102 ip=10.10.1.102
+node3    ansible_host=10.10.1.103 ip=10.10.1.103
+node4    ansible_host=10.10.1.104 ip=10.10.1.104
+
+[kube-master]
+node1
+node2
+
+[kube-node]
+node1
+node2
+node3
+node4
+
+[etcd]
+node1
+node2
+node3
+
+[k8s-cluster:children]
+kube-node
+kube-master
+
+[calico-rr]
+
+[vault]
+node1
+node2
+node3
+</code></pre>
+
+<h2 id="customise-kubernetes-cluster-configs">Customise Kubernetes Cluster Configs</h2>
+<p>There are two configs files in your inventroy directory's group_vars (e.g. inventory/prod/group_vars) viz.</p>
+<ul>
+<li>all.yml  </li>
+<li>k8s-cluster.yml</li>
+</ul>
+<p>Ansible is data driven, and most of the configurations of the cluster can be tweaked by changing the variable values from the above files.</p>
+<p>Few of the configurations you may want to modify</p>
+<p><code>file: inventory/prod/group_vars/k8s-cluster.yml</code></p>
+<pre><code>kubelet_max_pods: 100
+cluster_name: prod
+helm_enabled: true
+</code></pre>
+
+<h2 id="provisioning-kubernetes-cluster-with-kubespray">Provisioning  kubernetes cluster with kubespray</h2>
+<p><code>On control node</code></p>
+<p>We are set to provision the cluster. Run the following ansible-playbook command to provision our Kubernetes cluster.</p>
+<pre><code>ansible-playbook -b -v -i inventory/prod/hosts.ini cluster.yml
+</code></pre>
+
+<p>Option -i = Inventory file path<br />
+Option -b = Become as root user<br />
+Option -v = Give verbose output  </p>
+<p>If you face this following error, while running <code>ansible-playbook</code> command, you can fix it by running following instructions</p>
+<p><code>ERROR</code>:  </p>
+<pre><code>ERROR! Unexpected Exception, this is probably a bug: (cryptography 1.2.3 (/usr/lib/python3/dist-packages), Requirement.parse('cryptography&gt;=1.5'), {'paramiko'})
+</code></pre>
+
+<p><code>FIX</code>:  </p>
+<pre><code>sudo pip install --upgrade pip
+sudo pip uninstall cryptography
+sudo pip install cryptography
+ansible-playbook -b -v -i inventory/prod/hosts.ini cluster.yml
+</code></pre>
+
+<p>This Ansible run will take around 30 mins to complete.</p>
+<h2 id="kubectl-configs">Kubectl Configs</h2>
+<p><code>On kube master node</code></p>
+<p>Once the cluster setup is done, copy the configuration and setup the permissions.</p>
+<pre><code>mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+</code></pre>
+
+<h2 id="check-the-state-of-the-cluster">Check the State of the Cluster</h2>
+<p><code>On the node where kubectl is setup</code></p>
+<p>Let us check the state of the cluster by running,</p>
+<pre><code>kubectl cluster-info
+
+Kubernetes master is running at https://10.10.1.101:6443
+KubeDNS is running at https://10.10.1.101:6443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+
+To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+</code></pre>
+
+<pre><code>kubectl get nodes
+
+NAME      STATUS    ROLES         AGE       VERSION
+node1     Ready     master,node   21h       v1.9.0+coreos.0
+node2     Ready     master,node   21h       v1.9.0+coreos.0
+node3     Ready     node          21h       v1.9.0+coreos.0
+node4     Ready     node          21h       v1.9.0+coreos.0
+</code></pre>
+
+<p>If you are able to see this, your cluster has been set up successfully.</p>
+<hr />
+<p><sup>1</sup> You can use private key / password instead of passwordless ssh. But it requires additional knowledge in using Ansible.</p>
+<h2 id="access-kubernetes-cluster-remotely-optional">Access Kubernetes Cluster Remotely (Optional)</h2>
+<p><code>On your local machine</code></p>
+<p>You could also install kubectl on your laptop/workstation. To learn how to install it for your OS,   <a href="https://kubernetes.io/docs/tasks/tools/install-kubectl/">refer to the  procedure here</a>.</p>
+<p>e.g.
+To install <strong>kubectl</strong> on Ubuntu,</p>
+<pre><code>sudo apt-get update &amp;&amp; sudo apt-get install -y apt-transport-https
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo
+
+apt-key add -
+
+sudo touch /etc/apt/sources.list.d/kubernetes.list
+
+echo &quot;deb http://apt.kubernetes.io/ kubernetes-xenial main&quot; | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
+
+sudo apt-get update
+
+sudo apt-get install -y kubectl
+</code></pre>
+
+<h3 id="copy-kubernetes-config-to-your-local-machine">Copy kubernetes config to your local machine</h3>
+<p>Copy <code>kubeconfig</code> file to your local machine</p>
+<pre><code>mkdir ~/.kube
+scp -r ubuntu@MASTER_HOST_IP:/etc/kubernetes/admin.conf  ~/.kube/config
+
+kubectl get nodes
+
+</code></pre>
+
+<h2 id="deploy-kubernetes-objects">Deploy Kubernetes Objects</h2>
+<p>Since its a new cluster, which is differnt than what you have created with kubeadm earlier, or if this is the first time you are creating a  kubernetes cluster with kubespray as part of <strong>Advanced Workshop</strong>, you need to deploy services which have been covered as part of the previous topics.  </p>
+<p>In order to do that, use the following commands on the node where you have configured kubectl</p>
+<pre><code>git clone https://github.com/schoolofdevops/k8s-code.git
+
+cd k8s-code/projects/instavote
+
+kubectl apply -f instavote-ns.yaml
+kubectl apply -f prod/
+</code></pre>
+
+<p>Switch to <strong>instavote</strong> namespace  and  validate,</p>
+<pre><code>
+kubectl config set-context $(kubectl config current-context)  --namespace=instavote
+
+kubectl get pods,deploy,svc
+</code></pre>
+
+<p>where,</p>
+<ul>
+<li>--cluster=prod : prod is the cluter name you created earlier. If not, use the correct name of the cluster ( kubectl config view)</li>
+<li>--user=admin-prod: is the admin user created by default while installing with kubespray</li>
+<li>--namespace=instavote : the namespace you just created to deploy instavote app stack</li>
+</ul>
+<p>[sample output]</p>
+<pre><code>$ kubectl get pods,deploy,svc
+
+NAME                          READY     STATUS    RESTARTS   AGE
+pod/db-66496667c9-qggzd       1/1       Running   0          7m
+pod/redis-6555998885-4k5cr    1/1       Running   0          7m
+pod/redis-6555998885-fb8rk    1/1       Running   0          7m
+pod/result-5c7569bcb7-4fptr   1/1       Running   0          7m
+pod/result-5c7569bcb7-s4rdx   1/1       Running   0          7m
+pod/vote-5d88d47fc8-gbzbq     1/1       Running   0          7m
+pod/vote-5d88d47fc8-q4vj6     1/1       Running   0          7m
+pod/worker-7c98c96fb4-7tzzw   1/1       Running   0          7m
+
+NAME                           DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+deployment.extensions/db       1         1         1            1           7m
+deployment.extensions/redis    2         2         2            2           7m
+deployment.extensions/result   2         2         2            2           7m
+deployment.extensions/vote     2         2         2            2           7m
+deployment.extensions/worker   1         1         1            1           7m
+
+NAME             TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+service/db       ClusterIP   10.233.16.207   &lt;none&gt;        5432/TCP       7m
+service/redis    ClusterIP   10.233.14.61    &lt;none&gt;        6379/TCP       7m
+service/result   NodePort    10.233.22.10    &lt;none&gt;        80:30100/TCP   7m
+service/vote     NodePort    10.233.19.111   &lt;none&gt;        80:30000/TCP   7m
+</code></pre>
+
+<h5 id="references">References</h5>
+<ul>
+<li><a href="https://kubernetes.io/docs/setup/custom-cloud/kubespray/">Installing Kubernetes On Premises/On Cloud with Kubespray </a>  </li>
+<li><a href="https://github.com/kubernetes-incubator/kubespray">Kubespray on Github</a>  </li>
+</ul>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../configuring_authentication_and_authorization/" class="btn btn-neutral float-right" title="Authentication and Authorization (RBAC)">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../kubespray-prereqs/" class="btn btn-neutral" title="Kubespray HA lab setup with Vagrant"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../kubespray-prereqs/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../configuring_authentication_and_authorization/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+
+</body>
+</html>

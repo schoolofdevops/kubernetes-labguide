@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Helm Charts - Kubernetes Lab Guide</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Helm Charts";
+    var mkdocs_page_input_path = "helm.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> Kubernetes Lab Guide</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="..">Home</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Setup</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../minikube/">Using minikube to setup single node environment</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../2_kube_cluster_vagrant/">Provisioning VMs with Vagrant</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../3_install_kubernetes/">Setup Kubernetes Cluster</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../kube_visualizer/">Kuberentes Visualizer</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../quickdive.md">Kubernetes Quickdive</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Kubernetes Fundamentals</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../5-vote-deploying_pods/">Launching Pods</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../replication/">Making application highly available</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../7-vote-exposing_app_with_service/">Publishing appliaction and Service Discovery</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../6-vote-kubernetes_deployment/">Defining Update Strategy</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../11_deploying_sample_app/">Mini Project</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../9-vote-configmaps_and_secrets/">Managing Configurations and Secrets</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../vote-persistent-volumes/">Making Data Persist</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Advanced Kubernetes</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../kubespray-prereqs/">Kubespray HA lab setup with Vagrant</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../cluster_setup_kubespray/">HA setup with Kubespray</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../configuring_authentication_and_authorization/">Authentication and Authorization (RBAC)</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../advanced_pod_scheduling/">Advanced Pod Scheduling</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../pod-adv-specs/">Pod Resource and Security Specs</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../pods-health-probes/">Adding health checks with Probes</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../ingress/">Application Routing with Ingress Controllers</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../10_kubernetes_autoscaling/">Auto Scaling Capacity with HPA</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../13_redis_statefulset/">Creating Replicated Redis Cluster with Statefulsets</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../network_policies/">Access Control with Network Policies</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../cluster-administration/">Cluster Administration</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">Helm Charts</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#helm-package-manager">Helm Package Manager</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#install-helm">Install Helm</a></li>
+        
+        </ul>
+    
+
+    </ul>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Additional Topics</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../vote-deployement_strategies/">Building Deployment Strategies</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../12_troubleshooting/">Troubleshooting Tips</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../logging/">Logging</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">References</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../rbac-resource-group-mapping/">RBAC apiGroups to Resource Mapping</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">Kubernetes Lab Guide</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Advanced Kubernetes &raquo;</li>
+        
+      
+    
+    <li>Helm Charts</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="helm-package-manager">Helm Package Manager</h1>
+<h2 id="install-helm">Install Helm</h2>
+<p>To install helm you can follow following instructions. </p>
+<pre><code>curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get &gt; get_helm.sh
+chmod 700 get_helm.sh
+./get_helm.sh
+</code></pre>
+
+<p>Verify the installtion is successful,</p>
+<pre><code>helm --help
+</code></pre>
+
+<h3 id="set-rbac-for-tiller">Set RBAC for Tiller</h3>
+<p><code>file: tiller-rbac.yaml</code></p>
+<pre><code>apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: tiller
+  namespace: kube-system
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: tiller
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+  - kind: ServiceAccount
+    name: tiller
+    namespace: kube-system
+</code></pre>
+
+<p>Apply the ClusterRole and ClusterRoleBinding.</p>
+<pre><code>kubectl apply -f tiller-rbac.yaml
+
+</code></pre>
+
+<h3 id="initialize">Initialize</h3>
+<p>This is where we actually initialize Tiller in our Kubernetes cluster.</p>
+<pre><code>helm init --service-account tiller
+</code></pre>
+
+<p>[sample output]</p>
+<pre><code>Creating /root/.helm
+Creating /root/.helm/repository
+Creating /root/.helm/repository/cache
+Creating /root/.helm/repository/local
+Creating /root/.helm/plugins
+Creating /root/.helm/starters
+Creating /root/.helm/cache/archive
+Creating /root/.helm/repository/repositories.yaml
+Adding stable repo with URL: https://kubernetes-charts.storage.googleapis.com
+Adding local repo with URL: http://127.0.0.1:8879/charts
+$HELM_HOME has been configured at /root/.helm.
+
+Tiller (the Helm server-side component) has been installed into your Kubernetes Cluster.
+
+Please note: by default, Tiller is deployed with an insecure 'allow unauthenticated users' policy.
+For more information on securing your installation see: https://docs.helm.sh/using_helm/#securing-your-helm-installation
+Happy Helming!
+</code></pre>
+
+<h3 id="install-wordpress-with-helm">Install Wordpress with Helm</h3>
+<p>Search Helm repository for Wordpress chart</p>
+<pre><code>helm search wordpress
+</code></pre>
+
+<p>Fetch the chart to your local environment and change directory.</p>
+<pre><code>helm fetch --untar stable/wordpress
+cd wordpress
+</code></pre>
+
+<p>Create a copy of default vaules file and edit it.</p>
+<pre><code>cp values.yaml my-values.yaml
+vim my-values.yaml
+</code></pre>
+
+<p>Run it as a dry run to check for errors.</p>
+<pre><code>helm install --name blog --values my-values.yaml . --dry-run
+</code></pre>
+
+<p>Deploy the Wordpress stack.</p>
+<pre><code>helm install --name blog --values my-values.yaml .
+</code></pre>
+
+<h3 id="install-prometheus-with-helm">Install Prometheus with Helm</h3>
+<p>Official Prometheus Helm Chart repository.</p>
+<pre><code>https://github.com/helm/charts/tree/master/stable/prometheus
+</code></pre>
+
+<p>Official Grafana Helm Chart repository.</p>
+<pre><code>https://github.com/helm/charts/tree/master/stable/grafana
+</code></pre>
+
+<h4 id="grafana-deployment">Grafana Deployment</h4>
+<p>Download Grafana charts to your local machine and change directory.</p>
+<pre><code>helm fetch --untar stable/grafana
+cd grafana
+</code></pre>
+
+<p>Create a copy of default vaules file and edit it.</p>
+<pre><code>cp values.yaml myvalues.yaml
+vim myvalues.yaml
+</code></pre>
+
+<p>Make sure your charts doesn't have any error.</p>
+<pre><code>helm install --name grafana --values myvalues.yaml --namespace instavote . --dry-run
+</code></pre>
+
+<p>Deploy Grafana on your K8s Cluster.</p>
+<pre><code>helm install --name grafana --values myvalues.yaml --namespace instavote .
+</code></pre>
+
+<h4 id="prometheus-deployment">Prometheus Deployment</h4>
+<p>Download Prometheus charts to your local machine and change directory.</p>
+<pre><code>helm fetch --untar stable/prometheus
+cd prometheus
+</code></pre>
+
+<p>Create a copy of default vaules file and edit it.</p>
+<pre><code>cp values.yaml myvalues.yaml
+vim myvalues.yaml
+</code></pre>
+
+<p>Make sure your charts doesn't have any error.</p>
+<pre><code>helm install --name prometheus --values myvalues.yaml --namespace instavote . --dry-run
+</code></pre>
+
+<p>Deploy Prometheus on your K8s Cluster.</p>
+<pre><code>helm install --name prometheus --values myvalues.yaml --namespace instavote .
+</code></pre>
+
+<h3 id="install-heapster-with-helm">Install heapster with helm</h3>
+<pre><code>helm install stable/heapster --namespace kube-system --name heapster --set image.tag=v1.5.1 --set rbac.create=true
+</code></pre>
+
+<p>[output]</p>
+<pre><code>NAME:   heapster
+LAST DEPLOYED: Tue May 22 11:46:44 2018
+NAMESPACE: kube-system
+STATUS: DEPLOYED
+
+RESOURCES:
+==&gt; v1beta1/Role
+NAME                         AGE
+heapster-heapster-pod-nanny  2s
+
+==&gt; v1beta1/RoleBinding
+NAME                         AGE
+heapster-heapster-pod-nanny  2s
+
+==&gt; v1/Service
+NAME      TYPE       CLUSTER-IP   EXTERNAL-IP  PORT(S)   AGE
+heapster  ClusterIP  10.96.63.82  &lt;none&gt;       8082/TCP  2s
+
+==&gt; v1beta1/Deployment
+NAME               DESIRED  CURRENT  UP-TO-DATE  AVAILABLE  AGE
+heapster-heapster  1        0        0           0          2s
+
+==&gt; v1/Pod(related)
+NAME                                READY  STATUS   RESTARTS  AGE
+heapster-heapster-696df57b44-zjf78  0/2    Pending  0         1s
+
+==&gt; v1/ServiceAccount
+NAME               SECRETS  AGE
+heapster-heapster  1        2s
+
+==&gt; v1beta1/ClusterRoleBinding
+NAME               AGE
+heapster-heapster  2s
+
+
+NOTES:
+1. Get the application URL by running these commands:
+  export POD_NAME=$(kubectl get pods --namespace kube-system -l &quot;app=heapster-heapster&quot; -o jsonpath=&quot;{.items[0].metadata.name}&quot;)
+  kubectl --namespace kube-system port-forward $POD_NAME 8082
+</code></pre>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../vote-deployement_strategies/" class="btn btn-neutral float-right" title="Building Deployment Strategies">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../cluster-administration/" class="btn btn-neutral" title="Cluster Administration"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../cluster-administration/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../vote-deployement_strategies/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+
+</body>
+</html>

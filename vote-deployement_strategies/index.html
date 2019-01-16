@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Building Deployment Strategies - Kubernetes Lab Guide</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Building Deployment Strategies";
+    var mkdocs_page_input_path = "vote-deployement_strategies.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> Kubernetes Lab Guide</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="..">Home</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Setup</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../minikube/">Using minikube to setup single node environment</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../2_kube_cluster_vagrant/">Provisioning VMs with Vagrant</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../3_install_kubernetes/">Setup Kubernetes Cluster</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../kube_visualizer/">Kuberentes Visualizer</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../quickdive.md">Kubernetes Quickdive</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Kubernetes Fundamentals</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../5-vote-deploying_pods/">Launching Pods</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../replication/">Making application highly available</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../7-vote-exposing_app_with_service/">Publishing appliaction and Service Discovery</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../6-vote-kubernetes_deployment/">Defining Update Strategy</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../11_deploying_sample_app/">Mini Project</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../9-vote-configmaps_and_secrets/">Managing Configurations and Secrets</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../vote-persistent-volumes/">Making Data Persist</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Advanced Kubernetes</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../kubespray-prereqs/">Kubespray HA lab setup with Vagrant</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../cluster_setup_kubespray/">HA setup with Kubespray</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../configuring_authentication_and_authorization/">Authentication and Authorization (RBAC)</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../advanced_pod_scheduling/">Advanced Pod Scheduling</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../pod-adv-specs/">Pod Resource and Security Specs</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../pods-health-probes/">Adding health checks with Probes</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../ingress/">Application Routing with Ingress Controllers</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../10_kubernetes_autoscaling/">Auto Scaling Capacity with HPA</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../13_redis_statefulset/">Creating Replicated Redis Cluster with Statefulsets</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../network_policies/">Access Control with Network Policies</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../cluster-administration/">Cluster Administration</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../helm/">Helm Charts</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Additional Topics</span>
+    <ul class="subnav">
+                <li class=" current">
+                    
+    <a class="current" href="./">Building Deployment Strategies</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#release-strategies">Release Strategies</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#releases-with-downtime-using-recreate-strategy">Releases with downtime using Recreate Strategy</a></li>
+        
+            <li><a class="toctree-l4" href="#canary-releases">Canary  Releases</a></li>
+        
+            <li><a class="toctree-l4" href="#bluegreen-releases">Blue/Green  Releases</a></li>
+        
+        </ul>
+    
+
+    </ul>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../12_troubleshooting/">Troubleshooting Tips</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../logging/">Logging</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">References</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../rbac-resource-group-mapping/">RBAC apiGroups to Resource Mapping</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">Kubernetes Lab Guide</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Additional Topics &raquo;</li>
+        
+      
+    
+    <li>Building Deployment Strategies</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="release-strategies">Release Strategies</h1>
+<h2 id="releases-with-downtime-using-recreate-strategy">Releases with downtime using Recreate Strategy</h2>
+<p>When the <strong>Recreate</strong> deployment strategy is used,
+  * The old pods will be deleted
+  * Then the new pods will be created.</p>
+<p>This will create some downtime in our stack.</p>
+<p>Let us change the deployment strategy to <strong>recreate</strong> and image tag to <em>v4</em>.</p>
+<pre><code>cp vote-deploy.yaml vote-deploy-recreate.yaml
+</code></pre>
+
+<p>And edit the specs with following changes</p>
+<ul>
+<li>Update strategy to <strong>Recreate</strong></li>
+<li>Remove rolling update specs</li>
+</ul>
+<p><code>file: vote-deploy-recreate.yaml</code></p>
+<pre><code>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vote
+spec:
+  strategy:
+    type: Recreate
+  revisionHistoryLimit: 4
+  paused: false
+  replicas: 15
+  minReadySeconds: 20
+  selector:
+    matchLabels:
+      role: vote
+    matchExpressions:
+      - {key: version, operator: In, values: [v1, v2, v3, v4]}
+  template:
+    metadata:
+      name: vote
+      labels:
+        app: python
+        role: vote
+        version: v4
+    spec:
+      containers:
+        - name: app
+          image: schoolofdevops/vote:v4
+          ports:
+            - containerPort: 80
+              protocol: TCP
+</code></pre>
+
+<p>and apply</p>
+<pre><code>kubectl get pods,rs,deploy,svc
+
+kubectl apply -f vote-deploy-recreate.yaml
+
+kubectl rollout status deplloyment/vote
+
+</code></pre>
+
+<p>While the deployment happens, use the monitoring/visualiser and observe the manner in which the deployment gets updated.</p>
+<p>You would observe that</p>
+<ul>
+<li>All pods wit the current version are deleted first</li>
+<li>Only after all the existing pods are deleted, pods with new version are launched</li>
+</ul>
+<h2 id="canary-releases">Canary  Releases</h2>
+<pre><code>cd k8s-code/projets/instavote/dev
+mkdir canary
+cp vote-deploy.yaml canary/vote-canary-deploy.yaml
+
+</code></pre>
+
+<p>change the following fields in <em>vote-canary-deploy.yaml</em></p>
+<ul>
+<li>metadata.name: vote-canary</li>
+<li>spec.replicas: 3</li>
+<li>spec.selector.matchExpressions: - {key: version, operator: In, values: [v1, v2, v3, v4]}</li>
+<li>template.metadata.labels.version: v4</li>
+<li>template.spec.containers.image: schoolofdevops/vote:v4</li>
+</ul>
+<p>File: canary/frontend-canary-deploy.yml</p>
+<pre><code>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vote-canary
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 1
+  revisionHistoryLimit: 4
+  paused: false
+  replicas: 3
+  selector:
+    matchLabels:
+      role: vote
+    matchExpressions:
+      - {key: version, operator: In, values: [v1, v2, v3, v4, v5]}
+  minReadySeconds: 40
+  template:
+    metadata:
+      name: vote
+      labels:
+        app: python
+        role: vote
+        version: v4
+    spec:
+      containers:
+        - name: app
+          image: schoolofdevops/vote:v4
+          ports:
+            - containerPort: 80
+              protocol: TCP
+</code></pre>
+
+<p>Before creating this deployment, find out how many endpoints the service has,</p>
+<pre><code>kubectl describe service/vote
+</code></pre>
+
+<p>[sample output ]</p>
+<pre><code>Endpoints:                10.32.0.10:80,10.32.0.11:80,10.32.0.4:80 + 12 more...
+</code></pre>
+
+<p>In this example current endpoints are <strong>15</strong></p>
+<p>Now create the  deployment for canary release</p>
+<pre><code>
+kubectl apply -f canary/frontend-canary-deploy.yml
+
+</code></pre>
+
+<p>And validate,</p>
+<pre><code>kubectl get rs,deploy,svc
+
+kubectl describe service/vote
+</code></pre>
+
+<p>When you describe vote service, observe the number of endpoints</p>
+<p>[sample output]</p>
+<pre><code>Endpoints:                10.32.0.10:80,10.32.0.11:80,10.32.0.16:80 + 15 more...
+</code></pre>
+
+<p>Now its <strong>18</strong>, which is 3 more than the previous number. Those are the pods created by the canary deployment. And the above output proves that its actually sending traffic to both versions.</p>
+<h4 id="delete-canary">Delete Canary</h4>
+<p>Once validated, you could clean up canary release using</p>
+<pre><code>kubectl delete -f canary/vote-canary-deploy.yaml
+</code></pre>
+
+<h2 id="bluegreen-releases">Blue/Green  Releases</h2>
+<p>Before proceeding, lets clean up the existing deployment.</p>
+<pre><code>kubectl delete deploy/vote
+kubectl delete svc/vote
+kubectl get pods,deploy,rs,svc
+
+</code></pre>
+
+<p>And create the work directory for blue-green release definitions.</p>
+<pre><code>cd k8s-code/projets/instavote/dev
+mkdir blue-green
+
+</code></pre>
+
+<p>file: blue-green/vote-blue-deploy.yaml</p>
+<pre><code>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vote-blue
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 1
+  revisionHistoryLimit: 4
+  paused: false
+  replicas: 15
+  minReadySeconds: 20
+  selector:
+    matchLabels:
+      role: vote
+    matchExpressions:
+      - {key: version, operator: In, values: [v1, v2, v3]}
+  template:
+    metadata:
+      name: vote
+      labels:
+        app: python
+        role: vote
+        version: v3
+        release: bluegreen
+        code: blue
+    spec:
+      containers:
+        - name: app
+          image: schoolofdevops/vote:v3
+          ports:
+            - containerPort: 80
+              protocol: TCP
+</code></pre>
+
+<p>file: blue-green/vote-green-deploy.yaml</p>
+<pre><code>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vote-green
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 1
+  revisionHistoryLimit: 4
+  paused: false
+  replicas: 15
+  minReadySeconds: 20
+  selector:
+    matchLabels:
+      role: vote
+    matchExpressions:
+      - {key: version, operator: In, values: [v1, v2, v3, v4]}
+  template:
+    metadata:
+      name: vote
+      labels:
+        app: python
+        role: vote
+        version: v3
+        release: bluegreen
+        code: green
+    spec:
+      containers:
+        - name: app
+          image: schoolofdevops/vote:v4
+          ports:
+            - containerPort: 80
+              protocol: TCP
+
+</code></pre>
+
+<p>file: blue-green/vote-bg-svc.yaml</p>
+<pre><code>---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vote-bg
+  labels:
+    role: vote
+    release: bluegreen
+spec:
+  selector:
+    role: vote
+    release: bluegreen
+    code: green
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30001
+  type: NodePort
+
+</code></pre>
+
+<p>file: vote-svc.yaml</p>
+<pre><code>---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vote
+  labels:
+    role: vote
+spec:
+  selector:
+    role: vote
+    release: bluegreen
+    code: blue
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30000
+  type: NodePort
+</code></pre>
+
+<h3 id="creating-blue-deployment">Creating  blue deployment</h3>
+<p>Now create <strong>vote</strong> service and observe the endpoints</p>
+<pre><code>kubectl apply -f vote-svc.yaml
+kubectl get svc
+kubectl describe svc/vote
+</code></pre>
+
+<p>[sample output]</p>
+<pre><code>Name:                     vote
+Namespace:                instavote
+Labels:                   role=vote
+Annotations:              kubectl.kubernetes.io/last-applied-configuration={&quot;apiVersion&quot;:&quot;v1&quot;,&quot;kind&quot;:&quot;Service&quot;,&quot;metadata&quot;:{&quot;annotations&quot;:{},&quot;labels&quot;:{&quot;role&quot;:&quot;vote&quot;},&quot;name&quot;:&quot;vote&quot;,&quot;namespace&quot;:&quot;instavote&quot;},&quot;spec&quot;:{&quot;externalIPs&quot;:...
+Selector:                 code=blue,release=bluegreen,role=vote
+Type:                     NodePort
+IP:                       10.111.93.227
+External IPs:             206.189.150.190,159.65.8.227
+Port:                     &lt;unset&gt;  80/TCP
+TargetPort:               80/TCP
+NodePort:                 &lt;unset&gt;  30000/TCP
+Endpoints:                &lt;none&gt;
+Session Affinity:         None
+External Traffic Policy:  Cluster
+Events:                   &lt;none&gt;
+</code></pre>
+
+<p>where,
+  * <strong>endpoints</strong> are <strong>None</strong>
+  * its selecting pods with <strong>code=blue</strong></p>
+<p>Now lets create the deployment for <strong>blue</strong> release</p>
+<pre><code>kubectl get pods,rs,deploy
+kubectl apply -f blue-green/vote-blue-deploy.yaml
+kubectl get pods,rs,deploy
+kubectl rollout status deploy/vote-blue
+</code></pre>
+
+<p>[sample output]</p>
+<pre><code>Waiting for rollout to finish: 2 of 15 updated replicas are available...
+deployment &quot;vote-blue&quot; successfully rolled out
+</code></pre>
+
+<p>Now if you check the service, it should have the pods launched with blue set as endpoints</p>
+<pre><code>kubectl describe svc/vote
+
+Name:                     vote
+Namespace:                instavote
+Labels:                   role=vote
+Annotations:              kubectl.kubernetes.io/last-applied-configuration={&quot;apiVersion&quot;:&quot;v1&quot;,&quot;kind&quot;:&quot;Service&quot;,&quot;metadata&quot;:{&quot;annotations&quot;:{},&quot;labels&quot;:{&quot;role&quot;:&quot;vote&quot;},&quot;name&quot;:&quot;vote&quot;,&quot;namespace&quot;:&quot;instavote&quot;},&quot;spec&quot;:{&quot;externalIPs&quot;:...
+Selector:                 code=blue,release=bluegreen,role=vote
+Type:                     NodePort
+IP:                       10.111.93.227
+External IPs:             206.189.150.190,159.65.8.227
+Port:                     &lt;unset&gt;  80/TCP
+TargetPort:               80/TCP
+NodePort:                 &lt;unset&gt;  30000/TCP
+Endpoints:                10.32.0.10:80,10.32.0.11:80,10.32.0.4:80 + 12 more...
+Session Affinity:         None
+External Traffic Policy:  Cluster
+Events:                   &lt;none&gt;
+
+</code></pre>
+
+<p>You could observe the <strong>Endpoints</strong> created and added to the service.  Browse to http://IPADDRESS:NODEPORT to see the application deployed.</p>
+<p><img alt="Vote App" src="../images/vote-v3.png" title="Result Page" /></p>
+<h3 id="deploying-new-version-with-green-release">Deploying new version with green release</h3>
+<p>While deploying a new version with blue-green strategy, we would</p>
+<ul>
+<li>Create a new deployment in parallel</li>
+<li>Test it by creating another service</li>
+<li>Cut over to new release by updating selector in the main service</li>
+</ul>
+<p>Lets create the deployment with new version and a service to test it. Lets call it the <strong>green</strong> deployment  </p>
+<pre><code>kubectl apply -f blue-green/vote-bg-svc.yaml
+kubectl apply -f blue-green/vote-bg-svc.yaml
+kubectl apply -f blue-green/vote-green-deploy.yaml
+kubectl rollout status deploy/vote-green
+
+</code></pre>
+
+<p>[sample output]</p>
+<pre><code>Waiting for rollout to finish: 0 of 15 updated replicas are available...
+Waiting for rollout to finish: 0 of 15 updated replicas are available...
+Waiting for rollout to finish: 0 of 15 updated replicas are available...
+Waiting for rollout to finish: 0 of 15 updated replicas are available...
+Waiting for rollout to finish: 7 of 15 updated replicas are available...
+deployment &quot;vote-green&quot; successfully rolled out
+</code></pre>
+
+<p>Validate</p>
+<pre><code>kubectl get pods,rs,deploy,svc
+</code></pre>
+
+<p>You could also test it by going to the http://host:nodeport for service <strong>vote-bg</strong></p>
+<h3 id="switching-to-new-version">Switching to new version</h3>
+<p>Now that you  have the new version running in parallel, you could quickly switch to it by updating selector for main <strong>vote</strong> service which is live. Please note, while switching there may be a momentory downtime.</p>
+<p><strong>Steps</strong></p>
+<ul>
+<li>visit http://HOST:NODEPORT for <strong>vote</strong> service</li>
+<li>update <strong>vote</strong> service to select <strong>green</strong> release</li>
+<li>apply service definition</li>
+<li>visit http://HOST:NODEPORT for <strong>vote</strong> service again to validate</li>
+</ul>
+<p>file: vote-svc.yaml</p>
+<pre><code>---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vote
+  labels:
+    role: vote
+spec:
+  selector:
+    role: vote
+    release: bluegreen
+    code: green
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30000
+  type: NodePort
+
+</code></pre>
+
+<p>Apply it with</p>
+<pre><code>kubectl apply -f vote-svc.yaml
+
+kubectl describe svc/vote
+</code></pre>
+
+<p>If you visit http://HOST:NODEPORT for <strong>vote</strong> service, you should see the application version updated</p>
+<p><img alt="Vote App" src="../images/vote-v4.png" title="Result Page" /></p>
+<h4 id="clean-up-the-previous-version">Clean up the previous version</h4>
+<pre><code>kubectl delete deploy/vote-blue
+
+</code></pre>
+
+<h4 id="clean-up-blue-green-configs">Clean up blue-green configs</h4>
+<p>Now that you are done testing blue green release, lets revert to our previous configurations.</p>
+<pre><code>kubectl delete deploy/vote-green
+kubectl apply -f vote-deploy.yaml
+
+</code></pre>
+
+<p>Also update the service definition and remove following  selectors added for blue green release</p>
+<ul>
+<li>release: bluegreen</li>
+<li>code: blue</li>
+</ul>
+<p><code>file: vote-svc.yaml</code></p>
+<pre><code>---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vote
+  labels:
+    role: vote
+spec:
+  selector:
+    role: vote
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30000
+  type: NodePort
+</code></pre>
+
+<p>And apply</p>
+<pre><code>kubectl apply -f vote-svc.yaml
+</code></pre>
+
+<h3 id="pauseunpause">Pause/Unpause</h3>
+<p>When you are in the middle of a new update for your application and you found out that the application is behaving as intended. In those situations,
+  1. we can pause the update,
+  2. fix the issue,
+  3. resume the update.</p>
+<p>Let us change the image tag to V4 in pod spec.</p>
+<p><code>File: vote-deploy.yaml</code></p>
+<pre><code>    spec:
+       containers:
+         - name: app
+           image: schoolofdevops/vote:V4
+           ports:
+             - containerPort: 80
+               protocol: TCP
+</code></pre>
+
+<p>Apply the changes.</p>
+<pre><code>kubectl apply -f vote-deploy.yaml
+
+kubectl get pods
+
+[Output]
+NAME                         READY     STATUS         RESTARTS   AGE
+vote-6c4f7b49d8-g5dgc   1/1       Running        0          16m
+vote-765554cc7-xsbhs    0/1       ErrImagePull   0          9s
+</code></pre>
+
+<p>Our deployment is failing. From some debugging, we can conclude that we are using a wrong image tag.</p>
+<p>Now pause the update</p>
+<pre><code>kubectl rollout pause deploy/vote
+</code></pre>
+
+<p>Set the deployment to use <strong>v4</strong> version of the image.</p>
+<p>Now resume the update</p>
+<pre><code>kubectl rollout resume deployment vote
+kubectl rollout status deployment vote
+
+[Ouput]
+deployment &quot;vote&quot; successfully rolled out
+</code></pre>
+
+<p>and validate</p>
+<pre><code>kubectl get pods,rs,deploy
+
+[Output]
+NAME                         READY     STATUS    RESTARTS   AGE
+vote-6875c8df8f-k4hls   1/1       Running   0          1m
+</code></pre>
+
+<p>When you do this, you skip the need of creating a new rolling update altogether.</p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../12_troubleshooting/" class="btn btn-neutral float-right" title="Troubleshooting Tips">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../helm/" class="btn btn-neutral" title="Helm Charts"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../helm/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../12_troubleshooting/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+
+</body>
+</html>

@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Managing Configurations and Secrets - Kubernetes Lab Guide</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Managing Configurations and Secrets";
+    var mkdocs_page_input_path = "9-vote-configmaps_and_secrets.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> Kubernetes Lab Guide</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="..">Home</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Setup</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../minikube/">Using minikube to setup single node environment</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../2_kube_cluster_vagrant/">Provisioning VMs with Vagrant</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../3_install_kubernetes/">Setup Kubernetes Cluster</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../kube_visualizer/">Kuberentes Visualizer</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../quickdive.md">Kubernetes Quickdive</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Kubernetes Fundamentals</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../5-vote-deploying_pods/">Launching Pods</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../replication/">Making application highly available</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../7-vote-exposing_app_with_service/">Publishing appliaction and Service Discovery</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../6-vote-kubernetes_deployment/">Defining Update Strategy</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../11_deploying_sample_app/">Mini Project</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">Managing Configurations and Secrets</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#configmap">Configmap</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#injecting-env-variables-with-configmaps">Injecting env variables with configmaps</a></li>
+        
+            <li><a class="toctree-l4" href="#providing-environment-specific-configs">Providing environment Specific Configs</a></li>
+        
+            <li><a class="toctree-l4" href="#configuration-file-as-configmap">Configuration file as ConfigMap</a></li>
+        
+            <li><a class="toctree-l4" href="#secrets">Secrets</a></li>
+        
+        </ul>
+    
+
+    </ul>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../vote-persistent-volumes/">Making Data Persist</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Advanced Kubernetes</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../kubespray-prereqs/">Kubespray HA lab setup with Vagrant</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../cluster_setup_kubespray/">HA setup with Kubespray</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../configuring_authentication_and_authorization/">Authentication and Authorization (RBAC)</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../advanced_pod_scheduling/">Advanced Pod Scheduling</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../pod-adv-specs/">Pod Resource and Security Specs</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../pods-health-probes/">Adding health checks with Probes</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../ingress/">Application Routing with Ingress Controllers</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../10_kubernetes_autoscaling/">Auto Scaling Capacity with HPA</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../13_redis_statefulset/">Creating Replicated Redis Cluster with Statefulsets</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../network_policies/">Access Control with Network Policies</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../cluster-administration/">Cluster Administration</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../helm/">Helm Charts</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Additional Topics</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../vote-deployement_strategies/">Building Deployment Strategies</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../12_troubleshooting/">Troubleshooting Tips</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../logging/">Logging</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">References</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../rbac-resource-group-mapping/">RBAC apiGroups to Resource Mapping</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">Kubernetes Lab Guide</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Kubernetes Fundamentals &raquo;</li>
+        
+      
+    
+    <li>Managing Configurations and Secrets</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="configmap">Configmap</h1>
+<p>Configmap is one of the ways to provide configurations to your application.</p>
+<h3 id="injecting-env-variables-with-configmaps">Injecting env variables with configmaps</h3>
+<p>Create our configmap for vote app</p>
+<p>file:  projects/instavote/dev/vote-cm.yaml</p>
+<pre><code>apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vote
+  namespace: instavote
+data:
+  OPTION_A: Visa
+  OPTION_B: Mastercard
+</code></pre>
+
+<p>In the above given configmap, we define two environment variables,</p>
+<ol>
+<li>OPTION_A=EMACS</li>
+<li>OPTION_B=VI</li>
+</ol>
+<p>Lets create the configmap object</p>
+<pre><code>kubectl get cm
+kubectl apply -f vote-cm.yaml
+kubectl get cm
+kubectl describe cm vote
+
+
+</code></pre>
+
+<p>In order to use this configmap in the deployment, we need to reference it from the deployment file.</p>
+<p>Check the deployment file for vote add for the following block.</p>
+<p>file: <code>vote-deploy.yaml</code></p>
+<pre><code>...
+    spec:
+      containers:
+      - image: schoolofdevops/vote
+        imagePullPolicy: Always
+        name: vote
+        envFrom:
+          - configMapRef:
+              name: vote
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        restartPolicy: Always
+</code></pre>
+
+<p>So when you create your deployment, these configurations will be made available to your application. In this example, the values defined in the configmap (Visa and Mastercard) will override the default values(CATS and DOGS) present in your source code.</p>
+<pre><code>kubectl apply -f vote-deploy.yaml
+</code></pre>
+
+<p>Watch the monitoring screen for deployment in progress.</p>
+<pre><code>kubectl get deploy --show-labels
+kubectl get rs --show-labels
+kubectl  rollout status deploy/vote
+
+</code></pre>
+
+<p><img alt="ConfigMap Dashboard.\label{fig:captioned_image}" src="../images/Configmap.png" /></p>
+<h2 id="providing-environment-specific-configs">Providing environment Specific Configs</h2>
+<p>Copy the dev env to staging</p>
+<pre><code>cd k8s-code/projects/instavote
+cp -r dev staging
+</code></pre>
+
+<p>Edit the configurations   for staging</p>
+<pre><code>cd staging
+
+</code></pre>
+
+<p>Edit <em>vote-cm.yaml</em></p>
+<pre><code>apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vote
+data:
+  OPTION_A: Apple
+  OPTION_B: Samsung
+</code></pre>
+
+<p>Edit  <em>vote-svc.yaml</em></p>
+<ul>
+<li>remove namespace if set</li>
+<li>remove extIP</li>
+<li>remove hard coded nodePort config if any</li>
+</ul>
+<p>file: vote-svc.yaml</p>
+<pre><code>---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vote
+  labels:
+    role: vote
+spec:
+  selector:
+    role: vote
+  ports:
+    - port: 80
+      targetPort: 80
+  type: NodePort
+</code></pre>
+
+<p>Edit <em>vote-deploy.yaml</em></p>
+<ul>
+<li>remove namespace if set</li>
+<li>change replicas to 2   </li>
+</ul>
+<p>Lets launch it all in another namespace. We could use <strong>default</strong> namespace for this purpose.</p>
+<pre><code>kubectl config set-context $(kubectl config  current-context) --namespace=default
+</code></pre>
+
+<p>Verify the namespace has been switched by observing the monitoring screen.</p>
+<p>Deploy new objects in this nmespace</p>
+<pre><code>kubectl apply -f vote-svc.yaml
+kubectl apply -f vote-cm.yaml
+kubectl apply -f vote-deploy.yaml
+
+</code></pre>
+
+<p>Now connect to the vote service by finding out the nodePort configs</p>
+<pre><code>kubectl get svc vote
+
+</code></pre>
+
+<p><strong>Troubleshooting</strong></p>
+<ul>
+<li>Do you see the application when you browse to http://host:nodeport</li>
+<li>If not, why? Find the root cause and fix it.</li>
+</ul>
+<h4 id="clean-up-and-switch-back-the-namespace">Clean up and Switch back the  namespace</h4>
+<p>Verify the environment specific options are in effect. Once verified, you could switch the namespace back to instavote.</p>
+<pre><code>kubectl delete deploy/vote svc/vote
+
+kubectl config set-context $(kubectl config  current-context) --namespace=instavote
+
+cd ../dev/
+
+</code></pre>
+
+<h2 id="configuration-file-as-configmap">Configuration file as ConfigMap</h2>
+<p>In the  topic above we have seen how to use configmap as environment variables. Now let us see how to use configmap as redis configuration file.</p>
+<p>Syntax for consuming file as a configmap is as follows</p>
+<pre><code>  kubectl create configmap --from-file &lt;CONF-FILE-PATH&gt; &lt;NAME-OF-CONFIGMAP&gt;
+</code></pre>
+
+<p>We have redis configuration as a file named 
+<code>projects/instavote/config/redis.conf</code>. We are going to convert this file into a configmap</p>
+<pre><code>cd k8s-code/projects/instavote/config/
+
+kubectl create configmap --from-file  redis.conf redis
+</code></pre>
+
+<p>Now validate the configs  </p>
+<pre><code>
+kubectl get cm
+
+kubectl describe cm redis
+</code></pre>
+
+<p>To use this confif file, update your redis-deploy.yaml file to use it by mounting it as a volume.</p>
+<p>File: <code>dev/redis-deploy.yaml</code></p>
+<pre><code>    spec:
+      containers:
+      - image: schoolofdevops/redis:latest
+        imagePullPolicy: Always
+        name: redis
+        ports:
+        - containerPort: 6379
+          protocol: TCP
+        volumeMounts:
+          - name: redis
+            subPath: redis.conf
+            mountPath: /etc/redis.conf
+      volumes:
+      - name: redis
+        configMap:
+          name: redis
+      restartPolicy: Always
+</code></pre>
+
+<p>And apply it</p>
+<pre><code>kubectl apply -f redis-deploy.yaml
+
+kubectl apply -f redis-svc.yaml
+
+kubectl get rs,deploy --show-labels
+</code></pre>
+
+<p><strong>Exercise:</strong> Connect to redis pod and verify configs.</p>
+<h2 id="secrets">Secrets</h2>
+<p>Secrets are for storing sensitive data like <em>passwords and keychains</em>. We will see how db deployment uses username and password in form of a secret.</p>
+<p>You would define two fields for db,</p>
+<ul>
+<li>username</li>
+<li>password</li>
+</ul>
+<p>To create secrets for db you need to generate  <em>base64</em> format as follows,</p>
+<pre><code>echo &quot;admin&quot; | base64
+echo &quot;password&quot; | base64
+</code></pre>
+
+<p>where <strong>admin</strong> and <strong>password</strong> are the actual values that you would want to inject into the pod environment.</p>
+<p>If you do not have a unix host, you can make use of online base64 utility to generate these strings.</p>
+<pre><code>http://www.utilities-online.info/base64
+</code></pre>
+
+<p>Lets now add it to the secrets file,</p>
+<p>File: projects/instavote/dev/db-secrets.yaml</p>
+<pre><code>apiVersion: v1
+kind: Secret
+metadata:
+  name: db
+  namespace: instavote
+type: Opaque
+data:
+  POSTGRES_USER: YWRtaW4=
+  POSTGRES_PASSWD: cGFzc3dvcmQ=
+</code></pre>
+
+<pre><code>kubectl apply -f db-secrets.yaml
+
+kubectl get secrets
+
+kubectl describe secret db
+</code></pre>
+
+<p>Secrets can be referred to inside a container spec with following syntax</p>
+<pre><code>env:
+  - name: VAR
+    valueFrom:
+      secretKeyRef:
+        name: db
+        key: SECRET_VAR
+</code></pre>
+
+<p>To consume these secrets, update the deployment for db</p>
+<p>file: db-deploy.yaml</p>
+<pre><code>apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: db
+  namespace: instavote
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      tier: back
+      app: postgres
+  minReadySeconds: 10
+  template:
+    metadata:
+      labels:
+        app: postgres
+        role: db
+        tier: back
+    spec:
+      containers:
+      - image: postgres:9.4
+        imagePullPolicy: Always
+        name: db
+        ports:
+        - containerPort: 5432
+          protocol: TCP
+        # Secret definition
+        env:
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                name: db
+                key: POSTGRES_USER
+          - name: POSTGRES_PASSWD
+            valueFrom:
+              secretKeyRef:
+                name: db
+                key: POSTGRES_PASSWD
+      restartPolicy: Always
+</code></pre>
+
+<p>To apply this,</p>
+<pre><code>kubectl apply -f db-deploy.yaml
+
+kubectl apply -f db-svc.yaml
+
+kubectl get pods,rs,deploy
+
+kubectl exec -it   db-xxxx sh
+
+[replace db-xxxx with pod name for db ]
+
+env | grep -i postgres 
+
+[here you should see the env vars defined for POSTGRES_USER and POSTGRES_PASS]
+</code></pre>
+
+<h3 id="note-automatic-updation-of-deployments-on-configmap-updates">Note: Automatic Updation of deployments on ConfigMap  Updates</h3>
+<p>Currently, updating configMap does not ensure a new rollout of a deployment. What this means is even after updading configMaps, pods will not immediately reflect the changes.  </p>
+<p>There is a feature request for this https://github.com/kubernetes/kubernetes/issues/22368</p>
+<p>Currently, this can be done by using immutable configMaps.  </p>
+<ul>
+<li>Create a configMaps and apply it with deployment.</li>
+<li>To update, create a new configMaps and do not update the previous one. Treat it as immutable.</li>
+<li>Update deployment spec to use the new version of the configMaps. This will ensure immediate update.</li>
+</ul>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../vote-persistent-volumes/" class="btn btn-neutral float-right" title="Making Data Persist">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../11_deploying_sample_app/" class="btn btn-neutral" title="Mini Project"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../11_deploying_sample_app/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../vote-persistent-volumes/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+
+</body>
+</html>

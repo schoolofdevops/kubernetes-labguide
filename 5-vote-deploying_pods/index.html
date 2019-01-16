@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Launching Pods - Kubernetes Lab Guide</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Launching Pods";
+    var mkdocs_page_input_path = "5-vote-deploying_pods.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> Kubernetes Lab Guide</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="..">Home</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Setup</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../minikube/">Using minikube to setup single node environment</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../2_kube_cluster_vagrant/">Provisioning VMs with Vagrant</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../3_install_kubernetes/">Setup Kubernetes Cluster</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../kube_visualizer/">Kuberentes Visualizer</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../quickdive.md">Kubernetes Quickdive</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Kubernetes Fundamentals</span>
+    <ul class="subnav">
+                <li class=" current">
+                    
+    <a class="current" href="./">Launching Pods</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#deploying-pods">Deploying Pods</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#probes">Probes</a></li>
+        
+            <li><a class="toctree-l4" href="#resource-configs">Resource Configs</a></li>
+        
+            <li><a class="toctree-l4" href="#launching-and-operating-a-pod">Launching and operating a Pod</a></li>
+        
+            <li><a class="toctree-l4" href="#lab-examine-pods-from-the-dashboard">Lab: Examine pods from the dashboard</a></li>
+        
+            <li><a class="toctree-l4" href="#port-forwarding">Port Forwarding</a></li>
+        
+            <li><a class="toctree-l4" href="#troubleshooting-tip">Troubleshooting Tip</a></li>
+        
+            <li><a class="toctree-l4" href="#attach-a-volume-to-the-pod">Attach a Volume to the Pod</a></li>
+        
+            <li><a class="toctree-l4" href="#creating-multi-container-pods">Creating Multi Container Pods</a></li>
+        
+            <li><a class="toctree-l4" href="#exercise">Exercise</a></li>
+        
+        </ul>
+    
+
+    </ul>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../replication/">Making application highly available</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../7-vote-exposing_app_with_service/">Publishing appliaction and Service Discovery</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../6-vote-kubernetes_deployment/">Defining Update Strategy</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../11_deploying_sample_app/">Mini Project</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../9-vote-configmaps_and_secrets/">Managing Configurations and Secrets</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../vote-persistent-volumes/">Making Data Persist</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Advanced Kubernetes</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../kubespray-prereqs/">Kubespray HA lab setup with Vagrant</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../cluster_setup_kubespray/">HA setup with Kubespray</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../configuring_authentication_and_authorization/">Authentication and Authorization (RBAC)</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../advanced_pod_scheduling/">Advanced Pod Scheduling</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../pod-adv-specs/">Pod Resource and Security Specs</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../pods-health-probes/">Adding health checks with Probes</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../ingress/">Application Routing with Ingress Controllers</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../10_kubernetes_autoscaling/">Auto Scaling Capacity with HPA</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../13_redis_statefulset/">Creating Replicated Redis Cluster with Statefulsets</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../network_policies/">Access Control with Network Policies</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../cluster-administration/">Cluster Administration</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../helm/">Helm Charts</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Additional Topics</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../vote-deployement_strategies/">Building Deployment Strategies</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../12_troubleshooting/">Troubleshooting Tips</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../logging/">Logging</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">References</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../rbac-resource-group-mapping/">RBAC apiGroups to Resource Mapping</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">Kubernetes Lab Guide</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Kubernetes Fundamentals &raquo;</li>
+        
+      
+    
+    <li>Launching Pods</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="deploying-pods">Deploying Pods</h1>
+<p>Life of a pod</p>
+<ul>
+<li>Pending : in progress</li>
+<li>Running</li>
+<li>Succeeded : successfully exited</li>
+<li>Failed</li>
+<li>Unknown</li>
+</ul>
+<h3 id="probes">Probes</h3>
+<ul>
+<li>livenessProbe : Containers are Alive</li>
+<li>readinessProbe : Ready to Serve Traffic</li>
+</ul>
+<h3 id="resource-configs">Resource Configs</h3>
+<p>Each entity created with kubernetes is a resource including pod, service, deployments, replication controller etc. Resources can be defined as YAML or JSON.  Here is the syntax to create a YAML specification.</p>
+<p><strong>AKMS</strong> =&gt; Resource Configs Specs</p>
+<pre><code>apiVersion: v1
+kind:
+metadata:
+spec:
+</code></pre>
+
+<p>Spec Schema: https://kubernetes.io/docs/user-guide/pods/multi-container/</p>
+<p>To list supported version of apis</p>
+<pre><code>kubectl api-versions
+</code></pre>
+
+<h4 id="writing-pod-spec">Writing Pod Spec</h4>
+<p>Lets now create the  Pod config by adding the kind and specs to schme given in the file vote-pod.yaml as follows.</p>
+<p>Filename: k8s-code/pods/vote-pod.yaml</p>
+<pre><code>apiVersion:
+kind: Pod
+metadata:
+spec:
+</code></pre>
+
+<p>Lets edit this and add the pod specs</p>
+<p>Filename: k8s-code/pods/vote-pod.yaml</p>
+<pre><code>apiVersion: v1
+kind: Pod
+metadata:
+  name: vote
+  labels:
+    app: python
+    role: vote
+    version: v1
+spec:
+  containers:
+    - name: app
+      image: schoolofdevops/vote:v1
+      ports:
+        - containerPort: 80
+          protocol: TCP
+</code></pre>
+
+<p><a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.9/#pod-v1-core">Use this link to refer to pod spec</a></p>
+<h3 id="launching-and-operating-a-pod">Launching and operating a Pod</h3>
+<p>To launch a monitoring screen to see whats being launched, use the following command in a new terminal window where kubectl is configured.</p>
+<pre><code>watch -n 1  kubectl get pods,deploy,rs,svc
+
+</code></pre>
+
+<p>kubectl Syntax:</p>
+<pre><code>kubectl
+kubectl apply --help
+kubectl apply -f FILE
+</code></pre>
+
+<p>To Launch pod using configs above,</p>
+<pre><code>kubectl apply -f vote-pod.yaml
+
+</code></pre>
+
+<p>To view pods</p>
+<pre><code>kubectl get pods
+
+kubectl get po -o wide
+
+kubectl get pods vote
+</code></pre>
+
+<p>To get detailed info</p>
+<pre><code>kubectl describe pods vote
+</code></pre>
+
+<p>[Output:]</p>
+<pre><code>Name:           vote
+Namespace:      default
+Node:           kube-3/192.168.0.80
+Start Time:     Tue, 07 Feb 2017 16:16:40 +0000
+Labels:         app=voting
+Status:         Running
+IP:             10.40.0.2
+Controllers:    &lt;none&gt;
+Containers:
+  vote:
+    Container ID:       docker://48304b35b9457d627b341e424228a725d05c2ed97cc9970bbff32a1b365d9a5d
+    Image:              schoolofdevops/vote:latest
+    Image ID:           docker-pullable://schoolofdevops/vote@sha256:3d89bfc1993d4630a58b831a6d44ef73d2be76a7862153e02e7a7c0cf2936731
+    Port:               80/TCP
+    State:              Running
+      Started:          Tue, 07 Feb 2017 16:16:52 +0000
+    Ready:              True
+    Restart Count:      0
+    Volume Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from default-token-2n6j1 (ro)
+    Environment Variables:      &lt;none&gt;
+Conditions:
+  Type          Status
+  Initialized   True
+  Ready         True
+  PodScheduled  True
+Volumes:
+  default-token-2n6j1:
+    Type:       Secret (a volume populated by a Secret)
+    SecretName: default-token-2n6j1
+QoS Class:      BestEffort
+Tolerations:    &lt;none&gt;
+Events:
+  FirstSeen     LastSeen        Count   From                    SubObjectPath           Type            Reason          Message
+  ---------     --------        -----   ----                    -------------           --------        ------          -------
+  21s           21s             1       {default-scheduler }                            Normal          Scheduled       Successfully assigned vote to kube-3
+  20s           20s             1       {kubelet kube-3}        spec.containers{vote}   Normal          Pulling         pulling image &quot;schoolofdevops/vote:latest&quot;
+  10s           10s             1       {kubelet kube-3}        spec.containers{vote}   Normal          Pulled          Successfully pulled image &quot;schoolofdevops/vote:latest&quot;
+  9s            9s              1       {kubelet kube-3}        spec.containers{vote}   Normal          Created         Created container with docker id 48304b35b945; Security:[seccomp=unconfined]
+  9s            9s              1       {kubelet kube-3}        spec.containers{vote}   Normal          Started         Started container with docker id 48304b35b945
+</code></pre>
+
+<p>Commands to operate the pod</p>
+<pre><code>
+kubectl logs vote
+
+kubectl exec -it vote  sh
+
+
+</code></pre>
+
+<p>Inside the container in a pod</p>
+<pre><code>ifconfig
+cat /etc/issue
+hostname
+cat /proc/cpuinfo
+ps aux
+</code></pre>
+
+<h3 id="lab-examine-pods-from-the-dashboard">Lab: Examine pods from the dashboard</h3>
+<h3 id="port-forwarding">Port Forwarding</h3>
+<p>This works if you have setup <strong>kubectl</strong> on a local laptop.</p>
+<pre><code>kubectl port-forward --help
+kubectl port-forward vote 8000:80
+</code></pre>
+
+<h2 id="troubleshooting-tip">Troubleshooting Tip</h2>
+<p>If you would like to know whats the current status of the pod, and if its in a error state, find out the cause of the error, following command could be very handy.</p>
+<pre><code>kubectl get pod vote -o yaml
+</code></pre>
+
+<p>Lets learn by example. Update pod spec and change the image to something that does not exist.</p>
+<pre><code>kubectl edit pod vote
+</code></pre>
+
+<p>This will open a editor. Go to the line which defines image  and change it to a tag that does not exist</p>
+<p>e.g.</p>
+<pre><code>spec:
+  containers:
+  - image: schoolofdevops/vote:srgwegew
+    imagePullPolicy: Always
+</code></pre>
+
+<p>where tag <strong>srgwegew</strong> does not exist. As soon as you save this file, kubernetes will apply the change.</p>
+<p>Now check the status,</p>
+<pre><code>kubectl get pods  
+
+NAME      READY     STATUS             RESTARTS   AGE
+vote      0/1       ImagePullBackOff   0          27m
+</code></pre>
+
+<p>The above output will only show the status, with a vague error. To find the exact error, lets get the stauts of the pod.</p>
+<p>Observe the <strong>status</strong> field.  </p>
+<pre><code>kubectl get pod vote -o yaml
+</code></pre>
+
+<p>Now the status field shows a detailed information, including what the exact error. Observe the following snippet...</p>
+<pre><code>status:
+...
+containerStatuses:
+....
+state:
+  waiting:
+    message: 'rpc error: code = Unknown desc = Error response from daemon: manifest
+      for schoolofdevops/vote:latst not found'
+    reason: ErrImagePull
+hostIP: 139.59.232.248
+</code></pre>
+
+<p>This will help you to pinpoint to the exact cause and fix it quickly.</p>
+<p>Now that you  are done experimenting with pod, delete it with the following command,</p>
+<pre><code>kubectl delete pod vote
+
+kubectl get pods
+</code></pre>
+
+<h2 id="attach-a-volume-to-the-pod">Attach a Volume to the Pod</h2>
+<p>Lets create a pod for database and attach a volume to it. To achieve this we will need to</p>
+<ul>
+<li>create a <strong>volumes</strong> definition</li>
+<li>attach volume to container using <strong>VolumeMounts</strong> property</li>
+</ul>
+<p>Local host volumes are of two types:  </p>
+<ul>
+<li>emptyDir  </li>
+<li>hostPath  </li>
+</ul>
+<p>We will pick hostPath. <a href="https://kubernetes.io/docs/concepts/storage/volumes/#hostpath">Refer to this doc to read more about hostPath.</a></p>
+<p>File: db-pod.yaml</p>
+<pre><code>apiVersion: v1
+kind: Pod
+metadata:
+  name: db
+  labels:
+    app: postgres
+    role: database
+    tier: back
+spec:
+  containers:
+    - name: db
+      image: postgres:9.4
+      ports:
+        - containerPort: 5432
+      volumeMounts:
+      - name: db-data
+        mountPath: /var/lib/postgresql/data
+  volumes:
+  - name: db-data
+    hostPath:
+      path: /var/lib/pgdata
+      type: DirectoryOrCreate
+</code></pre>
+
+<p>To create this pod,</p>
+<pre><code>kubectl apply -f db-pod.yaml
+
+kubectl describe pod db
+
+kubectl get events
+</code></pre>
+
+<p><strong>Exercise</strong> : Examine <strong>/var/lib/pgdata</strong> on the systems to check if the directory is been created and if the data is present.</p>
+<h2 id="creating-multi-container-pods">Creating Multi Container Pods</h2>
+<p>file: multi_container_pod.yml</p>
+<pre><code>apiVersion: v1
+kind: Pod
+metadata:
+  name: web
+  labels:
+    tier: front
+    app: nginx
+    role: ui
+spec:
+  containers:
+    - name: nginx
+      image: nginx:stable-alpine
+      ports:
+        - containerPort: 80
+          protocol: TCP
+      volumeMounts:
+        - name: data
+          mountPath: /var/www/html-sample-app
+
+    - name: sync
+      image: schoolofdevops/sync:v2
+      volumeMounts:
+        - name: data
+          mountPath: /var/www/app
+
+  volumes:
+    - name: data
+      emptyDir: {}
+</code></pre>
+
+<p>To create this pod</p>
+<pre><code>kubectl apply -f multi_container_pod.yml
+</code></pre>
+
+<p>Check Status</p>
+<pre><code>root@kube-01:~# kubectl get pods
+NAME      READY     STATUS              RESTARTS   AGE
+nginx     0/2       ContainerCreating   0          7s
+vote      1/1       Running             0          3m
+</code></pre>
+
+<p>Checking logs, logging in</p>
+<pre><code>kubectl logs  web  -c sync
+kubectl logs  web  -c nginx
+
+kubectl exec -it web  sh  -c nginx
+kubectl exec -it web  sh  -c sync
+
+</code></pre>
+
+<p>Observe whats common and whats isolated in two containers running inside  the same pod using the following commands,</p>
+<p>shared</p>
+<pre><code>hostname
+ifconfig
+</code></pre>
+
+<p>isolated</p>
+<pre><code>cat /etc/issue
+ps aux
+df -h
+
+</code></pre>
+
+<h2 id="exercise">Exercise</h2>
+<p>Create a pod definition for redis and deploy.</p>
+<h4 id="reading-list">Reading List</h4>
+<ul>
+<li><a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.9/#pod-v1-core">PodSpec:</a></li>
+<li><a href="https://kubernetes.io/docs/concepts/storage/volumes">Managing Volumes with Kubernetes</a></li>
+<li><a href="https://kubernetes.io/docs/concepts/configuration/assign-pod-node">Node Selectors, Affinity</a></li>
+</ul>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../replication/" class="btn btn-neutral float-right" title="Making application highly available">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../kube_visualizer/" class="btn btn-neutral" title="Kuberentes Visualizer"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../kube_visualizer/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../replication/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+
+</body>
+</html>

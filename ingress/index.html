@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Application Routing with Ingress Controllers - Kubernetes Lab Guide</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Application Routing with Ingress Controllers";
+    var mkdocs_page_input_path = "ingress.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> Kubernetes Lab Guide</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="..">Home</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Setup</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../minikube/">Using minikube to setup single node environment</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../2_kube_cluster_vagrant/">Provisioning VMs with Vagrant</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../3_install_kubernetes/">Setup Kubernetes Cluster</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../kube_visualizer/">Kuberentes Visualizer</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../quickdive.md">Kubernetes Quickdive</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Kubernetes Fundamentals</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../5-vote-deploying_pods/">Launching Pods</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../replication/">Making application highly available</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../7-vote-exposing_app_with_service/">Publishing appliaction and Service Discovery</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../6-vote-kubernetes_deployment/">Defining Update Strategy</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../11_deploying_sample_app/">Mini Project</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../9-vote-configmaps_and_secrets/">Managing Configurations and Secrets</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../vote-persistent-volumes/">Making Data Persist</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Advanced Kubernetes</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../kubespray-prereqs/">Kubespray HA lab setup with Vagrant</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../cluster_setup_kubespray/">HA setup with Kubespray</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../configuring_authentication_and_authorization/">Authentication and Authorization (RBAC)</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../advanced_pod_scheduling/">Advanced Pod Scheduling</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../pod-adv-specs/">Pod Resource and Security Specs</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../pods-health-probes/">Adding health checks with Probes</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">Application Routing with Ingress Controllers</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#ingress">Ingress</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#pre-requisites">Pre Requisites</a></li>
+        
+        </ul>
+    
+
+    </ul>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../10_kubernetes_autoscaling/">Auto Scaling Capacity with HPA</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../13_redis_statefulset/">Creating Replicated Redis Cluster with Statefulsets</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../network_policies/">Access Control with Network Policies</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../cluster-administration/">Cluster Administration</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../helm/">Helm Charts</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Additional Topics</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../vote-deployement_strategies/">Building Deployment Strategies</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../12_troubleshooting/">Troubleshooting Tips</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../logging/">Logging</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">References</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../rbac-resource-group-mapping/">RBAC apiGroups to Resource Mapping</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">Kubernetes Lab Guide</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Advanced Kubernetes &raquo;</li>
+        
+      
+    
+    <li>Application Routing with Ingress Controllers</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="ingress">Ingress</h1>
+<h2 id="pre-requisites">Pre Requisites</h2>
+<ul>
+<li>Ingress controller such as Nginx, Trafeik needs to be deployed before creating ingress resources.</li>
+<li>On GCE, ingress controller runs on the master. On all other installations, it needs to be deployed, either as a deployment, or a daemonset. In addition, a service needs to be created for ingress.</li>
+<li>Daemonset will run ingress on each node. Deployment will just create a highly available setup, which can then be exposed on specific nodes using ExternalIPs configuration in the service.</li>
+</ul>
+<h3 id="create-a-ingress-controller">Create a Ingress Controller</h3>
+<p>An ingress controller needs to be created in order to serve the ingress requests. Kubernetes comes with support for <strong>GCE</strong> and <strong>nginx</strong> ingress controllers, however additional softwares are commonly used too.  As part of this implementation you are going to use <a href="https://traefik.io/">Traefik</a> as the ingress controller. Its a fast and lightweight ingress controller and also comes with great documentation and support.  </p>
+<pre><code class="bash">
+
++----+----+--+            
+| ingress    |            
+| controller |            
++----+-------+            
+
+
+</code></pre>
+
+<p>There are commonly two ways you could deploy an ingress</p>
+<ul>
+<li>Using Deployments with HA setup</li>
+<li>Using DaemonSets which run on every node</li>
+</ul>
+<p>We pick <strong>DaemonSet</strong>, which will ensure that one instance of <strong>traefik</strong> is run on every node.  Also, we use a specific configuration <strong>hostNetwork</strong> so that the pod running <strong>traefik</strong> attaches to the network of underlying host, and not go through <strong>kube-proxy</strong>. This would avoid extra network hop and increase performance  a bit.  </p>
+<p>Deploy ingress controller with daemonset as</p>
+<pre><code>cd k8s-code/ingress/traefik
+
+kubectl get ds -n kube-system
+
+kubectl apply -f traefik-rbac.yaml
+kubectl apply -f traefik-ds.yaml
+</code></pre>
+
+<p>Validate</p>
+<pre><code>kubectl get svc,ds,pods -n kube-system  --selector='k8s-app=traefik-ingress-lb'
+</code></pre>
+
+<p>[output]</p>
+<pre><code>NAME                              TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)           AGE
+service/traefik-ingress-service   ClusterIP   10.109.182.203   &lt;none&gt;        80/TCP,8080/TCP   11h
+
+NAME                                              DESIRED   CURRENT   READY     UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
+daemonset.extensions/traefik-ingress-controller   2         2         2         2            2           &lt;none&gt;          11h
+
+NAME                                   READY     STATUS    RESTARTS   AGE
+pod/traefik-ingress-controller-bmwn7   1/1       Running   0          11h
+pod/traefik-ingress-controller-vl296   1/1       Running   0          11h
+</code></pre>
+
+<p>You would notice that the ingress controller is started on all nodes (except managers). Visit any of the nodes 8080 port e.g. http://IPADDRESS:8080 to see  traefik's management UI.</p>
+<p><img alt="Traefik" src="../images/traefik01.png" /></p>
+<h3 id="setting-up-named-based-routing-for-vote-app">Setting up Named Based Routing for Vote App</h3>
+<p>We will direct all our request to the ingress controller now, but with differnt hostname e.g. <strong>vote.example.org</strong> or <strong>results.example.org</strong>. And it should direct to the correct service based on the host name.</p>
+<p>In order to achieve this you, as a user would create a <strong>ingress</strong> object with a set of rules,</p>
+<pre><code class="bash">
+
++----+----+--+            
+| ingress    |            
+| controller |            
++----+-------+            
+     |              +-----+----+
+     +---watch----&gt; | ingress  | &lt;------- user
+                    +----------+
+
+</code></pre>
+
+<p><code>file: vote-ing.yaml</code></p>
+<pre><code>apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: vote
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    ingress.kubernetes.io/auth-type: &quot;basic&quot;
+    ingress.kubernetes.io/auth-secret: &quot;mysecret&quot;
+spec:
+  rules:
+    - host: vote.example.org
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: vote
+              servicePort: 82
+    - host: results.example.org
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: results
+              servicePort: 81
+</code></pre>
+
+<p>And apply</p>
+<pre><code>kubectl get ing
+kubectl apply -f vote-ing.yaml --dry-run
+kubectl apply -f vote-ing.yaml
+</code></pre>
+
+<p>Since the ingress controller  is constantly monitoring for the ingress objects, the moment it detects, it connects with traefik and creates a rule as follows.</p>
+<pre><code class="bash">
+                    +----------+
+     +--create----&gt; | traefik  |
+     |              |  rules   |
+     |              +----------+
++----+----+--+            ^
+| ingress    |            :
+| controller |            :
++----+-------+            :
+     |              +-----+----+
+     +---watch----&gt; | ingress  | &lt;------- user
+                    +----------+
+
+</code></pre>
+
+<p>where,</p>
+<ul>
+<li>A user creates a ingress object with the rules. This could be a named based or a path based routing.</li>
+<li>An ingress controller, in this example traefik constantly monitors for ingress objects. The moment it detects one, it creates a rule and adds it to the traefik load balancer. This rule maps to the ingress specs.</li>
+</ul>
+<p>You could now see the rule added to ingress controller,</p>
+<p><img alt="Traefik with Ingress Rules" src="../images/traefik02.png" /></p>
+<p>Where,</p>
+<ul>
+<li>
+<p><strong>vote.example.org</strong> and <strong>results.example.org</strong> are added as frontends. These frontends point to respective services <strong>vote</strong> and <strong>results</strong>.</p>
+</li>
+<li>
+<p>respective backends also appear on the right hand side of the screen, mapping to each of the service.</p>
+</li>
+</ul>
+<h4 id="adding-local-dns">Adding Local DNS</h4>
+<p>You have created the ingress rules based on hostnames e.g.  <strong>vote.example.org</strong> and <strong>results.example.org</strong>. In order for you to be able to access those, there has to be a dns entry pointing to your nodes, which are running traefik.</p>
+<pre><code class="bash">
+  vote.example.org     -------+                        +----- vote:81
+                              |     +-------------+    |
+                              |     |   ingress   |    |
+                              +===&gt; |   node:80   | ===+
+                              |     +-------------+    |
+                              |                        |
+  results.example.org  -------+                        +----- results:82
+
+</code></pre>
+
+<p>To achieve this you need to either,</p>
+<ul>
+<li>Create a DNS entry, provided you own the domain and have access to the dns management console.</li>
+<li>Create a local <strong>hosts</strong> file entry. On unix systems its in <code>/etc/hosts</code> file. On windows its at <code>C:\Windows\System32\drivers\etc\hosts</code>. You need admin access to edit this file.</li>
+</ul>
+<p>For example, on a linux or osx, you could edit it as,</p>
+<pre><code>sudo vim /etc/hosts
+</code></pre>
+
+<p>And add an entry such as ,</p>
+<pre><code>xxx.xxx.xxx.xxx vote.example.org results.example.org
+</code></pre>
+
+<p>where,</p>
+<ul>
+<li>xxx.xxx.xxx.xxx is the actual IP address of one of the nodes running traefik.</li>
+</ul>
+<p>And then access the app urls using http://vote.example.org or http://results.example.org</p>
+<p><img alt="Name Based Routing" src="../images/domain-name.png" /></p>
+<h3 id="adding-http-authentication-with-annotations">Adding HTTP Authentication with Annotations</h3>
+<h4 id="creating-htpasswd-spec-as-secret">Creating htpasswd spec as Secret</h4>
+<pre><code>htpasswd -c auth devops
+</code></pre>
+
+<p>Or use <a href="http://www.htaccesstools.com/htpasswd-generator/">Online htpasswd generator</a> to generate a htpasswd spec. if you use the online generator, copy the contents to a file by name <code>auth</code> in the current directory.</p>
+<p>Then generate the secret as,</p>
+<pre><code>kubectl create secret generic mysecret --from-file auth
+
+kubectl get secret
+
+kubectl describe secret mysecret
+</code></pre>
+
+<p>And then add annotations to the ingress object so that it is read by the ingress controller to update configurations.</p>
+<p><code>file: vote-ing.yaml</code></p>
+<pre><code>apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: vote
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    ingress.kubernetes.io/auth-type: &quot;basic&quot;
+    ingress.kubernetes.io/auth-secret: &quot;mysecret&quot;
+spec:
+  rules:
+    - host: vote.example.org
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: vote
+              servicePort: 82
+    - host: results.example.org
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: results
+              servicePort: 81
+
+</code></pre>
+
+<p>where,</p>
+<ul>
+<li><em>ingress.kubernetes.io/auth-type: "basic"</em> defines authentication type that needs to be added.</li>
+<li><em>ingress.kubernetes.io/auth-secret: "mysecret"</em> refers to the secret created earlier.</li>
+</ul>
+<p>apply</p>
+<pre><code>kubectl apply -f vote-ing.yaml
+kubectl get ing/vote -o yaml
+</code></pre>
+
+<p>Observe the annotations field. No sooner than you apply this spec, ingress controller reads the event and a basic http authentication is set with the secret you added.</p>
+<pre><code class="bash">
+                      +----------+
+       +--update----&gt; | traefik  |
+       |              |  configs |
+       |              +----------+
+  +----+----+--+            ^
+  | ingress    |            :
+  | controller |            :
+  +----+-------+            :
+       |              +-----+-------+
+       +---watch----&gt; | ingress     | &lt;------- user
+                      | annotations |
+                      +-------------+
+</code></pre>
+
+<p>And if you visit traefik's dashboard and go to the details tab, you should see the basic authentication section enabled as in the diagram below.</p>
+<p><img alt="Name Based Routing" src="../images/domain-name.png" /></p>
+<h5 id="reading">Reading</h5>
+<ul>
+<li><a href="https://docs.traefik.io/user-guide/kubernetes/">Trafeik's Guide to Kubernetes Ingress Controller</a></li>
+<li><a href="https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/">Annotations</a></li>
+<li><a href="https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/">DaemonSets</a></li>
+</ul>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="http://www.htaccesstools.com/htpasswd-generator/">Online htpasswd generator</a></li>
+</ul>
+<p><strong>Keywords</strong></p>
+<ul>
+<li>trafeik on kubernetes</li>
+<li>kubernetes ingress</li>
+<li>kubernetes annotations</li>
+<li>daemonsets</li>
+</ul>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../10_kubernetes_autoscaling/" class="btn btn-neutral float-right" title="Auto Scaling Capacity with HPA">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../pods-health-probes/" class="btn btn-neutral" title="Adding health checks with Probes"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../pods-health-probes/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../10_kubernetes_autoscaling/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+
+</body>
+</html>

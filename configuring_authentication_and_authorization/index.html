@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Authentication and Authorization (RBAC) - Kubernetes Lab Guide</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Authentication and Authorization (RBAC)";
+    var mkdocs_page_input_path = "configuring_authentication_and_authorization.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> Kubernetes Lab Guide</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="..">Home</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Setup</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../minikube/">Using minikube to setup single node environment</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../2_kube_cluster_vagrant/">Provisioning VMs with Vagrant</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../3_install_kubernetes/">Setup Kubernetes Cluster</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../kube_visualizer/">Kuberentes Visualizer</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../quickdive.md">Kubernetes Quickdive</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Kubernetes Fundamentals</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../5-vote-deploying_pods/">Launching Pods</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../replication/">Making application highly available</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../7-vote-exposing_app_with_service/">Publishing appliaction and Service Discovery</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../6-vote-kubernetes_deployment/">Defining Update Strategy</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../11_deploying_sample_app/">Mini Project</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../9-vote-configmaps_and_secrets/">Managing Configurations and Secrets</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../vote-persistent-volumes/">Making Data Persist</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Advanced Kubernetes</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../kubespray-prereqs/">Kubespray HA lab setup with Vagrant</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../cluster_setup_kubespray/">HA setup with Kubespray</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">Authentication and Authorization (RBAC)</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#kubernetes-access-control-authentication-and-authorization">Kubernetes Access Control:  Authentication and Authorization</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#how-one-can-access-the-kubernetes-api">How one can access the Kubernetes API?</a></li>
+        
+            <li><a class="toctree-l4" href="#who-can-access-the-kubernetes-api">Who can access the Kubernetes API?</a></li>
+        
+            <li><a class="toctree-l4" href="#stages-of-a-request">Stages of a Request</a></li>
+        
+            <li><a class="toctree-l4" href="#api-groups-and-resources">api groups and resources</a></li>
+        
+            <li><a class="toctree-l4" href="#role-based-access-control-rbac">Role Based Access Control (RBAC)</a></li>
+        
+            <li><a class="toctree-l4" href="#define-authorisation-rules-with-roles-and-clusterroles">Define authorisation rules with Roles and ClusterRoles</a></li>
+        
+        </ul>
+    
+
+    </ul>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../advanced_pod_scheduling/">Advanced Pod Scheduling</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../pod-adv-specs/">Pod Resource and Security Specs</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../pods-health-probes/">Adding health checks with Probes</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../ingress/">Application Routing with Ingress Controllers</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../10_kubernetes_autoscaling/">Auto Scaling Capacity with HPA</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../13_redis_statefulset/">Creating Replicated Redis Cluster with Statefulsets</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../network_policies/">Access Control with Network Policies</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../cluster-administration/">Cluster Administration</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../helm/">Helm Charts</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Additional Topics</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../vote-deployement_strategies/">Building Deployment Strategies</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../12_troubleshooting/">Troubleshooting Tips</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../logging/">Logging</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">References</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../rbac-resource-group-mapping/">RBAC apiGroups to Resource Mapping</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">Kubernetes Lab Guide</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Advanced Kubernetes &raquo;</li>
+        
+      
+    
+    <li>Authentication and Authorization (RBAC)</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="kubernetes-access-control-authentication-and-authorization">Kubernetes Access Control:  Authentication and Authorization</h1>
+<p>In  this lab you are going to,</p>
+<ul>
+<li>Create users and groups and setup certs based authentication</li>
+<li>Create service accounts for applications</li>
+<li>Create Roles and ClusterRoles to define authorizations</li>
+<li>Map Roles and ClusterRoles to subjects i.e. users, groups and service accounts using RoleBingings and ClusterRoleBindings.</li>
+</ul>
+<h2 id="how-one-can-access-the-kubernetes-api">How one can access the Kubernetes API?</h2>
+<p>The Kubernetes API can be accessed by three ways.</p>
+<ul>
+<li>Kubectl - A command line utility of Kubernetes</li>
+<li>Client libraries - Go, Python, etc.,</li>
+<li>REST requests</li>
+</ul>
+<h2 id="who-can-access-the-kubernetes-api">Who can access the Kubernetes API?</h2>
+<p>Kubernetes API can be accessed by,</p>
+<ul>
+<li>Human Users</li>
+<li>Service Accounts  </li>
+</ul>
+<p>Each of these topics will be discussed in detail in the later part of this chapter.</p>
+<h2 id="stages-of-a-request">Stages of a Request</h2>
+<p>When a request tries to contact the API , it goes through various stages as illustrated in the image given below.</p>
+<p><img alt="request-stages" src="../images/access-control.svg" />
+  <sub><a href="https://kubernetes.io/docs/home/">source: official kubernetes site</a></sub></p>
+<h2 id="api-groups-and-resources">api groups and resources</h2>
+<table>
+<thead>
+<tr>
+<th align="left">apiGroup</th>
+<th align="left">Resources</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">apps</td>
+<td align="left">daemonsets, deployments, deployments/rollback, deployments/scale, replicasets, replicasets/scale, statefulsets, statefulsets/scale</td>
+</tr>
+<tr>
+<td align="left">core</td>
+<td align="left">configmaps, endpoints, persistentvolumeclaims, replicationcontrollers, replicationcontrollers/scale, secrets, serviceaccounts, services,services/proxy</td>
+</tr>
+<tr>
+<td align="left">autoscaling</td>
+<td align="left">horizontalpodautoscalers</td>
+</tr>
+<tr>
+<td align="left">batch</td>
+<td align="left">cronjobs, jobs</td>
+</tr>
+<tr>
+<td align="left">policy</td>
+<td align="left">poddisruptionbudgets</td>
+</tr>
+<tr>
+<td align="left">networking.k8s.io</td>
+<td align="left">networkpolicies</td>
+</tr>
+<tr>
+<td align="left">authorization.k8s.io</td>
+<td align="left">localsubjectaccessreviews</td>
+</tr>
+<tr>
+<td align="left">rbac.authorization.k8s.io</td>
+<td align="left">rolebindings,roles</td>
+</tr>
+<tr>
+<td align="left">extensions</td>
+<td align="left">deprecated (read notes)</td>
+</tr>
+</tbody>
+</table>
+<h5 id="notes">Notes</h5>
+<p>In addition to the above apiGroups, you may see <strong>extensions</strong> being used in some example code snippets. Please note that <strong>extensions</strong> was initially created as a experiement and is been deprecated, by moving most of the matured apis to one of the groups mentioned above.  <a href="https://github.com/kubernetes/kubernetes/issues/43214#issuecomment-287143011">You could read this comment and the thread</a> to get clarity on this.  </p>
+<h2 id="role-based-access-control-rbac">Role Based Access Control (RBAC)</h2>
+<table>
+<thead>
+<tr>
+<th align="left">Group</th>
+<th align="left">User</th>
+<th align="left">Namespaces</th>
+<th align="left">Resources</th>
+<th align="left">Access Type (verbs)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">ops</td>
+<td align="left">maya</td>
+<td align="left">all</td>
+<td align="left">all</td>
+<td align="left">get, list, watch, update, patch, create, delete, deletecollection</td>
+</tr>
+<tr>
+<td align="left">dev</td>
+<td align="left">kim</td>
+<td align="left">instavote</td>
+<td align="left">deployments, statefulsets, services, pods, configmaps, secrets, replicasets, ingresses, endpoints, cronjobs, jobs, persistentvolumeclaims</td>
+<td align="left">get, list , watch, update, patch, create</td>
+</tr>
+<tr>
+<td align="left">interns</td>
+<td align="left">yono</td>
+<td align="left">instavote</td>
+<td align="left">readonly</td>
+<td align="left">get, list, watch</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th align="left">Service Accounts</th>
+<th align="left">Namespace</th>
+<th align="left">Resources</th>
+<th align="left">Access Type (verbs)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">monitoring</td>
+<td align="left">all</td>
+<td align="left">all</td>
+<td align="left">readonly</td>
+</tr>
+</tbody>
+</table>
+<h3 id="creating-kubernetes-users-and-groups">Creating Kubernetes Users and Groups</h3>
+<p>Generate the user's private key</p>
+<pre><code>mkdir -p  ~/.kube/users
+cd ~/.kube/users
+
+openssl genrsa -out maya.key 2048
+openssl genrsa -out kim.key 2048
+openssl genrsa -out yono.key 2048
+
+</code></pre>
+
+<p>[sample Output]</p>
+<pre><code>openssl genrsa -out maya.key 2048
+Generating RSA private key, 2048 bit long modulus
+.............................................................+++
+.........................+++
+e is 65537 (0x10001)
+
+</code></pre>
+
+<p>Lets now create a <strong>Certification Signing Request (CSR)</strong> for each of the users. When you generate the csr make sure you also provide</p>
+<ul>
+<li>CN: This will be set as username</li>
+<li>O: Org name. This is actually used as a <strong>group</strong> by kubernetes while authenticating/authorizing users.  You could add as many as you need</li>
+</ul>
+<p>e.g.</p>
+<pre><code>openssl req -new -key maya.key -out maya.csr -subj &quot;/CN=maya/O=ops/O=example.org&quot;
+openssl req -new -key kim.key -out kim.csr -subj &quot;/CN=kim/O=dev/O=example.org&quot;
+openssl req -new -key yono.key -out yono.csr -subj &quot;/CN=yono/O=interns/O=example.org&quot;
+
+</code></pre>
+
+<p>In order to be deemed authentic, these CSRs need to be signed by the <strong>Certification Authority (CA)</strong> which in this case is Kubernetes Master.   You need access to the folllwing files on  kubernetes master.</p>
+<ul>
+<li>Certificate : ca.crt (kubeadm) or ca.key (kubespray)</li>
+<li>Pricate Key : ca.key (kubeadm) or ca-key.pem  (kubespray)</li>
+</ul>
+<p>You would typically find it at one of the following paths</p>
+<ul>
+<li>/etc/kubernetes/pki (kubeadm)</li>
+<li>/etc/kubernetes/ssl (kubespray)</li>
+</ul>
+<p>To verify which one is your cert and which one is key, use the following command,</p>
+<pre><code>$ file ca.pem
+ca.pem: PEM certificate
+
+
+$ file ca-key.pem
+ca-key.pem: PEM RSA private key
+</code></pre>
+
+<p>Once signed, .csr files with added signatures become the certificates that could be used to authenticate.</p>
+<p>You could either</p>
+<ul>
+<li>move the crt files to k8s master, sign and download  </li>
+<li>copy over the CA certs and keys to your management node and use it to sign. Make sure to keep your CA related files secure.</li>
+</ul>
+<p>In the example here, I have already downloaded <strong>ca.pem</strong> and <strong>ca-key.pem</strong> to my management workstation, which are used to sign the CSRs.  </p>
+<p>Assuming all the files are in the same directory, sign the CSR as,</p>
+<pre><code>openssl x509 -req -CA ca.pem -CAkey ca-key.pem -CAcreateserial -days 730 -in maya.csr -out maya.crt
+
+openssl x509 -req -CA ca.pem -CAkey ca-key.pem -CAcreateserial -days 730 -in kim.csr -out kim.crt
+
+openssl x509 -req -CA ca.pem -CAkey ca-key.pem -CAcreateserial -days 730 -in yono.csr -out yono.crt
+</code></pre>
+
+<h3 id="setting-up-user-configs-with-kubectl">Setting up User configs with kubectl</h3>
+<p>In order to configure the users that you created above, following steps need to be performed with kubectl</p>
+<ul>
+<li>Add credentials in the configurations</li>
+<li>Set context to login as a user to a cluster</li>
+<li>Switch context in order to assume the user's identity while working with the cluster</li>
+</ul>
+<p>to add credentials,</p>
+<pre><code>kubectl config set-credentials maya --client-certificate=/absolute/path/to/maya.crt --client-key=/absolute/path/to/maya.key
+
+kubectl config set-credentials kim --client-certificate=/absolute/path/to/kim.crt --client-key=~/.kube/users/kim.key
+
+kubectl config set-credentials yono --client-certificate=/absolute/path/to/yono.crt --client-key=~/.kube/users/yono.key
+
+</code></pre>
+
+<p>where,</p>
+<ul>
+<li>Replace /absolute/path/to/ with the path to these files.<ul>
+<li><code>invalid</code> :  ~/.kube/users/yono.crt</li>
+<li><code>valid</code> :  /home/xyz/.kube/users/yono.crt</li>
+</ul>
+</li>
+</ul>
+<p>And proceed to set/create  contexts (user@cluster). If you are not sure whats the cluster name, use the following command to find,</p>
+<pre><code>kubectl config get-contexts
+
+</code></pre>
+
+<p>[sample output]</p>
+<pre><code>CURRENT   NAME                          CLUSTER         AUTHINFO              NAMESPACE
+          admin-prod           prod   admin-cluster.local   instavote
+          admin-cluster4                cluster4        admin-cluster4        instavote
+*         kubernetes-admin@kubernetes   kubernetes      kubernetes-admin      instavote
+</code></pre>
+
+<p>where,  <strong>prod</strong>, <strong>cluster4</strong> and <strong>kubernetes</strong> are cluster names.</p>
+<p>To set context for <strong>prod</strong> cluster,</p>
+<pre><code>kubectl config set-context maya-prod --cluster=prod  --user=maya --namespace=instavote
+
+kubectl config set-context kim-prod --cluster=prod  --user=kim --namespace=instavote
+
+kubectl config set-context yono-prod --cluster=prod  --user=yono --namespace=instavote
+
+</code></pre>
+
+<p>Where,</p>
+<ul>
+<li>maya-prod : name of the context  </li>
+<li>prod  : name of the kubernetes cluster you set while creating it  </li>
+<li>maya : user you created and configured above to connect to the cluster  </li>
+</ul>
+<p>You could verify the configs with</p>
+<pre><code>kubectl config get-contexts
+
+CURRENT   NAME         CLUSTER   AUTHINFO     NAMESPACE
+*         admin-prod   prod      admin-prod
+          kim-prod     prod      kim
+          maya-prod    prod      maya
+          yono-prod    prod      yono
+</code></pre>
+
+<p>and</p>
+<pre><code>kubectl config view
+
+apiVersion: v1
+clusters:
+- cluster:
+   certificate-authority-data: REDACTED
+   server: https://128.199.248.240:6443
+ name: prod
+contexts:
+- context:
+   cluster: prod
+   user: admin-prod
+ name: admin-prod
+- context:
+   cluster: prod
+   user: kim
+ name: kim-prod
+- context:
+   cluster: prod
+   user: maya
+ name: maya-prod
+- context:
+   cluster: prod
+   user: yono
+ name: yono-prod
+current-context: admin-prod
+kind: Config
+preferences: {}
+users:
+- name: admin-prod
+ user:
+   client-certificate-data: REDACTED
+   client-key-data: REDACTED
+- name: maya
+ user:
+   client-certificate: users/~/.kube/users/maya.crt
+   client-key: users/~/.kube/users/maya.key
+</code></pre>
+
+<p>You could assume the identity of user <strong>yono</strong> and connect  to the <strong>prod</strong> cluster as,</p>
+<pre><code>kubectl config use-context yono-prod
+
+kubectl config get-contexts
+
+CURRENT   NAME         CLUSTER   AUTHINFO     NAMESPACE
+          admin-prod   prod      admin-prod
+          kim-prod     prod      kim
+          maya-prod    prod      maya
+*         yono-prod    prod      yono
+</code></pre>
+
+<p>And then try running any command as,</p>
+<pre><code>kubectl get pods
+</code></pre>
+
+<p>Alternately, if you are a admin user, you could impersonate a user and run a command with that literally using  --as option</p>
+<pre><code>kubectl config use-context admin-prod
+kubectl get pods --as yono
+</code></pre>
+
+<p>[Sample Output]</p>
+<pre><code>No resources found.
+Error from server (Forbidden): pods is forbidden: User &quot;yono&quot; cannot list pods in the namespace &quot;instavote&quot;
+
+</code></pre>
+
+<p>Either ways, since there are authorization rules set, the user can not make any api calls. Thats when you would create some roles and bind it to the users in the next section.</p>
+<h2 id="define-authorisation-rules-with-roles-and-clusterroles">Define authorisation rules with Roles and ClusterRoles</h2>
+<p>Whats the difference between Roles and ClusterRoles ??</p>
+<ul>
+<li>Role is  limited to a namespace (Projects/Orgs/Env)</li>
+<li>ClusterRole is Global</li>
+</ul>
+<p>Lets say you want to provide read only access to <strong>instavote</strong>, a project specific namespace to all users in the <strong>example.org</strong></p>
+<p><code>file: interns-role.yaml</code></p>
+<pre><code>apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: Role
+metadata:
+  namespace: instavote
+  name: interns
+rules:
+- apiGroups: [&quot;*&quot;]
+  resources: [&quot;*&quot;]
+  verbs: [&quot;get&quot;, &quot;list&quot;, &quot;watch&quot;]
+</code></pre>
+
+<p>In order to map it to all users in <strong>example.org</strong>, create a RoleBinding as</p>
+<p><code>interns-rolebinding.yml</code></p>
+<pre><code>kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: interns
+  namespace: instavote
+subjects:
+- kind: Group
+  name: interns
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: interns
+  apiGroup: rbac.authorization.k8s.io
+</code></pre>
+
+<pre><code>kubectl create -f interns-role.yml
+
+kubectl create -f interns-rolebinding.yml
+</code></pre>
+
+<p>To gt information about the objects created above,</p>
+<pre><code>kubectl get roles -n instavote
+kubectl get roles,rolebindings -n instavote
+
+kubectl describe role interns
+kubectl describe rolebinding interns
+
+</code></pre>
+
+<p>To validate the access,</p>
+<pre><code>kubectl config use-context yono-prod
+kubectl get pods
+
+</code></pre>
+
+<p>To switch back to admin,</p>
+<pre><code>kubectl config use-context admin-prod
+
+</code></pre>
+
+<h4 id="exercise">Exercise</h4>
+<p>Create a Role and Rolebinding for <strong>dev</strong> group with the authorizations defined in the table above. Once applied, test it</p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../advanced_pod_scheduling/" class="btn btn-neutral float-right" title="Advanced Pod Scheduling">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../cluster_setup_kubespray/" class="btn btn-neutral" title="HA setup with Kubespray"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../cluster_setup_kubespray/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../advanced_pod_scheduling/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+
+</body>
+</html>

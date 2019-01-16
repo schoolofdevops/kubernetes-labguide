@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Defining Update Strategy - Kubernetes Lab Guide</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Defining Update Strategy";
+    var mkdocs_page_input_path = "6-vote-kubernetes_deployment.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> Kubernetes Lab Guide</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="..">Home</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Setup</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../minikube/">Using minikube to setup single node environment</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../2_kube_cluster_vagrant/">Provisioning VMs with Vagrant</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../3_install_kubernetes/">Setup Kubernetes Cluster</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../kube_visualizer/">Kuberentes Visualizer</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../quickdive.md">Kubernetes Quickdive</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Kubernetes Fundamentals</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../5-vote-deploying_pods/">Launching Pods</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../replication/">Making application highly available</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../7-vote-exposing_app_with_service/">Publishing appliaction and Service Discovery</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">Defining Update Strategy</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#creating-a-deployment">Creating a Deployment</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#scaling-a-deployment">Scaling a deployment</a></li>
+        
+            <li><a class="toctree-l4" href="#rolling-updates-in-action">Rolling Updates in Action</a></li>
+        
+            <li><a class="toctree-l4" href="#undo-and-rollback">Undo and Rollback</a></li>
+        
+        </ul>
+    
+
+    </ul>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../11_deploying_sample_app/">Mini Project</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../9-vote-configmaps_and_secrets/">Managing Configurations and Secrets</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../vote-persistent-volumes/">Making Data Persist</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Advanced Kubernetes</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../kubespray-prereqs/">Kubespray HA lab setup with Vagrant</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../cluster_setup_kubespray/">HA setup with Kubespray</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../configuring_authentication_and_authorization/">Authentication and Authorization (RBAC)</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../advanced_pod_scheduling/">Advanced Pod Scheduling</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../pod-adv-specs/">Pod Resource and Security Specs</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../pods-health-probes/">Adding health checks with Probes</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../ingress/">Application Routing with Ingress Controllers</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../10_kubernetes_autoscaling/">Auto Scaling Capacity with HPA</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../13_redis_statefulset/">Creating Replicated Redis Cluster with Statefulsets</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../network_policies/">Access Control with Network Policies</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../cluster-administration/">Cluster Administration</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../helm/">Helm Charts</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Additional Topics</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../vote-deployement_strategies/">Building Deployment Strategies</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../12_troubleshooting/">Troubleshooting Tips</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../logging/">Logging</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">References</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../rbac-resource-group-mapping/">RBAC apiGroups to Resource Mapping</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">Kubernetes Lab Guide</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Kubernetes Fundamentals &raquo;</li>
+        
+      
+    
+    <li>Defining Update Strategy</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="creating-a-deployment">Creating a Deployment</h1>
+<p>A Deployment is a higher level abstraction which sits on top of replica sets and allows you to manage the way applications are deployed, rolled back at a controlled rate.</p>
+<p>Deployment has mainly two responsibilities,</p>
+<ul>
+<li>Provide Fault Tolerance: Maintain the number of replicas for a type of service/app. Schedule/delete pods to meet the desired count.</li>
+<li>Update Strategy: Define a release strategy and update the pods accordingly.</li>
+</ul>
+<pre><code>/k8s-code/projects/instavote/dev/
+cp vote-rs.yaml vote-deploy.yaml
+</code></pre>
+
+<p>Deployment spec (deployment.spec) contains everything that replica set has + strategy. Lets add it as follows,</p>
+<p>File: vote-deploy.yaml</p>
+<pre><code>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vote
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 1
+  revisionHistoryLimit: 4
+  paused: false
+  replicas: 8
+  minReadySeconds: 20
+  selector:
+    matchLabels:
+      role: vote
+    matchExpressions:
+      - {key: version, operator: In, values: [v1, v2, v3]}
+  template:
+    metadata:
+      name: vote
+      labels:
+        app: python
+        role: vote
+        version: v2
+    spec:
+      containers:
+        - name: app
+          image: schoolofdevops/vote:v2
+          ports:
+            - containerPort: 80
+              protocol: TCP
+</code></pre>
+
+<p>This time, start monitoring with --show-labels options added.</p>
+<pre><code>watch -n 1 kubectl get  pod,deploy,rs,svc --show-labels
+</code></pre>
+
+<p>Lets  create the Deployment. Do monitor the labels of the pod while applying this.</p>
+<pre><code>kubectl apply -f vote-deploy.yaml
+</code></pre>
+
+<p>Observe the chances to pod labels, specifically the <strong>pod-template-hash</strong>.</p>
+<p>Now that the deployment is created. To validate,</p>
+<pre><code>kubectl get deployment
+kubectl get rs --show-labels
+kubectl get deploy,pods,rs
+kubectl rollout status deployment/vote
+kubectl get pods --show-labels
+</code></pre>
+
+<p>Sample Output</p>
+<pre><code>kubectl get deployments
+NAME       DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+vote   3         3         3            1           3m
+</code></pre>
+
+<h2 id="scaling-a-deployment">Scaling a deployment</h2>
+<p>To scale a deployment in Kubernetes:</p>
+<pre><code>kubectl scale deployment/vote --replicas=12
+
+kubectl rollout status deployment/vote
+
+</code></pre>
+
+<p>Sample output:</p>
+<pre><code>
+Waiting for rollout to finish: 5 of 12 updated replicas are available...
+Waiting for rollout to finish: 6 of 12 updated replicas are available...
+deployment &quot;vote&quot; successfully rolled out
+</code></pre>
+
+<p>You could also update the deployment by editing it.</p>
+<pre><code>kubectl edit deploy/vote
+</code></pre>
+
+<p>[change replicas to 15 from the editor, save and observe]</p>
+<h2 id="rolling-updates-in-action">Rolling Updates in Action</h2>
+<p>Now, update the deployment spec to apply</p>
+<p>file: vote-deploy.yaml</p>
+<pre><code>spec:
+...
+  replicas: 15
+...
+labels:
+   app: python
+   role: vote
+   version: v3
+...
+template:   
+  spec:
+    containers:
+      - name: app
+        image: schoolofdevops/vote:v3
+
+</code></pre>
+
+<p>apply</p>
+<pre><code>kubectl apply -f vote-deploy.yaml
+
+kubectl rollout status deployment/vote
+</code></pre>
+
+<p>Observe rollout status and monitoring screen.</p>
+<pre><code>
+kubectl rollout history deploy/vote
+
+kubectl rollout history deploy/vote --revision=1
+
+</code></pre>
+
+<h2 id="undo-and-rollback">Undo and Rollback</h2>
+<p>file: vote-deploy.yaml</p>
+<pre><code>spec:
+  containers:
+    - name: app
+      image: schoolofdevops/vote:rgjerdf
+
+</code></pre>
+
+<p>apply</p>
+<pre><code>kubectl apply -f vote-deploy.yaml
+
+kubectl rollout status
+
+kubectl rollout history deploy/vote
+
+kubectl rollout history deploy/vote --revision=xx
+</code></pre>
+
+<p>where replace xxx with revisions</p>
+<p>Find out the previous revision with sane configs.</p>
+<p>To undo to a sane version (for example revision 3)</p>
+<pre><code>kubectl rollout undo deploy/vote --to-revision=3
+</code></pre>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../11_deploying_sample_app/" class="btn btn-neutral float-right" title="Mini Project">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../7-vote-exposing_app_with_service/" class="btn btn-neutral" title="Publishing appliaction and Service Discovery"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../7-vote-exposing_app_with_service/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../11_deploying_sample_app/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+
+</body>
+</html>
