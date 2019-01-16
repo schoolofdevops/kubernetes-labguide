@@ -1,0 +1,18 @@
+#### 1. Generate certificates for the follwoing user table
+| User  | Group  | Namespace  | Resources  | Access Types  |
+|--:|--:|--:|--:|---|
+| Mike  | Ops  | all  | all  | get, list, watch, update, patch, create, delete, deletecollection  |
+| Vitos  | Test  | test  | all  | get, list, watch, update, patch, create, delete  |
+| Dimash  | Dev  | dev  | all  | get, list, watch  |
+
+#### 2. Create kubeconfig files and set contexts for the above mentioned table.
+
+#### 3. Grant extra priviliges for the user `Dimash` to `get,list and watch` resources on `test` namespace.
+
+#### 4. Create a cluster role with the following properties.
+```
+name: config-reader
+resources: configmaps
+verbs: get, watch and list
+```
+Create a Cluster Role Binding which allows user `Dave` to use this Cluster Role.

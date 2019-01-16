@@ -1,0 +1,95 @@
+Get Info
+----------
+kubectl describe
+kubectl get
+kubectl logs  voting-appp-332710943-8z4x4
+
+
+Manage
+----------
+kubectl exec -it
+
+Deleting:
+----------
+kubectl delete services example-service
+ - pods
+ - deployments
+
+Misc:
+----------
+ kubectl label pods -l app=nginx tier=fe
+
+
+
+Deployment/replica sets vs Replication Controllet + rolling-update
+ - declarative vs imperative (ref1: giant swarm blog article)
+ - replica sets support advanced set based selectors
+ - advanced version of rc
+ - deployment is added in 1.2
+
+Ref1: https://blog.giantswarm.io/understanding-basic-kubernetes-concepts-using-deployments-manage-services-declaratively/
+
+Concepts:
+---------
+ - nodes and cluster
+ - containers
+ - pods
+ - labels
+ - selector
+ - replica-sets / replication-controller
+ - rolling-update
+ - deployments
+ - secrets
+ - configmaps
+ - daemons
+ - jobs
+ - namespaces
+
+
+ Pods
+  - Share namespace
+  - Can comunication over localhost/IPC namespace
+  - Shared volumes
+  - Always launched together
+   - Use Cases
+       - Logging and Monitoring
+       - Backup Services
+       - Event Publishers
+       - Proxies
+
+
+Components
+  Master:
+    - kube-apiserver
+    - etcd
+    - kube-controller-manager : background threads and tasks
+    - kube-scheduler
+    - addons
+    - dns
+
+  Node:
+    - kubelet
+    - kube-proxy : services/nattings
+    - docker/rkt
+
+Sequence :
+
+  - Setup Cluster
+  - Configure, Create a Namespace
+  - Launch a Pod
+  - Maintain the Fleet with RC
+  - Expose App with Service
+  - Deploy new version of the app with rcs and rolling updates
+  - Use Deployments and Replica Sets
+  - Declarative way to update apps with Deployments
+  - Injecting Configurations with ConfigMaps
+  - Creating a Ingress with Nginx
+  - Horizontally Scaling Apps
+  - Launching Tasks on all Nodes with Daemonjobs
+  - Persistent Storage
+  - Logs
+
+
+Questions:
+---------
+  - How to use rkt/runc with k8s

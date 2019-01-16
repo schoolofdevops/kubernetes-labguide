@@ -1,0 +1,11 @@
+---
+slug: kubernetes-fundamentals
+filename: kubernetes-fundamentals
+title: Kubernetes Fundamentals
+subtitle: Learn Kubernetes step by step
+description: This is a step by step guide with hands on exercises to learn  Kubernetes, a containers orchestration platform from Google.
+author: Gourav Shah
+copyright: 2017
+uuid: 74ea259c-dd83-4b9a-8bc2-99d04de57d79
+pdf_preview_page_range: 1..30
+epub_mobi_preview_chapter_range: 0..1
