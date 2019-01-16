@@ -1,4 +1,4 @@
-# Kubernetes Bootcamp
+# Kubernetes Lab Guide 
 ---------
 
 |      |      |
