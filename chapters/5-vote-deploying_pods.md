@@ -1,17 +1,6 @@
-# Deploying Pods
+# Lab K103: Launching Pods with Kubernetes
 
-Life of a pod
-
-  * Pending : in progress
-  * Running
-  * Succeeded : successfully exited
-  * Failed
-  * Unknown
-
-### Probes
-  * livenessProbe : Containers are Alive
-  * readinessProbe : Ready to Serve Traffic
-
+In this lab, you would learn how to launch applications using  the basic deployment unit of kubernetes i.e. **pods**. This time, you are going to do it by writing declarative configs with *yaml* syntax.
 
 ### Resource Configs
 
@@ -26,17 +15,23 @@ metadata:
 spec:
 ```
 
-Spec Schema: https://kubernetes.io/docs/user-guide/pods/multi-container/
+Use this [Kubernetes API Reference Document](https://kubernetes.io/docs/reference/) while writing the API specs. This is the most important reference  while working with kubernetes, so its highly advisible that you bookmark it for the version of kubernetes that you use.
 
-To list supported version of apis
+To find the versino of kubernetes use the following command,
 
 ```
-kubectl api-versions
+kubectl version -o yaml
+```
+
+To list API objects, use the following commands,
+
+```
+kubectl api-resources
 ```
 
 #### Writing Pod Spec
 
-Lets now create the  Pod config by adding the kind and specs to schme given in the file vote-pod.yaml as follows.
+Lets now create the  Pod config by adding the kind and specs to schma given in the file vote-pod.yaml as follows.
 
 Filename: k8s-code/pods/vote-pod.yaml
 ```
@@ -46,9 +41,24 @@ metadata:
 spec:
 ```
 
-Lets edit this and add the pod specs
+Following are the specs to launch the vote application,
 
-Filename: k8s-code/pods/vote-pod.yaml
+  * pod:
+    * name: vote
+    * labels:
+        * app: python
+        * role: vote
+        *  version: v1
+  * container
+    * name: app
+    * image: schoolofdevops/vote:v1
+
+
+
+Refer to the [Pod Spec](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.13/#pod-v1-core) find out the relevant properties and add it to the **vote-pod.yaml** provided in the supporting code repo.
+
+`Filename: k8s-code/pods/vote-pod.yaml`
+
 ```
 apiVersion: v1
 kind: Pod
@@ -62,15 +72,12 @@ spec:
   containers:
     - name: app
       image: schoolofdevops/vote:v1
-      ports:
-        - containerPort: 80
-          protocol: TCP
 ```
 
-[Use this link to refer to pod spec](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.9/#pod-v1-core)
+[Use this example link to refer to pod spec](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.13/#pod-v1-core)
 
 
-### Launching and operating a Pod
+### Launching and operating Pods
 
 
 To launch a monitoring screen to see whats being launched, use the following command in a new terminal window where kubectl is configured.
@@ -89,14 +96,14 @@ kubectl apply --help
 kubectl apply -f FILE
 ```
 
-To Launch pod using configs above,
+To **launch** pod using configs above,
 
 ```
 kubectl apply -f vote-pod.yaml
 
 ```
 
-To view pods
+To **view** pods
 
 ```
 kubectl get pods
@@ -112,51 +119,8 @@ To get detailed info
 kubectl describe pods vote
 ```
 
-[Output:]
-```
-Name:           vote
-Namespace:      default
-Node:           kube-3/192.168.0.80
-Start Time:     Tue, 07 Feb 2017 16:16:40 +0000
-Labels:         app=voting
-Status:         Running
-IP:             10.40.0.2
-Controllers:    <none>
-Containers:
-  vote:
-    Container ID:       docker://48304b35b9457d627b341e424228a725d05c2ed97cc9970bbff32a1b365d9a5d
-    Image:              schoolofdevops/vote:latest
-    Image ID:           docker-pullable://schoolofdevops/vote@sha256:3d89bfc1993d4630a58b831a6d44ef73d2be76a7862153e02e7a7c0cf2936731
-    Port:               80/TCP
-    State:              Running
-      Started:          Tue, 07 Feb 2017 16:16:52 +0000
-    Ready:              True
-    Restart Count:      0
-    Volume Mounts:
-      /var/run/secrets/kubernetes.io/serviceaccount from default-token-2n6j1 (ro)
-    Environment Variables:      <none>
-Conditions:
-  Type          Status
-  Initialized   True
-  Ready         True
-  PodScheduled  True
-Volumes:
-  default-token-2n6j1:
-    Type:       Secret (a volume populated by a Secret)
-    SecretName: default-token-2n6j1
-QoS Class:      BestEffort
-Tolerations:    <none>
-Events:
-  FirstSeen     LastSeen        Count   From                    SubObjectPath           Type            Reason          Message
-  ---------     --------        -----   ----                    -------------           --------        ------          -------
-  21s           21s             1       {default-scheduler }                            Normal          Scheduled       Successfully assigned vote to kube-3
-  20s           20s             1       {kubelet kube-3}        spec.containers{vote}   Normal          Pulling         pulling image "schoolofdevops/vote:latest"
-  10s           10s             1       {kubelet kube-3}        spec.containers{vote}   Normal          Pulled          Successfully pulled image "schoolofdevops/vote:latest"
-  9s            9s              1       {kubelet kube-3}        spec.containers{vote}   Normal          Created         Created container with docker id 48304b35b945; Security:[seccomp=unconfined]
-  9s            9s              1       {kubelet kube-3}        spec.containers{vote}   Normal          Started         Started container with docker id 48304b35b945
-```
 
-Commands to operate the pod
+Commands to  **operate** the pod
 
 ```
 
@@ -167,7 +131,7 @@ kubectl exec -it vote  sh
 
 ```
 
-Inside the container in a pod
+Run the following commands inside the container in a pod after running exec command as above
 
 ```
 ifconfig
@@ -177,89 +141,11 @@ cat /proc/cpuinfo
 ps aux
 ```
 
-
-### Lab: Examine pods from the dashboard
-
-### Port Forwarding
-
-This works if you have setup **kubectl** on a local laptop.
-
-```
-kubectl port-forward --help
-kubectl port-forward vote 8000:80
-```
-
-## Troubleshooting Tip
-
-If you would like to know whats the current status of the pod, and if its in a error state, find out the cause of the error, following command could be very handy.
-
-```
-kubectl get pod vote -o yaml
-```
-
-Lets learn by example. Update pod spec and change the image to something that does not exist.
-
-```
-kubectl edit pod vote
-```
-
-This will open a editor. Go to the line which defines image  and change it to a tag that does not exist
-
-e.g.
-
-```
-spec:
-  containers:
-  - image: schoolofdevops/vote:srgwegew
-    imagePullPolicy: Always
-```
-
-where tag **srgwegew** does not exist. As soon as you save this file, kubernetes will apply the change.
-
-Now check the status,
-```
-kubectl get pods  
-
-NAME      READY     STATUS             RESTARTS   AGE
-vote      0/1       ImagePullBackOff   0          27m
-```
-
-The above output will only show the status, with a vague error. To find the exact error, lets get the stauts of the pod.
-
-Observe the **status** field.  
+`use ^d or exit to log out`
 
 
-```
-kubectl get pod vote -o yaml
-```
 
-Now the status field shows a detailed information, including what the exact error. Observe the following snippet...
-
-```
-status:
-...
-containerStatuses:
-....
-state:
-  waiting:
-    message: 'rpc error: code = Unknown desc = Error response from daemon: manifest
-      for schoolofdevops/vote:latst not found'
-    reason: ErrImagePull
-hostIP: 139.59.232.248
-```
-
-This will help you to pinpoint to the exact cause and fix it quickly.
-
-
-Now that you  are done experimenting with pod, delete it with the following command,
-
-```
-kubectl delete pod vote
-
-kubectl get pods
-```
-
-## Attach a Volume to the Pod
+## Adding a Volume for data persistence
 
 Lets create a pod for database and attach a volume to it. To achieve this we will need to
 
@@ -391,10 +277,77 @@ df -h
 
 ```
 
+## Adding Resource requests and limits
 
-## Exercise
+We can control the amount of resource requested and also put a limit on the maximum a container in a pod could take up.  This can be done by adding to the existing pod spec as below. Refer to [official document on resource management](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/) here. 
 
-Create a pod definition for redis and deploy.
+
+`Filename: vote-pod.yaml`
+
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: vote
+  labels:
+    app: python
+    role: vote
+    version: v1
+spec:
+  containers:
+    - name: app
+      image: schoolofdevops/vote:v1
+      resources:
+        requests:
+          memory: "64Mi"
+          cpu: "50m"
+        limits:
+          memory: "128Mi"
+          cpu: "250m"
+```
+
+Lets apply the changes now
+
+```
+kubectl apply -f vote-pod.yaml
+```
+
+If you already have **vote** pod running, you may see an output similar to below,
+
+[sample output]
+
+```
+The Pod "vote" is invalid: spec: Forbidden: pod updates may not change fields other than `spec.containers[*].image`, `spec.initContainers[*].image`, `spec.activeDeadlineSeconds` or `spec.tolerations` (only additions to existing tolerations)
+{"Volumes":[{"Name":"default-token-snbj4","HostPath":null,"EmptyDir":null,"GCEPersistentDisk":null,"AWSElasticBlockStore":null,"GitRepo":null,"Secret":{"SecretName":"default-token-snbj4","Items":null,"DefaultMode":420,"Optional":null},"NFS":null,"ISCSI":null,"Glusterfs":null,"PersistentVolumeClaim":null,"RBD":null,"Quobyte":null,"FlexVolume":null,"Cinder":null,"CephFS":null,"Flocker":null,"DownwardAPI":null,"FC":null,"AzureFile":null,"ConfigMap":null,"VsphereVolume":null,"AzureDisk":null,"PhotonPersistentDisk":null,"Projected":null,"PortworxVolume":null,"ScaleIO":null,"StorageOS":null}],"InitContainers":null,"Containers":[{"Name":"app","Image":"schoolofdevops/vote:v1","Command":null,"Args":null,"WorkingDir":"","Ports":null,"EnvFrom":null,"Env":null,"Resources":{"Limits":
+....
+...
+```
+
+From the above output, its clear that not all the fields are mutable(except for a few e.g labels). Container based deployments primarily follow concept of **immutable deployments**. So to bring your change into effect, you need to re create the pod as,
+
+```
+kubectl delete pod vote
+
+kubectl apply -f vote-pod.yaml
+
+kubectl describe pod vote
+```
+
+From the output of the describe command above, you could confirm the resource constraints you added are in place.
+
+#### Exercise
+
+  * Try to change the *resources.request.memory* to a value greater than the available memory on the node. Observe what happens when you create the pod with the modified configurations.
+
+### Deleting Pods
+
+Now that you  are done experimenting with pod, **delete** it with the following command,
+
+```
+kubectl delete pod vote web db
+
+kubectl get pods
+```
 
 #### Reading List
 

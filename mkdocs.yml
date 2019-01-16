@@ -6,11 +6,10 @@ pages:
      - Lab D102 - Building and Publishing Docker Images: "docker/dockerizing-voteapp.md"
      - Lab D103 - Docker Networking: "docker/docker-networking.md"
      - Lab D104 - Docker Volumes: "docker/docker-volumes.md"
-  - Setup:
+  - Kubernetes Fundamentals:
      - Lab K101 - Setup Kubernetes Cluster: "3_install_kubernetes.md"
      - Lab K102 - Kubernetes Quickdive: "quickdive.md"
-  - Kubernetes Fundamentals:
-     - Launching Pods: "5-vote-deploying_pods.md"
+     - Lab K103 - Kubernetes LaunchPods: "5-vote-deploying_pods.md"
      - Making application highly available: "replication.md"
      - Publishing appliaction and Service Discovery: "7-vote-exposing_app_with_service.md"
      - Defining Update Strategy: "6-vote-kubernetes_deployment.md"
