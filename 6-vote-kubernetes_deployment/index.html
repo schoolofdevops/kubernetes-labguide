@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Defining Update Strategy - Kubernetes Lab Guide</title>
+  <title>Lab K106 - Defining Release Strategy with Deployments - Kubernetes Lab Guide</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -17,7 +17,7 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Defining Update Strategy";
+    var mkdocs_page_name = "Lab K106 - Defining Release Strategy with Deployments";
     var mkdocs_page_input_path = "6-vote-kubernetes_deployment.md";
     var mkdocs_page_url = null;
   </script>
@@ -59,19 +59,19 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../docker/operating-containers/">Lab D101 - Operating Containers</a>
+    <a class="" href="../operating-containers/">Lab D101 - Operating Containers</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../docker/dockerizing-voteapp/">Lab D102 - Building and Publishing Docker Images</a>
+    <a class="" href="../dockerizing-voteapp/">Lab D102 - Building and Publishing Docker Images</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../docker/docker-networking/">Lab D103 - Docker Networking</a>
+    <a class="" href="../docker-networking/">Lab D103 - Docker Networking</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../docker/docker-volumes/">Lab D104 - Docker Volumes</a>
+    <a class="" href="../docker-volumes/">Lab D104 - Docker Volumes</a>
                 </li>
     </ul>
 	    </li>
@@ -94,18 +94,18 @@
                 </li>
                 <li class="">
                     
-    <a class="" href="../replication/">Making application highly available</a>
+    <a class="" href="../replication/">Lab K104 - Adding HA and Scalability with ReplicaSets</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../7-vote-exposing_app_with_service/">Publishing appliaction and Service Discovery</a>
+    <a class="" href="../7-vote-exposing_app_with_service/">Lab K105 - Load Balancing and Service Discovery with Services</a>
                 </li>
                 <li class=" current">
                     
-    <a class="current" href="./">Defining Update Strategy</a>
+    <a class="current" href="./">Lab K106 - Defining Release Strategy with Deployments</a>
     <ul class="subnav">
             
-    <li class="toctree-l3"><a href="#creating-a-deployment">Creating a Deployment</a></li>
+    <li class="toctree-l3"><a href="#lab-k106-defining-release-strategy-with-deployment">LAB K106 - Defining Release Strategy with  Deployment</a></li>
     
         <ul>
         
@@ -126,11 +126,11 @@
                 </li>
                 <li class="">
                     
-    <a class="" href="../9-vote-configmaps_and_secrets/">Managing Configurations and Secrets</a>
+    <a class="" href="../9-vote-configmaps_and_secrets/">Lab K107 - Configurations Management with ConfigMaps and Secrets</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../vote-persistent-volumes/">Making Data Persist</a>
+    <a class="" href="../vote-persistent-volumes/">Lab K108 - Peristent Volumes</a>
                 </li>
     </ul>
 	    </li>
@@ -246,7 +246,7 @@
         
       
     
-    <li>Defining Update Strategy</li>
+    <li>Lab K106 - Defining Release Strategy with Deployments</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -256,7 +256,7 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="creating-a-deployment">Creating a Deployment</h1>
+                <h1 id="lab-k106-defining-release-strategy-with-deployment">LAB K106 - Defining Release Strategy with  Deployment</h1>
 <p>A Deployment is a higher level abstraction which sits on top of replica sets and allows you to manage the way applications are deployed, rolled back at a controlled rate.</p>
 <p>Deployment has mainly two responsibilities,</p>
 <ul>
@@ -268,7 +268,7 @@ cp vote-rs.yaml vote-deploy.yaml
 </code></pre>
 
 <p>Deployment spec (deployment.spec) contains everything that replica set has + strategy. Lets add it as follows,</p>
-<p>File: vote-deploy.yaml</p>
+<p><code>file: vote-deploy.yaml</code></p>
 <pre><code>apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -280,28 +280,31 @@ spec:
       maxSurge: 2
       maxUnavailable: 1
   revisionHistoryLimit: 4
-  paused: false
-  replicas: 8
+  replicas: 12
   minReadySeconds: 20
   selector:
     matchLabels:
       role: vote
     matchExpressions:
-      - {key: version, operator: In, values: [v1, v2, v3]}
+      - {key: version, operator: In, values: [v1, v2, v3, v4, v5]}
   template:
     metadata:
       name: vote
       labels:
         app: python
         role: vote
-        version: v2
+        version: v1
     spec:
       containers:
         - name: app
-          image: schoolofdevops/vote:v2
-          ports:
-            - containerPort: 80
-              protocol: TCP
+          image: schoolofdevops/vote:v1
+          resources:
+            requests:
+              memory: &quot;64Mi&quot;
+              cpu: &quot;50m&quot;
+            limits:
+              memory: &quot;128Mi&quot;
+              cpu: &quot;250m&quot;
 </code></pre>
 
 <p>This time, start monitoring with --show-labels options added.</p>
@@ -329,7 +332,7 @@ vote   3         3         3            1           3m
 
 <h2 id="scaling-a-deployment">Scaling a deployment</h2>
 <p>To scale a deployment in Kubernetes:</p>
-<pre><code>kubectl scale deployment/vote --replicas=12
+<pre><code>kubectl scale deployment/vote --replicas=15
 
 kubectl rollout status deployment/vote
 
@@ -337,8 +340,8 @@ kubectl rollout status deployment/vote
 
 <p>Sample output:</p>
 <pre><code>
-Waiting for rollout to finish: 5 of 12 updated replicas are available...
-Waiting for rollout to finish: 6 of 12 updated replicas are available...
+Waiting for rollout to finish: 5 of 15 updated replicas are available...
+Waiting for rollout to finish: 6 of 15 updated replicas are available...
 deployment &quot;vote&quot; successfully rolled out
 </code></pre>
 
@@ -346,24 +349,20 @@ deployment &quot;vote&quot; successfully rolled out
 <pre><code>kubectl edit deploy/vote
 </code></pre>
 
-<p>[change replicas to 15 from the editor, save and observe]</p>
+<p>[change replicas to 8 from the editor, save and observe]</p>
 <h2 id="rolling-updates-in-action">Rolling Updates in Action</h2>
 <p>Now, update the deployment spec to apply</p>
 <p>file: vote-deploy.yaml</p>
-<pre><code>spec:
+<pre><code>
 ...
-  replicas: 15
-...
-labels:
-   app: python
-   role: vote
-   version: v3
-...
-template:   
+template:
+  metadata:
+    labels:
+      version: v2   
   spec:
     containers:
       - name: app
-        image: schoolofdevops/vote:v3
+        image: schoolofdevops/vote:v2
 
 </code></pre>
 
@@ -381,6 +380,7 @@ kubectl rollout history deploy/vote --revision=1
 
 </code></pre>
 
+<p>Try updating the version of the image from v2 to v3,v4,v5. Repeat a few times to observe how it rolls out a new version.  </p>
 <h2 id="undo-and-rollback">Undo and Rollback</h2>
 <p>file: vote-deploy.yaml</p>
 <pre><code>spec:
@@ -403,7 +403,7 @@ kubectl rollout history deploy/vote --revision=xx
 <p>where replace xxx with revisions</p>
 <p>Find out the previous revision with sane configs.</p>
 <p>To undo to a sane version (for example revision 3)</p>
-<pre><code>kubectl rollout undo deploy/vote --to-revision=3
+<pre><code>kubectl rollout undo deploy/vote --to-revision=2
 </code></pre>
               
             </div>
@@ -415,7 +415,7 @@ kubectl rollout history deploy/vote --revision=xx
         <a href="../11_deploying_sample_app/" class="btn btn-neutral float-right" title="Mini Project">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../7-vote-exposing_app_with_service/" class="btn btn-neutral" title="Publishing appliaction and Service Discovery"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../7-vote-exposing_app_with_service/" class="btn btn-neutral" title="Lab K105 - Load Balancing and Service Discovery with Services"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   

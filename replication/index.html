@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Making application highly available - Kubernetes Lab Guide</title>
+  <title>Lab K104 - Adding HA and Scalability with ReplicaSets - Kubernetes Lab Guide</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -17,7 +17,7 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Making application highly available";
+    var mkdocs_page_name = "Lab K104 - Adding HA and Scalability with ReplicaSets";
     var mkdocs_page_input_path = "replication.md";
     var mkdocs_page_url = null;
   </script>
@@ -59,19 +59,19 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../docker/operating-containers/">Lab D101 - Operating Containers</a>
+    <a class="" href="../operating-containers/">Lab D101 - Operating Containers</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../docker/dockerizing-voteapp/">Lab D102 - Building and Publishing Docker Images</a>
+    <a class="" href="../dockerizing-voteapp/">Lab D102 - Building and Publishing Docker Images</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../docker/docker-networking/">Lab D103 - Docker Networking</a>
+    <a class="" href="../docker-networking/">Lab D103 - Docker Networking</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../docker/docker-volumes/">Lab D104 - Docker Volumes</a>
+    <a class="" href="../docker-volumes/">Lab D104 - Docker Volumes</a>
                 </li>
     </ul>
 	    </li>
@@ -94,16 +94,18 @@
                 </li>
                 <li class=" current">
                     
-    <a class="current" href="./">Making application highly available</a>
+    <a class="current" href="./">Lab K104 - Adding HA and Scalability with ReplicaSets</a>
     <ul class="subnav">
             
-    <li class="toctree-l3"><a href="#making-application-high-available-with-replication-controllers">Making application high available with Replication Controllers</a></li>
+    <li class="toctree-l3"><a href="#lab-k104-adding-ha-and-scalability-with-replicasets">Lab K104 - Adding HA and Scalability with ReplicaSets</a></li>
     
         <ul>
         
-            <li><a class="toctree-l4" href="#setting-up-a-namespace">Setting up a Namespace</a></li>
+            <li><a class="toctree-l4" href="#creating-a-namespace-and-switching-to-it">Creating a Namespace and switching to it</a></li>
         
             <li><a class="toctree-l4" href="#creating-a-namespace">Creating a namespace</a></li>
+        
+            <li><a class="toctree-l4" href="#adding-replicaset-configurations">Adding ReplicaSet Configurations</a></li>
         
         </ul>
     
@@ -112,11 +114,11 @@
                 </li>
                 <li class="">
                     
-    <a class="" href="../7-vote-exposing_app_with_service/">Publishing appliaction and Service Discovery</a>
+    <a class="" href="../7-vote-exposing_app_with_service/">Lab K105 - Load Balancing and Service Discovery with Services</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../6-vote-kubernetes_deployment/">Defining Update Strategy</a>
+    <a class="" href="../6-vote-kubernetes_deployment/">Lab K106 - Defining Release Strategy with Deployments</a>
                 </li>
                 <li class="">
                     
@@ -124,11 +126,11 @@
                 </li>
                 <li class="">
                     
-    <a class="" href="../9-vote-configmaps_and_secrets/">Managing Configurations and Secrets</a>
+    <a class="" href="../9-vote-configmaps_and_secrets/">Lab K107 - Configurations Management with ConfigMaps and Secrets</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../vote-persistent-volumes/">Making Data Persist</a>
+    <a class="" href="../vote-persistent-volumes/">Lab K108 - Peristent Volumes</a>
                 </li>
     </ul>
 	    </li>
@@ -244,7 +246,7 @@
         
       
     
-    <li>Making application highly available</li>
+    <li>Lab K104 - Adding HA and Scalability with ReplicaSets</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -254,15 +256,12 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="making-application-high-available-with-replication-controllers">Making application high available with Replication Controllers</h1>
+                <h1 id="lab-k104-adding-ha-and-scalability-with-replicasets">Lab K104 - Adding HA and Scalability with ReplicaSets</h1>
 <p>If you are not running a monitoring screen, start it in a new terminal with the following command.</p>
 <pre><code>watch -n 1 kubectl get  pod,deploy,rs,svc
 </code></pre>
 
-<pre><code>kubectl delete pod vote
-</code></pre>
-
-<h3 id="setting-up-a-namespace">Setting up a Namespace</h3>
+<h3 id="creating-a-namespace-and-switching-to-it">Creating a Namespace and switching to it</h3>
 <p>Check current config</p>
 <pre><code>
 kubectl config view
@@ -272,36 +271,30 @@ kubectl config view
 <h2 id="creating-a-namespace">Creating a namespace</h2>
 <p>Namespaces offers separation of resources running on the same physical infrastructure into virtual clusters. It is typically useful in mid to large scale environments with multiple projects, teams and need separate scopes. It could also be useful to map to your workflow stages e.g. dev, stage, prod.   </p>
 <p>Lets create a namespace called <strong>instavote</strong>  </p>
-<pre><code>cd projects/instavote
-cat instavote-ns.yaml
-</code></pre>
-
-<p>[output]</p>
-<pre><code>kind: Namespace
-apiVersion: v1
-metadata:
-  name: instavote
-</code></pre>
-
-<p>Lets create a namespace</p>
 <pre><code>kubectl get ns
-kubectl apply -f instavote-ns.yaml
+
+kubectl create namespace instavote
 
 kubectl get ns
+
 </code></pre>
 
 <p>And switch to it</p>
-<pre><code>kubectl config --help
+<pre><code>
+kubectl config --help
 
 kubectl config get-contexts
 
 kubectl config current-context
 
-kubectl config set-context $(kubectl config current-context) --namespace=instavote
+kubectl config set-context --help
+
+kubectl config set-context --current --namespace=instavote
+
+kubectl config get-contexts
 
 kubectl config view
 
-kubectl config get-contexts
 
 </code></pre>
 
@@ -311,9 +304,9 @@ kubectl config get-contexts
 kubectl apply -f vote-pod.yaml
 
 kubectl get pods
-cd ../projects/instavote/dev/
 </code></pre>
 
+<h2 id="adding-replicaset-configurations">Adding ReplicaSet Configurations</h2>
 <p>Lets now write the spec for the Rplica Set. This is going to mainly contain,</p>
 <ul>
 <li>replicas</li>
@@ -321,36 +314,18 @@ cd ../projects/instavote/dev/
 <li>template (pod spec )</li>
 <li>minReadySeconds</li>
 </ul>
-<p><em>file: vote-rs.yaml</em></p>
-<pre><code>apiVersion: apps/v1
-kind: ReplicaSet
-metadata:
-  name: vote
-spec:
-  replicas: 5
-  minReadySeconds: 20
-  selector:
-    matchLabels:
-      role: vote
-    matchExpressions:
-      - {key: version, operator: In, values: [v1, v2, v3]}
-  template:
+<p>From here on, we would switch to the project and environment specific path and work from there.</p>
+<pre><code>cd projects/instavote/dev
+
 </code></pre>
 
-<p>Lets now add the metadata and spec from pod spec defined in vote-pod.yaml. And with that, the Replica Set Spec changes to</p>
-<p><em>file: vote-rs.yaml</em></p>
-<pre><code>apiVersion: apps/v1
-kind: ReplicaSet
+<p><code>edit file: vote-rs.yaml</code></p>
+<pre><code>apiVersion: xxx
+kind: xxx
 metadata:
-  name: vote
+  xxx
 spec:
-  replicas: 5
-  minReadySeconds: 20
-  selector:
-    matchLabels:
-      role: vote
-    matchExpressions:
-      - {key: version, operator: In, values: [v1, v2, v3]}
+  xxx
   template:
     metadata:
       name: vote
@@ -362,13 +337,51 @@ spec:
       containers:
         - name: app
           image: schoolofdevops/vote:v1
-          ports:
-            - containerPort: 80
-              protocol: TCP
-
+          resources:
+            requests:
+              memory: &quot;64Mi&quot;
+              cpu: &quot;50m&quot;
+            limits:
+              memory: &quot;128Mi&quot;
+              cpu: &quot;250m&quot;
 </code></pre>
 
-<h3 id="replica-sets-in-action">Replica Sets in Action</h3>
+<p>Above file already containts the spec that you had written for the pod. You would observe its already been added as part of <em>spec.template</em> for replicaset.</p>
+<p>Lets now add the details specific to replicaset.</p>
+<p><em>file: vote-rs.yaml</em></p>
+<pre><code>apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: vote
+spec:
+  replicas: 4
+  minReadySeconds: 20
+  selector:
+    matchLabels:
+      role: vote
+    matchExpressions:
+      - {key: version, operator: In, values: [v1, v2, v3, v4, v5]}
+  template:
+    metadata:
+      name: vote
+      labels:
+        app: python
+        role: vote
+        version: v1
+    spec:
+      containers:
+        - name: app
+          image: schoolofdevops/vote:v1
+          resources:
+            requests:
+              memory: &quot;64Mi&quot;
+              cpu: &quot;50m&quot;
+            limits:
+              memory: &quot;128Mi&quot;
+              cpu: &quot;250m&quot;
+</code></pre>
+
+<p>The complete file will look similar to above. Lets now go ahead and apply it.</p>
 <pre><code>kubectl apply -f vote-rs.yaml --dry-run
 
 kubectl apply -f vote-rs.yaml
@@ -379,37 +392,18 @@ kubectl describe rs vote
 
 kubectl get pods
 
-
-</code></pre>
-
-<p><strong>Exercise</strong> :  </p>
-<ul>
-<li>Switch to monitoring screen, observe how many replicas were created  and why</li>
-<li>Compare selectors and labels of the pods created with and without replica sets</li>
-</ul>
-<pre><code>kubectl get pods
-
 kubectl get pods --show-labels
 </code></pre>
 
-<h3 id="exercise-deploying-new-version-of-the-application">Exercise: Deploying new version of the application</h3>
-<pre><code>kubectl edit rs/vote
-</code></pre>
-
-<p>Update the version of the image from <strong>schoolofdevops/vote:v1</strong> to <strong>schoolofdevops/vote:v2</strong></p>
-<p>Save the file. Observe if application got updated. Note what do you observe. Do you see the new version deployed ??</p>
-<h3 id="exercise-self-healing-replica-sets">Exercise: Self Healing Replica Sets</h3>
-<p>List the pods and kill some of those, see what replica set does.</p>
+<h3 id="high-availability">High Availability</h3>
+<p>Try deleting pods created by the replicaset,</p>
+<p><code>replace pod-xxxx and pod-yyyy with actuals</code></p>
 <pre><code>kubectl get pods
-kubectl delete pods  vote-xxxx  vote-yyyy
+
+kubectl delete pods vote-xxxx vote-yyyy
 </code></pre>
 
-<p>where replace xxxx and yyyy with actual pod ids.</p>
-<p>Questions:</p>
-<ul>
-<li>Did replica set replaced the pods ?</li>
-<li>Which version of the application is running now ?</li>
-</ul>
+<p>Observe as the pods are automatically created again.</p>
 <p>Lets now delete the pod created independent of replica set.</p>
 <pre><code>kubectl get pods
 kubectl delete pods  vote
@@ -417,6 +411,31 @@ kubectl delete pods  vote
 
 <p>Observe what happens.
   * Does replica set take any action after deleting the pod created outside of its spec ? Why?</p>
+<h3 id="exercise-deploying-new-version-of-the-application">Exercise: Deploying new version of the application</h3>
+<pre><code>kubectl edit rs/vote
+</code></pre>
+
+<p>Update the version of the image from <strong>schoolofdevops/vote:v1</strong> to <strong>schoolofdevops/vote:v2</strong></p>
+<p>Save the file.</p>
+<p>Observe what happens ?</p>
+<ul>
+<li>Did application get  updated.</li>
+<li>Did updating replicaset launched new pods to deploy new version ?</li>
+</ul>
+<h3 id="scalability">Scalability</h3>
+<p>Scaling up application is as easy as running,  </p>
+<pre><code>kubectl scale --replicas=8 rs/vote
+
+kubectl get pods --show-labels
+</code></pre>
+
+<p>Observe what happens</p>
+<ul>
+<li>Did the number of  replicas increase to 8 ?</li>
+<li>Which version of the app are the new pods running with ?</li>
+</ul>
+<h4 id="summary">Summary</h4>
+<p>With <strong>ReplicaSets</strong> your application is now high available as well as scalable. However ReplicaSet by itself does not have the intelligence to trigger a rollout if you update the version. For that, you are going to need a <strong>deployment</strong> which is something you would learn in an upcoming  lesson.</p>
               
             </div>
           </div>
@@ -424,7 +443,7 @@ kubectl delete pods  vote
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../7-vote-exposing_app_with_service/" class="btn btn-neutral float-right" title="Publishing appliaction and Service Discovery">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../7-vote-exposing_app_with_service/" class="btn btn-neutral float-right" title="Lab K105 - Load Balancing and Service Discovery with Services">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
         <a href="../5-vote-deploying_pods/" class="btn btn-neutral" title="Lab K103 - Kubernetes LaunchPods"><span class="icon icon-circle-arrow-left"></span> Previous</a>
