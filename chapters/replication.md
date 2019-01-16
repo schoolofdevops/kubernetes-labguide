@@ -1,5 +1,5 @@
 
-# Making application high available with Replication Controllers
+# Lab K104 - Adding HA and Scalability with ReplicaSets
 
 If you are not running a monitoring screen, start it in a new terminal with the following command.
 
@@ -8,12 +8,7 @@ watch -n 1 kubectl get  pod,deploy,rs,svc
 ```
 
 
-```
-kubectl delete pod vote
-```
-
-
-### Setting up a Namespace
+### Creating a Namespace and switching to it
 
 
 
@@ -31,47 +26,35 @@ Namespaces offers separation of resources running on the same physical infrastru
 
 Lets create a namespace called **instavote**  
 
-
-
-```
-cd projects/instavote
-cat instavote-ns.yaml
-```
-
-[output]
-```
-kind: Namespace
-apiVersion: v1
-metadata:
-  name: instavote
-```
-
-Lets create a namespace
-
 ```
 kubectl get ns
-kubectl apply -f instavote-ns.yaml
+
+kubectl create namespace instavote
 
 kubectl get ns
+
 ```
-
-
-
 And switch to it
+
 ```
+
 kubectl config --help
 
 kubectl config get-contexts
 
 kubectl config current-context
 
-kubectl config set-context $(kubectl config current-context) --namespace=instavote
+kubectl config set-context --help
 
-kubectl config view
+kubectl config set-context --current --namespace=instavote
 
 kubectl config get-contexts
 
+kubectl config view
+
+
 ```
+
 
 **Exercise**: Go back to the monitoring screen and observe what happens after switching the namespace.
 
@@ -83,8 +66,9 @@ cd k8s-code/pods
 kubectl apply -f vote-pod.yaml
 
 kubectl get pods
-cd ../projects/instavote/dev/
 ```
+
+## Adding ReplicaSet Configurations
 
 Lets now write the spec for the Rplica Set. This is going to mainly contain,
 
@@ -94,43 +78,24 @@ Lets now write the spec for the Rplica Set. This is going to mainly contain,
   * minReadySeconds
 
 
+From here on, we would switch to the project and environment specific path and work from there.
 
-*file: vote-rs.yaml*
 
 ```
-apiVersion: apps/v1
-kind: ReplicaSet
+cd projects/instavote/dev
+
+```
+
+
+`edit file: vote-rs.yaml`
+
+```
+apiVersion: xxx
+kind: xxx
 metadata:
-  name: vote
+  xxx
 spec:
-  replicas: 5
-  minReadySeconds: 20
-  selector:
-    matchLabels:
-      role: vote
-    matchExpressions:
-      - {key: version, operator: In, values: [v1, v2, v3]}
-  template:
-```
-
-
-Lets now add the metadata and spec from pod spec defined in vote-pod.yaml. And with that, the Replica Set Spec changes to
-
-*file: vote-rs.yaml*
-
-```
-apiVersion: apps/v1
-kind: ReplicaSet
-metadata:
-  name: vote
-spec:
-  replicas: 5
-  minReadySeconds: 20
-  selector:
-    matchLabels:
-      role: vote
-    matchExpressions:
-      - {key: version, operator: In, values: [v1, v2, v3]}
+  xxx
   template:
     metadata:
       name: vote
@@ -142,13 +107,55 @@ spec:
       containers:
         - name: app
           image: schoolofdevops/vote:v1
-          ports:
-            - containerPort: 80
-              protocol: TCP
-
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "128Mi"
+              cpu: "250m"
 ```
 
-### Replica Sets in Action
+Above file already containts the spec that you had written for the pod. You would observe its already been added as part of *spec.template* for replicaset.
+
+Lets now add the details specific to replicaset.
+
+*file: vote-rs.yaml*
+
+```
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: vote
+spec:
+  replicas: 4
+  minReadySeconds: 20
+  selector:
+    matchLabels:
+      role: vote
+    matchExpressions:
+      - {key: version, operator: In, values: [v1, v2, v3, v4, v5]}
+  template:
+    metadata:
+      name: vote
+      labels:
+        app: python
+        role: vote
+        version: v1
+    spec:
+      containers:
+        - name: app
+          image: schoolofdevops/vote:v1
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "128Mi"
+              cpu: "250m"
+```
+
+The complete file will look similar to above. Lets now go ahead and apply it.
 
 
 ```
@@ -162,19 +169,31 @@ kubectl describe rs vote
 
 kubectl get pods
 
-
+kubectl get pods --show-labels
 ```
 
-**Exercise** :  
+### High Availability
 
-  * Switch to monitoring screen, observe how many replicas were created  and why
-  * Compare selectors and labels of the pods created with and without replica sets
+Try deleting pods created by the replicaset,
 
+`replace pod-xxxx and pod-yyyy with actuals`
 ```
 kubectl get pods
 
-kubectl get pods --show-labels
+kubectl delete pods vote-xxxx vote-yyyy
 ```
+Observe as the pods are automatically created again.
+
+
+Lets now delete the pod created independent of replica set.
+
+```
+kubectl get pods
+kubectl delete pods  vote
+```
+
+Observe what happens.
+  * Does replica set take any action after deleting the pod created outside of its spec ? Why?
 
 ### Exercise: Deploying new version of the application
 
@@ -188,28 +207,12 @@ Update the version of the image from **schoolofdevops/vote:v1** to **schoolofdev
 Save the file. Observe if application got updated. Note what do you observe. Do you see the new version deployed ??
 
 
-### Exercise: Self Healing Replica Sets
+### Scalability
 
-List the pods and kill some of those, see what replica set does.
+Scaling up application is as easy as running,  
 
 ```
+kubectl scale --replicas=8 rs/vote
+
 kubectl get pods
-kubectl delete pods  vote-xxxx  vote-yyyy
-```
-
-where replace xxxx and yyyy with actual pod ids.
-
-Questions:
-
-  * Did replica set replaced the pods ?
-  * Which version of the application is running now ?
-
-
-Lets now delete the pod created independent of replica set.
-```
-kubectl get pods
-kubectl delete pods  vote
-```
-
-Observe what happens.
-  * Does replica set take any action after deleting the pod created outside of its spec ? Why?
+```  
