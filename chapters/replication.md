@@ -204,7 +204,12 @@ kubectl edit rs/vote
 
 Update the version of the image from **schoolofdevops/vote:v1** to **schoolofdevops/vote:v2**
 
-Save the file. Observe if application got updated. Note what do you observe. Do you see the new version deployed ??
+Save the file.
+
+Observe what happens ?
+
+  * Did application get  updated.
+  * Did updating replicaset launched new pods to deploy new version ?
 
 
 ### Scalability
@@ -214,5 +219,15 @@ Scaling up application is as easy as running,
 ```
 kubectl scale --replicas=8 rs/vote
 
-kubectl get pods
+kubectl get pods --show-labels
 ```  
+
+Observe what happens
+
+  * Did the number of  replicas increase to 8 ?
+  * Which version of the app are the new pods running with ?
+
+
+#### Summary
+
+With **ReplicaSets** your application is now high available as well as scalable. However ReplicaSet by itself does not have the intelligence to trigger a rollout if you update the version. For that, you are going to need a **deployment** which is something you would learn in an upcoming  lesson.
