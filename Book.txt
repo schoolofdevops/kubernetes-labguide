@@ -3,7 +3,6 @@ frontmatter:
 maketitle
 tableofcontents
 mainmatter:
-index.md
 2_kube_cluster_vagrant.md
 3_install_kubernetes.md
 5-vote-deploying_pods.md

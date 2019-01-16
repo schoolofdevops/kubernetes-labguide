@@ -1,12 +1,14 @@
-site_name: Ultimate Kubernetes Bootcamp
+site_name: Kubernetes Lab Guide
 pages:
   - Home: "index.md"
+  - Just Enough Docker:
+     - Lab D101 - Operating Containers: "docker/operating-containers.md"
+     - Lab D102 - Building and Publishing Docker Images: "docker/dockerizing-voteapp.md"
+     - Lab D103 - Docker Networking: "docker/docker-networking.md"
+     - Lab D104 - Docker Volumes: "docker/docker-volumes.md"
   - Setup:
-     - Using minikube to setup single node environment: "minikube.md"
-     - Provisioning VMs with Vagrant: "2_kube_cluster_vagrant.md"
-     - Setup Kubernetes Cluster: "3_install_kubernetes.md"
-     - Kuberentes Visualizer : "kube_visualizer.md"
-     - Kubernetes Quickdive: "quickdive.md"
+     - Lab K101 - Setup Kubernetes Cluster: "3_install_kubernetes.md"
+     - Lab K102 - Kubernetes Quickdive: "quickdive.md"
   - Kubernetes Fundamentals:
      - Launching Pods: "5-vote-deploying_pods.md"
      - Making application highly available: "replication.md"

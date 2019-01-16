@@ -1,5 +1,5 @@
 
-# Kubeadm : Bring Your Own Nodes (BYON)
+# LAB - Setting up Kubernetes Cluster with Kubeadm  
 
 This documents describes how to setup kubernetes from scratch on your own nodes, without using a managed service. This setup uses **kubeadm** to install and configure kubernetes cluster.
 
@@ -12,9 +12,10 @@ The below steps are applicable for the below mentioned OS
 
 | OS | Version | Codename |  
 | --- | --- | -- |  
-| **Ubuntu** | **16.04** | **Xenial** |  
+| **Ubuntu** | **16.04 / 18.04** | **Xenial** |  
 
-## Base Setup (Skip if using vagrant)
+## Base Setup
+`Skip this step if using a pre configured lab environment`
 
 **Skip this step and scroll to Initializing Master if you have setup nodes with vagrant**
 
@@ -22,6 +23,8 @@ The below steps are applicable for the below mentioned OS
 On all nodes which would be part of this cluster, you need to do the base setup as described in the following steps. To simplify this, you could also   [download and run this script](https://gist.github.com/initcron/40b71211cb693f541ce35fe3fb1adb11)
 
 ### Create Kubernetes Repository
+`Skip this step if using a pre configured lab environment`
+
 
 We need to create a repository to download Kubernetes.
 
@@ -36,6 +39,7 @@ EOF
 
 
 ### Installation of the packages
+`Skip this step if using a pre configured lab environment`
 
 We should update the machines before installing so that we can update the repository.
 ```
@@ -50,6 +54,7 @@ rm -rf /var/lib/kubelet/*
 ```
 
 ### Setup sysctl configs
+`Skip this step if using a pre configured lab environment`
 
 In order for many container networks to work, the following needs to be enabled on each node.
 
@@ -58,13 +63,16 @@ sysctl net.bridge.bridge-nf-call-iptables=1
 ```
 The above steps has to be followed in all the nodes.
 
+`Begin from the following step if using a pre configured lab environment`
 
 
 ## Initializing Master
 
 This tutorial assumes **kube-01**  as the master and used kubeadm as a tool to install and setup the cluster. This section also assumes that you are using vagrant based setup provided along with this tutorial. If not, please update the IP address of the master accordingly.
 
-To initialize master, run this on kube-01
+To initialize master, run this on kube-01 (1st node)
+
+`replace 192.168.56.101 with the actual IP of your node`
 
 ```
 kubeadm init --apiserver-advertise-address 192.168.56.101 --pod-network-cidr=192.168.0.0/16
@@ -79,48 +87,32 @@ e.g.
 ```
 kubeadm join --token c04797.8db60f6b2c0dd078 192.168.12.10:6443 --discovery-token-ca-cert-hash sha256:88ebb5d5f7fdfcbbc3cde98690b1dea9d0f96de4a7e6bf69198172debca74cd0
 ```
-
+`dont copy above command as is, this is just a sample, use actual`
 
 Copy and paste it on all node.
-
-##### Troubleshooting Tips
-If you lose  the join token, you could retrieve it using
-
-```
-kubeadm token list
-```
-
-On successfully joining the master, you should see output similar to following,
-
-```
-root@kube-03:~# kubeadm join --token c04797.8db60f6b2c0dd078 159.203.170.84:6443 --discovery-token-ca-cert-hash sha256:88ebb5d5f7fdfcbbc3cde98690b1dea9d0f96de4a7e6bf69198172debca74cd0
-[kubeadm] WARNING: kubeadm is in beta, please do not use it for production clusters.
-[preflight] Running pre-flight checks
-[discovery] Trying to connect to API Server "159.203.170.84:6443"
-[discovery] Created cluster-info discovery client, requesting info from "https://159.203.170.84:6443"
-[discovery] Requesting info from "https://159.203.170.84:6443" again to validate TLS against the pinned public key
-[discovery] Cluster info signature and contents are valid and TLS certificate validates against pinned roots, will use API Server "159.203.170.84:6443"
-[discovery] Successfully established connection with API Server "159.203.170.84:6443"
-[bootstrap] Detected server version: v1.8.2
-[bootstrap] The server supports the Certificates API (certificates.k8s.io/v1beta1)
-
-Node join complete:
-* Certificate signing request sent to master and response
-  received.
-* Kubelet informed of new secure connection details.
-
-Run 'kubectl get nodes' on the master to see this machine join.
-```
-
 
 
 ### Setup the admin client - Kubectl
 
-On Master Node
+
+`on Master Node`
+
 ```
 mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
+```
+
+Validate
+
+```
+kubectl get nodes
+```
+
+You could also put the above command on a watch to observe the nodes getting ready.
+
+```
+watch kubectl get nodes
 ```
 
 ## Installing CNI with Weave
@@ -176,47 +168,6 @@ kubectl get events
 It will take a few minutes to have the cluster up and running with all the services.
 
 
-### Possible Issues
-  * Nodes are node in Ready status
-  * kube-dns is crashing constantly
-  * Some of the systems services are not up
-
-Most of the times, kubernetes does self heal, unless its a issue with system resources not being adequate. Upgrading resources or launching it on bigger capacity VM/servers solves it. However, if the issues persist, you could try following techniques,
-
-Troubleshooting Tips
-
-Check events
-```
-kubectl get events
-```
-
-Check Logs
-```
-kubectl get pods -n kube-system
-
-[get the name of the pod which has a problem]
-
-kubectl logs <pod> -n kube-system
-
-```
-
-e.g.
-
-```
-root@kube-01:~# kubectl logs kube-dns-545bc4bfd4-dh994 -n kube-system
-Error from server (BadRequest): a container name must be specified for pod kube-dns-545bc4bfd4-dh994, choose one of:
-[kubedns dnsmasq sidecar]
-
-
-root@kube-01:~# kubectl logs kube-dns-545bc4bfd4-dh994  kubedns  -n kube-system
-I1106 14:41:15.542409       1 dns.go:48] version: 1.14.4-2-g5584e04
-I1106 14:41:15.543487       1 server.go:70] Using
-
-....
-
-```
-
-
 ## Enable Kubernetes Dashboard
 
 After the Pod networks is installled, We can install another add-on service which is Kubernetes Dashboard.
@@ -229,29 +180,9 @@ kubectl apply -f https://gist.githubusercontent.com/initcron/32ff89394c881414ea7
 This will create a pod for the Kubernetes Dashboard.
 
 
-To access the Dashboard in th browser, run the below command
-```
-kubectl describe svc kubernetes-dashboard -n kube-system
-```
+Dashboard would be setup and available on port 31000. To access it go to the browser, and provide the  following URL
 
-Sample output:
-```
-kubectl describe svc kubernetes-dashboard -n kube-system
-Name:                   kubernetes-dashboard
-Namespace:              kube-system
-Labels:                 app=kubernetes-dashboard
-Selector:               app=kubernetes-dashboard
-Type:                   NodePort
-IP:                     10.98.148.82
-Port:                   <unset> 80/TCP
-NodePort:               <unset> 31000/TCP
-Endpoints:              10.40.0.1:9090
-Session Affinity:       None
-```
-
-Now check for the node port, here it is 31000, and go to the browser, and access the dashboard with the following URL
-`do not use the IP above, use master node IP instead`
-
+`use any of your node's (VM/Server) IP here`
 
 ```
 http://NODEIP:31000
@@ -263,10 +194,35 @@ The Dashboard Looks like:
 
 
 
-## Check out the supporting code
+## Download the supporting code
 
 Before we proceed further, please checkout the code from the following git repo. This would offer the supporting code for the exercises that follow.
 
+`run this on the host where you have configured kubectl`
 ```
 git clone https://github.com/schoolofdevops/k8s-code.git
 ```
+
+## Set up Visualiser
+
+Fork the repository and deploy the visualizer on kubernetes
+
+
+```
+git clone  https://github.com/schoolofdevops/kube-ops-view
+kubectl apply -f kube-ops-view/deploy/
+
+```
+
+Visualiser will run on  **32000** port. You could access it using a URL such as below and  add /#scale=2.0 or similar option where 2.0 = 200% the scale.
+
+`replace <NODE_IP> with actual IP of one of your nodes`
+
+```
+http://<NODE_IP>:32000/#scale=2.0
+```
+
+
+![kube-visualizer](images/kube-ops-view.png)
+
+Kubernetes visualiser is a third party application which provides a operational view of your kubernetes cluster. Its very useful tool for learning kubernetes as it demonstrates the state of the cluster as well as state of the pods as you make changes. You could read further about it [at this link](https://kubernetes-operational-view.readthedocs.io/en/latest/).  

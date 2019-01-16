@@ -1,0 +1,6 @@
+generated_polytex/*
+html/*
+log/*
+site/*
+tmp/*
+*.tex
