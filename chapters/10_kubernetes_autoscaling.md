@@ -6,7 +6,7 @@ The Horizontal Pod Autoscaler is implemented as a Kubernetes API resource and a 
 
 ### Prerequisites
 
-  * [Metrics Server](https://github.com/kubernetes-incubator/metrics-server). 
+  * [Metrics Server](https://github.com/kubernetes-incubator/metrics-server).
   This needs to be setup if you are using kubeadm etc.  and replaces **heapster** starting with kubernetes version  1.8.
   * Resource Requests and Limits. Defining [CPU](https://kubernetes.io/docs/tasks/configure-pod-container/assign-cpu-resource/#specify-a-cpu-request-and-a-cpu-limit)as well as [Memory](https://kubernetes.io/docs/tasks/configure-pod-container/assign-memory-resource/) requirements for containers in Pod Spec is a must
 
@@ -33,8 +33,9 @@ Even though the error mentions heapster, its replaced with metrics server by def
 Deploy  metric server with the following commands,
 
 ```
+cd ~
 git clone  https://github.com/kubernetes-incubator/metrics-server.git
-kubectl apply -f kubectl create -f metrics-server/deploy/1.8+/
+kubectl apply -f metrics-server/deploy/1.8+/
 ```
 
 Validate
@@ -42,23 +43,14 @@ Validate
 kubectl get deploy,pods -n kube-system --selector='k8s-app=metrics-server'
 ```
 
-[sample output]
-```
-NAME                                   DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
-deployment.extensions/metrics-server   1         1         1            1           28m
-
-NAME                                  READY     STATUS    RESTARTS   AGE
-pod/metrics-server-6fbfb84cdd-74jww   1/1       Running   0          28m
-```
-
 Monitoring has been setup.
 
-##### Fixing issues with Metrics deployment 
+##### Fixing issues with Metrics deployment
 
-There is a known issue as off Dec 2018 with Metrics Server where is fails to work event after deploying it using above commands. This can be fixed with a patch using steps below. 
+There is a known issue as off Dec 2018 with Metrics Server where is fails to work event after deploying it using above commands. This can be fixed with a patch using steps below.
 
 
-To apply a patch to metrics server, 
+To apply a patch to metrics server,
 
 ```
 wget -c https://gist.githubusercontent.com/initcron/1a2bd25353e1faa22a0ad41ad1c01b62/raw/008e23f9fbf4d7e2cf79df1dd008de2f1db62a10/k8s-metrics-server.patch.yaml
@@ -69,20 +61,22 @@ kubectl patch deploy metrics-server -p "$(cat k8s-metrics-server.patch.yaml)" -n
 Now validate with
 
 ```
-kubectl top node 
-kubectl top pod 
+kubectl top node
+kubectl top pod
 ```
 
-where expected output shoudl be similar to, 
+where expected output shoudl be similar to,
 
 ```
-# kubectl top node
+kubectl top node
+
 NAME     CPU(cores)   CPU%   MEMORY(bytes)   MEMORY%
 vis-01   145m         7%     2215Mi          57%
 vis-13   36m          1%     1001Mi          26%
 vis-14   71m          3%     1047Mi          27%
 ```
 
+<<<<<<< HEAD
 ### Defining Resource Requests and Limits
 
 
@@ -122,6 +116,8 @@ kubectl apply -f vote-deploy.yaml
   * Define the value of **cpu.request** > **cpu.limit** Try to apply and observe.
   * Define the values for **memory.request** and **memory.limit** higher than the total system memory. Apply and observe the deployment and pods.  
 
+=======
+>>>>>>> c157d5ea5247cbeee8e81f2ea4c86e2aab69b0b5
 
 
 ### Create a HPA
@@ -164,9 +160,12 @@ kubectl get pod,deploy
 
 ```
 
+If you have a monitoring system such as grafana, you could also view the graphs for **vote** deployment.
+
+![Monitoring Deployments with grafana](images/hpa-01.png)
 
 
-###  Load Test 
+###  Load Test
 
 `file: loadtest-job.yaml`
 
@@ -193,6 +192,7 @@ kubectl apply -f loadtest-job.yaml
 ```
 
 To monitor while the load test is running ,
+
 ```
 watch kubectl top pods
 
@@ -258,6 +258,17 @@ vote-loadtest   1         1            10m
 
 ```
 
+  * Keep monitoring for the load on the pod as the job progresses.
+  * Keep a watch from grafana as well to see the resource utilisation for vote deployment.
+  * You should see hpa in action as it scales out/in the  vote deployment with the increasing/decreasing load.
+
+
+  ![Monitoring Deployments with grafana](images/hpa-02.png)
+
+
+##### Summary
+
+In this lab, you have successfull configured and demonstrated dynamic scaling ability of kubernetes using horizontalpodautoscalers. You have also learnt about a new **jobs** controller type for running one off or batch jobs.
 
 
 ##### Reading List

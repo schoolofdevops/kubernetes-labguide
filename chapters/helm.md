@@ -1,7 +1,17 @@
+<<<<<<< HEAD
 # Helm Package Manager
 
 ## Install Helm
 To install helm you can follow following instructions. 
+=======
+# Lab K205 - Monitoring setup with HELM 
+
+In this lab, you are going to install and configure helm, and in turns, use it to configure a monitoring system for kubernetes using prometheus and grafana stack.
+
+## Installing  Helm
+
+To install helm you can follow following instructions.
+>>>>>>> c157d5ea5247cbeee8e81f2ea4c86e2aab69b0b5
 
 ```
 curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get > get_helm.sh
@@ -14,9 +24,10 @@ Verify the installtion is successful,
 helm --help
 ```
 
-### Set RBAC for Tiller
+Lets now setup  RBAC configurations required for Tiller, a component of helm that runs inside the kubernetes cluster.
 
 `file: tiller-rbac.yaml`
+
 ```
 apiVersion: v1
 kind: ServiceAccount
@@ -44,165 +55,106 @@ kubectl apply -f tiller-rbac.yaml
 
 ```
 
-### Initialize
 This is where we actually initialize Tiller in our Kubernetes cluster.
 ```
 helm init --service-account tiller
 ```
 
-[sample output]
+## Setting up Monitoring Stack with HELM
+
+You will now setup prometheus and grafana monitoring stacks with helm, with a few customisations.
+
+#### Install Prometheus with Helm
+
+
+Before proceeding, you could review the [Official Prometheus Helm Chart](https://github.com/helm/charts/tree/master/stable/prometheus)  from the repository.
+
+Search and download a chart for prometheus
 
 ```
-Creating /root/.helm
-Creating /root/.helm/repository
-Creating /root/.helm/repository/cache
-Creating /root/.helm/repository/local
-Creating /root/.helm/plugins
-Creating /root/.helm/starters
-Creating /root/.helm/cache/archive
-Creating /root/.helm/repository/repositories.yaml
-Adding stable repo with URL: https://kubernetes-charts.storage.googleapis.com
-Adding local repo with URL: http://127.0.0.1:8879/charts
-$HELM_HOME has been configured at /root/.helm.
-
-Tiller (the Helm server-side component) has been installed into your Kubernetes Cluster.
-
-Please note: by default, Tiller is deployed with an insecure 'allow unauthenticated users' policy.
-For more information on securing your installation see: https://docs.helm.sh/using_helm/#securing-your-helm-installation
-Happy Helming!
+helm search prometheus
+helm fetch --untar stable/prometheus
+cd prometheus
 ```
 
-### Install Wordpress with Helm
-Search Helm repository for Wordpress chart
+To provide custom configurations, copy over the custom values file from **k8s-code** repot.
+
+
 ```
-helm search wordpress
+cp ../k8s-code/helper/helm/values/prometheus-customvalues.yaml .
 ```
 
-Fetch the chart to your local environment and change directory.
-```
-helm fetch --untar stable/wordpress
-cd wordpress
-```
-
-Create a copy of default vaules file and edit it.
-```
-cp values.yaml my-values.yaml
-vim my-values.yaml
-```
-
-Run it as a dry run to check for errors.
-```
-helm install --name blog --values my-values.yaml . --dry-run
-```
-
-Deploy the Wordpress stack.
-```
-helm install --name blog --values my-values.yaml .
-```
-
-### Install Prometheus with Helm
-Official Prometheus Helm Chart repository.
-```
-https://github.com/helm/charts/tree/master/stable/prometheus
-```
-
+<<<<<<< HEAD
 Official Grafana Helm Chart repository.
 ```
 https://github.com/helm/charts/tree/master/stable/grafana
 ```
 
 #### Grafana Deployment
+=======
+Review **prometheus-customvalues.yaml** and then launch prometheus stack as,
+>>>>>>> c157d5ea5247cbeee8e81f2ea4c86e2aab69b0b5
 
-Download Grafana charts to your local machine and change directory.
 ```
+helm install --name prometheus --values prometheus-customvalues.yaml  . --dry-run
+helm install --name prometheus --values prometheus-customvalues.yaml  .
+
+helm list
+helm status prometheus
+```
+
+You should be able to access prometheus UI by using either the *nodePort* service or a *ingress* rule.
+
+
+#### Deploying Grafana with HELM
+
+You could refer to the [Official Grafana Helm Chart repository](https://github.com/helm/charts/tree/master/stable/grafana) before proceeding.
+
+Search and download a chart for prometheus
+
+```
+helm search grafana
 helm fetch --untar stable/grafana
 cd grafana
 ```
 
-Create a copy of default vaules file and edit it.
-```
-cp values.yaml myvalues.yaml
-vim myvalues.yaml
-```
-
-Make sure your charts doesn't have any error.
-```
-helm install --name grafana --values myvalues.yaml --namespace instavote . --dry-run
-```
-
-Deploy Grafana on your K8s Cluster.
-```
-helm install --name grafana --values myvalues.yaml --namespace instavote .
-```
-
-#### Prometheus Deployment
-Download Prometheus charts to your local machine and change directory.
-```
-helm fetch --untar stable/prometheus
-cd prometheus
-```
-
-Create a copy of default vaules file and edit it.
-```
-cp values.yaml myvalues.yaml
-vim myvalues.yaml
-```
-
-Make sure your charts doesn't have any error.
-```
-helm install --name prometheus --values myvalues.yaml --namespace instavote . --dry-run
-```
-
-Deploy Prometheus on your K8s Cluster.
-```
-helm install --name prometheus --values myvalues.yaml --namespace instavote .
-```
-
-### Install heapster with helm
-
-```
-helm install stable/heapster --namespace kube-system --name heapster --set image.tag=v1.5.1 --set rbac.create=true
-```
-
-[output]
-```
-NAME:   heapster
-LAST DEPLOYED: Tue May 22 11:46:44 2018
-NAMESPACE: kube-system
-STATUS: DEPLOYED
-
-RESOURCES:
-==> v1beta1/Role
-NAME                         AGE
-heapster-heapster-pod-nanny  2s
-
-==> v1beta1/RoleBinding
-NAME                         AGE
-heapster-heapster-pod-nanny  2s
-
-==> v1/Service
-NAME      TYPE       CLUSTER-IP   EXTERNAL-IP  PORT(S)   AGE
-heapster  ClusterIP  10.96.63.82  <none>       8082/TCP  2s
-
-==> v1beta1/Deployment
-NAME               DESIRED  CURRENT  UP-TO-DATE  AVAILABLE  AGE
-heapster-heapster  1        0        0           0          2s
-
-==> v1/Pod(related)
-NAME                                READY  STATUS   RESTARTS  AGE
-heapster-heapster-696df57b44-zjf78  0/2    Pending  0         1s
-
-==> v1/ServiceAccount
-NAME               SECRETS  AGE
-heapster-heapster  1        2s
-
-==> v1beta1/ClusterRoleBinding
-NAME               AGE
-heapster-heapster  2s
+To provide custom configurations, copy over the custom values file from **k8s-code** repot.
 
 
-NOTES:
-1. Get the application URL by running these commands:
-  export POD_NAME=$(kubectl get pods --namespace kube-system -l "app=heapster-heapster" -o jsonpath="{.items[0].metadata.name}")
-  kubectl --namespace kube-system port-forward $POD_NAME 8082
 ```
+cp ../k8s-code/helper/helm/values/grafana-customvalues.yaml .
+```
+
+Review **grafana-customvalues.yaml** and then launch grafana as,
+
+```
+helm install --name grafana --values grafana-customvalues.yaml  . --dry-run
+helm install --name grafana --values grafana-customvalues.yaml  .
+
+helm list
+helm status grafana
+```
+
+You should be able to access grafana UI by using either the *nodePort* service or a *ingress* rule.
+
+
+![Grafana UI](images/grafana.png)
+
+credentials for grafana
+
+  * user: admin
+  * pass: password
+
+You could update it along with other values in *grafana-customvalues.yaml* or create a separate file to override the values.
+
+
+If you update values and would like to apply to existing helm release, use a command simiar to following,
+
+```
+helm upgrade -f grafana-customvalues.yaml grafana .
+```
+
+
+##### Summary
+
+In this lab, we not only learnt about HELM, a kubernetes package manager, but  also have setup a sophisticated health monitoring system with prometheus and grafana.
