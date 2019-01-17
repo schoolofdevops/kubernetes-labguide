@@ -1,4 +1,4 @@
-# Ultimate Kubernetes Bootcamp
+# Kubernetes Lab Guide
 
 Welcome to the Kubernetes Course  by School of Devops
 
