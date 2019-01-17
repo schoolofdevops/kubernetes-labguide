@@ -21,7 +21,7 @@ pages:
      - Lab K202 - Authentication and Authorization (RBAC): "configuring_authentication_and_authorization.md"
      - Lab K203 - Advanced Pod Scheduling: "advanced_pod_scheduling.md"
      - Lab K204 - Adding health checks with Probes: "pods-health-probes.md"
-     - Lab K205 - Helm Charts: "helm.md"
+     - Lab K205 - Monitoring setup with HELM: "helm.md"
      - Lab K206 - Auto Scaling Capacity with HPA : "10_kubernetes_autoscaling.md"
      - Lab K207 - Access Control with Network Policies: "network_policies.md"
      - Lab K208 - Cluster Administration: "cluster-administration.md"

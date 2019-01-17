@@ -279,7 +279,7 @@ df -h
 
 ## Adding Resource requests and limits
 
-We can control the amount of resource requested and also put a limit on the maximum a container in a pod could take up.  This can be done by adding to the existing pod spec as below. Refer to [official document on resource management](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/) here. 
+We can control the amount of resource requested and also put a limit on the maximum a container in a pod could take up.  This can be done by adding to the existing pod spec as below. Refer to [official document on resource management](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/) here.
 
 
 `Filename: vote-pod.yaml`
@@ -337,7 +337,9 @@ From the output of the describe command above, you could confirm the resource co
 
 #### Exercise
 
-  * Try to change the *resources.request.memory* to a value greater than the available memory on the node. Observe what happens when you create the pod with the modified configurations.
+    * Define the value of **cpu.request** > **cpu.limit** Try to apply and observe.
+    * Define the values for **memory.request** and **memory.limit** higher than the total system memory. Apply and observe the deployment and pods.  
+
 
 ### Deleting Pods
 
