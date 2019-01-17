@@ -1,4 +1,4 @@
-# Advanced Pod Scheduling
+# Lab K203 - Advanced Pod Scheduling
 
 In the Kubernetes bootcamp training, we have seen how to create a pod and and some basic pod configurations to go with it. But this chapter explains some advanced topics related to pod scheduling.
 

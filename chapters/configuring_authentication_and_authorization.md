@@ -1,4 +1,4 @@
-# Kubernetes Access Control:  Authentication and Authorization
+# Lab K202 - Kubernetes Access Control:  Authentication and Authorization
 
 In  this lab you are going to,
 
