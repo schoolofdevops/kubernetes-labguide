@@ -17,11 +17,10 @@ Deployment spec (deployment.spec) contains everything that replica set has + str
 
 <<<<<<< HEAD
 
-
-
 `File: vote-deploy.yaml`
-=======
+
 `file: vote-deploy.yaml`
+
 >>>>>>> 987927b043a49cbc30b4f635fbbfb28e2d3ed49a
 
 ```

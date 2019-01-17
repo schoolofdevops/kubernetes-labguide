@@ -22,7 +22,7 @@ Lets create a  service of type **NodePort** to understand how it works.
 
 <<<<<<< HEAD
 ![kubernetes service.](images/k8s_service.jpg)
-=======
+
 To check the status of kubernetes objects,
 >>>>>>> 987927b043a49cbc30b4f635fbbfb28e2d3ed49a
 
@@ -56,7 +56,7 @@ spec:
 ```
 
 And then add the spec to it. Refer to Service (v1 core) api at this ![page](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/)
-=======
+
 `filename: vote-svc.yaml`
 >>>>>>> 987927b043a49cbc30b4f635fbbfb28e2d3ed49a
 

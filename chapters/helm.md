@@ -1,4 +1,5 @@
 # Helm Package Manager
+
 ## Install Helm
 To install helm you can follow following instructions. 
 
@@ -109,6 +110,7 @@ Official Grafana Helm Chart repository.
 ```
 https://github.com/helm/charts/tree/master/stable/grafana
 ```
+
 #### Grafana Deployment
 
 Download Grafana charts to your local machine and change directory.

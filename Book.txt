@@ -13,3 +13,13 @@ quickdive.md
 replication.md
 7-vote-exposing_app_with_service.md
 6-vote-kubernetes_deployment.md
+11_deploying_sample_app.md
+9-vote-configmaps_and_secrets.md
+vote-persistent-volumes.md
+configuring_authentication_and_authorization.md
+advanced_pod_scheduling.md
+pods-health-probes.md
+helm.md
+10_kubernetes_autoscaling.md
+network_policies.md
+cluster-administration.md

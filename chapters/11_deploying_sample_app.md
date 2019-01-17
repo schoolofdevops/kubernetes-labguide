@@ -76,7 +76,7 @@ Here the port assigned is 31808, go to the browser and enter
 masterip:31808
 ```
 
-![Front-End.\label{fig:captioned_image}](images/vote-rc.png)
+![Front-End.](images/vote-rc.png)
 
 This will load the page where you can vote.
 
@@ -94,6 +94,6 @@ Here the port assigned is 32511, go to the browser and enter
 ```
 masterip:32511
 ```
-![Result Page.\label{fig:captioned_image}](images/Result.png)
+![Result Page.](images/Result.png)
 
 This is the page where you should see the results for the vote application stack.

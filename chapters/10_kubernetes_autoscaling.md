@@ -86,7 +86,7 @@ vis-14   71m          3%     1047Mi          27%
 ### Defining Resource Requests and Limits
 
 
-file: vote-deploy.yaml
+`file: vote-deploy.yaml`
 
 
 ```

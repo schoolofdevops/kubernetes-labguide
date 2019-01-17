@@ -57,7 +57,7 @@ x |    |          |          |           |                    |
 
 
 
-file: `instavote-netpol.yaml`
+`file: instavote-netpol.yaml`
 
 ```
 apiVersion: networking.k8s.io/v1

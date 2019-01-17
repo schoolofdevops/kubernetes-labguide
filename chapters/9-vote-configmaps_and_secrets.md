@@ -71,7 +71,7 @@ kubectl  rollout status deploy/vote
 
 ```
 
-![ConfigMap Dashboard.\label{fig:captioned_image}](images/Configmap.png)
+![ConfigMap Dashboard.](images/Configmap.png)
 
 
 
@@ -79,7 +79,7 @@ kubectl  rollout status deploy/vote
 
 Currently, updating configMap does not ensure a new rollout of a deployment. What this means is even after updading configMaps, pods will not immediately reflect the changes.  
 
-There is a feature request for this https://github.com/kubernetes/kubernetes/issues/22368
+There is a feature request for this [Page](https://github.com/kubernetes/kubernetes/issues/22368)
 
 Currently, this can be done by using immutable configMaps.  
 
