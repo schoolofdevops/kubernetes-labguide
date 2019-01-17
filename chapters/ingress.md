@@ -29,15 +29,15 @@ There are commonly two ways you could deploy an ingress
 
 We pick **DaemonSet**, which will ensure that one instance of **traefik** is run on every node.  Also, we use a specific configuration **hostNetwork** so that the pod running **traefik** attaches to the network of underlying host, and not go through **kube-proxy**. This would avoid extra network hop and increase performance  a bit.  
 
+You could refer to [official traefik docs](https://docs.traefik.io/user-guide/kubernetes/) to understand the installation options and how to use those.
+
 Deploy ingress controller with daemonset as
 
 ```
-cd k8s-code/ingress/traefik
+kubectl apply -f https://raw.githubusercontent.com/containous/traefik/master/examples/k8s/traefik-rbac.yaml
 
-kubectl get ds -n kube-system
+kubectl apply -f https://raw.githubusercontent.com/containous/traefik/master/examples/k8s/traefik-ds.yaml
 
-kubectl apply -f traefik-rbac.yaml
-kubectl apply -f traefik-ds.yaml
 ```
 
 Validate
@@ -93,8 +93,6 @@ metadata:
   name: vote
   annotations:
     kubernetes.io/ingress.class: traefik
-    ingress.kubernetes.io/auth-type: "basic"
-    ingress.kubernetes.io/auth-secret: "mysecret"
 spec:
   rules:
     - host: vote.example.org
@@ -103,14 +101,14 @@ spec:
           - path: /
             backend:
               serviceName: vote
-              servicePort: 82
+              servicePort: 80
     - host: results.example.org
       http:
         paths:
           - path: /
             backend:
               serviceName: results
-              servicePort: 81
+              servicePort: 80
 ```
 
 And apply
@@ -207,6 +205,7 @@ And then access the app urls using http://vote.example.org or http://results.exa
 
 
 ```
+apt install -yq apache2-utils
 htpasswd -c auth devops
 ```
 

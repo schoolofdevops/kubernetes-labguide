@@ -79,16 +79,14 @@ Generate the user's private key
 mkdir -p  ~/.kube/users
 cd ~/.kube/users
 
-openssl genrsa -out maya.key 2048
 openssl genrsa -out kim.key 2048
-openssl genrsa -out yono.key 2048
 
 ```
 
 [sample Output]
 
 ```
-openssl genrsa -out maya.key 2048
+openssl genrsa -out kim.key 2048
 Generating RSA private key, 2048 bit long modulus
 .............................................................+++
 .........................+++
@@ -105,9 +103,7 @@ Lets now create a **Certification Signing Request (CSR)** for each of the users.
 e.g.
 
 ```
-openssl req -new -key maya.key -out maya.csr -subj "/CN=maya/O=ops/O=example.org"
 openssl req -new -key kim.key -out kim.csr -subj "/CN=kim/O=dev/O=example.org"
-openssl req -new -key yono.key -out yono.csr -subj "/CN=yono/O=interns/O=example.org"
 
 ```
 
@@ -116,19 +112,18 @@ In order to be deemed authentic, these CSRs need to be signed by the **Certifica
   * Certificate : ca.crt (kubeadm) or ca.key (kubespray)
   * Pricate Key : ca.key (kubeadm) or ca-key.pem  (kubespray)
 
-You would typically find it at one of the following paths
+You would typically find it  the following paths
 
-  * /etc/kubernetes/pki (kubeadm)
-  * /etc/kubernetes/ssl (kubespray)
+  * /etc/kubernetes/pki
 
 To verify which one is your cert and which one is key, use the following command,
 
 ```
-$ file ca.pem
+$ file /etc/kubernetes/pki/ca.crt
 ca.pem: PEM certificate
 
 
-$ file ca-key.pem
+$ file /etc/kubernetes/pki/ca.key
 ca-key.pem: PEM RSA private key
 ```
 
@@ -146,11 +141,8 @@ In the example here, I have already downloaded **ca.pem** and **ca-key.pem** to 
 Assuming all the files are in the same directory, sign the CSR as,
 
 ```
-openssl x509 -req -CA ca.pem -CAkey ca-key.pem -CAcreateserial -days 730 -in maya.csr -out maya.crt
+openssl x509 -req -CA /etc/kubernetes/pki/ca.crt -CAkey /etc/kubernetes/pki/ca.key -CAcreateserial -days 730 -in kim.csr -out kim.crt
 
-openssl x509 -req -CA ca.pem -CAkey ca-key.pem -CAcreateserial -days 730 -in kim.csr -out kim.crt
-
-openssl x509 -req -CA ca.pem -CAkey ca-key.pem -CAcreateserial -days 730 -in yono.csr -out yono.crt
 ```
 
 
@@ -167,19 +159,14 @@ In order to configure the users that you created above, following steps need to 
 to add credentials,
 
 ```
-kubectl config set-credentials maya --client-certificate=/absolute/path/to/maya.crt --client-key=/absolute/path/to/maya.key
-
-kubectl config set-credentials kim --client-certificate=/absolute/path/to/kim.crt --client-key=~/.kube/users/kim.key
-
-kubectl config set-credentials yono --client-certificate=/absolute/path/to/yono.crt --client-key=~/.kube/users/yono.key
-
+kubectl config set-credentials kim --client-certificate=/root/.kube/users/kim.crt --client-key=/root/.kube/users/kim.key
 ```
 
 where,
 
-  * Replace /absolute/path/to/ with the path to these files.
-    * `invalid` :  ~/.kube/users/yono.crt
-    * `valid` :  /home/xyz/.kube/users/yono.crt
+  * /root/.kube/users/kim.crt : Absolute path to the users' certificate
+  * /root/.kube/users/kim.key: Absolute path to the users' key
+
 
 
 And proceed to set/create  contexts (user@cluster). If you are not sure whats the cluster name, use the following command to find,
@@ -191,30 +178,24 @@ kubectl config get-contexts
 [sample output]
 
 ```
-CURRENT   NAME                          CLUSTER         AUTHINFO              NAMESPACE
-          admin-prod           prod   admin-cluster.local   instavote
-          admin-cluster4                cluster4        admin-cluster4        instavote
-*         kubernetes-admin@kubernetes   kubernetes      kubernetes-admin      instavote
+CURRENT   NAME                          CLUSTER      AUTHINFO           NAMESPACE
+*         kubernetes-admin@kubernetes   kubernetes   kubernetes-admin   instavote
 ```
 
-where,  **prod**, **cluster4** and **kubernetes** are cluster names.
+where,  **kubernetes** is the  cluster name.
 
-To set context for **prod** cluster,
+To set context for **kubernetes** cluster,
 
 ```
-kubectl config set-context maya-prod --cluster=prod  --user=maya --namespace=instavote
-
-kubectl config set-context kim-prod --cluster=prod  --user=kim --namespace=instavote
-
-kubectl config set-context yono-prod --cluster=prod  --user=yono --namespace=instavote
+kubectl config set-context kim-kubernetes --cluster=kubernetes  --user=kim --namespace=instavote
 
 ```
 
 Where,
 
-  * maya-prod : name of the context  
-  * prod  : name of the kubernetes cluster you set while creating it  
-  * maya : user you created and configured above to connect to the cluster  
+  * kim-kubernetes : name of the context  
+  * kubernetes  : name of the  cluster you set while creating it  
+  * kim : user you created and configured above to connect to the cluster  
 
 
 You could verify the configs with
@@ -223,11 +204,9 @@ You could verify the configs with
 ```
 kubectl config get-contexts
 
-CURRENT   NAME         CLUSTER   AUTHINFO     NAMESPACE
-*         admin-prod   prod      admin-prod
-          kim-prod     prod      kim
-          maya-prod    prod      maya
-          yono-prod    prod      yono
+CURRENT   NAME                          CLUSTER      AUTHINFO           NAMESPACE
+          kim-kubernetes                kubernetes   kim                instavote
+*         kubernetes-admin@kubernetes   kubernetes   kubernetes-admin   instavote
 ```
 
 
@@ -240,55 +219,51 @@ kubectl config view
 apiVersion: v1
 clusters:
 - cluster:
-   certificate-authority-data: REDACTED
-   server: https://128.199.248.240:6443
- name: prod
+    certificate-authority-data: DATA+OMITTED
+    server: https://178.128.109.8:6443
+  name: kubernetes
 contexts:
 - context:
-   cluster: prod
-   user: admin-prod
- name: admin-prod
+    cluster: kubernetes
+    namespace: instavote
+    user: kim
+  name: kim-kubernetes
 - context:
-   cluster: prod
-   user: kim
- name: kim-prod
-- context:
-   cluster: prod
-   user: maya
- name: maya-prod
-- context:
-   cluster: prod
-   user: yono
- name: yono-prod
-current-context: admin-prod
+    cluster: kubernetes
+    namespace: instavote
+    user: kubernetes-admin
+  name: kubernetes-admin@kubernetes
+current-context: kubernetes-admin@kubernetes
 kind: Config
 preferences: {}
 users:
-- name: admin-prod
- user:
-   client-certificate-data: REDACTED
-   client-key-data: REDACTED
-- name: maya
- user:
-   client-certificate: users/~/.kube/users/maya.crt
-   client-key: users/~/.kube/users/maya.key
+- name: kim
+  user:
+    client-certificate: users/kim.crt
+    client-key: users/kim.key
+- name: kubernetes-admin
+  user:
+    client-certificate-data: REDACTED
+    client-key-data: REDACTED
 ```
 
+Where, you should see the configurations for the new user you created have been added.
 
 
-You could assume the identity of user **yono** and connect  to the **prod** cluster as,
+You could assume the identity of user **kim** and connect  to the **kubernetes** cluster as,
 
 ```
-kubectl config use-context yono-prod
+kubectl config use-context kim-kubernetes
 
 kubectl config get-contexts
 
-CURRENT   NAME         CLUSTER   AUTHINFO     NAMESPACE
-          admin-prod   prod      admin-prod
-          kim-prod     prod      kim
-          maya-prod    prod      maya
-*         yono-prod    prod      yono
+CURRENT   NAME                          CLUSTER      AUTHINFO           NAMESPACE
+*         kim-kubernetes                kubernetes   kim                instavote
+          kubernetes-admin@kubernetes   kubernetes   kubernetes-admin   instavote
 ```
+
+This time * appears on the line which lists context **kim-kubernetes** that you just created.
+
 
 And then try running any command as,
 
@@ -325,13 +300,19 @@ Whats the difference between Roles and ClusterRoles ??
 
 Lets say you want to provide read only access to **instavote**, a project specific namespace to all users in the **example.org**
 
-`file: interns-role.yaml`
+```
+kubectl config use-context kubernetes-admin@kubernetes
+cd projects/instavote/dev
+```
+
+`file: readonly-role.yaml`
+
 ```
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: Role
 metadata:
   namespace: instavote
-  name: interns
+  name: readonly
 rules:
 - apiGroups: ["*"]
   resources: ["*"]
@@ -341,45 +322,44 @@ rules:
 In order to map it to all users in **example.org**, create a RoleBinding as
 
 
-`interns-rolebinding.yml`
+`file: readonly-rolebinding.yml`
 
 ```
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: interns
+  name: readonly
   namespace: instavote
 subjects:
 - kind: Group
-  name: interns
+  name: dev
   apiGroup: rbac.authorization.k8s.io
 roleRef:
   kind: Role
-  name: interns
+  name: readonly
   apiGroup: rbac.authorization.k8s.io
 ```
 
 
 ```
-kubectl create -f interns-role.yml
-
-kubectl create -f interns-rolebinding.yml
+kubectl apply -f readonly-role.yaml
+kubectl apply -f readonly-rolebinding.yml
 ```
 
-To gt information about the objects created above,
+To get information about the objects created above,
 
 ```
-kubectl get roles -n instavote
 kubectl get roles,rolebindings -n instavote
 
-kubectl describe role interns
-kubectl describe rolebinding interns
+kubectl describe role readonly
+kubectl describe rolebinding readonly
 
 ```
 
 To validate the access,
 ```
-kubectl config use-context yono-prod
+kubectl config get-contexts
+kubectl config use-context kim-kubernetes
 kubectl get pods
 
 ```
@@ -387,7 +367,7 @@ kubectl get pods
 To switch back to admin,
 
 ```
-kubectl config use-context admin-prod
+kubectl config use-context kubernetes-admin@kubernetes
 
 ```
 
