@@ -160,7 +160,7 @@ Local host volumes are of two types:
 We will pick hostPath. [Refer to this doc to read more about hostPath.](https://kubernetes.io/docs/concepts/storage/volumes/#hostpath)
 
 
-File: db-pod.yaml
+`File: db-pod.yaml`
 
 ```
 apiVersion: v1

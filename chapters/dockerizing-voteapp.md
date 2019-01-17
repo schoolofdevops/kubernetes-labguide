@@ -1,4 +1,4 @@
-## Lab : Build a docker image for Instavote frontend vote app
+# Lab : Build a docker image for Instavote frontend vote app
 
 [Voteapp](https://github.com/schoolofdevops/vote) is a app written in python. Its a simple, web based  application which serves as a frontend for Instavote project. As a devops engineer, you have been tasked with building an image for vote app and publish it to docker hub registry.
 
@@ -84,8 +84,8 @@ Build image using,
  docker build -t <docker_id>/vote:v2 .
 ```
 
-where,
-  <docker_id> : your docker registry user/namespace. Replace this with the actual user
+where, 
+`<docker_id>:` your docker registry user/namespace. Replace this with the actual user
 
 
 validate

@@ -120,7 +120,7 @@ Above file already containts the spec that you had written for the pod. You woul
 
 Lets now add the details specific to replicaset.
 
-*file: vote-rs.yaml*
+`file: vote-rs.yaml`
 
 ```
 apiVersion: apps/v1
@@ -220,7 +220,7 @@ Scaling up application is as easy as running,
 kubectl scale --replicas=8 rs/vote
 
 kubectl get pods --show-labels
-```  
+```
 
 Observe what happens
 

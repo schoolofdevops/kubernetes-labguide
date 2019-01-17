@@ -8,7 +8,7 @@ Types of Services:
   * ExternalName
 
 
-![kubernetes service.\label{fig:captioned_image}](images/k8s_service.jpg)
+![kubernetes service.](images/k8s_service.jpg)
 
 ```
 kubectl get pods
@@ -37,7 +37,7 @@ watch -n 1 kubectl get  pod,deploy,rs,svc
 
 Lets start writing the  meta information for service.  
 
-Filename: vote-svc.yaml
+`Filename: vote-svc.yaml`
 
 ```
 ---
@@ -152,7 +152,7 @@ vote      NodePort   10.107.71.204   206.189.150.190,159.65.8.227   80:30000/TCP
 
 where,
 
-EXTERNAL-IP column shows which IPs the application is been exposed on. You could go to http://<IPADDRESS>:<SERVICE_PORT> to access this application.  e.g. http://206.189.150.190:80 where you should replace 206.189.150.190 with the actual IP address of the node that you exposed this on.
+EXTERNAL-IP column shows which IPs the application is been exposed on. You could go to `http://<IPADDRESS>:<SERVICE_PORT>` to access this application.  `e.g. http://206.189.150.190:80` where you should replace `206.189.150.190` with the actual IP address of the node that you exposed this on.
 
 ## Internal Service Discovery
 

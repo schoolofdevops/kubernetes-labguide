@@ -18,7 +18,7 @@ Deployment spec (deployment.spec) contains everything that replica set has + str
 
 
 
-File: vote-deploy.yaml
+`File: vote-deploy.yaml`
 
 ```
 apiVersion: apps/v1
@@ -123,7 +123,7 @@ kubectl edit deploy/vote
 
 Now, update the deployment spec to apply
 
-file: vote-deploy.yaml
+`file: vote-deploy.yaml`
 ```
 spec:
 ...
@@ -164,7 +164,7 @@ kubectl rollout history deploy/vote --revision=1
 
 ## Undo and Rollback
 
-file: vote-deploy.yaml
+`file: vote-deploy.yaml`
 ```
 spec:
   containers:

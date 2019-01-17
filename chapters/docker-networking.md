@@ -1,3 +1,4 @@
+
 # Lab: Docker Networking
 
 
@@ -75,6 +76,7 @@ docker network inspect mynet
    }
 ]
 ```
+
 #### Launching containers in different bridges
 
 Launch two containers **nt01** and **nt02** in **default** bridge network

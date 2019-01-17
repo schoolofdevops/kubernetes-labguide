@@ -1,3 +1,4 @@
+
 # Lab: Getting Started with Docker Operations
 
 In this chapter, we are going to learn about docker shell, the command line utility and how to use it to
@@ -10,9 +11,11 @@ We can use docker cli to interact with docker daemon. Various functions of docke
 
 ```
 docker
-```  
+
+```
 
 [Output]  
+
 ```
 Usage: docker [OPTIONS] COMMAND [arg...]
        docker [ --help | -v | --version ]
@@ -91,10 +94,14 @@ docker version
 docker -v
 
 docker system info
-```  
+```
+
+
+
 
 
 The **docker system info** command gives a lot of useful information like total number of containers and images along with information about host resource utilization  etc.
+
 
 ### Stream events from the docker daemon   
 Docker **events** serves us with the stream of events or interactions that are happening with the docker daemon. This does not stream the log data of application inside the container. That is done by **docker logs** command. Let us see how this command works  
@@ -102,9 +109,11 @@ Open an another terminal. Let us call the old terminal as **Terminal 1** and the
 
 From Terminal 1, execute **docker events**. Now you are getting the data stream from docker daemon  
 
+
 ```
 docker system events
-```  
+```
+
 
 
 
@@ -113,7 +122,8 @@ Now we have a basic understanding of docker command and sub commands, let us div
 
 ```
 docker run alpine:3.4 uptime
-```  
+```
+
 
 Where,  
 
@@ -130,7 +140,9 @@ Digest: sha256:2532609239f3a96fbc30670716d87c8861b8a1974564211325633ca093b11c0b
 Status: Downloaded newer image for alpine:3.4
 
  15:24:34 up  7:36,  load average: 0.00, 0.03, 0.04
-```  
+
+```
+
 
 **What happened?**  
 
@@ -159,7 +171,9 @@ Let's see what happens when we run that command again,
 ```
 docker run alpine uptime
  07:48:06 up  3:15,  load average: 0.00, 0.00, 0.00
-```  
+
+```
+
 
 Now docker no longer pulls the image again from registry, because **it has stored the image locally** from the previous run. So once an image is pulled, we can make use of that image to create and run as many container as we want without the need of downloading the image again. However it has created a new instance of the iamge/container.
 
@@ -169,7 +183,7 @@ We have understood how docker run commands works. But what if you want to see li
 
 ```
 docker ps
-```  
+```
 
 [Output]  
 
@@ -180,7 +194,7 @@ This command doesn't give us any information. Because, **docker ps** command wil
 
 ```
 docker ps -l
-```  
+```
 
 [Output]  
 ```
@@ -191,18 +205,18 @@ the **-l** flag shows the last run container along with other details like image
 
 ```
 docker ps -n 2
-```  
+```
 [Output]  
 ```
 NAMES
 988f4d90d604        alpine              "uptime"            About a minute ago   Exited (0) About a minute ago                       fervent_hypatia
 acea3023dca4        alpine              "uptime"            3 minutes ago        Exited (0) 3 minutes ago                            mad_darwin
-```  
+```
 Docker gives us the flexibility to show the desirable number of last run containers. This can be achieved by using **-n #no_of_results** flag  
 
 ```
 docker ps -a
-```  
+```
 
 [Output]  
 
@@ -214,7 +228,7 @@ acea3023dca4        alpine                       "uptime"                 4 minu
 dd75c04e7d2b        schoolofdevops/ghost:0.3.1   "/entrypoint.sh npm s"   4 days ago           Exited (0) 3 days ago                                  kickass_bardeen
 c082972f66d6        schoolofdevops/ghost:0.3.1   "/entrypoint.sh npm s"   4 days ago           Exited (0) 3 days ago           0.0.0.0:80->2368/tcp   sodcblog
 
-```  
+```
 This command will show all the container we have run so far.  
 
 ### Running Containers in Interactive Mode
@@ -224,7 +238,7 @@ We can interact with docker containers by giving -it flags at the run time. Thes
 
 ```
 docker run -it alpine:3.4 sh
-```  
+```
 
 [Output]  
 
@@ -235,7 +249,7 @@ ff3a5c916c92: Already exists
 Digest: sha256:7df6db5aa61ae9480f52f0b3a06a140ab98d427f86d8d5de0bedab9b8df6b1c0
 Status: Downloaded newer image for alpine:latest
 / #
-```  
+```
 
 As you see, we have landed straight into **sh** shell of that container. This is the result of using **-it** flags and mentioning that container to run the **sh** shell. Don't try to exit that container yet. We have to execute some other commands in it to understand the next topic  
 
@@ -278,7 +292,7 @@ cat /proc/cpuinfo
 date
 
 free
-```  
+```
 
 As you can see, the container uses the same Linux Kernel from the host machine. Just like **uname** command, the following commands share the same information as well. In order to avoid repetition, we will see the output of container alone.
 
@@ -295,7 +309,7 @@ So far, we have run the containers interactively. But this is not always the cas
 
 ```
 docker run -idt schoolofdevops/loop program
-```  
+```
 
 -d , --detach : detached mode  
 
@@ -303,21 +317,21 @@ docker run -idt schoolofdevops/loop program
 
 ```
 2533adf280ac4838b446e4ee1151f52793e6ac499d2e631b2c752459bb18ad5f
-```  
+```
 This will run the container in detached mode. We are only given with full container id as the output  
 
 Let us check whether this container is running or not  
 [Command]  
 ```
 docker ps
-```  
+```
 
 [Output]  
 
 ```
 CONTAINER ID        IMAGE                 COMMAND             CREATED             STATUS              PORTS               NAMES
 2533adf280ac        schoolofdevops/loop   "program"           37 seconds ago      Up 36 seconds                           prickly_bose
-```  
+```
 As we can see in the output, the container is running in the background  
 
 
@@ -333,7 +347,7 @@ docker container ps
 docker container logs <container_id/name>
 
 docker container logs -f  <container_id/name>
-```  
+```
 
 
 
@@ -342,13 +356,13 @@ We can connect to the containers which are running in detached mode by using the
 [Command]  
 ```
 docker exec -it <container_id/name> sh
-```  
+```
 
 [Output]  
 
 ```
 / #
-```  
+```
 
 You could try running any commands on the shell
 e.g.
@@ -368,7 +382,7 @@ Now exit the container.
 To launch vote container run the following command. Don't bother about the new flag **-P** now. We will explain about that flag later in this chapter  
 ```
 docker container run  -idt -P  schoolofdevops/vote
-```  
+```
 [Output]  
 
 ```
@@ -381,27 +395,27 @@ Status: Downloaded newer image for schoolofdevops/vote:latest
 Lets check the status of the container  
 ```
 docker ps -l
-```  
+```
 [Output]  
 
 ```
 CONTAINER ID        IMAGE                 COMMAND                  CREATED             STATUS              PORTS                   NAMES
 7d58ecc05754        schoolofdevops/vote   "gunicorn app:app -b…"   27 seconds ago      Up 26 seconds       0.0.0.0:32768->80/tcp   peaceful_varahamihira
-```  
+```
 
 ### Renaming the container  
 
 We can rename the container by using following command  
 ```
 docker rename 7d58ecc05754 vote
-```  
+```
 [replace 7d58ecc05754 with the actual container id on your system ]
 
 We have changed container's automatically generated name to **vote**. This new name can be of your choice. The point to understand is this command takes two arguments. The **Old_name followed by New_name**
 Run docker ps command to check the effect of changes  
 ```
 docker ps
-```  
+```
 [Output]  
 
 ```
@@ -422,12 +436,12 @@ Let's find out the port mapping of container to host. Docker provides subcommand
 
 ```
 docker port vote  
-```  
+```
 [Output]  
 
 ```
 80/tcp -> 0.0.0.0:32768
-```  
+```
 So whatever traffic the host gets in port **2368** will be mapped to container's port **32768**  
 
 Let's connect to http://IP_ADDRESS:PORT to see the actual application  
@@ -447,7 +461,7 @@ Lets try this inspect subcommand in action
 
 ```
 docker inspect vote
-```  
+```
 
 Data output by above command contains detailed descriptino of the container an its properties. is represented in JSON format which makes filtering these results easier.  
 
@@ -457,29 +471,29 @@ We can copy files/directories form host to container and vice-versa
 Let us create a file on the host  
 ```
 touch testfile
-```  
+```
 
 To copy the testfile **from host machine to ghsot contanier**, try  
 ```
 docker cp testfile vote:/opt  
-```  
+```
 This command will copy testfile to vote container's **/opt** directory  and will not give any output. To verify the file has been copies or not, let us log into container by running,  
 
 ```
 docker exec -it vote bash
-```  
+```
 Change directory into /opt and list the files  
 
 ```
 cd /opt  
 ls
-```  
+```
 
 [Output]  
 
 ```
 testfile
-```  
+```
 
 There you can see that file has been successfully copied. Now exit the container  
 
@@ -488,7 +502,7 @@ Now you may try to cp some files **from the container to the host machine**
 ```
 docker cp vote:/app  .  
 ls  
-```  
+```
 
 
 ### Checking the Stats  
@@ -499,7 +513,7 @@ Docker **stats** command returns a data stream of resource utilization used by c
 docker stats --no-stream=true vote
 
 docker stats
-```  
+```
 
 
 
@@ -511,24 +525,24 @@ First, let us monitor the utilization
 
 ```
 docker stats
-```  
+```
 
 You can see that **Memory** attribute has **max** as its value, which  means unlimited usage of host's RAM. We can put a cap on that by using **update** command  
 
 ```
 docker update --memory 400M --memory-swap -1 vote   
-```  
+```
 
 [Output]  
 
 ```
 vote
-```  
+```
 Let us check whether the change has taken effect or not with docker stats terminal   
 
 ```
 docker stat
-```  
+```
 
 As you can see, the memory utilization of the container is changed from xxxx (unlimited) to 400 mb  
 
@@ -544,7 +558,7 @@ In T1, start monitoring the stats
 
 ```
 docker stats
-```  
+```
 
 [Output]  
 ```
@@ -575,7 +589,7 @@ docker run -d --cpu-shares 4096 schoolofdevops/stresstest stress --cpu 2
 docker run -d --cpus 0.2 schoolofdevops/stresstest stress --cpu 2
 
 
-```  
+```
 
 Close the T2 terminal once you are done with this lab.  
 
@@ -632,7 +646,7 @@ A container can be stopped using **stop** command. This command will stop the ap
 
 ```
 docker stop <container_id/name>
-```  
+```
 
 #### Kill a container  
 This command will send **SIGKILL** signal and kills the container ungracefully  
@@ -641,7 +655,7 @@ This command will send **SIGKILL** signal and kills the container ungracefully
 
 ```
 docker kill <container_id/name>
-```  
+```
 
 If you want to remove a container, then execute the following command. Before running this command, run docker ps -a to see the list of pre run containers. Choose a container of your wish and then execute docker rm command. Then run docker ps -a again to check the removed container list or not  
 
@@ -651,7 +665,7 @@ If you want to remove a container, then execute the following command. Before ru
 docker rm <container_id/name>
 docker rm -f <container_id/name>
 
-```  
+```
 
 
 #### Exercises  

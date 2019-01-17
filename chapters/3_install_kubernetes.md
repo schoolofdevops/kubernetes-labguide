@@ -84,9 +84,13 @@ kubeadm init --apiserver-advertise-address 192.168.56.101 --pod-network-cidr=192
 After master being initialized, it should display the command which could be used on all worker/nodes to join the k8s cluster.
 
 e.g.
-```
+
+```console, options: "linenos": true, "linespans": "true"
 kubeadm join --token c04797.8db60f6b2c0dd078 192.168.12.10:6443 --discovery-token-ca-cert-hash sha256:88ebb5d5f7fdfcbbc3cde98690b1dea9d0f96de4a7e6bf69198172debca74cd0
+
 ```
+
+
 `dont copy above command as is, this is just a sample, use actual`
 
 Copy and paste it on all node.
@@ -190,7 +194,7 @@ http://NODEIP:31000
 
 The Dashboard Looks like:
 
-![Kubernetes Dashboard.\label{fig:captioned_image}](images/Kubernetes-Dashboard.png)
+![Kubernetes Dashboard.](images/Kubernetes-Dashboard.png)
 
 
 

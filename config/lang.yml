@@ -1,6 +1,6 @@
 ---
 chapter:
-  word: Chapter
+  word: Lab
   order: standard     # Use 'reverse' to change 'Chapter 1' to '1 Chapter'
 section: Section
 table: Table
