@@ -1,4 +1,4 @@
-# Checking health with Probes
+# Lab K204 - Adding health checks with Probes
 
 
 ## Adding health checks
@@ -16,154 +16,210 @@ Probes are simply a *diagnostic action* performed by the kubelet. There are thre
 
 In cases of any failure during the diagnostic action, kubelet will report back to the API server. Let us study about how these health checks work in practice.
 
-### Liveness Probe
+### Adding Liveness/Readineess  Probes
 Liveness probe checks the status of the pod(whether it is running or not). If livenessProbe fails, then the pod is subjected to its restart policy. The default state of livenessProbe is *Success*.
 
-Let us add liveness probe to our *frontend* deployment. The following probe will check whether it is able to *access the port or not*.
-
-`File: code/frontend-deploy.yml`
-
-```
-apiVersion: apps/v1beta1
-kind: Deployment
-metadata:
-  name: front-end
-  namespace: instavote
-  labels:
-    app: front-end
-    env: dev
-spec:
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        app: front-end
-        env: dev
-    spec:
-      containers:
-        - name: front-end
-          image: schoolofdevops/frontend
-          imagePullPolicy: Always
-          ports:
-            - containerPort: 8079
-          livenessProbe:
-            tcpSocket:
-              port: 8079
-            initialDelaySeconds: 5
-            periodSeconds: 5
-```
-
-`Expected output:`
-
-```
-kubectl apply -f front-end/frontend-deploy.yml
-kubectl get pods
-kubectl describe pod front-end-757db58546-fkgdw
-
-[...]
-Events:
-  Type    Reason                 Age   From               Message
-  ----    ------                 ----  ----               -------
-  Normal  Scheduled              22s   default-scheduler  Successfully assigned front-end-757db58546-fkgdw to node4
-  Normal  SuccessfulMountVolume  22s   kubelet, node4     MountVolume.SetUp succeeded for volume "default-token-w4279"
-  Normal  Pulling                20s   kubelet, node4     pulling image "schoolofdevops/frontend"
-  Normal  Pulled                 17s   kubelet, node4     Successfully pulled image "schoolofdevops/frontend"
-  Normal  Created                17s   kubelet, node4     Created container
-  Normal  Started                17s   kubelet, node4     Started container
-```
-
-Let us change the livenessProbe check port to 8080.
-
-```
-          livenessProbe:
-            tcpSocket:
-              port: 8080
-            initialDelaySeconds: 5
-            periodSeconds: 5
-```
-
-Apply this deployment file and check the description of the pod
-
-`Expected output:`
-```
-kubectl apply -f frontend-deploy.yml
-kubectl get pods
-kubectl describe pod front-end-bf86ffd8b-bjb7p
-
-[...]
-Events:
-  Type     Reason                 Age               From               Message
-  ----     ------                 ----              ----               -------
-  Normal   Scheduled              1m                default-scheduler  Successfully assigned front-end-bf86ffd8b-bjb7p to node3
-  Normal   SuccessfulMountVolume  1m                kubelet, node3     MountVolume.SetUp succeeded for volume "default-token-w4279"
-  Normal   Pulling                38s (x2 over 1m)  kubelet, node3     pulling image "schoolofdevops/frontend"
-  Normal   Killing                38s               kubelet, node3     Killing container with id docker://front-end:Container failed liveness probe.. Container will be killed and recreated.
-  Normal   Pulled                 35s (x2 over 1m)  kubelet, node3     Successfully pulled image "schoolofdevops/frontend"
-  Normal   Created                35s (x2 over 1m)  kubelet, node3     Created container
-  Normal   Started                35s (x2 over 1m)  kubelet, node3     Started container
-  Warning  Unhealthy              27s (x5 over 1m)  kubelet, node3     Liveness probe failed: Get http://10.233.71.50:8080/: dial tcp 10.233.71.50:8080: getsockopt: connection refused
-```
-
-### Readiness Probe
 Readiness probe checks whether your application is ready to serve the requests. When the readiness probe fails, the pod's IP is removed from the end point list of the service. The default state of readinessProbe is *Success*.
 
-Readiness probe is configured just like liveness probe. But this time we will use *httpGet request*.
+Let us add liveness/readiness  probes to our *vote* deployment.
 
-`File: code/frontend-deploy.yml`
+`file: vote-deploy-probes.yaml`
 
 ```
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: front-end
-  namespace: instavote
-  labels:
-    app: front-end
-    env: dev
+  name: vote
 spec:
-  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 1
+  revisionHistoryLimit: 4
+  replicas: 12
+  minReadySeconds: 20
+  selector:
+    matchLabels:
+      role: vote
+    matchExpressions:
+      - {key: version, operator: In, values: [v1, v2, v3, v4, v5]}
   template:
     metadata:
+      name: vote
       labels:
-        app: front-end
-        env: dev
+        app: python
+        role: vote
+        version: v1
     spec:
       containers:
-        - name: front-end
-          image: schoolofdevops/frontend
-          imagePullPolicy: Always
-          ports:
-            - containerPort: 8079
+        - name: app
+          image: schoolofdevops/vote:v1
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "128Mi"
+              cpu: "250m"
           livenessProbe:
             tcpSocket:
-              port: 8079
+              port: 80
             initialDelaySeconds: 5
             periodSeconds: 5
           readinessProbe:
             httpGet:
               path: /
-              port: 8079
+              port: 80
             initialDelaySeconds: 5
             periodSeconds: 3
 ```
 
-`Expected output:`
+where,
+
+  * livenessProbe used a simple tcp check to test whether application is listening on port 80
+  * readinessProbe does httpGet to actually fetch a page using get method and tests for the http response code.
+
+
+Apply this code using,
 
 ```
-kubectl apply -f front-end/frontend-deploy.yml
+kubectl apply -f vote-deploy-probes.yaml
 kubectl get pods
-kubectl describe pod front-end-c5bc89b57-g42nc
+kubectl describe svc vote
 
-[...]
-Events:
-  Type    Reason                 Age   From               Message
-  ----    ------                 ----  ----               -------
-  Normal  Scheduled              11s   default-scheduler  Successfully assigned front-end-c5bc89b57-g42nc to node4
-  Normal  SuccessfulMountVolume  10s   kubelet, node4     MountVolume.SetUp succeeded for volume "default-token-w4279"
-  Normal  Pulling                8s    kubelet, node4     pulling image "schoolofdevops/frontend"
-  Normal  Pulled                 6s    kubelet, node4     Successfully pulled image "schoolofdevops/frontend"
-  Normal  Created                5s    kubelet, node4     Created container
-  Normal  Started                5s    kubelet, node4     Started container
 ```
 
-**Task**: Change the readinessProbe port to 8080 and check what happens to the pod.
+### Testing livenessProbe
+
+```
+kubectl edit deploy vote
+```
+
+```
+livenessProbe:
+  failureThreshold: 3
+  initialDelaySeconds: 5
+  periodSeconds: 5
+  successThreshold: 1
+  tcpSocket:
+    port: 8888
+  timeoutSeconds: 1
+```
+
+Since you are using *edit* command, as soon as you save the file, deployment is modified.
+
+```
+kubectl get pods
+kubectl describe pod vote-xxxx
+```
+
+where, vote-xxxx is one of the new pods created.
+
+```
+Events:
+  Type     Reason     Age                From               Message
+  ----     ------     ----               ----               -------
+  Normal   Scheduled  38s                default-scheduler  Successfully assigned instavote/vote-668579766d-p65xb to k-02
+  Normal   Pulled     18s (x2 over 36s)  kubelet, k-02      Container image "schoolofdevops/vote:v1" already present on machine
+  Normal   Created    18s (x2 over 36s)  kubelet, k-02      Created container
+  Normal   Started    18s (x2 over 36s)  kubelet, k-02      Started container
+  Normal   Killing    18s                kubelet, k-02      Killing container with id docker://app:Container failed liveness probe.. Container will be killed and recreated.
+  Warning  Unhealthy  4s (x5 over 29s)   kubelet, k-02      Liveness probe failed: dial tcp 10.32.0.12:8888: connect: connection refused
+```
+
+What just happened ?
+
+  * Since livenessProbe is failing it will keep killing and recreating containers. Thats what you see in the description above.
+  * When you list pods, you should see it in crashloopbackoff state with number of restarts incrementing with time.
+
+e.g.
+
+```
+vote-668579766d-p65xb    0/1     CrashLoopBackOff   7          7m38s   10.32.0.12   k-02        <none>           <none>
+vote-668579766d-sclbr    0/1     CrashLoopBackOff   7          7m38s   10.32.0.10   k-02        <none>           <none>
+vote-668579766d-vrcmj    0/1     CrashLoopBackOff   7          7m38s   10.38.0.8    kube03-01   <none>           <none>
+```
+
+To fix it, revert the livenessProbe configs by editing the deplyment again.
+
+
+
+### Readiness Probe
+
+
+Readiness probe is configured just like liveness probe. But this time we will use *httpGet request*.
+
+```
+kubectl edit deploy vote
+
+```
+
+```
+readinessProbe:
+  failureThreshold: 3
+  httpGet:
+    path: /test.html
+    port: 80
+    scheme: HTTP
+  initialDelaySeconds: 5
+  periodSeconds: 3
+  successThreshold: 1
+```
+
+where, readinessProbe.httpGet.path is been changed from **/** to **/test.html** which is a non existant path.  
+
+
+check
+
+```
+kubectl get deploy,rs,pods
+```
+
+
+[output snippet]
+
+```
+NAME                          READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.extensions/vote    11/12   3            11          2m12s
+
+
+vote-8cbb7ff89-6xvbc     0/1     Running   0          73s     10.38.0.10   kube03-01   <none>           <none>
+vote-8cbb7ff89-6z5zv     0/1     Running   0          73s     10.38.0.5    kube03-01   <none>           <none>
+vote-8cbb7ff89-hdmxb     0/1     Running   0          73s     10.32.0.12   k-02        <none>           <none>
+```
+
+
+```
+kubectl describe pod vote-8cbb7ff89-hdmxb
+```
+
+where, vote-8cbb7ff89-hdmxb is one of the pods launched after changing readiness probe.
+
+[output snippet]
+
+```
+Events:
+  Type     Reason     Age                  From               Message
+  ----     ------     ----                 ----               -------
+  Normal   Scheduled  109s                 default-scheduler  Successfully assigned instavote/vote-8cbb7ff89-hdmxb to k-02
+  Normal   Pulled     108s                 kubelet, k-02      Container image "schoolofdevops/vote:v1" already present on machine
+  Normal   Created    108s                 kubelet, k-02      Created container
+  Normal   Started    108s                 kubelet, k-02      Started container
+  Warning  Unhealthy  39s (x22 over 102s)  kubelet, k-02      Readiness probe failed: HTTP probe failed with statuscode: 404
+```
+
+
+```
+kubectl describe svc vote
+```
+
+what happened ?
+
+  * Since readinessProbe failed, the new launched batch does not show containers running (0/1)
+  * Description of the pod shows it being *Unhealthy* due to failed HTTP probe
+  * Deployment shows surged pods, with number of ready pods being less than number of desired replicas (e.g. 11/12).
+  * Service does not send traffic to the pod which are marked as unhealthy/not ready.  
+
+
+Reverting the changes to readiness probe should bring it back to working state.

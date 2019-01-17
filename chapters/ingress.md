@@ -1,4 +1,4 @@
-# Ingress
+# Lab K201 - Application Routing with Ingress Controllers
 
 
 ## Pre Requisites
