@@ -30,6 +30,14 @@ pages:
      - Building Deployment Strategies: "vote-deployement_strategies.md"
      - Troubleshooting Tips: "12_troubleshooting.md"
      - Logging: "logging.md"
+  - Web Quests:
+     - KWQ001 - CNI Web Quest: "wq001-cni.md"
+     - KWQ001 - Kubernetes Security Web Quest: "wq002-security.md"
+     - KWQ003 - Ingress Web Quest: "wq003-ingress.md"
+     - KWQ004 - Monitoring Web Quest: "wq004-monitoring.md"
+     - KWQ005 - Controllers Web Quest: "wq005-controllers.md"
+     - KWQ006 - Persistent Data Web Quest: "wq006-persistentvolume.md"
+     - KWQ007 - Cluster Maintenance Web Quest: "wq007-maintenance.md"
   - References:
      - RBAC apiGroups to Resource Mapping: "rbac-resource-group-mapping.md"
 docs_dir: chapters
