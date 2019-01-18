@@ -61,7 +61,7 @@ pod/traefik-ingress-controller-vl296   1/1       Running   0          11h
 
 You would notice that the ingress controller is started on all nodes (except managers). Visit any of the nodes 8080 port e.g. http://IPADDRESS:8080 to see  traefik's management UI.
 
-![Traefik](../images/traefik01.png)
+![Traefik](images/traefik01.png)
 
 ### Setting up Named Based Routing for Vote App
 
@@ -146,7 +146,7 @@ where,
 
 You could now see the rule added to ingress controller,
 
-![Traefik with Ingress Rules](../images/traefik02.png)
+![Traefik with Ingress Rules](images/traefik02.png)
 
 Where,
 
@@ -173,7 +173,8 @@ You have created the ingress rules based on hostnames e.g.  **vote.example.org**
 To achieve this you need to either,
 
   * Create a DNS entry, provided you own the domain and have access to the dns management console.
-  * Create a local **hosts** file entry. On unix systems its in `/etc/hosts` file. On windows its at `C:\Windows\System32\drivers\etc\hosts`. You need admin access to edit this file.
+  * Create a local **hosts** file entry. On unix systems its in `/etc/hosts` file. 
+  * On windows its at Path  You need admin access to edit this file.
 
 
 For example, on a linux or osx, you could edit it as,
@@ -194,7 +195,7 @@ where,
 
 And then access the app urls using http://vote.example.org or http://results.example.org
 
-![Name Based Routing](../images/domain-name.png)
+![Name Based Routing](images/domain-name.png)
 
 
 
@@ -288,7 +289,7 @@ Observe the annotations field. No sooner than you apply this spec, ingress contr
 And if you visit traefik's dashboard and go to the details tab, you should see the basic authentication section enabled as in the diagram below.
 
 
-![Name Based Routing](../images/domain-name.png)
+![Name Based Routing](images/domain-name.png)
 
 
 

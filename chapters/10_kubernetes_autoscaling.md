@@ -76,7 +76,7 @@ vis-13   36m          1%     1001Mi          26%
 vis-14   71m          3%     1047Mi          27%
 ```
 
-<<<<<<< HEAD
+
 ### Defining Resource Requests and Limits
 
 
@@ -116,8 +116,8 @@ kubectl apply -f vote-deploy.yaml
   * Define the value of **cpu.request** > **cpu.limit** Try to apply and observe.
   * Define the values for **memory.request** and **memory.limit** higher than the total system memory. Apply and observe the deployment and pods.  
 
-=======
->>>>>>> c157d5ea5247cbeee8e81f2ea4c86e2aab69b0b5
+
+
 
 
 ### Create a HPA

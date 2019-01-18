@@ -1,9 +1,4 @@
-<<<<<<< HEAD
-# Helm Package Manager
-
-## Install Helm
-To install helm you can follow following instructions. 
-=======
+ 
 # Lab K205 - Monitoring setup with HELM 
 
 In this lab, you are going to install and configure helm, and in turns, use it to configure a monitoring system for kubernetes using prometheus and grafana stack.
@@ -11,7 +6,7 @@ In this lab, you are going to install and configure helm, and in turns, use it t
 ## Installing  Helm
 
 To install helm you can follow following instructions.
->>>>>>> c157d5ea5247cbeee8e81f2ea4c86e2aab69b0b5
+
 
 ```
 curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get > get_helm.sh
@@ -84,16 +79,16 @@ To provide custom configurations, copy over the custom values file from **k8s-co
 cp ../k8s-code/helper/helm/values/prometheus-customvalues.yaml .
 ```
 
-<<<<<<< HEAD
+
 Official Grafana Helm Chart repository.
 ```
 https://github.com/helm/charts/tree/master/stable/grafana
 ```
 
 #### Grafana Deployment
-=======
+
 Review **prometheus-customvalues.yaml** and then launch prometheus stack as,
->>>>>>> c157d5ea5247cbeee8e81f2ea4c86e2aab69b0b5
+
 
 ```
 helm install --name prometheus --values prometheus-customvalues.yaml  . --dry-run

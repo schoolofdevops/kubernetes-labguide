@@ -1,4 +1,3 @@
-
 # Lab: Getting Started with Docker Operations
 
 In this chapter, we are going to learn about docker shell, the command line utility and how to use it to

@@ -15,13 +15,10 @@ cp vote-rs.yaml vote-deploy.yaml
 
 Deployment spec (deployment.spec) contains everything that replica set has + strategy. Lets add it as follows,
 
-<<<<<<< HEAD
+
 
 `File: vote-deploy.yaml`
 
-`file: vote-deploy.yaml`
-
->>>>>>> 987927b043a49cbc30b4f635fbbfb28e2d3ed49a
 
 ```
 apiVersion: apps/v1
@@ -88,6 +85,7 @@ kubectl get deploy,pods,rs
 kubectl rollout status deployment/vote
 kubectl get pods --show-labels
 ```
+
 Sample Output
 ```
 kubectl get deployments

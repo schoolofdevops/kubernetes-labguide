@@ -5,7 +5,7 @@ Configmap is one of the ways to provide configurations to your application.
 ### Injecting env variables with configmaps
 Create our configmap for vote app
 
-file:  projects/instavote/dev/vote-cm.yaml
+`file:  projects/instavote/dev/vote-cm.yaml`
 
 ```
 apiVersion: v1
@@ -38,7 +38,7 @@ In order to use this configmap in the deployment, we need to reference it from t
 
 Check the deployment file for vote add for the following block.
 
-file: `vote-deploy.yaml`
+`file: vote-deploy.yaml`
 
 ```
 ...
