@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Adding health checks with Probes - Kubernetes Lab Guide</title>
+  <title>Lab K204 - Adding health checks with Probes - Kubernetes Lab Guide</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -17,7 +17,7 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Adding health checks with Probes";
+    var mkdocs_page_name = "Lab K204 - Adding health checks with Probes";
     var mkdocs_page_input_path = "pods-health-probes.md";
     var mkdocs_page_url = null;
   </script>
@@ -110,7 +110,7 @@
                 </li>
                 <li class="">
                     
-    <a class="" href="../9-vote-configmaps_and_secrets/">Lab K107 - Configurations Management with ConfigMaps and Secrets</a>
+    <a class="" href="../9-vote-configmaps_and_secrets/">Lab K107 - Configurations Management with ConfigMaps</a>
                 </li>
                 <li class="">
                     
@@ -121,34 +121,26 @@
           
             <li class="toctree-l1">
 		
-    <span class="caption-text">Advanced Kubernetes</span>
+    <span class="caption-text">Advanced Administration</span>
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../kubespray-prereqs/">Kubespray HA lab setup with Vagrant</a>
+    <a class="" href="../ingress/">Lab K201 - Application Routing with Ingress Controllers</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../cluster_setup_kubespray/">HA setup with Kubespray</a>
+    <a class="" href="../configuring_authentication_and_authorization/">Lab K202 - Authentication and Authorization (RBAC)</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../configuring_authentication_and_authorization/">Authentication and Authorization (RBAC)</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../advanced_pod_scheduling/">Advanced Pod Scheduling</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../pod-adv-specs/">Pod Resource and Security Specs</a>
+    <a class="" href="../advanced_pod_scheduling/">Lab K203 - Advanced Pod Scheduling</a>
                 </li>
                 <li class=" current">
                     
-    <a class="current" href="./">Adding health checks with Probes</a>
+    <a class="current" href="./">Lab K204 - Adding health checks with Probes</a>
     <ul class="subnav">
             
-    <li class="toctree-l3"><a href="#checking-health-with-probes">Checking health with Probes</a></li>
+    <li class="toctree-l3"><a href="#lab-k204-adding-health-checks-with-probes">Lab K204 - Adding health checks with Probes</a></li>
     
         <ul>
         
@@ -161,27 +153,19 @@
                 </li>
                 <li class="">
                     
-    <a class="" href="../ingress/">Application Routing with Ingress Controllers</a>
+    <a class="" href="../helm/">Lab K205 - Monitoring setup with HELM</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../10_kubernetes_autoscaling/">Auto Scaling Capacity with HPA</a>
+    <a class="" href="../10_kubernetes_autoscaling/">Lab K206 - Auto Scaling Capacity with HPA</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../13_redis_statefulset/">Creating Replicated Redis Cluster with Statefulsets</a>
+    <a class="" href="../network_policies/">Lab K207 - Access Control with Network Policies</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../network_policies/">Access Control with Network Policies</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../cluster-administration/">Cluster Administration</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../helm/">Helm Charts</a>
+    <a class="" href="../cluster-administration/">Lab K208 - Cluster Administration</a>
                 </li>
     </ul>
 	    </li>
@@ -190,6 +174,10 @@
 		
     <span class="caption-text">Additional Topics</span>
     <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../13_redis_statefulset/">Creating Replicated Redis Cluster with Statefulsets</a>
+                </li>
                 <li class="">
                     
     <a class="" href="../vote-deployement_strategies/">Building Deployment Strategies</a>
@@ -201,6 +189,41 @@
                 <li class="">
                     
     <a class="" href="../logging/">Logging</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Web Quests</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../wq001-cni/">KWQ001 - CNI Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq002-security/">KWQ001 - Kubernetes Security Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq003-ingress/">KWQ003 - Ingress Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq004-monitoring/">KWQ004 - Monitoring Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq005-controllers/">KWQ005 - Controllers Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq006-persistentvolume/">KWQ006 - Persistent Data Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq007-maintenance/">KWQ007 - Cluster Maintenance Web Quest</a>
                 </li>
     </ul>
 	    </li>
@@ -238,11 +261,11 @@
     
       
         
-          <li>Advanced Kubernetes &raquo;</li>
+          <li>Advanced Administration &raquo;</li>
         
       
     
-    <li>Adding health checks with Probes</li>
+    <li>Lab K204 - Adding health checks with Probes</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -252,151 +275,185 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="checking-health-with-probes">Checking health with Probes</h1>
+                <h1 id="lab-k204-adding-health-checks-with-probes">Lab K204 - Adding health checks with Probes</h1>
 <h2 id="adding-health-checks">Adding health checks</h2>
 <p>Health checks in Kubernetes work the same way as traditional health checks of applications. They make sure that our application is ready to receive and process user requests. In Kubernetes we have two types of health checks,
   * Liveness Probe
   * Readiness Probe
-Probes are simply a <em>diagnostic action</em> performed by the kubelet. There are three types actions a kubelet perfomes on a pod, which are namely,
-  * <code>ExecAction</code>: Executes a command inside the pod. Assumed successful when the command <strong>returns 0</strong> as exit code.
-  * <code>TCPSocketAction</code>: Checks for a state of a particular port on the pod. Considered successful when the state of <strong>the port is open</strong>.
-  * <code>HTTPGetAction</code>: Performs a GET request on pod's IP. Assumed successful when the status code is <strong>greater than 200 and less than 400</strong></p>
+Probes are simply a <em>diagnostic action</em> performed by the kubelet. There are three types actions a kubelet perfomes on a pod, which are namely,</p>
+<ul>
+<li><code>ExecAction</code>: Executes a command inside the pod. Assumed successful when the command <strong>returns 0</strong> as exit code.</li>
+<li><code>TCPSocketAction</code>: Checks for a state of a particular port on the pod. Considered successful when the state of <strong>the port is open</strong>.</li>
+<li><code>HTTPGetAction</code>: Performs a GET request on pod's IP. Assumed successful when the status code is <strong>greater than 200 and less than 400</strong></li>
+</ul>
 <p>In cases of any failure during the diagnostic action, kubelet will report back to the API server. Let us study about how these health checks work in practice.</p>
-<h3 id="liveness-probe">Liveness Probe</h3>
+<h3 id="adding-livenessreadineess-probes">Adding Liveness/Readineess  Probes</h3>
 <p>Liveness probe checks the status of the pod(whether it is running or not). If livenessProbe fails, then the pod is subjected to its restart policy. The default state of livenessProbe is <em>Success</em>.</p>
-<p>Let us add liveness probe to our <em>frontend</em> deployment. The following probe will check whether it is able to <em>access the port or not</em>.</p>
-<p><code>File: code/frontend-deploy.yml</code></p>
-<pre><code>apiVersion: apps/v1beta1
-kind: Deployment
-metadata:
-  name: front-end
-  namespace: instavote
-  labels:
-    app: front-end
-    env: dev
-spec:
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        app: front-end
-        env: dev
-    spec:
-      containers:
-        - name: front-end
-          image: schoolofdevops/frontend
-          imagePullPolicy: Always
-          ports:
-            - containerPort: 8079
-          livenessProbe:
-            tcpSocket:
-              port: 8079
-            initialDelaySeconds: 5
-            periodSeconds: 5
-</code></pre>
-
-<p><code>Expected output:</code></p>
-<pre><code>kubectl apply -f front-end/frontend-deploy.yml
-kubectl get pods
-kubectl describe pod front-end-757db58546-fkgdw
-
-[...]
-Events:
-  Type    Reason                 Age   From               Message
-  ----    ------                 ----  ----               -------
-  Normal  Scheduled              22s   default-scheduler  Successfully assigned front-end-757db58546-fkgdw to node4
-  Normal  SuccessfulMountVolume  22s   kubelet, node4     MountVolume.SetUp succeeded for volume &quot;default-token-w4279&quot;
-  Normal  Pulling                20s   kubelet, node4     pulling image &quot;schoolofdevops/frontend&quot;
-  Normal  Pulled                 17s   kubelet, node4     Successfully pulled image &quot;schoolofdevops/frontend&quot;
-  Normal  Created                17s   kubelet, node4     Created container
-  Normal  Started                17s   kubelet, node4     Started container
-</code></pre>
-
-<p>Let us change the livenessProbe check port to 8080.</p>
-<pre><code>          livenessProbe:
-            tcpSocket:
-              port: 8080
-            initialDelaySeconds: 5
-            periodSeconds: 5
-</code></pre>
-
-<p>Apply this deployment file and check the description of the pod</p>
-<p><code>Expected output:</code></p>
-<pre><code>kubectl apply -f frontend-deploy.yml
-kubectl get pods
-kubectl describe pod front-end-bf86ffd8b-bjb7p
-
-[...]
-Events:
-  Type     Reason                 Age               From               Message
-  ----     ------                 ----              ----               -------
-  Normal   Scheduled              1m                default-scheduler  Successfully assigned front-end-bf86ffd8b-bjb7p to node3
-  Normal   SuccessfulMountVolume  1m                kubelet, node3     MountVolume.SetUp succeeded for volume &quot;default-token-w4279&quot;
-  Normal   Pulling                38s (x2 over 1m)  kubelet, node3     pulling image &quot;schoolofdevops/frontend&quot;
-  Normal   Killing                38s               kubelet, node3     Killing container with id docker://front-end:Container failed liveness probe.. Container will be killed and recreated.
-  Normal   Pulled                 35s (x2 over 1m)  kubelet, node3     Successfully pulled image &quot;schoolofdevops/frontend&quot;
-  Normal   Created                35s (x2 over 1m)  kubelet, node3     Created container
-  Normal   Started                35s (x2 over 1m)  kubelet, node3     Started container
-  Warning  Unhealthy              27s (x5 over 1m)  kubelet, node3     Liveness probe failed: Get http://10.233.71.50:8080/: dial tcp 10.233.71.50:8080: getsockopt: connection refused
-</code></pre>
-
-<h3 id="readiness-probe">Readiness Probe</h3>
 <p>Readiness probe checks whether your application is ready to serve the requests. When the readiness probe fails, the pod's IP is removed from the end point list of the service. The default state of readinessProbe is <em>Success</em>.</p>
-<p>Readiness probe is configured just like liveness probe. But this time we will use <em>httpGet request</em>.</p>
-<p><code>File: code/frontend-deploy.yml</code></p>
-<pre><code>apiVersion: apps/v1beta1
+<p>Let us add liveness/readiness  probes to our <em>vote</em> deployment.</p>
+<p><code>file: vote-deploy-probes.yaml</code></p>
+<pre><code>apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: front-end
-  namespace: instavote
-  labels:
-    app: front-end
-    env: dev
+  name: vote
 spec:
-  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 1
+  revisionHistoryLimit: 4
+  replicas: 12
+  minReadySeconds: 20
+  selector:
+    matchLabels:
+      role: vote
+    matchExpressions:
+      - {key: version, operator: In, values: [v1, v2, v3, v4, v5]}
   template:
     metadata:
+      name: vote
       labels:
-        app: front-end
-        env: dev
+        app: python
+        role: vote
+        version: v1
     spec:
       containers:
-        - name: front-end
-          image: schoolofdevops/frontend
-          imagePullPolicy: Always
-          ports:
-            - containerPort: 8079
+        - name: app
+          image: schoolofdevops/vote:v1
+          resources:
+            requests:
+              memory: &quot;64Mi&quot;
+              cpu: &quot;50m&quot;
+            limits:
+              memory: &quot;128Mi&quot;
+              cpu: &quot;250m&quot;
           livenessProbe:
             tcpSocket:
-              port: 8079
+              port: 80
             initialDelaySeconds: 5
             periodSeconds: 5
           readinessProbe:
             httpGet:
               path: /
-              port: 8079
+              port: 80
             initialDelaySeconds: 5
             periodSeconds: 3
 </code></pre>
 
-<p><code>Expected output:</code></p>
-<pre><code>kubectl apply -f front-end/frontend-deploy.yml
+<p>where,</p>
+<ul>
+<li>livenessProbe used a simple tcp check to test whether application is listening on port 80</li>
+<li>readinessProbe does httpGet to actually fetch a page using get method and tests for the http response code.</li>
+</ul>
+<p>Apply this code using,</p>
+<pre><code>kubectl apply -f vote-deploy-probes.yaml
 kubectl get pods
-kubectl describe pod front-end-c5bc89b57-g42nc
+kubectl describe svc vote
 
-[...]
-Events:
-  Type    Reason                 Age   From               Message
-  ----    ------                 ----  ----               -------
-  Normal  Scheduled              11s   default-scheduler  Successfully assigned front-end-c5bc89b57-g42nc to node4
-  Normal  SuccessfulMountVolume  10s   kubelet, node4     MountVolume.SetUp succeeded for volume &quot;default-token-w4279&quot;
-  Normal  Pulling                8s    kubelet, node4     pulling image &quot;schoolofdevops/frontend&quot;
-  Normal  Pulled                 6s    kubelet, node4     Successfully pulled image &quot;schoolofdevops/frontend&quot;
-  Normal  Created                5s    kubelet, node4     Created container
-  Normal  Started                5s    kubelet, node4     Started container
 </code></pre>
 
-<p><strong>Task</strong>: Change the readinessProbe port to 8080 and check what happens to the pod.</p>
+<h3 id="testing-livenessprobe">Testing livenessProbe</h3>
+<pre><code>kubectl edit deploy vote
+</code></pre>
+
+<pre><code>livenessProbe:
+  failureThreshold: 3
+  initialDelaySeconds: 5
+  periodSeconds: 5
+  successThreshold: 1
+  tcpSocket:
+    port: 8888
+  timeoutSeconds: 1
+</code></pre>
+
+<p>Since you are using <em>edit</em> command, as soon as you save the file, deployment is modified.</p>
+<pre><code>kubectl get pods
+kubectl describe pod vote-xxxx
+</code></pre>
+
+<p>where, vote-xxxx is one of the new pods created.</p>
+<pre><code>Events:
+  Type     Reason     Age                From               Message
+  ----     ------     ----               ----               -------
+  Normal   Scheduled  38s                default-scheduler  Successfully assigned instavote/vote-668579766d-p65xb to k-02
+  Normal   Pulled     18s (x2 over 36s)  kubelet, k-02      Container image &quot;schoolofdevops/vote:v1&quot; already present on machine
+  Normal   Created    18s (x2 over 36s)  kubelet, k-02      Created container
+  Normal   Started    18s (x2 over 36s)  kubelet, k-02      Started container
+  Normal   Killing    18s                kubelet, k-02      Killing container with id docker://app:Container failed liveness probe.. Container will be killed and recreated.
+  Warning  Unhealthy  4s (x5 over 29s)   kubelet, k-02      Liveness probe failed: dial tcp 10.32.0.12:8888: connect: connection refused
+</code></pre>
+
+<p>What just happened ?</p>
+<ul>
+<li>Since livenessProbe is failing it will keep killing and recreating containers. Thats what you see in the description above.</li>
+<li>When you list pods, you should see it in crashloopbackoff state with number of restarts incrementing with time.</li>
+</ul>
+<p>e.g.</p>
+<pre><code>vote-668579766d-p65xb    0/1     CrashLoopBackOff   7          7m38s   10.32.0.12   k-02        &lt;none&gt;           &lt;none&gt;
+vote-668579766d-sclbr    0/1     CrashLoopBackOff   7          7m38s   10.32.0.10   k-02        &lt;none&gt;           &lt;none&gt;
+vote-668579766d-vrcmj    0/1     CrashLoopBackOff   7          7m38s   10.38.0.8    kube03-01   &lt;none&gt;           &lt;none&gt;
+</code></pre>
+
+<p>To fix it, revert the livenessProbe configs by editing the deplyment again.</p>
+<h3 id="readiness-probe">Readiness Probe</h3>
+<p>Readiness probe is configured just like liveness probe. But this time we will use <em>httpGet request</em>.</p>
+<pre><code>kubectl edit deploy vote
+
+</code></pre>
+
+<pre><code>readinessProbe:
+  failureThreshold: 3
+  httpGet:
+    path: /test.html
+    port: 80
+    scheme: HTTP
+  initialDelaySeconds: 5
+  periodSeconds: 3
+  successThreshold: 1
+</code></pre>
+
+<p>where, readinessProbe.httpGet.path is been changed from <strong>/</strong> to <strong>/test.html</strong> which is a non existant path.  </p>
+<p>check</p>
+<pre><code>kubectl get deploy,rs,pods
+</code></pre>
+
+<p>[output snippet]</p>
+<pre><code>NAME                          READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.extensions/vote    11/12   3            11          2m12s
+
+
+vote-8cbb7ff89-6xvbc     0/1     Running   0          73s     10.38.0.10   kube03-01   &lt;none&gt;           &lt;none&gt;
+vote-8cbb7ff89-6z5zv     0/1     Running   0          73s     10.38.0.5    kube03-01   &lt;none&gt;           &lt;none&gt;
+vote-8cbb7ff89-hdmxb     0/1     Running   0          73s     10.32.0.12   k-02        &lt;none&gt;           &lt;none&gt;
+</code></pre>
+
+<pre><code>kubectl describe pod vote-8cbb7ff89-hdmxb
+</code></pre>
+
+<p>where, vote-8cbb7ff89-hdmxb is one of the pods launched after changing readiness probe.</p>
+<p>[output snippet]</p>
+<pre><code>Events:
+  Type     Reason     Age                  From               Message
+  ----     ------     ----                 ----               -------
+  Normal   Scheduled  109s                 default-scheduler  Successfully assigned instavote/vote-8cbb7ff89-hdmxb to k-02
+  Normal   Pulled     108s                 kubelet, k-02      Container image &quot;schoolofdevops/vote:v1&quot; already present on machine
+  Normal   Created    108s                 kubelet, k-02      Created container
+  Normal   Started    108s                 kubelet, k-02      Started container
+  Warning  Unhealthy  39s (x22 over 102s)  kubelet, k-02      Readiness probe failed: HTTP probe failed with statuscode: 404
+</code></pre>
+
+<pre><code>kubectl describe svc vote
+</code></pre>
+
+<p>what happened ?</p>
+<ul>
+<li>Since readinessProbe failed, the new launched batch does not show containers running (0/1)</li>
+<li>Description of the pod shows it being <em>Unhealthy</em> due to failed HTTP probe</li>
+<li>Deployment shows surged pods, with number of ready pods being less than number of desired replicas (e.g. 11/12).</li>
+<li>Service does not send traffic to the pod which are marked as unhealthy/not ready.  </li>
+</ul>
+<p>Reverting the changes to readiness probe should bring it back to working state.</p>
               
             </div>
           </div>
@@ -404,10 +461,10 @@ Events:
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../ingress/" class="btn btn-neutral float-right" title="Application Routing with Ingress Controllers">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../helm/" class="btn btn-neutral float-right" title="Lab K205 - Monitoring setup with HELM">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../pod-adv-specs/" class="btn btn-neutral" title="Pod Resource and Security Specs"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../advanced_pod_scheduling/" class="btn btn-neutral" title="Lab K203 - Advanced Pod Scheduling"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -433,10 +490,10 @@ Events:
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../pod-adv-specs/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../advanced_pod_scheduling/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../ingress/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../helm/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

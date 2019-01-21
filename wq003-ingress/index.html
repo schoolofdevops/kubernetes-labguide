@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Lab K106 - Defining Release Strategy with Deployments - Kubernetes Lab Guide</title>
+  <title>KWQ003 - Ingress Web Quest - Kubernetes Lab Guide</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -17,8 +17,8 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Lab K106 - Defining Release Strategy with Deployments";
-    var mkdocs_page_input_path = "6-vote-kubernetes_deployment.md";
+    var mkdocs_page_name = "KWQ003 - Ingress Web Quest";
+    var mkdocs_page_input_path = "wq003-ingress.md";
     var mkdocs_page_url = null;
   </script>
   
@@ -100,25 +100,9 @@
                     
     <a class="" href="../7-vote-exposing_app_with_service/">Lab K105 - Load Balancing and Service Discovery with Services</a>
                 </li>
-                <li class=" current">
+                <li class="">
                     
-    <a class="current" href="./">Lab K106 - Defining Release Strategy with Deployments</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l3"><a href="#lab-k106-defining-release-strategy-with-deployment">LAB K106 - Defining Release Strategy with  Deployment</a></li>
-    
-        <ul>
-        
-            <li><a class="toctree-l4" href="#scaling-a-deployment">Scaling a deployment</a></li>
-        
-            <li><a class="toctree-l4" href="#rolling-updates-in-action">Rolling Updates in Action</a></li>
-        
-            <li><a class="toctree-l4" href="#undo-and-rollback">Undo and Rollback</a></li>
-        
-        </ul>
-    
-
-    </ul>
+    <a class="" href="../6-vote-kubernetes_deployment/">Lab K106 - Defining Release Strategy with Deployments</a>
                 </li>
                 <li class="">
                     
@@ -209,9 +193,25 @@
                     
     <a class="" href="../wq002-security/">KWQ001 - Kubernetes Security Web Quest</a>
                 </li>
-                <li class="">
+                <li class=" current">
                     
-    <a class="" href="../wq003-ingress/">KWQ003 - Ingress Web Quest</a>
+    <a class="current" href="./">KWQ003 - Ingress Web Quest</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#kwq003-ingress-web-quest">KWQ003 - Ingress Web Quest</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#task">Task</a></li>
+        
+            <li><a class="toctree-l4" href="#process">Process</a></li>
+        
+            <li><a class="toctree-l4" href="#resources">Resources</a></li>
+        
+        </ul>
+    
+
+    </ul>
                 </li>
                 <li class="">
                     
@@ -265,11 +265,11 @@
     
       
         
-          <li>Kubernetes Fundamentals &raquo;</li>
+          <li>Web Quests &raquo;</li>
         
       
     
-    <li>Lab K106 - Defining Release Strategy with Deployments</li>
+    <li>KWQ003 - Ingress Web Quest</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -279,155 +279,31 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="lab-k106-defining-release-strategy-with-deployment">LAB K106 - Defining Release Strategy with  Deployment</h1>
-<p>A Deployment is a higher level abstraction which sits on top of replica sets and allows you to manage the way applications are deployed, rolled back at a controlled rate.</p>
-<p>Deployment has mainly two responsibilities,</p>
+                <h1 id="kwq003-ingress-web-quest">KWQ003 - Ingress Web Quest</h1>
+<p>Ingress controllers adds layer7 load balancing, reverse proxy and intelligent http routing capabilities to kubernetes cluster. The purpose of this Web Quest is to compare the ingress controllers available, and make recommendations based on the merit that you find in those.</p>
+<h3 id="task">Task</h3>
+<p>Your task is to work in your group, research on ingress controllers, and try to find answers to the following questions. You will present on the topic briefly.</p>
+<p><strong>Questions</strong>:</p>
 <ul>
-<li>Provide Fault Tolerance: Maintain the number of replicas for a type of service/app. Schedule/delete pods to meet the desired count.</li>
-<li>Update Strategy: Define a release strategy and update the pods accordingly.</li>
+<li>If you have to choose between <strong>LoadBalancer</strong> as a service type and a <strong>Ingress Controller</strong> which one would you choose? Why?</li>
+<li>List down some of the most popular ingress controllers ? How do they compare, what are the key differences ?   </li>
+<li>How do you make ingress controllers pick up configurations when a new service/deployment is created.  </li>
+<li>Which ingress controller would you use ? Why?</li>
 </ul>
-<pre><code>/k8s-code/projects/instavote/dev/
-cp vote-rs.yaml vote-deploy.yaml
-</code></pre>
-
-<p>Deployment spec (deployment.spec) contains everything that replica set has + strategy. Lets add it as follows,</p>
-<p><code>file: vote-deploy.yaml</code></p>
-<pre><code>apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: vote
-spec:
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 2
-      maxUnavailable: 1
-  revisionHistoryLimit: 4
-  replicas: 12
-  minReadySeconds: 20
-  selector:
-    matchLabels:
-      role: vote
-    matchExpressions:
-      - {key: version, operator: In, values: [v1, v2, v3, v4, v5]}
-  template:
-    metadata:
-      name: vote
-      labels:
-        app: python
-        role: vote
-        version: v1
-    spec:
-      containers:
-        - name: app
-          image: schoolofdevops/vote:v1
-          resources:
-            requests:
-              memory: &quot;64Mi&quot;
-              cpu: &quot;50m&quot;
-            limits:
-              memory: &quot;128Mi&quot;
-              cpu: &quot;250m&quot;
-</code></pre>
-
-<p>This time, start monitoring with --show-labels options added.</p>
-<pre><code>watch -n 1 kubectl get  pod,deploy,rs,svc --show-labels
-</code></pre>
-
-<p>Lets  create the Deployment. Do monitor the labels of the pod while applying this.</p>
-<pre><code>kubectl apply -f vote-deploy.yaml
-</code></pre>
-
-<p>Observe the chances to pod labels, specifically the <strong>pod-template-hash</strong>.</p>
-<p>Now that the deployment is created. To validate,</p>
-<pre><code>kubectl get deployment
-kubectl get rs --show-labels
-kubectl get deploy,pods,rs
-kubectl rollout status deployment/vote
-kubectl get pods --show-labels
-</code></pre>
-
-<p>Sample Output</p>
-<pre><code>kubectl get deployments
-NAME       DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
-vote   3         3         3            1           3m
-</code></pre>
-
-<h2 id="scaling-a-deployment">Scaling a deployment</h2>
-<p>To scale a deployment in Kubernetes:</p>
-<pre><code>kubectl scale deployment/vote --replicas=15
-
-kubectl rollout status deployment/vote
-
-</code></pre>
-
-<p>Sample output:</p>
-<pre><code>
-Waiting for rollout to finish: 5 of 15 updated replicas are available...
-Waiting for rollout to finish: 6 of 15 updated replicas are available...
-deployment &quot;vote&quot; successfully rolled out
-</code></pre>
-
-<p>You could also update the deployment by editing it.</p>
-<pre><code>kubectl edit deploy/vote
-</code></pre>
-
-<p>[change replicas to 8 from the editor, save and observe]</p>
-<h2 id="rolling-updates-in-action">Rolling Updates in Action</h2>
-<p>Now, update the deployment spec to apply</p>
-<p>file: vote-deploy.yaml</p>
-<pre><code>
-...
-template:
-  metadata:
-    labels:
-      version: v2   
-  spec:
-    containers:
-      - name: app
-        image: schoolofdevops/vote:v2
-
-</code></pre>
-
-<p>apply</p>
-<pre><code>kubectl apply -f vote-deploy.yaml
-
-kubectl rollout status deployment/vote
-</code></pre>
-
-<p>Observe rollout status and monitoring screen.</p>
-<pre><code>
-kubectl rollout history deploy/vote
-
-kubectl rollout history deploy/vote --revision=1
-
-</code></pre>
-
-<p>Try updating the version of the image from v2 to v3,v4,v5. Repeat a few times to observe how it rolls out a new version.  </p>
-<h2 id="undo-and-rollback">Undo and Rollback</h2>
-<p>file: vote-deploy.yaml</p>
-<pre><code>spec:
-  containers:
-    - name: app
-      image: schoolofdevops/vote:rgjerdf
-
-</code></pre>
-
-<p>apply</p>
-<pre><code>kubectl apply -f vote-deploy.yaml
-
-kubectl rollout status
-
-kubectl rollout history deploy/vote
-
-kubectl rollout history deploy/vote --revision=xx
-</code></pre>
-
-<p>where replace xxx with revisions</p>
-<p>Find out the previous revision with sane configs.</p>
-<p>To undo to a sane version (for example revision 3)</p>
-<pre><code>kubectl rollout undo deploy/vote --to-revision=2
-</code></pre>
+<h3 id="process">Process</h3>
+<p>Following is the process you could loosely follow,</p>
+<ul>
+<li>Start researching on web and reading individually about the topic. Reference the links and articles in the resources  section while you do so.</li>
+<li>Reflect on how it could apply to your work environment. Speak with with the relevant teams in your organisation if needed gain insights into current implementation, what are the issues being faced. Think about  how you could you apply the knowledge you have researched on.</li>
+<li>Have a group discussion with  within  your group, exchange what you have learnt as well as your experience with the topic in your prior/existing  projects.  You may come up with the notes and common points you would like to present.</li>
+<li>Prepare a short 5/10 minutes presentation to explain the topic and answer the questions given in the <strong>task</strong> section above.</li>
+</ul>
+<h3 id="resources">Resources</h3>
+<ul>
+<li>Article: <a href="https://kubedex.com/ingress/">Ingress comparison by kubedex.com</a></li>
+<li>eBook: <a href="https://info.giantswarm.io/guide-to-managing-ingress-controllers">Managing Ingress Controllers on Kubernetes - a Guide by Giant Swarm</a></li>
+<li>Doc: <a href="https://docs.traefik.io/">Traefik Ingress Controller</a></li>
+</ul>
               
             </div>
           </div>
@@ -435,10 +311,10 @@ kubectl rollout history deploy/vote --revision=xx
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../11_deploying_sample_app/" class="btn btn-neutral float-right" title="Mini Project">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../wq004-monitoring/" class="btn btn-neutral float-right" title="KWQ004 - Monitoring Web Quest">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../7-vote-exposing_app_with_service/" class="btn btn-neutral" title="Lab K105 - Load Balancing and Service Discovery with Services"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../wq002-security/" class="btn btn-neutral" title="KWQ001 - Kubernetes Security Web Quest"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -464,10 +340,10 @@ kubectl rollout history deploy/vote --revision=xx
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../7-vote-exposing_app_with_service/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../wq002-security/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../11_deploying_sample_app/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../wq004-monitoring/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

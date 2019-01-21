@@ -110,7 +110,7 @@
                 </li>
                 <li class="">
                     
-    <a class="" href="../9-vote-configmaps_and_secrets/">Lab K107 - Configurations Management with ConfigMaps and Secrets</a>
+    <a class="" href="../9-vote-configmaps_and_secrets/">Lab K107 - Configurations Management with ConfigMaps</a>
                 </li>
                 <li class=" current">
                     
@@ -121,7 +121,7 @@
     
         <ul>
         
-            <li><a class="toctree-l4" href="#set-up-nfs-common">Set up NFS Common</a></li>
+            <li><a class="toctree-l4" href="#creating-a-persistent-volume-claim">Creating a Persistent Volume Claim</a></li>
         
             <li><a class="toctree-l4" href="#set-up-nfs-provisioner-in-kubernetes">Set up NFS Provisioner in kubernetes</a></li>
         
@@ -135,55 +135,39 @@
           
             <li class="toctree-l1">
 		
-    <span class="caption-text">Advanced Kubernetes</span>
+    <span class="caption-text">Advanced Administration</span>
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../kubespray-prereqs/">Kubespray HA lab setup with Vagrant</a>
+    <a class="" href="../ingress/">Lab K201 - Application Routing with Ingress Controllers</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../cluster_setup_kubespray/">HA setup with Kubespray</a>
+    <a class="" href="../configuring_authentication_and_authorization/">Lab K202 - Authentication and Authorization (RBAC)</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../configuring_authentication_and_authorization/">Authentication and Authorization (RBAC)</a>
+    <a class="" href="../advanced_pod_scheduling/">Lab K203 - Advanced Pod Scheduling</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../advanced_pod_scheduling/">Advanced Pod Scheduling</a>
+    <a class="" href="../pods-health-probes/">Lab K204 - Adding health checks with Probes</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../pod-adv-specs/">Pod Resource and Security Specs</a>
+    <a class="" href="../helm/">Lab K205 - Monitoring setup with HELM</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../pods-health-probes/">Adding health checks with Probes</a>
+    <a class="" href="../10_kubernetes_autoscaling/">Lab K206 - Auto Scaling Capacity with HPA</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../ingress/">Application Routing with Ingress Controllers</a>
+    <a class="" href="../network_policies/">Lab K207 - Access Control with Network Policies</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../10_kubernetes_autoscaling/">Auto Scaling Capacity with HPA</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../13_redis_statefulset/">Creating Replicated Redis Cluster with Statefulsets</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../network_policies/">Access Control with Network Policies</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../cluster-administration/">Cluster Administration</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../helm/">Helm Charts</a>
+    <a class="" href="../cluster-administration/">Lab K208 - Cluster Administration</a>
                 </li>
     </ul>
 	    </li>
@@ -192,6 +176,10 @@
 		
     <span class="caption-text">Additional Topics</span>
     <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../13_redis_statefulset/">Creating Replicated Redis Cluster with Statefulsets</a>
+                </li>
                 <li class="">
                     
     <a class="" href="../vote-deployement_strategies/">Building Deployment Strategies</a>
@@ -203,6 +191,41 @@
                 <li class="">
                     
     <a class="" href="../logging/">Logging</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Web Quests</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../wq001-cni/">KWQ001 - CNI Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq002-security/">KWQ001 - Kubernetes Security Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq003-ingress/">KWQ003 - Ingress Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq004-monitoring/">KWQ004 - Monitoring Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq005-controllers/">KWQ005 - Controllers Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq006-persistentvolume/">KWQ006 - Persistent Data Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq007-maintenance/">KWQ007 - Cluster Maintenance Web Quest</a>
                 </li>
     </ul>
 	    </li>
@@ -255,30 +278,13 @@
             <div class="section">
               
                 <h1 id="steps-to-set-up-nfs-based-persistent-volumes">Steps to set up NFS based Persistent Volumes</h1>
-<h2 id="set-up-nfs-common">Set up NFS Common</h2>
-<p>On all kubernetes nodes, if you have not already installed nfs, use the following command to do so</p>
-<pre><code>sudo apt-get update
-sudo apt-get install nfs-common
-</code></pre>
-
-<p>[Skip this step if you are using a vagrant setup recommended as part of this course. ]</p>
-<h2 id="set-up-nfs-provisioner-in-kubernetes">Set up NFS Provisioner in kubernetes</h2>
-<p>Change into nfs provisioner installation dir</p>
-<pre><code>cd k8s-code/storage
-</code></pre>
-
-<p>Deploy nfs-client provisioner.</p>
-<pre><code>kubectl apply -f nfs
-
-</code></pre>
-
-<p>This will create all the objects required to setup a nfs provisioner.</p>
 <h3 id="creating-a-persistent-volume-claim">Creating a Persistent Volume Claim</h3>
 <p>switch to project directory</p>
 <pre><code>cd k8s-code/projects/instavote/dev/
 </code></pre>
 
-<p>file: db-pvc.yaml</p>
+<p>Create the following file with the specs below</p>
+<p><code>file: db-pvc.yaml</code></p>
 <pre><code>kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
@@ -294,19 +300,18 @@ spec:
 
 </code></pre>
 
-<p>And lets create the Persistent Volume Claim</p>
-<pre><code>kubectl get pvc,storageclass
+<p>create the Persistent Volume Claim and validate</p>
+<pre><code>kubectl get pvc
 
-kubectl logs -f nfs-provisioner-0
 
 kubectl apply -f db-pvc.yaml
 
-kubectl get pvc,storageclass
+kubectl get pvc,pv
 
-kubectl describe pvc db-pvc
 </code></pre>
 
-<p>file: db-deploy.yaml</p>
+<p>Now, to use this PVC, db deployment needs to be updated with <em>volume</em> and <em>volumeMounts</em> configs as given in example below.</p>
+<p><code>file: db-deploy-pvc.yaml</code></p>
 <pre><code>...
 spec:
    containers:
@@ -327,22 +332,48 @@ spec:
        claimName: db-pvc
 </code></pre>
 
-<p>Observe which host <strong>db</strong> pod is running on</p>
-<pre><code>kubectl get pod -o wide --selector='role=db'
-
-</code></pre>
-
-<p>And apply this code as</p>
-<pre><code>kubectl apply -f db-deploy.yaml
+<p>Apply <em>db-deploy-pcv.yaml</em>  as</p>
+<pre><code>kubectl apply -f db-deploy-pvc.yaml
 
 kubectl get pod -o wide --selector='role=db'
 
+kubectl get pvc,pv
 </code></pre>
 
 <ul>
-<li>Observe the volume and its content created on the nfs server</li>
-<li>Observe which host the pod for <em>db</em> was created this time. Analyse the behavior of a deployment controller. </li>
+<li>Observe and note which host the pod for <em>db</em> is launched.</li>
+<li>What state is it in ? why?</li>
+<li>Has the persistentVolumeClaim been bound to a persistentVolume ? Why?</li>
 </ul>
+<h2 id="set-up-nfs-provisioner-in-kubernetes">Set up NFS Provisioner in kubernetes</h2>
+<p>Change into nfs provisioner installation dir</p>
+<pre><code>cd k8s-code/storage
+</code></pre>
+
+<p>Deploy nfs-client provisioner.</p>
+<pre><code>kubectl apply -f nfs
+
+</code></pre>
+
+<p>This will create all the objects required to setup a nfs provisioner. It would be launched with  Statefulsets. <a href="https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/">Read the official documentation on Statefulsets</a> to understand how its differnt than deployments.</p>
+<pre><code>kubectl get storageclass
+kubectl get pods
+kubectl logs -f nfs-provisioner-0
+
+</code></pre>
+
+<p>Now, observe the output of  the following commands,</p>
+<pre><code>kubectl get pvc,pv
+kubectl get pods
+</code></pre>
+
+<ul>
+<li>Do you see pvc bound to pv ?</li>
+<li>Do you see the pod for db running ?</li>
+</ul>
+<p>Observe the dynamic provisioning, go to the host which is running nfs provisioner and look inside <em>/srv</em> path to find the provisioned volume.</p>
+<h4 id="summary">Summary</h4>
+<p>In this lab, you not only setup dynamic provisioning using NFS, but also learnt about statefulsets as well as rbac policies applied to the nfs provisioner.</p>
               
             </div>
           </div>
@@ -350,10 +381,10 @@ kubectl get pod -o wide --selector='role=db'
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../kubespray-prereqs/" class="btn btn-neutral float-right" title="Kubespray HA lab setup with Vagrant">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../ingress/" class="btn btn-neutral float-right" title="Lab K201 - Application Routing with Ingress Controllers">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../9-vote-configmaps_and_secrets/" class="btn btn-neutral" title="Lab K107 - Configurations Management with ConfigMaps and Secrets"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../9-vote-configmaps_and_secrets/" class="btn btn-neutral" title="Lab K107 - Configurations Management with ConfigMaps"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -382,7 +413,7 @@ kubectl get pod -o wide --selector='role=db'
         <span><a href="../9-vote-configmaps_and_secrets/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../kubespray-prereqs/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../ingress/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Advanced Pod Scheduling - Kubernetes Lab Guide</title>
+  <title>Lab K203 - Advanced Pod Scheduling - Kubernetes Lab Guide</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -17,7 +17,7 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Advanced Pod Scheduling";
+    var mkdocs_page_name = "Lab K203 - Advanced Pod Scheduling";
     var mkdocs_page_input_path = "advanced_pod_scheduling.md";
     var mkdocs_page_url = null;
   </script>
@@ -110,7 +110,7 @@
                 </li>
                 <li class="">
                     
-    <a class="" href="../9-vote-configmaps_and_secrets/">Lab K107 - Configurations Management with ConfigMaps and Secrets</a>
+    <a class="" href="../9-vote-configmaps_and_secrets/">Lab K107 - Configurations Management with ConfigMaps</a>
                 </li>
                 <li class="">
                     
@@ -121,34 +121,30 @@
           
             <li class="toctree-l1">
 		
-    <span class="caption-text">Advanced Kubernetes</span>
+    <span class="caption-text">Advanced Administration</span>
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../kubespray-prereqs/">Kubespray HA lab setup with Vagrant</a>
+    <a class="" href="../ingress/">Lab K201 - Application Routing with Ingress Controllers</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../cluster_setup_kubespray/">HA setup with Kubespray</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../configuring_authentication_and_authorization/">Authentication and Authorization (RBAC)</a>
+    <a class="" href="../configuring_authentication_and_authorization/">Lab K202 - Authentication and Authorization (RBAC)</a>
                 </li>
                 <li class=" current">
                     
-    <a class="current" href="./">Advanced Pod Scheduling</a>
+    <a class="current" href="./">Lab K203 - Advanced Pod Scheduling</a>
     <ul class="subnav">
             
-    <li class="toctree-l3"><a href="#advanced-pod-scheduling">Advanced Pod Scheduling</a></li>
+    <li class="toctree-l3"><a href="#lab-k203-advanced-pod-scheduling">Lab K203 - Advanced Pod Scheduling</a></li>
     
         <ul>
         
-            <li><a class="toctree-l4" href="#using-node-selectors">Using Node Selectors</a></li>
+            <li><a class="toctree-l4" href="#labeling-your-nodes">Labeling your nodes</a></li>
         
             <li><a class="toctree-l4" href="#defining-affinity-and-anti-affinity">Defining  affinity and anti-affinity</a></li>
         
-            <li><a class="toctree-l4" href="#taints-and-tolerations">Taints and tolerations</a></li>
+            <li><a class="toctree-l4" href="#adding-taints-and-tolerations">Adding Taints and tolerations</a></li>
         
         </ul>
     
@@ -157,35 +153,23 @@
                 </li>
                 <li class="">
                     
-    <a class="" href="../pod-adv-specs/">Pod Resource and Security Specs</a>
+    <a class="" href="../pods-health-probes/">Lab K204 - Adding health checks with Probes</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../pods-health-probes/">Adding health checks with Probes</a>
+    <a class="" href="../helm/">Lab K205 - Monitoring setup with HELM</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../ingress/">Application Routing with Ingress Controllers</a>
+    <a class="" href="../10_kubernetes_autoscaling/">Lab K206 - Auto Scaling Capacity with HPA</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../10_kubernetes_autoscaling/">Auto Scaling Capacity with HPA</a>
+    <a class="" href="../network_policies/">Lab K207 - Access Control with Network Policies</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../13_redis_statefulset/">Creating Replicated Redis Cluster with Statefulsets</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../network_policies/">Access Control with Network Policies</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../cluster-administration/">Cluster Administration</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../helm/">Helm Charts</a>
+    <a class="" href="../cluster-administration/">Lab K208 - Cluster Administration</a>
                 </li>
     </ul>
 	    </li>
@@ -194,6 +178,10 @@
 		
     <span class="caption-text">Additional Topics</span>
     <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../13_redis_statefulset/">Creating Replicated Redis Cluster with Statefulsets</a>
+                </li>
                 <li class="">
                     
     <a class="" href="../vote-deployement_strategies/">Building Deployment Strategies</a>
@@ -205,6 +193,41 @@
                 <li class="">
                     
     <a class="" href="../logging/">Logging</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Web Quests</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../wq001-cni/">KWQ001 - CNI Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq002-security/">KWQ001 - Kubernetes Security Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq003-ingress/">KWQ003 - Ingress Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq004-monitoring/">KWQ004 - Monitoring Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq005-controllers/">KWQ005 - Controllers Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq006-persistentvolume/">KWQ006 - Persistent Data Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq007-maintenance/">KWQ007 - Cluster Maintenance Web Quest</a>
                 </li>
     </ul>
 	    </li>
@@ -242,11 +265,11 @@
     
       
         
-          <li>Advanced Kubernetes &raquo;</li>
+          <li>Advanced Administration &raquo;</li>
         
       
     
-    <li>Advanced Pod Scheduling</li>
+    <li>Lab K203 - Advanced Pod Scheduling</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -256,7 +279,7 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="advanced-pod-scheduling">Advanced Pod Scheduling</h1>
+                <h1 id="lab-k203-advanced-pod-scheduling">Lab K203 - Advanced Pod Scheduling</h1>
 <p>In the Kubernetes bootcamp training, we have seen how to create a pod and and some basic pod configurations to go with it. But this chapter explains some advanced topics related to pod scheduling.</p>
 <p>From the <a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#pod-v1-core">api document for version 1.11</a> following are the pod specs which are relevant from scheduling perspective.</p>
 <ul>
@@ -266,7 +289,7 @@
 <li>schedulerName</li>
 <li>tolerations</li>
 </ul>
-<h2 id="using-node-selectors">Using Node Selectors</h2>
+<h2 id="labeling-your-nodes">Labeling your nodes</h2>
 <pre><code>kubectl get nodes --show-labels
 
 kubectl label nodes &lt;node-name&gt; zone=aaa
@@ -279,82 +302,10 @@ kubectl get nodes --show-labels
 <pre><code>kubectl label nodes node1 zone=bbb
 kubectl label nodes node2 zone=bbb
 kubectl label nodes node3 zone=aaa
-kubectl label nodes node4 zone=aaa
 kubectl get nodes --show-labels
 </code></pre>
 
-<p>[sample output]</p>
-<pre><code>NAME      STATUS    ROLES         AGE       VERSION   LABELS
-node1     Ready     master,node   22h       v1.10.4   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=node1,node-role.kubernetes.io/master=true,node-role.kubernetes.io/node=true,zone=bbb
-node2     Ready     master,node   22h       v1.10.4   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=node2,node-role.kubernetes.io/master=true,node-role.kubernetes.io/node=true,zone=bbb
-node3     Ready     node          22h       v1.10.4   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=node3,node-role.kubernetes.io/node=true,zone=aaa
-node4     Ready     node          21h       v1.10.4   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=node4,node-role.kubernetes.io/node=true,zone=aaa
-</code></pre>
-
-<p>Check how the pods are distributed on the nodes using the following command,</p>
-<pre><code>kubectl get pods -o wide --selector=&quot;role=vote&quot;
-NAME                    READY     STATUS    RESTARTS   AGE       IP               NODE
-vote-5d88d47fc8-6rflg   1/1       Running   0          1m        10.233.75.9      node2
-vote-5d88d47fc8-gbzbq   1/1       Running   0          1h        10.233.74.76     node4
-vote-5d88d47fc8-q4vj6   1/1       Running   0          1h        10.233.102.133   node1
-vote-5d88d47fc8-znd2z   1/1       Running   0          1m        10.233.71.20     node3
-</code></pre>
-
-<p>From the above output, you could see that the pods running <strong>vote</strong> app are currently equally distributed.
-Now, update pod definition to make it schedule only on nodes in zone <strong>bbb</strong></p>
-<p><code>file: k8s-code/pods/vote-pod.yml</code></p>
-<pre><code>
-....
-
-template:
-...
-  spec:
-    containers:
-      - name: app
-        image: schoolofdevops/vote:v1
-        ports:
-          - containerPort: 80
-            protocol: TCP
-    nodeSelector:
-      zone: 'bbb'
-</code></pre>
-
-<p>For this change, pod needs to be re created.</p>
-<pre><code>kubectl apply -f vote-pod.yml
-</code></pre>
-
-<p>You would notice that, the moment you make that change, a new rollout kicks off, which will start redistributing the pods, now following the <strong>nodeSelector</strong> constraint that you added.</p>
-<p>Watch the output of the following command</p>
-<pre><code>
-watch kubectl get pods -o wide --selector=&quot;role=vote&quot;
-
-</code></pre>
-
-<p>You will see the following while it transitions</p>
-<pre><code>
-NAME                        READY     STATUS              RESTARTS   AGE       IP               NODE
-pod/vote-5d88d47fc8-6rflg   0/1       Terminating         0          5m        10.233.75.9      node2
-pod/vote-5d88d47fc8-gbzbq   0/1       Terminating         0          1h        10.233.74.76     node4
-pod/vote-5d88d47fc8-q4vj6   0/1       Terminating         0          1h        10.233.102.133   node1
-pod/vote-67d7dd8f89-2w5wl   1/1       Running             0          44s       10.233.75.10     node2
-pod/vote-67d7dd8f89-gm6bq   0/1       ContainerCreating   0          2s        &lt;none&gt;           node2
-pod/vote-67d7dd8f89-w87n9   1/1       Running             0          44s       10.233.102.134   node1
-pod/vote-67d7dd8f89-xccl8   1/1       Running             0          44s       10.233.102.135   node1
-
-</code></pre>
-
-<p>and after the rollout completes,</p>
-<pre><code>
-NAME                    READY     STATUS    RESTARTS   AGE       IP               NODE
-vote-67d7dd8f89-2w5wl   1/1       Running   0          2m        10.233.75.10     node2
-vote-67d7dd8f89-gm6bq   1/1       Running   0          1m        10.233.75.11     node2
-vote-67d7dd8f89-w87n9   1/1       Running   0          2m        10.233.102.134   node1
-vote-67d7dd8f89-xccl8   1/1       Running   0          2m        10.233.102.135   node1
-
-</code></pre>
-
-<h4 id="exercise">Exercise</h4>
-<p>Just like <strong>nodeSelector</strong> above, you could enforce a pod to run on a specific node using <strong>nodeName</strong>. Try using that property to run all pods for results application on <strong>node3</strong></p>
+<p>where, replace <strong>node1-3</strong> with the actual nodes in your cluster.</p>
 <h2 id="defining-affinity-and-anti-affinity">Defining  affinity and anti-affinity</h2>
 <p>We have discussed about scheduling a pod on a particular node using <strong>NodeSelector</strong>, but using node selector is a hard condition. If the condition is not met, the pod cannot be scheduled. Node/Pod affinity and anti-affinity solves this issue by introducing soft and hard conditions.</p>
 <ul>
@@ -376,29 +327,15 @@ vote-67d7dd8f89-xccl8   1/1       Running   0          2m        10.233.102.135 
 <li>Gt</li>
 <li>Lt</li>
 </ul>
-<h3 id="node-affinity">Node Affinity</h3>
+<h3 id="adding-node-affinity">Adding Node Affinity</h3>
 <p>Examine  the current pod distribution  </p>
 <pre><code>kubectl get pods -o wide --selector=&quot;role=vote&quot;
 
 </code></pre>
 
-<pre><code>NAME                    READY     STATUS    RESTARTS   AGE       IP               NODE
-vote-8546bbd84d-22d6x   1/1       Running   0          35s       10.233.102.137   node1
-vote-8546bbd84d-8f9bc   1/1       Running   0          1m        10.233.102.136   node1
-vote-8546bbd84d-bpg8f   1/1       Running   0          1m        10.233.75.12     node2
-vote-8546bbd84d-d8j9g   1/1       Running   0          1m        10.233.75.13     node2
-</code></pre>
-
 <p>and node labels</p>
 <pre><code>kubectl get nodes --show-labels
 
-</code></pre>
-
-<pre><code>NAME      STATUS    ROLES         AGE       VERSION   LABELS
-node1     Ready     master,node   1d        v1.10.4   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=node1,node-role.kubernetes.io/master=true,node-role.kubernetes.io/node=true,zone=bbb
-node2     Ready     master,node   1d        v1.10.4   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=node2,node-role.kubernetes.io/master=true,node-role.kubernetes.io/node=true,zone=bbb
-node3     Ready     node          1d        v1.10.4   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=node3,node-role.kubernetes.io/node=true,zone=aaa
-node4     Ready     node          1d        v1.10.4   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=node4,node-role.kubernetes.io/node=true,zone=aaa
 </code></pre>
 
 <p>Lets create node affinity criteria as</p>
@@ -407,7 +344,7 @@ node4     Ready     node          1d        v1.10.4   beta.kubernetes.io/arch=am
 <li>Pods for vote app <strong>preferably</strong> run on a node in zone <strong>bbb</strong></li>
 </ul>
 <p>First is a <strong>hard</strong> affinity versus second being <strong>soft</strong> affinity.</p>
-<p><code>file: vote-deploy.yaml</code></p>
+<p><code>file: vote-deploy-nodeaffinity.yaml</code></p>
 <pre><code>....
   template:
 ....
@@ -419,21 +356,30 @@ node4     Ready     node          1d        v1.10.4   beta.kubernetes.io/arch=am
             - containerPort: 80
               protocol: TCP
 
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-            - matchExpressions:
-              - key: node-role.kubernetes.io/master
-                operator: DoesNotExist
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 1
-              preference:
-                matchExpressions:
-                - key: zone
+              affinity:
+                nodeAffinity:
+                  requiredDuringSchedulingIgnoredDuringExecution:
+                    nodeSelectorTerms:
+                    - matchExpressions:
+                      - key: node-role.kubernetes.io/master
+                        operator: DoesNotExist
+                  preferredDuringSchedulingIgnoredDuringExecution:
+                    - weight: 1
+                      preference:
+                        matchExpressions:
+                        - key: zone
+                          operator: In
+                          values:
+                            - bbb
 </code></pre>
 
-<h3 id="pod-affinity">Pod Affinity</h3>
+<p>apply</p>
+<pre><code>kubectl apply -f vote-deploy-nodeaffinity.yaml
+
+kubectl get pods -o wide
+</code></pre>
+
+<h3 id="configuring-pod-affinity">Configuring Pod Affinity</h3>
 <p>Lets define pod affinity criteria as,</p>
 <ul>
 <li>Pods for <strong>vote</strong> and <strong>redis</strong> should be co located as much as possible (preferred)</li>
@@ -443,17 +389,7 @@ node4     Ready     node          1d        v1.10.4   beta.kubernetes.io/arch=am
 
 </code></pre>
 
-<p>[sample output]</p>
-<pre><code>NAME                     READY     STATUS    RESTARTS   AGE       IP               NODE
-redis-6555998885-4k5cr   1/1       Running   0          4h        10.233.71.19     node3
-redis-6555998885-fb8rk   1/1       Running   0          4h        10.233.102.132   node1
-vote-74c894d6f5-bql8z    1/1       Running   0          22m       10.233.74.78     node4
-vote-74c894d6f5-nnzmc    1/1       Running   0          21m       10.233.71.22     node3
-vote-74c894d6f5-ss929    1/1       Running   0          22m       10.233.74.77     node4
-vote-74c894d6f5-tpzgm    1/1       Running   0          22m       10.233.71.21     node3
-</code></pre>
-
-<p><code>file: vote-deploy.yaml</code></p>
+<p><code>file: vote-deploy-podaffinity.yaml</code></p>
 <pre><code>...
     template:
 ...
@@ -481,7 +417,7 @@ vote-74c894d6f5-tpzgm    1/1       Running   0          22m       10.233.71.21  
                 topologyKey: kubernetes.io/hostname
 </code></pre>
 
-<p><code>file: redis-deploy.yaml</code></p>
+<p><code>file: redis-deploy-podaffinity.yaml</code></p>
 <pre><code>....
   template:
 ...
@@ -508,23 +444,14 @@ vote-74c894d6f5-tpzgm    1/1       Running   0          22m       10.233.71.21  
 </code></pre>
 
 <p>apply</p>
-<pre><code>kubectl apply -f redis-deploy.yaml
-kubectl apply -f vote-deploy.yaml
+<pre><code>kubectl apply -f redis-deploy-podaffinity.yaml
+kubectl apply -f vote-deploy-podaffinity.yaml
+
 
 </code></pre>
 
 <p>check the pods distribution</p>
 <pre><code>kubectl get pods -o wide --selector=&quot;role in (vote,redis)&quot;
-</code></pre>
-
-<p>[sample output ]</p>
-<pre><code>NAME                     READY     STATUS    RESTARTS   AGE       IP             NODE
-redis-5bf748dbcf-gr8zg   1/1       Running   0          13m       10.233.75.14   node2
-redis-5bf748dbcf-vxppx   1/1       Running   0          13m       10.233.74.79   node4
-vote-56bf599b9c-22lpw    1/1       Running   0          12m       10.233.74.80   node4
-vote-56bf599b9c-nvvfd    1/1       Running   0          13m       10.233.71.25   node3
-vote-56bf599b9c-w6jc9    1/1       Running   0          13m       10.233.71.23   node3
-vote-56bf599b9c-ztdgm    1/1       Running   0          13m       10.233.71.24   node3
 </code></pre>
 
 <p>Observations from the above output,</p>
@@ -533,23 +460,15 @@ vote-56bf599b9c-ztdgm    1/1       Running   0          13m       10.233.71.24  
 <li>since vote app has a soft constraint, you see some of the pods running on node4 (same node running redis), others continue to run on node 3</li>
 </ul>
 <p>If you kill the pods on node3, at the time of  scheduling new ones, scheduler meets all affinity rules</p>
-<pre><code>$ kubectl delete pods vote-56bf599b9c-nvvfd vote-56bf599b9c-w6jc9 vote-56bf599b9c-ztdgm
-pod &quot;vote-56bf599b9c-nvvfd&quot; deleted
-pod &quot;vote-56bf599b9c-w6jc9&quot; deleted
-pod &quot;vote-56bf599b9c-ztdgm&quot; deleted
-
-
-$ kubectl get pods -o wide --selector=&quot;role in (vote,redis)&quot;
-NAME                     READY     STATUS    RESTARTS   AGE       IP             NODE
-redis-5bf748dbcf-gr8zg   1/1       Running   0          19m       10.233.75.14   node2
-redis-5bf748dbcf-vxppx   1/1       Running   0          19m       10.233.74.79   node4
-vote-56bf599b9c-22lpw    1/1       Running   0          19m       10.233.74.80   node4
-vote-56bf599b9c-4l6bc    1/1       Running   0          20s       10.233.74.83   node4
-vote-56bf599b9c-bqsrq    1/1       Running   0          20s       10.233.74.82   node4
-vote-56bf599b9c-xw7zc    1/1       Running   0          19s       10.233.74.81   node4
+<p>Now try scaling up redis instances</p>
+<pre><code>kubectl scale deploy/redis --replicas=4
+kubectl get pods -o wide
 </code></pre>
 
-<h2 id="taints-and-tolerations">Taints and tolerations</h2>
+<ul>
+<li>Are all redis pods runnning ? Why?</li>
+</ul>
+<h2 id="adding-taints-and-tolerations">Adding Taints and tolerations</h2>
 <ul>
 <li>Affinity is defined for pods</li>
 <li>Taints are defined for nodes</li>
@@ -568,37 +487,18 @@ vote-56bf599b9c-xw7zc    1/1       Running   0          19s       10.233.74.81  
 <li>timeAdded (only written for NoExecute taints)  </li>
 </ul>
 <p>Observe the pods distribution</p>
-<pre><code>$ kubectl get pods -o wide
-NAME                      READY     STATUS    RESTARTS   AGE       IP             NODE
-db-66496667c9-qggzd       1/1       Running   0          4h        10.233.74.74   node4
-redis-5bf748dbcf-gr8zg    1/1       Running   0          27m       10.233.75.14   node2
-redis-5bf748dbcf-vxppx    1/1       Running   0          27m       10.233.74.79   node4
-result-5c7569bcb7-4fptr   1/1       Running   0          4h        10.233.71.18   node3
-result-5c7569bcb7-s4rdx   1/1       Running   0          4h        10.233.74.75   node4
-vote-56bf599b9c-22lpw     1/1       Running   0          26m       10.233.74.80   node4
-vote-56bf599b9c-4l6bc     1/1       Running   0          8m        10.233.74.83   node4
-vote-56bf599b9c-bqsrq     1/1       Running   0          8m        10.233.74.82   node4
-vote-56bf599b9c-xw7zc     1/1       Running   0          8m        10.233.74.81   node4
-worker-7c98c96fb4-7tzzw   1/1       Running   1          4h        10.233.75.8    node2
+<pre><code>kubectl get pods -o wide
+
 </code></pre>
 
 <p>Lets taint a node.</p>
 <pre><code>kubectl taint node node2 dedicated=worker:NoExecute
+
+kubectl describe node node2
 </code></pre>
 
-<p>after taining the node</p>
-<pre><code>$ kubectl get pods -o wide
-NAME                      READY     STATUS    RESTARTS   AGE       IP               NODE
-db-66496667c9-qggzd       1/1       Running   0          4h        10.233.74.74     node4
-redis-5bf748dbcf-ckn65    1/1       Running   0          2m        10.233.71.26     node3
-redis-5bf748dbcf-vxppx    1/1       Running   0          30m       10.233.74.79     node4
-result-5c7569bcb7-4fptr   1/1       Running   0          4h        10.233.71.18     node3
-result-5c7569bcb7-s4rdx   1/1       Running   0          4h        10.233.74.75     node4
-vote-56bf599b9c-22lpw     1/1       Running   0          29m       10.233.74.80     node4
-vote-56bf599b9c-4l6bc     1/1       Running   0          11m       10.233.74.83     node4
-vote-56bf599b9c-bqsrq     1/1       Running   0          11m       10.233.74.82     node4
-vote-56bf599b9c-xw7zc     1/1       Running   0          11m       10.233.74.81     node4
-worker-7c98c96fb4-46ltl   1/1       Running   0          2m        10.233.102.140   node1
+<p>after tainting the node</p>
+<pre><code>kubectl get pods -o wide
 </code></pre>
 
 <p>All pods running on node2 just got evicted.</p>
@@ -644,6 +544,11 @@ worker-6cc8dbd4f8-6bkfg   1/1       Running   0          1m        10.233.75.15 
 <p>To remove the taint created above</p>
 <pre><code>kubectl taint node node2 dedicate:NoExecute-
 </code></pre>
+
+<h4 id="exercise">Exercise</h4>
+<ul>
+<li>Master node is unschedulable because of a taint. Find the taint on the master node and remove it. See if new pods get scheduled on it after that.</li>
+</ul>
               
             </div>
           </div>
@@ -651,10 +556,10 @@ worker-6cc8dbd4f8-6bkfg   1/1       Running   0          1m        10.233.75.15 
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../pod-adv-specs/" class="btn btn-neutral float-right" title="Pod Resource and Security Specs">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../pods-health-probes/" class="btn btn-neutral float-right" title="Lab K204 - Adding health checks with Probes">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../configuring_authentication_and_authorization/" class="btn btn-neutral" title="Authentication and Authorization (RBAC)"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../configuring_authentication_and_authorization/" class="btn btn-neutral" title="Lab K202 - Authentication and Authorization (RBAC)"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -683,7 +588,7 @@ worker-6cc8dbd4f8-6bkfg   1/1       Running   0          1m        10.233.75.15 
         <span><a href="../configuring_authentication_and_authorization/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../pod-adv-specs/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../pods-health-probes/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

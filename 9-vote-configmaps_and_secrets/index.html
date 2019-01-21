@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Lab K107 - Configurations Management with ConfigMaps and Secrets - Kubernetes Lab Guide</title>
+  <title>Lab K107 - Configurations Management with ConfigMaps - Kubernetes Lab Guide</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -17,7 +17,7 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Lab K107 - Configurations Management with ConfigMaps and Secrets";
+    var mkdocs_page_name = "Lab K107 - Configurations Management with ConfigMaps";
     var mkdocs_page_input_path = "9-vote-configmaps_and_secrets.md";
     var mkdocs_page_url = null;
   </script>
@@ -110,20 +110,16 @@
                 </li>
                 <li class=" current">
                     
-    <a class="current" href="./">Lab K107 - Configurations Management with ConfigMaps and Secrets</a>
+    <a class="current" href="./">Lab K107 - Configurations Management with ConfigMaps</a>
     <ul class="subnav">
             
-    <li class="toctree-l3"><a href="#configmap">Configmap</a></li>
+    <li class="toctree-l3"><a href="#configurations-management-with-configmaps">Configurations Management with ConfigMaps</a></li>
     
         <ul>
         
             <li><a class="toctree-l4" href="#injecting-env-variables-with-configmaps">Injecting env variables with configmaps</a></li>
         
-            <li><a class="toctree-l4" href="#providing-environment-specific-configs">Providing environment Specific Configs</a></li>
-        
-            <li><a class="toctree-l4" href="#configuration-file-as-configmap">Configuration file as ConfigMap</a></li>
-        
-            <li><a class="toctree-l4" href="#secrets">Secrets</a></li>
+            <li><a class="toctree-l4" href="#note-automatic-updation-of-deployments-on-configmap-updates">Note: Automatic Updation of deployments on ConfigMap  Updates</a></li>
         
         </ul>
     
@@ -139,55 +135,39 @@
           
             <li class="toctree-l1">
 		
-    <span class="caption-text">Advanced Kubernetes</span>
+    <span class="caption-text">Advanced Administration</span>
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../kubespray-prereqs/">Kubespray HA lab setup with Vagrant</a>
+    <a class="" href="../ingress/">Lab K201 - Application Routing with Ingress Controllers</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../cluster_setup_kubespray/">HA setup with Kubespray</a>
+    <a class="" href="../configuring_authentication_and_authorization/">Lab K202 - Authentication and Authorization (RBAC)</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../configuring_authentication_and_authorization/">Authentication and Authorization (RBAC)</a>
+    <a class="" href="../advanced_pod_scheduling/">Lab K203 - Advanced Pod Scheduling</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../advanced_pod_scheduling/">Advanced Pod Scheduling</a>
+    <a class="" href="../pods-health-probes/">Lab K204 - Adding health checks with Probes</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../pod-adv-specs/">Pod Resource and Security Specs</a>
+    <a class="" href="../helm/">Lab K205 - Monitoring setup with HELM</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../pods-health-probes/">Adding health checks with Probes</a>
+    <a class="" href="../10_kubernetes_autoscaling/">Lab K206 - Auto Scaling Capacity with HPA</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../ingress/">Application Routing with Ingress Controllers</a>
+    <a class="" href="../network_policies/">Lab K207 - Access Control with Network Policies</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../10_kubernetes_autoscaling/">Auto Scaling Capacity with HPA</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../13_redis_statefulset/">Creating Replicated Redis Cluster with Statefulsets</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../network_policies/">Access Control with Network Policies</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../cluster-administration/">Cluster Administration</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../helm/">Helm Charts</a>
+    <a class="" href="../cluster-administration/">Lab K208 - Cluster Administration</a>
                 </li>
     </ul>
 	    </li>
@@ -196,6 +176,10 @@
 		
     <span class="caption-text">Additional Topics</span>
     <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../13_redis_statefulset/">Creating Replicated Redis Cluster with Statefulsets</a>
+                </li>
                 <li class="">
                     
     <a class="" href="../vote-deployement_strategies/">Building Deployment Strategies</a>
@@ -207,6 +191,41 @@
                 <li class="">
                     
     <a class="" href="../logging/">Logging</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Web Quests</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../wq001-cni/">KWQ001 - CNI Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq002-security/">KWQ001 - Kubernetes Security Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq003-ingress/">KWQ003 - Ingress Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq004-monitoring/">KWQ004 - Monitoring Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq005-controllers/">KWQ005 - Controllers Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq006-persistentvolume/">KWQ006 - Persistent Data Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq007-maintenance/">KWQ007 - Cluster Maintenance Web Quest</a>
                 </li>
     </ul>
 	    </li>
@@ -248,7 +267,7 @@
         
       
     
-    <li>Lab K107 - Configurations Management with ConfigMaps and Secrets</li>
+    <li>Lab K107 - Configurations Management with ConfigMaps</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -258,7 +277,7 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="configmap">Configmap</h1>
+                <h1 id="configurations-management-with-configmaps">Configurations Management with ConfigMaps</h1>
 <p>Configmap is one of the ways to provide configurations to your application.</p>
 <h3 id="injecting-env-variables-with-configmaps">Injecting env variables with configmaps</h3>
 <p>Create our configmap for vote app</p>
@@ -317,242 +336,6 @@ kubectl  rollout status deploy/vote
 </code></pre>
 
 <p><img alt="ConfigMap Dashboard.\label{fig:captioned_image}" src="../images/Configmap.png" /></p>
-<h2 id="providing-environment-specific-configs">Providing environment Specific Configs</h2>
-<p>Copy the dev env to staging</p>
-<pre><code>cd k8s-code/projects/instavote
-cp -r dev staging
-</code></pre>
-
-<p>Edit the configurations   for staging</p>
-<pre><code>cd staging
-
-</code></pre>
-
-<p>Edit <em>vote-cm.yaml</em></p>
-<pre><code>apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: vote
-data:
-  OPTION_A: Apple
-  OPTION_B: Samsung
-</code></pre>
-
-<p>Edit  <em>vote-svc.yaml</em></p>
-<ul>
-<li>remove namespace if set</li>
-<li>remove extIP</li>
-<li>remove hard coded nodePort config if any</li>
-</ul>
-<p>file: vote-svc.yaml</p>
-<pre><code>---
-apiVersion: v1
-kind: Service
-metadata:
-  name: vote
-  labels:
-    role: vote
-spec:
-  selector:
-    role: vote
-  ports:
-    - port: 80
-      targetPort: 80
-  type: NodePort
-</code></pre>
-
-<p>Edit <em>vote-deploy.yaml</em></p>
-<ul>
-<li>remove namespace if set</li>
-<li>change replicas to 2   </li>
-</ul>
-<p>Lets launch it all in another namespace. We could use <strong>default</strong> namespace for this purpose.</p>
-<pre><code>kubectl config set-context $(kubectl config  current-context) --namespace=default
-</code></pre>
-
-<p>Verify the namespace has been switched by observing the monitoring screen.</p>
-<p>Deploy new objects in this nmespace</p>
-<pre><code>kubectl apply -f vote-svc.yaml
-kubectl apply -f vote-cm.yaml
-kubectl apply -f vote-deploy.yaml
-
-</code></pre>
-
-<p>Now connect to the vote service by finding out the nodePort configs</p>
-<pre><code>kubectl get svc vote
-
-</code></pre>
-
-<p><strong>Troubleshooting</strong></p>
-<ul>
-<li>Do you see the application when you browse to http://host:nodeport</li>
-<li>If not, why? Find the root cause and fix it.</li>
-</ul>
-<h4 id="clean-up-and-switch-back-the-namespace">Clean up and Switch back the  namespace</h4>
-<p>Verify the environment specific options are in effect. Once verified, you could switch the namespace back to instavote.</p>
-<pre><code>kubectl delete deploy/vote svc/vote
-
-kubectl config set-context $(kubectl config  current-context) --namespace=instavote
-
-cd ../dev/
-
-</code></pre>
-
-<h2 id="configuration-file-as-configmap">Configuration file as ConfigMap</h2>
-<p>In the  topic above we have seen how to use configmap as environment variables. Now let us see how to use configmap as redis configuration file.</p>
-<p>Syntax for consuming file as a configmap is as follows</p>
-<pre><code>  kubectl create configmap --from-file &lt;CONF-FILE-PATH&gt; &lt;NAME-OF-CONFIGMAP&gt;
-</code></pre>
-
-<p>We have redis configuration as a file named 
-<code>projects/instavote/config/redis.conf</code>. We are going to convert this file into a configmap</p>
-<pre><code>cd k8s-code/projects/instavote/config/
-
-kubectl create configmap --from-file  redis.conf redis
-</code></pre>
-
-<p>Now validate the configs  </p>
-<pre><code>
-kubectl get cm
-
-kubectl describe cm redis
-</code></pre>
-
-<p>To use this confif file, update your redis-deploy.yaml file to use it by mounting it as a volume.</p>
-<p>File: <code>dev/redis-deploy.yaml</code></p>
-<pre><code>    spec:
-      containers:
-      - image: schoolofdevops/redis:latest
-        imagePullPolicy: Always
-        name: redis
-        ports:
-        - containerPort: 6379
-          protocol: TCP
-        volumeMounts:
-          - name: redis
-            subPath: redis.conf
-            mountPath: /etc/redis.conf
-      volumes:
-      - name: redis
-        configMap:
-          name: redis
-      restartPolicy: Always
-</code></pre>
-
-<p>And apply it</p>
-<pre><code>kubectl apply -f redis-deploy.yaml
-
-kubectl apply -f redis-svc.yaml
-
-kubectl get rs,deploy --show-labels
-</code></pre>
-
-<p><strong>Exercise:</strong> Connect to redis pod and verify configs.</p>
-<h2 id="secrets">Secrets</h2>
-<p>Secrets are for storing sensitive data like <em>passwords and keychains</em>. We will see how db deployment uses username and password in form of a secret.</p>
-<p>You would define two fields for db,</p>
-<ul>
-<li>username</li>
-<li>password</li>
-</ul>
-<p>To create secrets for db you need to generate  <em>base64</em> format as follows,</p>
-<pre><code>echo &quot;admin&quot; | base64
-echo &quot;password&quot; | base64
-</code></pre>
-
-<p>where <strong>admin</strong> and <strong>password</strong> are the actual values that you would want to inject into the pod environment.</p>
-<p>If you do not have a unix host, you can make use of online base64 utility to generate these strings.</p>
-<pre><code>http://www.utilities-online.info/base64
-</code></pre>
-
-<p>Lets now add it to the secrets file,</p>
-<p>File: projects/instavote/dev/db-secrets.yaml</p>
-<pre><code>apiVersion: v1
-kind: Secret
-metadata:
-  name: db
-  namespace: instavote
-type: Opaque
-data:
-  POSTGRES_USER: YWRtaW4=
-  POSTGRES_PASSWD: cGFzc3dvcmQ=
-</code></pre>
-
-<pre><code>kubectl apply -f db-secrets.yaml
-
-kubectl get secrets
-
-kubectl describe secret db
-</code></pre>
-
-<p>Secrets can be referred to inside a container spec with following syntax</p>
-<pre><code>env:
-  - name: VAR
-    valueFrom:
-      secretKeyRef:
-        name: db
-        key: SECRET_VAR
-</code></pre>
-
-<p>To consume these secrets, update the deployment for db</p>
-<p>file: db-deploy.yaml</p>
-<pre><code>apiVersion: extensions/v1beta1
-kind: Deployment
-metadata:
-  name: db
-  namespace: instavote
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      tier: back
-      app: postgres
-  minReadySeconds: 10
-  template:
-    metadata:
-      labels:
-        app: postgres
-        role: db
-        tier: back
-    spec:
-      containers:
-      - image: postgres:9.4
-        imagePullPolicy: Always
-        name: db
-        ports:
-        - containerPort: 5432
-          protocol: TCP
-        # Secret definition
-        env:
-          - name: POSTGRES_USER
-            valueFrom:
-              secretKeyRef:
-                name: db
-                key: POSTGRES_USER
-          - name: POSTGRES_PASSWD
-            valueFrom:
-              secretKeyRef:
-                name: db
-                key: POSTGRES_PASSWD
-      restartPolicy: Always
-</code></pre>
-
-<p>To apply this,</p>
-<pre><code>kubectl apply -f db-deploy.yaml
-
-kubectl apply -f db-svc.yaml
-
-kubectl get pods,rs,deploy
-
-kubectl exec -it   db-xxxx sh
-
-[replace db-xxxx with pod name for db ]
-
-env | grep -i postgres 
-
-[here you should see the env vars defined for POSTGRES_USER and POSTGRES_PASS]
-</code></pre>
-
 <h3 id="note-automatic-updation-of-deployments-on-configmap-updates">Note: Automatic Updation of deployments on ConfigMap  Updates</h3>
 <p>Currently, updating configMap does not ensure a new rollout of a deployment. What this means is even after updading configMaps, pods will not immediately reflect the changes.  </p>
 <p>There is a feature request for this https://github.com/kubernetes/kubernetes/issues/22368</p>

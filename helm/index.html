@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Helm Charts - Kubernetes Lab Guide</title>
+  <title>Lab K205 - Monitoring setup with HELM - Kubernetes Lab Guide</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -17,7 +17,7 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Helm Charts";
+    var mkdocs_page_name = "Lab K205 - Monitoring setup with HELM";
     var mkdocs_page_input_path = "helm.md";
     var mkdocs_page_url = null;
   </script>
@@ -110,7 +110,7 @@
                 </li>
                 <li class="">
                     
-    <a class="" href="../9-vote-configmaps_and_secrets/">Lab K107 - Configurations Management with ConfigMaps and Secrets</a>
+    <a class="" href="../9-vote-configmaps_and_secrets/">Lab K107 - Configurations Management with ConfigMaps</a>
                 </li>
                 <li class="">
                     
@@ -121,67 +121,53 @@
           
             <li class="toctree-l1">
 		
-    <span class="caption-text">Advanced Kubernetes</span>
+    <span class="caption-text">Advanced Administration</span>
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../kubespray-prereqs/">Kubespray HA lab setup with Vagrant</a>
+    <a class="" href="../ingress/">Lab K201 - Application Routing with Ingress Controllers</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../cluster_setup_kubespray/">HA setup with Kubespray</a>
+    <a class="" href="../configuring_authentication_and_authorization/">Lab K202 - Authentication and Authorization (RBAC)</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../configuring_authentication_and_authorization/">Authentication and Authorization (RBAC)</a>
+    <a class="" href="../advanced_pod_scheduling/">Lab K203 - Advanced Pod Scheduling</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../advanced_pod_scheduling/">Advanced Pod Scheduling</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../pod-adv-specs/">Pod Resource and Security Specs</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../pods-health-probes/">Adding health checks with Probes</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../ingress/">Application Routing with Ingress Controllers</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../10_kubernetes_autoscaling/">Auto Scaling Capacity with HPA</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../13_redis_statefulset/">Creating Replicated Redis Cluster with Statefulsets</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../network_policies/">Access Control with Network Policies</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../cluster-administration/">Cluster Administration</a>
+    <a class="" href="../pods-health-probes/">Lab K204 - Adding health checks with Probes</a>
                 </li>
                 <li class=" current">
                     
-    <a class="current" href="./">Helm Charts</a>
+    <a class="current" href="./">Lab K205 - Monitoring setup with HELM</a>
     <ul class="subnav">
             
-    <li class="toctree-l3"><a href="#helm-package-manager">Helm Package Manager</a></li>
+    <li class="toctree-l3"><a href="#lab-k205-monitoring-setup-with-helm">Lab K205 - Monitoring setup with HELM</a></li>
     
         <ul>
         
-            <li><a class="toctree-l4" href="#install-helm">Install Helm</a></li>
+            <li><a class="toctree-l4" href="#installing-helm">Installing  Helm</a></li>
+        
+            <li><a class="toctree-l4" href="#setting-up-monitoring-stack-with-helm">Setting up Monitoring Stack with HELM</a></li>
         
         </ul>
     
 
     </ul>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../10_kubernetes_autoscaling/">Lab K206 - Auto Scaling Capacity with HPA</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../network_policies/">Lab K207 - Access Control with Network Policies</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../cluster-administration/">Lab K208 - Cluster Administration</a>
                 </li>
     </ul>
 	    </li>
@@ -190,6 +176,10 @@
 		
     <span class="caption-text">Additional Topics</span>
     <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../13_redis_statefulset/">Creating Replicated Redis Cluster with Statefulsets</a>
+                </li>
                 <li class="">
                     
     <a class="" href="../vote-deployement_strategies/">Building Deployment Strategies</a>
@@ -201,6 +191,41 @@
                 <li class="">
                     
     <a class="" href="../logging/">Logging</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Web Quests</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../wq001-cni/">KWQ001 - CNI Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq002-security/">KWQ001 - Kubernetes Security Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq003-ingress/">KWQ003 - Ingress Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq004-monitoring/">KWQ004 - Monitoring Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq005-controllers/">KWQ005 - Controllers Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq006-persistentvolume/">KWQ006 - Persistent Data Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq007-maintenance/">KWQ007 - Cluster Maintenance Web Quest</a>
                 </li>
     </ul>
 	    </li>
@@ -238,11 +263,11 @@
     
       
         
-          <li>Advanced Kubernetes &raquo;</li>
+          <li>Advanced Administration &raquo;</li>
         
       
     
-    <li>Helm Charts</li>
+    <li>Lab K205 - Monitoring setup with HELM</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -252,9 +277,10 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="helm-package-manager">Helm Package Manager</h1>
-<h2 id="install-helm">Install Helm</h2>
-<p>To install helm you can follow following instructions. </p>
+                <h1 id="lab-k205-monitoring-setup-with-helm">Lab K205 - Monitoring setup with HELM</h1>
+<p>In this lab, you are going to install and configure helm, and in turns, use it to configure a monitoring system for kubernetes using prometheus and grafana stack.</p>
+<h2 id="installing-helm">Installing  Helm</h2>
+<p>To install helm you can follow following instructions.</p>
 <pre><code>curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get &gt; get_helm.sh
 chmod 700 get_helm.sh
 ./get_helm.sh
@@ -264,7 +290,7 @@ chmod 700 get_helm.sh
 <pre><code>helm --help
 </code></pre>
 
-<h3 id="set-rbac-for-tiller">Set RBAC for Tiller</h3>
+<p>Lets now setup  RBAC configurations required for Tiller, a component of helm that runs inside the kubernetes cluster.</p>
 <p><code>file: tiller-rbac.yaml</code></p>
 <pre><code>apiVersion: v1
 kind: ServiceAccount
@@ -291,146 +317,67 @@ subjects:
 
 </code></pre>
 
-<h3 id="initialize">Initialize</h3>
 <p>This is where we actually initialize Tiller in our Kubernetes cluster.</p>
 <pre><code>helm init --service-account tiller
 </code></pre>
 
-<p>[sample output]</p>
-<pre><code>Creating /root/.helm
-Creating /root/.helm/repository
-Creating /root/.helm/repository/cache
-Creating /root/.helm/repository/local
-Creating /root/.helm/plugins
-Creating /root/.helm/starters
-Creating /root/.helm/cache/archive
-Creating /root/.helm/repository/repositories.yaml
-Adding stable repo with URL: https://kubernetes-charts.storage.googleapis.com
-Adding local repo with URL: http://127.0.0.1:8879/charts
-$HELM_HOME has been configured at /root/.helm.
-
-Tiller (the Helm server-side component) has been installed into your Kubernetes Cluster.
-
-Please note: by default, Tiller is deployed with an insecure 'allow unauthenticated users' policy.
-For more information on securing your installation see: https://docs.helm.sh/using_helm/#securing-your-helm-installation
-Happy Helming!
-</code></pre>
-
-<h3 id="install-wordpress-with-helm">Install Wordpress with Helm</h3>
-<p>Search Helm repository for Wordpress chart</p>
-<pre><code>helm search wordpress
-</code></pre>
-
-<p>Fetch the chart to your local environment and change directory.</p>
-<pre><code>helm fetch --untar stable/wordpress
-cd wordpress
-</code></pre>
-
-<p>Create a copy of default vaules file and edit it.</p>
-<pre><code>cp values.yaml my-values.yaml
-vim my-values.yaml
-</code></pre>
-
-<p>Run it as a dry run to check for errors.</p>
-<pre><code>helm install --name blog --values my-values.yaml . --dry-run
-</code></pre>
-
-<p>Deploy the Wordpress stack.</p>
-<pre><code>helm install --name blog --values my-values.yaml .
-</code></pre>
-
-<h3 id="install-prometheus-with-helm">Install Prometheus with Helm</h3>
-<p>Official Prometheus Helm Chart repository.</p>
-<pre><code>https://github.com/helm/charts/tree/master/stable/prometheus
-</code></pre>
-
-<p>Official Grafana Helm Chart repository.</p>
-<pre><code>https://github.com/helm/charts/tree/master/stable/grafana
-</code></pre>
-
-<h4 id="grafana-deployment">Grafana Deployment</h4>
-<p>Download Grafana charts to your local machine and change directory.</p>
-<pre><code>helm fetch --untar stable/grafana
-cd grafana
-</code></pre>
-
-<p>Create a copy of default vaules file and edit it.</p>
-<pre><code>cp values.yaml myvalues.yaml
-vim myvalues.yaml
-</code></pre>
-
-<p>Make sure your charts doesn't have any error.</p>
-<pre><code>helm install --name grafana --values myvalues.yaml --namespace instavote . --dry-run
-</code></pre>
-
-<p>Deploy Grafana on your K8s Cluster.</p>
-<pre><code>helm install --name grafana --values myvalues.yaml --namespace instavote .
-</code></pre>
-
-<h4 id="prometheus-deployment">Prometheus Deployment</h4>
-<p>Download Prometheus charts to your local machine and change directory.</p>
-<pre><code>helm fetch --untar stable/prometheus
+<h2 id="setting-up-monitoring-stack-with-helm">Setting up Monitoring Stack with HELM</h2>
+<p>You will now setup prometheus and grafana monitoring stacks with helm, with a few customisations.</p>
+<h4 id="install-prometheus-with-helm">Install Prometheus with Helm</h4>
+<p>Before proceeding, you could review the <a href="https://github.com/helm/charts/tree/master/stable/prometheus">Official Prometheus Helm Chart</a>  from the repository.</p>
+<p>Search and download a chart for prometheus</p>
+<pre><code>helm search prometheus
+helm fetch --untar stable/prometheus
 cd prometheus
 </code></pre>
 
-<p>Create a copy of default vaules file and edit it.</p>
-<pre><code>cp values.yaml myvalues.yaml
-vim myvalues.yaml
+<p>To provide custom configurations, copy over the custom values file from <strong>k8s-code</strong> repot.</p>
+<pre><code>cp ../k8s-code/helper/helm/values/prometheus-customvalues.yaml .
 </code></pre>
 
-<p>Make sure your charts doesn't have any error.</p>
-<pre><code>helm install --name prometheus --values myvalues.yaml --namespace instavote . --dry-run
+<p>Review <strong>prometheus-customvalues.yaml</strong> and then launch prometheus stack as,</p>
+<pre><code>helm install --name prometheus --values prometheus-customvalues.yaml  . --dry-run
+helm install --name prometheus --values prometheus-customvalues.yaml  .
+
+helm list
+helm status prometheus
 </code></pre>
 
-<p>Deploy Prometheus on your K8s Cluster.</p>
-<pre><code>helm install --name prometheus --values myvalues.yaml --namespace instavote .
+<p>You should be able to access prometheus UI by using either the <em>nodePort</em> service or a <em>ingress</em> rule.</p>
+<h4 id="deploying-grafana-with-helm">Deploying Grafana with HELM</h4>
+<p>You could refer to the <a href="https://github.com/helm/charts/tree/master/stable/grafana">Official Grafana Helm Chart repository</a> before proceeding.</p>
+<p>Search and download a chart for prometheus</p>
+<pre><code>helm search grafana
+helm fetch --untar stable/grafana
+cd grafana
 </code></pre>
 
-<h3 id="install-heapster-with-helm">Install heapster with helm</h3>
-<pre><code>helm install stable/heapster --namespace kube-system --name heapster --set image.tag=v1.5.1 --set rbac.create=true
+<p>To provide custom configurations, copy over the custom values file from <strong>k8s-code</strong> repot.</p>
+<pre><code>cp ../k8s-code/helper/helm/values/grafana-customvalues.yaml .
 </code></pre>
 
-<p>[output]</p>
-<pre><code>NAME:   heapster
-LAST DEPLOYED: Tue May 22 11:46:44 2018
-NAMESPACE: kube-system
-STATUS: DEPLOYED
+<p>Review <strong>grafana-customvalues.yaml</strong> and then launch grafana as,</p>
+<pre><code>helm install --name grafana --values grafana-customvalues.yaml  . --dry-run
+helm install --name grafana --values grafana-customvalues.yaml  .
 
-RESOURCES:
-==&gt; v1beta1/Role
-NAME                         AGE
-heapster-heapster-pod-nanny  2s
-
-==&gt; v1beta1/RoleBinding
-NAME                         AGE
-heapster-heapster-pod-nanny  2s
-
-==&gt; v1/Service
-NAME      TYPE       CLUSTER-IP   EXTERNAL-IP  PORT(S)   AGE
-heapster  ClusterIP  10.96.63.82  &lt;none&gt;       8082/TCP  2s
-
-==&gt; v1beta1/Deployment
-NAME               DESIRED  CURRENT  UP-TO-DATE  AVAILABLE  AGE
-heapster-heapster  1        0        0           0          2s
-
-==&gt; v1/Pod(related)
-NAME                                READY  STATUS   RESTARTS  AGE
-heapster-heapster-696df57b44-zjf78  0/2    Pending  0         1s
-
-==&gt; v1/ServiceAccount
-NAME               SECRETS  AGE
-heapster-heapster  1        2s
-
-==&gt; v1beta1/ClusterRoleBinding
-NAME               AGE
-heapster-heapster  2s
-
-
-NOTES:
-1. Get the application URL by running these commands:
-  export POD_NAME=$(kubectl get pods --namespace kube-system -l &quot;app=heapster-heapster&quot; -o jsonpath=&quot;{.items[0].metadata.name}&quot;)
-  kubectl --namespace kube-system port-forward $POD_NAME 8082
+helm list
+helm status grafana
 </code></pre>
+
+<p>You should be able to access grafana UI by using either the <em>nodePort</em> service or a <em>ingress</em> rule.</p>
+<p><img alt="Grafana UI" src="../images/grafana.png" /></p>
+<p>credentials for grafana</p>
+<ul>
+<li>user: admin</li>
+<li>pass: password</li>
+</ul>
+<p>You could update it along with other values in <em>grafana-customvalues.yaml</em> or create a separate file to override the values.</p>
+<p>If you update values and would like to apply to existing helm release, use a command simiar to following,</p>
+<pre><code>helm upgrade -f grafana-customvalues.yaml grafana .
+</code></pre>
+
+<h5 id="summary">Summary</h5>
+<p>In this lab, we not only learnt about HELM, a kubernetes package manager, but  also have setup a sophisticated health monitoring system with prometheus and grafana.</p>
               
             </div>
           </div>
@@ -438,10 +385,10 @@ NOTES:
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../vote-deployement_strategies/" class="btn btn-neutral float-right" title="Building Deployment Strategies">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../10_kubernetes_autoscaling/" class="btn btn-neutral float-right" title="Lab K206 - Auto Scaling Capacity with HPA">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../cluster-administration/" class="btn btn-neutral" title="Cluster Administration"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../pods-health-probes/" class="btn btn-neutral" title="Lab K204 - Adding health checks with Probes"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -467,10 +414,10 @@ NOTES:
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../cluster-administration/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../pods-health-probes/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../vote-deployement_strategies/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../10_kubernetes_autoscaling/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Authentication and Authorization (RBAC) - Kubernetes Lab Guide</title>
+  <title>Lab K202 - Authentication and Authorization (RBAC) - Kubernetes Lab Guide</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -17,7 +17,7 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Authentication and Authorization (RBAC)";
+    var mkdocs_page_name = "Lab K202 - Authentication and Authorization (RBAC)";
     var mkdocs_page_input_path = "configuring_authentication_and_authorization.md";
     var mkdocs_page_url = null;
   </script>
@@ -110,7 +110,7 @@
                 </li>
                 <li class="">
                     
-    <a class="" href="../9-vote-configmaps_and_secrets/">Lab K107 - Configurations Management with ConfigMaps and Secrets</a>
+    <a class="" href="../9-vote-configmaps_and_secrets/">Lab K107 - Configurations Management with ConfigMaps</a>
                 </li>
                 <li class="">
                     
@@ -121,22 +121,18 @@
           
             <li class="toctree-l1">
 		
-    <span class="caption-text">Advanced Kubernetes</span>
+    <span class="caption-text">Advanced Administration</span>
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../kubespray-prereqs/">Kubespray HA lab setup with Vagrant</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../cluster_setup_kubespray/">HA setup with Kubespray</a>
+    <a class="" href="../ingress/">Lab K201 - Application Routing with Ingress Controllers</a>
                 </li>
                 <li class=" current">
                     
-    <a class="current" href="./">Authentication and Authorization (RBAC)</a>
+    <a class="current" href="./">Lab K202 - Authentication and Authorization (RBAC)</a>
     <ul class="subnav">
             
-    <li class="toctree-l3"><a href="#kubernetes-access-control-authentication-and-authorization">Kubernetes Access Control:  Authentication and Authorization</a></li>
+    <li class="toctree-l3"><a href="#lab-k202-kubernetes-access-control-authentication-and-authorization">Lab K202 - Kubernetes Access Control:  Authentication and Authorization</a></li>
     
         <ul>
         
@@ -159,39 +155,27 @@
                 </li>
                 <li class="">
                     
-    <a class="" href="../advanced_pod_scheduling/">Advanced Pod Scheduling</a>
+    <a class="" href="../advanced_pod_scheduling/">Lab K203 - Advanced Pod Scheduling</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../pod-adv-specs/">Pod Resource and Security Specs</a>
+    <a class="" href="../pods-health-probes/">Lab K204 - Adding health checks with Probes</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../pods-health-probes/">Adding health checks with Probes</a>
+    <a class="" href="../helm/">Lab K205 - Monitoring setup with HELM</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../ingress/">Application Routing with Ingress Controllers</a>
+    <a class="" href="../10_kubernetes_autoscaling/">Lab K206 - Auto Scaling Capacity with HPA</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../10_kubernetes_autoscaling/">Auto Scaling Capacity with HPA</a>
+    <a class="" href="../network_policies/">Lab K207 - Access Control with Network Policies</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../13_redis_statefulset/">Creating Replicated Redis Cluster with Statefulsets</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../network_policies/">Access Control with Network Policies</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../cluster-administration/">Cluster Administration</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../helm/">Helm Charts</a>
+    <a class="" href="../cluster-administration/">Lab K208 - Cluster Administration</a>
                 </li>
     </ul>
 	    </li>
@@ -200,6 +184,10 @@
 		
     <span class="caption-text">Additional Topics</span>
     <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../13_redis_statefulset/">Creating Replicated Redis Cluster with Statefulsets</a>
+                </li>
                 <li class="">
                     
     <a class="" href="../vote-deployement_strategies/">Building Deployment Strategies</a>
@@ -211,6 +199,41 @@
                 <li class="">
                     
     <a class="" href="../logging/">Logging</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Web Quests</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../wq001-cni/">KWQ001 - CNI Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq002-security/">KWQ001 - Kubernetes Security Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq003-ingress/">KWQ003 - Ingress Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq004-monitoring/">KWQ004 - Monitoring Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq005-controllers/">KWQ005 - Controllers Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq006-persistentvolume/">KWQ006 - Persistent Data Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq007-maintenance/">KWQ007 - Cluster Maintenance Web Quest</a>
                 </li>
     </ul>
 	    </li>
@@ -248,11 +271,11 @@
     
       
         
-          <li>Advanced Kubernetes &raquo;</li>
+          <li>Advanced Administration &raquo;</li>
         
       
     
-    <li>Authentication and Authorization (RBAC)</li>
+    <li>Lab K202 - Authentication and Authorization (RBAC)</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -262,7 +285,7 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="kubernetes-access-control-authentication-and-authorization">Kubernetes Access Control:  Authentication and Authorization</h1>
+                <h1 id="lab-k202-kubernetes-access-control-authentication-and-authorization">Lab K202 - Kubernetes Access Control:  Authentication and Authorization</h1>
 <p>In  this lab you are going to,</p>
 <ul>
 <li>Create users and groups and setup certs based authentication</li>
@@ -395,14 +418,12 @@
 <pre><code>mkdir -p  ~/.kube/users
 cd ~/.kube/users
 
-openssl genrsa -out maya.key 2048
 openssl genrsa -out kim.key 2048
-openssl genrsa -out yono.key 2048
 
 </code></pre>
 
 <p>[sample Output]</p>
-<pre><code>openssl genrsa -out maya.key 2048
+<pre><code>openssl genrsa -out kim.key 2048
 Generating RSA private key, 2048 bit long modulus
 .............................................................+++
 .........................+++
@@ -416,9 +437,7 @@ e is 65537 (0x10001)
 <li>O: Org name. This is actually used as a <strong>group</strong> by kubernetes while authenticating/authorizing users.  You could add as many as you need</li>
 </ul>
 <p>e.g.</p>
-<pre><code>openssl req -new -key maya.key -out maya.csr -subj &quot;/CN=maya/O=ops/O=example.org&quot;
-openssl req -new -key kim.key -out kim.csr -subj &quot;/CN=kim/O=dev/O=example.org&quot;
-openssl req -new -key yono.key -out yono.csr -subj &quot;/CN=yono/O=interns/O=example.org&quot;
+<pre><code>openssl req -new -key kim.key -out kim.csr -subj &quot;/CN=kim/O=dev/O=example.org&quot;
 
 </code></pre>
 
@@ -427,17 +446,16 @@ openssl req -new -key yono.key -out yono.csr -subj &quot;/CN=yono/O=interns/O=ex
 <li>Certificate : ca.crt (kubeadm) or ca.key (kubespray)</li>
 <li>Pricate Key : ca.key (kubeadm) or ca-key.pem  (kubespray)</li>
 </ul>
-<p>You would typically find it at one of the following paths</p>
+<p>You would typically find it  the following paths</p>
 <ul>
-<li>/etc/kubernetes/pki (kubeadm)</li>
-<li>/etc/kubernetes/ssl (kubespray)</li>
+<li>/etc/kubernetes/pki</li>
 </ul>
 <p>To verify which one is your cert and which one is key, use the following command,</p>
-<pre><code>$ file ca.pem
+<pre><code>$ file /etc/kubernetes/pki/ca.crt
 ca.pem: PEM certificate
 
 
-$ file ca-key.pem
+$ file /etc/kubernetes/pki/ca.key
 ca-key.pem: PEM RSA private key
 </code></pre>
 
@@ -449,11 +467,8 @@ ca-key.pem: PEM RSA private key
 </ul>
 <p>In the example here, I have already downloaded <strong>ca.pem</strong> and <strong>ca-key.pem</strong> to my management workstation, which are used to sign the CSRs.  </p>
 <p>Assuming all the files are in the same directory, sign the CSR as,</p>
-<pre><code>openssl x509 -req -CA ca.pem -CAkey ca-key.pem -CAcreateserial -days 730 -in maya.csr -out maya.crt
+<pre><code>openssl x509 -req -CA /etc/kubernetes/pki/ca.crt -CAkey /etc/kubernetes/pki/ca.key -CAcreateserial -days 730 -in kim.csr -out kim.crt
 
-openssl x509 -req -CA ca.pem -CAkey ca-key.pem -CAcreateserial -days 730 -in kim.csr -out kim.crt
-
-openssl x509 -req -CA ca.pem -CAkey ca-key.pem -CAcreateserial -days 730 -in yono.csr -out yono.crt
 </code></pre>
 
 <h3 id="setting-up-user-configs-with-kubectl">Setting up User configs with kubectl</h3>
@@ -464,21 +479,13 @@ openssl x509 -req -CA ca.pem -CAkey ca-key.pem -CAcreateserial -days 730 -in yon
 <li>Switch context in order to assume the user's identity while working with the cluster</li>
 </ul>
 <p>to add credentials,</p>
-<pre><code>kubectl config set-credentials maya --client-certificate=/absolute/path/to/maya.crt --client-key=/absolute/path/to/maya.key
-
-kubectl config set-credentials kim --client-certificate=/absolute/path/to/kim.crt --client-key=~/.kube/users/kim.key
-
-kubectl config set-credentials yono --client-certificate=/absolute/path/to/yono.crt --client-key=~/.kube/users/yono.key
-
+<pre><code>kubectl config set-credentials kim --client-certificate=/root/.kube/users/kim.crt --client-key=/root/.kube/users/kim.key
 </code></pre>
 
 <p>where,</p>
 <ul>
-<li>Replace /absolute/path/to/ with the path to these files.<ul>
-<li><code>invalid</code> :  ~/.kube/users/yono.crt</li>
-<li><code>valid</code> :  /home/xyz/.kube/users/yono.crt</li>
-</ul>
-</li>
+<li>/root/.kube/users/kim.crt : Absolute path to the users' certificate</li>
+<li>/root/.kube/users/kim.key: Absolute path to the users' key</li>
 </ul>
 <p>And proceed to set/create  contexts (user@cluster). If you are not sure whats the cluster name, use the following command to find,</p>
 <pre><code>kubectl config get-contexts
@@ -486,36 +493,28 @@ kubectl config set-credentials yono --client-certificate=/absolute/path/to/yono.
 </code></pre>
 
 <p>[sample output]</p>
-<pre><code>CURRENT   NAME                          CLUSTER         AUTHINFO              NAMESPACE
-          admin-prod           prod   admin-cluster.local   instavote
-          admin-cluster4                cluster4        admin-cluster4        instavote
-*         kubernetes-admin@kubernetes   kubernetes      kubernetes-admin      instavote
+<pre><code>CURRENT   NAME                          CLUSTER      AUTHINFO           NAMESPACE
+*         kubernetes-admin@kubernetes   kubernetes   kubernetes-admin   instavote
 </code></pre>
 
-<p>where,  <strong>prod</strong>, <strong>cluster4</strong> and <strong>kubernetes</strong> are cluster names.</p>
-<p>To set context for <strong>prod</strong> cluster,</p>
-<pre><code>kubectl config set-context maya-prod --cluster=prod  --user=maya --namespace=instavote
-
-kubectl config set-context kim-prod --cluster=prod  --user=kim --namespace=instavote
-
-kubectl config set-context yono-prod --cluster=prod  --user=yono --namespace=instavote
+<p>where,  <strong>kubernetes</strong> is the  cluster name.</p>
+<p>To set context for <strong>kubernetes</strong> cluster,</p>
+<pre><code>kubectl config set-context kim-kubernetes --cluster=kubernetes  --user=kim --namespace=instavote
 
 </code></pre>
 
 <p>Where,</p>
 <ul>
-<li>maya-prod : name of the context  </li>
-<li>prod  : name of the kubernetes cluster you set while creating it  </li>
-<li>maya : user you created and configured above to connect to the cluster  </li>
+<li>kim-kubernetes : name of the context  </li>
+<li>kubernetes  : name of the  cluster you set while creating it  </li>
+<li>kim : user you created and configured above to connect to the cluster  </li>
 </ul>
 <p>You could verify the configs with</p>
 <pre><code>kubectl config get-contexts
 
-CURRENT   NAME         CLUSTER   AUTHINFO     NAMESPACE
-*         admin-prod   prod      admin-prod
-          kim-prod     prod      kim
-          maya-prod    prod      maya
-          yono-prod    prod      yono
+CURRENT   NAME                          CLUSTER      AUTHINFO           NAMESPACE
+          kim-kubernetes                kubernetes   kim                instavote
+*         kubernetes-admin@kubernetes   kubernetes   kubernetes-admin   instavote
 </code></pre>
 
 <p>and</p>
@@ -524,52 +523,46 @@ CURRENT   NAME         CLUSTER   AUTHINFO     NAMESPACE
 apiVersion: v1
 clusters:
 - cluster:
-   certificate-authority-data: REDACTED
-   server: https://128.199.248.240:6443
- name: prod
+    certificate-authority-data: DATA+OMITTED
+    server: https://178.128.109.8:6443
+  name: kubernetes
 contexts:
 - context:
-   cluster: prod
-   user: admin-prod
- name: admin-prod
+    cluster: kubernetes
+    namespace: instavote
+    user: kim
+  name: kim-kubernetes
 - context:
-   cluster: prod
-   user: kim
- name: kim-prod
-- context:
-   cluster: prod
-   user: maya
- name: maya-prod
-- context:
-   cluster: prod
-   user: yono
- name: yono-prod
-current-context: admin-prod
+    cluster: kubernetes
+    namespace: instavote
+    user: kubernetes-admin
+  name: kubernetes-admin@kubernetes
+current-context: kubernetes-admin@kubernetes
 kind: Config
 preferences: {}
 users:
-- name: admin-prod
- user:
-   client-certificate-data: REDACTED
-   client-key-data: REDACTED
-- name: maya
- user:
-   client-certificate: users/~/.kube/users/maya.crt
-   client-key: users/~/.kube/users/maya.key
+- name: kim
+  user:
+    client-certificate: users/kim.crt
+    client-key: users/kim.key
+- name: kubernetes-admin
+  user:
+    client-certificate-data: REDACTED
+    client-key-data: REDACTED
 </code></pre>
 
-<p>You could assume the identity of user <strong>yono</strong> and connect  to the <strong>prod</strong> cluster as,</p>
-<pre><code>kubectl config use-context yono-prod
+<p>Where, you should see the configurations for the new user you created have been added.</p>
+<p>You could assume the identity of user <strong>kim</strong> and connect  to the <strong>kubernetes</strong> cluster as,</p>
+<pre><code>kubectl config use-context kim-kubernetes
 
 kubectl config get-contexts
 
-CURRENT   NAME         CLUSTER   AUTHINFO     NAMESPACE
-          admin-prod   prod      admin-prod
-          kim-prod     prod      kim
-          maya-prod    prod      maya
-*         yono-prod    prod      yono
+CURRENT   NAME                          CLUSTER      AUTHINFO           NAMESPACE
+*         kim-kubernetes                kubernetes   kim                instavote
+          kubernetes-admin@kubernetes   kubernetes   kubernetes-admin   instavote
 </code></pre>
 
+<p>This time * appears on the line which lists context <strong>kim-kubernetes</strong> that you just created.</p>
 <p>And then try running any command as,</p>
 <pre><code>kubectl get pods
 </code></pre>
@@ -593,12 +586,16 @@ Error from server (Forbidden): pods is forbidden: User &quot;yono&quot; cannot l
 <li>ClusterRole is Global</li>
 </ul>
 <p>Lets say you want to provide read only access to <strong>instavote</strong>, a project specific namespace to all users in the <strong>example.org</strong></p>
-<p><code>file: interns-role.yaml</code></p>
+<pre><code>kubectl config use-context kubernetes-admin@kubernetes
+cd projects/instavote/dev
+</code></pre>
+
+<p><code>file: readonly-role.yaml</code></p>
 <pre><code>apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: Role
 metadata:
   namespace: instavote
-  name: interns
+  name: readonly
 rules:
 - apiGroups: [&quot;*&quot;]
   resources: [&quot;*&quot;]
@@ -606,44 +603,43 @@ rules:
 </code></pre>
 
 <p>In order to map it to all users in <strong>example.org</strong>, create a RoleBinding as</p>
-<p><code>interns-rolebinding.yml</code></p>
+<p><code>file: readonly-rolebinding.yml</code></p>
 <pre><code>kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: interns
+  name: readonly
   namespace: instavote
 subjects:
 - kind: Group
-  name: interns
+  name: dev
   apiGroup: rbac.authorization.k8s.io
 roleRef:
   kind: Role
-  name: interns
+  name: readonly
   apiGroup: rbac.authorization.k8s.io
 </code></pre>
 
-<pre><code>kubectl create -f interns-role.yml
-
-kubectl create -f interns-rolebinding.yml
+<pre><code>kubectl apply -f readonly-role.yaml
+kubectl apply -f readonly-rolebinding.yml
 </code></pre>
 
-<p>To gt information about the objects created above,</p>
-<pre><code>kubectl get roles -n instavote
-kubectl get roles,rolebindings -n instavote
+<p>To get information about the objects created above,</p>
+<pre><code>kubectl get roles,rolebindings -n instavote
 
-kubectl describe role interns
-kubectl describe rolebinding interns
+kubectl describe role readonly
+kubectl describe rolebinding readonly
 
 </code></pre>
 
 <p>To validate the access,</p>
-<pre><code>kubectl config use-context yono-prod
+<pre><code>kubectl config get-contexts
+kubectl config use-context kim-kubernetes
 kubectl get pods
 
 </code></pre>
 
 <p>To switch back to admin,</p>
-<pre><code>kubectl config use-context admin-prod
+<pre><code>kubectl config use-context kubernetes-admin@kubernetes
 
 </code></pre>
 
@@ -656,10 +652,10 @@ kubectl get pods
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../advanced_pod_scheduling/" class="btn btn-neutral float-right" title="Advanced Pod Scheduling">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../advanced_pod_scheduling/" class="btn btn-neutral float-right" title="Lab K203 - Advanced Pod Scheduling">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../cluster_setup_kubespray/" class="btn btn-neutral" title="HA setup with Kubespray"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../ingress/" class="btn btn-neutral" title="Lab K201 - Application Routing with Ingress Controllers"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -685,7 +681,7 @@ kubectl get pods
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../cluster_setup_kubespray/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../ingress/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
         <span style="margin-left: 15px"><a href="../advanced_pod_scheduling/" style="color: #fcfcfc">Next &raquo;</a></span>
