@@ -200,7 +200,7 @@ Before we proceed further, please checkout the code from the following git repo.
 
 `run this on the host where you have configured kubectl`
 ```
-git clone https://github.com/schoolofdevops/k8s-code.git
+git clone https://github.com/devopsfoo/k8s-code.git
 ```
 
 ## Set up Visualiser
