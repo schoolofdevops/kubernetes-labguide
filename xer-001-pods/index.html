@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Troubleshooting Tips - Kubernetes Lab Guide</title>
+  <title>XER001 - Pods - Kubernetes Lab Guide</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -17,8 +17,8 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Troubleshooting Tips";
-    var mkdocs_page_input_path = "12_troubleshooting.md";
+    var mkdocs_page_name = "XER001 - Pods";
+    var mkdocs_page_input_path = "xer-001-pods.md";
     var mkdocs_page_url = null;
   </script>
   
@@ -170,33 +170,9 @@
                     
     <a class="" href="../vote-deployement_strategies/">Building Deployment Strategies</a>
                 </li>
-                <li class=" current">
+                <li class="">
                     
-    <a class="current" href="./">Troubleshooting Tips</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l3"><a href="#troubleshooting-the-kubernetes-cluster">Troubleshooting the Kubernetes cluster</a></li>
-    
-        <ul>
-        
-            <li><a class="toctree-l4" href="#troubleshooting-the-control-plane">Troubleshooting the control plane</a></li>
-        
-            <li><a class="toctree-l4" href="#listing-the-nodes-in-a-cluster">Listing the nodes in a cluster</a></li>
-        
-            <li><a class="toctree-l4" href="#list-the-control-plane-pods">List the control plane pods</a></li>
-        
-            <li><a class="toctree-l4" href="#log-files">Log files</a></li>
-        
-            <li><a class="toctree-l4" href="#troubleshooting-the-application">Troubleshooting the application</a></li>
-        
-            <li><a class="toctree-l4" href="#getting-detailed-status-of-an-object-pods-deployments">Getting detailed status of an object (pods, deployments)</a></li>
-        
-            <li><a class="toctree-l4" href="#checking-the-status-of-deployment">Checking the status of Deployment</a></li>
-        
-        </ul>
-    
-
-    </ul>
+    <a class="" href="../12_troubleshooting/">Troubleshooting Tips</a>
                 </li>
                 <li class="">
                     
@@ -209,9 +185,41 @@
 		
     <span class="caption-text">Exercises</span>
     <ul class="subnav">
-                <li class="">
+                <li class=" current">
                     
-    <a class="" href="../xer-001-pods/">XER001 - Pods</a>
+    <a class="current" href="./">XER001 - Pods</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#xer001-pods-exercises">XER001 - Pods Exercises</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#1-create-a-pod-manifest-which-uses-ghost-image-and-open-port-2368">1. Create a Pod manifest which uses "ghost" image and open port 2368.</a></li>
+        
+            <li><a class="toctree-l4" href="#2-create-a-pod-with-ubuntutrusty-image-and-a-command-to-echo-your_name-which-overrides-the-default-cmdentrypoint-of-the-image">2. Create a Pod with ubuntu:trusty image and a command to echo “YOUR_NAME” which overrides the default CMD/ENTRYPOINT of the image.</a></li>
+        
+            <li><a class="toctree-l4" href="#3-apply-the-following-pod-manifest-and-read-the-error-fix-it-by-editing-it">3. Apply the following Pod manifest and read the error. Fix it by editing it.</a></li>
+        
+            <li><a class="toctree-l4" href="#4-a-pod-with-the-following-pod-always-crashes-with-crashloopbackoff-error-how-would-you-fix-it">4. A Pod with the following pod always crashes with CrashLoopBackOff error. How would you fix it?</a></li>
+        
+            <li><a class="toctree-l4" href="#5-you-are-running-a-pod-with-hostport-option-your-pod-status-stays-pending-what-could-be-the-issue-for-the-pod-not-being-scheduled">5. You are running a Pod with hostPort option. Your Pod status stays “pending”. What could be the issue for the Pod not being scheduled?</a></li>
+        
+            <li><a class="toctree-l4" href="#6-the-given-manifest-for-multi-container-pod-is-not-working-as-intended-it-does-not-sync-the-content-between-containers-like-expected-what-could-be-the-issue-find-the-issue-just-by-reading-the-manifest">6. The given manifest for multi-container pod is not working as intended. It does not sync the content between containers like expected. What could be the issue? Find the issue just by reading the manifest.</a></li>
+        
+            <li><a class="toctree-l4" href="#7-for-the-above-given-manifest-the-following-command-is-not-working-what-could-be-the-issue">7. For the above given manifest, the following command is not working. What could be the issue?</a></li>
+        
+            <li><a class="toctree-l4" href="#8-try-to-apply-the-following-manifest-if-fails-try-to-debug">8. Try to apply the following manifest. If fails, try to debug.</a></li>
+        
+            <li><a class="toctree-l4" href="#9-fix-the-following-manifest-dont-apply-it-just-fix-it-by-reading">9. Fix the following manifest. Don't apply it. Just fix it by reading.</a></li>
+        
+            <li><a class="toctree-l4" href="#10-mount-varwwwhtml-from-pod-using-the-follwing-manifest-fill-the-missing-fields">10. Mount /var/www/html from Pod using the follwing manifest. Fill the missing fields.</a></li>
+        
+            <li><a class="toctree-l4" href="#11-write-a-pod-manifest-with-the-image-nginx-which-has-a-volume-that-mounts-etcnginx-directory-use-hostpath-volume-type">11. Write a Pod manifest with the image nginx which has a volume that mounts /etc/nginx/ directory. Use "hostPath" volume type.</a></li>
+        
+        </ul>
+    
+
+    </ul>
                 </li>
     </ul>
 	    </li>
@@ -284,11 +292,11 @@
     
       
         
-          <li>Additional Topics &raquo;</li>
+          <li>Exercises &raquo;</li>
         
       
     
-    <li>Troubleshooting Tips</li>
+    <li>XER001 - Pods</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -298,134 +306,167 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="troubleshooting-the-kubernetes-cluster">Troubleshooting the Kubernetes cluster</h1>
-<p>In this chapter we will learn about how to trouble shoot our Kubernetes cluster at <em>control plane</em> level and at <em>application level</em>.</p>
-<h3 id="troubleshooting-the-control-plane">Troubleshooting the control plane</h3>
-<h3 id="listing-the-nodes-in-a-cluster">Listing the nodes in a cluster</h3>
-<p>First thing to check if your cluster is working fine or not is to list the nodes associated with your cluster.</p>
-<pre><code>kubectl get nodes
+                <h1 id="xer001-pods-exercises">XER001 - Pods Exercises</h1>
+<h2 id="1-create-a-pod-manifest-which-uses-ghost-image-and-open-port-2368">1. Create a Pod manifest which uses "ghost" image and open port 2368.</h2>
+<pre><code>apiVersion: v1
+kind: Pod
+metadata:
+  name: ghost
+spec:
+  containers:
+  - image: xxx
+    name: ghost
+    ports:
+    - containerPort: xxx
+      hostPort: xxx
 </code></pre>
 
-<p>Make sure that all nodes are in <code>Ready</code> state.</p>
-<h3 id="list-the-control-plane-pods">List the control plane pods</h3>
-<p>If your nodes are up and running, next thing to check is the status of Kubernetes components.
-Run,</p>
-<pre><code>kubectl get pods -n kube-system
+<p>Get the name of the Node in which the Pod is scheduled by running,</p>
+<pre><code>kubectl describe pod &lt;POD_NAME&gt;
+
+[output]
+Name:           &lt;POD_NAME&gt;
+Namespace:      default
+Node:           &lt;NODE_NAME&gt;/&lt;NODE_IP&gt;
+Start Time:     Wed, xx May 201x 15:59:29 +0530
 </code></pre>
 
-<p>If any of the pod is <em>restarting or crashing</em>, look in to the issue.
-This can be done by getting the pod's description.
-For example, in my cluster <em>kube-dns</em> is crashing. In order to fix this first check the deployment for errors.</p>
-<pre><code>kubectl describe deployment -n kube-system kube-dns
+<p>Try to access the application on the host's port 2368.</p>
+<pre><code>curl &lt;NODE_IP&gt;:2368
 </code></pre>
 
-<h3 id="log-files">Log files</h3>
-<h4 id="master">Master</h4>
-<p>If your deployment is good, the next thing to look for is log files.
-The locations of log files are given below...</p>
-<pre><code>/var/log/kube-apiserver.log - For API Server logs
-/var/log/kube-scheduler.log - For Scheduler logs
-/var/log/kube-controller-manager.log - For Replication Controller logs
+<p><code>Reference</code>: <a href="https://hub.docker.com/_/ghost/">Ghost Docker image</a></p>
+<h2 id="2-create-a-pod-with-ubuntutrusty-image-and-a-command-to-echo-your_name-which-overrides-the-default-cmdentrypoint-of-the-image">2. Create a Pod with ubuntu:trusty image and a command to echo “YOUR_NAME” which overrides the default CMD/ENTRYPOINT of the image.</h2>
+<p><code>Reference</code>: <a href="https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/">Define command argument in a Pod</a></p>
+<h2 id="3-apply-the-following-pod-manifest-and-read-the-error-fix-it-by-editing-it">3. Apply the following Pod manifest and read the error. Fix it by editing it.</h2>
+<pre><code>apiVersion: v1apps/beta1
+kind: Pod
+metadata:
+  name: mogambo-frontend
+  label:
+    role: frontend
+spec:
+  containers:
+    - name: frontend
+      image: schoolofdevops/frontend:orange
+      ports:
+        - containerName: web
+          Port: 8079
+          protocol: TCP
 </code></pre>
 
-<p>If your Kubernetes components are running as pods, then you can get their logs by following the steps given below,
-Keep in mind that the <em>actual pod's name may differ</em> from cluster to cluster...</p>
-<pre><code>kubectl logs -n kube-system -f kube-apiserver-node1
-kubectl logs -n kube-system -f kube-scheduler-node1
-kubectl logs -n kube-system -f kube-controller-manager-node1
+<p><code>Reference</code>: <a href="https://stackoverflow.com/questions/37302776/kubectl-get-pods-kubectl-get-pods-status-imagepullbackoff">Debugging a unscheduled Pod</a></p>
+<h2 id="4-a-pod-with-the-following-pod-always-crashes-with-crashloopbackoff-error-how-would-you-fix-it">4. A Pod with the following pod always crashes with CrashLoopBackOff error. How would you fix it?</h2>
+<pre><code>      image: schoolofdevops/nginx:break
+      ports: 80
 </code></pre>
 
-<h4 id="worker-nodes">Worker Nodes</h4>
-<p>In your worker, you will need to check for errors in kubelet's log...</p>
-<pre><code>sudo journalctl -u  kubelet
+<p><code>Reference</code>: <a href="https://sysdig.com/blog/debug-kubernetes-crashloopbackoff/">Debugging a crashed Pod</a></p>
+<h2 id="5-you-are-running-a-pod-with-hostport-option-your-pod-status-stays-pending-what-could-be-the-issue-for-the-pod-not-being-scheduled">5. You are running a Pod with hostPort option. Your Pod status stays “pending”. What could be the issue for the Pod not being scheduled?</h2>
+<p><code>Reference</code>: <a href="https://kubernetes.io/docs/tasks/debug-application-cluster/debug-application/#my-pod-stays-waiting">Debugging a unscheduled Pod</a></p>
+<h2 id="6-the-given-manifest-for-multi-container-pod-is-not-working-as-intended-it-does-not-sync-the-content-between-containers-like-expected-what-could-be-the-issue-find-the-issue-just-by-reading-the-manifest">6. The given manifest for multi-container pod is not working as intended. It does not sync the content between containers like expected. What could be the issue? Find the issue just by reading the manifest.</h2>
+<pre><code>apiVersion: v1
+kind: Pod
+metadata:
+  name: web
+  labels:
+    tier: front
+    app: nginx
+    role: ui
+spec:
+  containers:
+    - name: nginx
+      image: nginx:stable-alpine
+      ports:
+        - containerPort: 80
+          protocol: TCP
+      volumeMounts:
+        - name: data
+          mountPath: /var/www/html-sample-app
+
+    - name: sync
+      image: schoolofdevops/sync:v2
+      volumeMounts:
+        - name: datanew
+          mountPath: /var/www/app
+
+  volumes:
+    - name: data
+      emptyDir: {}
 </code></pre>
 
-<h3 id="troubleshooting-the-application">Troubleshooting the application</h3>
-<p>Sometimes your application(pod) may fail to start because of various reasons. Let's see how to troubleshoot.</p>
-<h3 id="getting-detailed-status-of-an-object-pods-deployments">Getting detailed status of an object (pods, deployments)</h3>
-<p><strong>object.status</strong> shows a detailed information about whats the status of an object ( e.g. pod) and why its in that condition. This can be very useful to identify the issues.</p>
-<p>Example</p>
-<pre><code>kubectl get pod vote -o yaml
-
+<h2 id="7-for-the-above-given-manifest-the-following-command-is-not-working-what-could-be-the-issue">7. For the above given manifest, the following command is not working. What could be the issue?</h2>
+<pre><code>kubeclt exec -it web -sh -c synch
 </code></pre>
 
-<p>example output snippet when a wrong image was used to create a pod. </p>
-<pre><code>status:
-...
-containerStatuses:
-....
-state:
-  waiting:
-    message: 'rpc error: code = Unknown desc = Error response from daemon: manifest
-      for schoolofdevops/vote:latst not found'
-    reason: ErrImagePull
-hostIP: 139.59.232.248
+<h2 id="8-try-to-apply-the-following-manifest-if-fails-try-to-debug">8. Try to apply the following manifest. If fails, try to debug.</h2>
+<pre><code>apiVersion: v1
+kind: Pod
+metadata:
+  name: web
+  labels:
+    app:
+    role: role
+spec:
+  containers:
+    - name: web
+      image: robotshop/rs-web:latest
+      ports:
+        - containerPort: 8080
+          protocol: TCP
 </code></pre>
 
-<h3 id="checking-the-status-of-deployment">Checking the status of Deployment</h3>
-<p>For this example I have a sample deployment called nginx.</p>
-<p><code>FILE: nginx-deployment.yml</code></p>
-<pre><code>apiVersion: apps/v1beta1
-kind: Deployment
+<h2 id="9-fix-the-following-manifest-dont-apply-it-just-fix-it-by-reading">9. Fix the following manifest. Don't apply it. Just fix it by reading.</h2>
+<pre><code>apiVersion: v1
+kind: pod
+metadata:
+  name: web
+labels:
+  role: role
+spec:
+  containers:
+    - name: web
+      image: robotshop/rs-web:latest
+      ports:
+        - containerport: 8080
+          protocol: TCP
+</code></pre>
+
+<h2 id="10-mount-varwwwhtml-from-pod-using-the-follwing-manifest-fill-the-missing-fields">10. Mount <code>/var/www/html</code> from Pod using the follwing manifest. Fill the missing fields.</h2>
+<pre><code>apiVersion: v1
+kind: Pod
+metadata:
+  name: web
+  labels:
+    role: role
+spec:
+  containers:
+    - name: web
+      image: robotshop/rs-web:latest
+      ports:
+        - containerPort: 8080
+          protocol: TCP
+  volumes:
+    - name: roboshop-storage
+      emptyDir: {}
+</code></pre>
+
+<h2 id="11-write-a-pod-manifest-with-the-image-nginx-which-has-a-volume-that-mounts-etcnginx-directory-use-hostpath-volume-type">11. Write a Pod manifest with the image nginx which has a volume that mounts /etc/nginx/ directory. Use "hostPath" volume type.</h2>
+<pre><code>apiVersion: v1
+kind: Pod
 metadata:
   name: nginx
-  labels:
-    app: nginx
 spec:
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        app: nginx
-    spec:
-      containers:
-        - name: nginx
-          image: ngnix:latest
-          ports:
-            - containerPort: 80
+  containers:
+  - image: nginx
+    name: nginx
+    ports:
+    - containerPort: 80
+    volumeMounts:
+      xxx
 </code></pre>
 
-<p>List the deployment to check for the <em>availability of pods</em></p>
-<pre><code>kubectl get deployment nginx
-
-NAME          DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
-nginx         1         1         1            0           20h
-</code></pre>
-
-<p>It is clear that my pod is unavailable. Lets dig further.</p>
-<p>Check the <em>events</em> of your deployment.</p>
-<pre><code>kubectl describe deployment nginx
-</code></pre>
-
-<p>List the pods to check for any <em>registry related error</em></p>
-<pre><code>kubectl get pods
-
-NAME                           READY     STATUS             RESTARTS   AGE
-nginx-57c88d7bb8-c6kpc         0/1       ImagePullBackOff   0          7m
-</code></pre>
-
-<p>As we can see, we are not able to pull the image(<em>ImagePullBackOff</em>). Let's investigate further.</p>
-<pre><code>kubectl describe pod nginx-57c88d7bb8-c6kpc
-</code></pre>
-
-<p>Check the events of the pod's description.</p>
-<pre><code>Events:
-  Type     Reason                 Age               From                                               Message
-  ----     ------                 ----              ----                                               -------
-  Normal   Scheduled              9m                default-scheduler                                  Successfully assigned nginx-57c88d7bb8-c6kpc to ip-11-0-1-111.us-west-2.compute.internal
-  Normal   SuccessfulMountVolume  9m                kubelet, ip-11-0-1-111.us-west-2.compute.internal  MountVolume.SetUp succeeded for volume &quot;default-token-8cwn4&quot;
-  Normal   Pulling                8m (x4 over 9m)   kubelet, ip-11-0-1-111.us-west-2.compute.internal  pulling image &quot;ngnix&quot;
-  Warning  Failed                 8m (x4 over 9m)   kubelet, ip-11-0-1-111.us-west-2.compute.internal  Failed to pull image &quot;ngnix&quot;: rpc error: code = Unknown desc = Error response from daemon: repository ngnix not found: does not exist or no pull access
-  Normal   BackOff                7m (x6 over 9m)   kubelet, ip-11-0-1-111.us-west-2.compute.internal  Back-off pulling image &quot;ngnix&quot;
-  Warning  FailedSync             4m (x24 over 9m)  kubelet, ip-11-0-1-111.us-west-2.compute.internal  Error syncing pod
-</code></pre>
-
-<p>Bingo! The name of the image is <code>ngnix</code> instead of <code>nginx</code>. So <em>fix the typo in your deployment file and redo the deployment</em>.</p>
-<p>Sometimes, your application(pod) may fail to start because of some configuration issues. For those errors, we can follow the logs of the pod.</p>
-<pre><code>kubectl logs -f nginx-57c88d7bb8-c6kpc
-</code></pre>
-
-<p>If you have any errors it will get populated in your logs.</p>
+<p><code>Reference</code>: <a href="https://kubernetes.io/docs/concepts/storage/volumes/">Volumes</a></p>
               
             </div>
           </div>
@@ -433,10 +474,10 @@ nginx-57c88d7bb8-c6kpc         0/1       ImagePullBackOff   0          7m
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../logging/" class="btn btn-neutral float-right" title="Logging">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../wq001-cni/" class="btn btn-neutral float-right" title="KWQ001 - CNI Web Quest">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../vote-deployement_strategies/" class="btn btn-neutral" title="Building Deployment Strategies"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../logging/" class="btn btn-neutral" title="Logging"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -462,10 +503,10 @@ nginx-57c88d7bb8-c6kpc         0/1       ImagePullBackOff   0          7m
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../vote-deployement_strategies/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../logging/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../logging/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../wq001-cni/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
