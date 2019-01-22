@@ -198,23 +198,23 @@
     
         <ul>
         
-            <li><a class="toctree-l4" href="#1-the-following-replication-controller-manifest-has-some-bugs-in-it-fix-them">1. The following replication controller manifest has some bugs in it. Fix them.</a></li>
+            <li><a class="toctree-l4" href="#1">1</a></li>
         
-            <li><a class="toctree-l4" href="#2-create-pods-using-following-manifests-each-pod-has-different-values-for-the-label-platform-you-should-create-a-replicaset-with-4-replicas-which-also-selects-both-pods-based-on-platform-label-tip-you-may-have-to-use-matchexpressions-attribute-in-your-replicaset">2. Create Pods using following manifests. Each Pod has different values for the Label "platform". You should create a ReplicaSet with 4 replicas, which also selects both Pods based on "platform" Label. Tip: You may have to use matchExpressions attribute in your ReplicaSet.</a></li>
+            <li><a class="toctree-l4" href="#2">2</a></li>
         
-            <li><a class="toctree-l4" href="#3-the-following-manifest-is-working-as-intended-try-to-debug">3. The following manifest is working as intended. Try to debug.</a></li>
+            <li><a class="toctree-l4" href="#3">3</a></li>
         
-            <li><a class="toctree-l4" href="#4-how-do-you-get-the-logs-from-all-pods-of-a-replication-controller">4. How do you get the logs from all pods of a Replication Controller?</a></li>
+            <li><a class="toctree-l4" href="#4">4</a></li>
         
-            <li><a class="toctree-l4" href="#5-the-pods-from-a-replication-controller-has-stuck-in-terminating-status-and-doesnt-actually-get-deleted-how-do-you-delete-these-pods">5. The Pods from a Replication Controller has stuck in Terminating status and doesn't actually get deleted. How do you delete these Pods.?</a></li>
+            <li><a class="toctree-l4" href="#5">5</a></li>
         
-            <li><a class="toctree-l4" href="#6-how-do-you-force-pulling-an-image-again-with-the-same-tag">6. How do you force pulling an image again with the same tag?</a></li>
+            <li><a class="toctree-l4" href="#6">6</a></li>
         
-            <li><a class="toctree-l4" href="#7-when-i-try-to-apply-the-following-pod-manifest-i-am-getting-image-ltuserimagegtlatest-not-found-how-would-you-fix-it">7. When I try to apply the following Pod manifest, I am getting image &lt;user/image&gt;:latest not found. How would you fix it?</a></li>
+            <li><a class="toctree-l4" href="#7">7</a></li>
         
-            <li><a class="toctree-l4" href="#8-launch-the-following-replication-controller-in-prod-namespace-and-use-kubectl-to-scale-the-replicas-from-3-to-6">8. Launch the following Replication Controller in Prod namespace and use kubectl to scale the replicas from 3 to 6.</a></li>
+            <li><a class="toctree-l4" href="#8">8</a></li>
         
-            <li><a class="toctree-l4" href="#9-pod-that-ive-scheduled-is-in-waiting-state-how-would-i-debug-this-issue">9. Pod that I've scheduled is in waiting state. How would I debug this issue?</a></li>
+            <li><a class="toctree-l4" href="#9">9</a></li>
         
         </ul>
     
@@ -307,7 +307,8 @@
             <div class="section">
               
                 <h1 id="xer002-replication-controller-and-replicasets">XER002 - Replication Controller and ReplicaSets</h1>
-<h2 id="1-the-following-replication-controller-manifest-has-some-bugs-in-it-fix-them">1. The following replication controller manifest has some bugs in it. Fix them.</h2>
+<h2 id="1">1</h2>
+<p>The following replication controller manifest has some bugs in it. Fix them.</p>
 <pre><code>apiVersion: v1/beta1
 kind: ReplicationController
 metadata:
@@ -328,7 +329,8 @@ spec:
 </code></pre>
 
 <p><code>Reference</code>: <a href="https://kubernetes.io/docs/concepts/workloads/controllers/replicationcontroller/">Replication Controller</a></p>
-<h2 id="2-create-pods-using-following-manifests-each-pod-has-different-values-for-the-label-platform-you-should-create-a-replicaset-with-4-replicas-which-also-selects-both-pods-based-on-platform-label-tip-you-may-have-to-use-matchexpressions-attribute-in-your-replicaset">2. Create Pods using following manifests. Each Pod has different values for the Label "platform". You should create a ReplicaSet with 4 replicas, which also selects both Pods based on "platform" Label. <strong>Tip: You may have to use matchExpressions attribute in your ReplicaSet.</strong></h2>
+<h2 id="2">2</h2>
+<p>Create Pods using following manifests. Each Pod has different values for the Label "platform". You should create a ReplicaSet with 4 replicas, which also selects both Pods based on "platform" Label. <strong>Tip: You may have to use matchExpressions attribute in your ReplicaSet.</strong></p>
 <pre><code>file: sync-aws-po.yml
 apiVersion: v1
 kind: Pod
@@ -356,7 +358,8 @@ spec:
       image: schoolofdevops/sync:v2
 </code></pre>
 
-<h2 id="3-the-following-manifest-is-working-as-intended-try-to-debug">3. The following manifest is working as intended. Try to debug.</h2>
+<h2 id="3">3</h2>
+<p>The following manifest is working as intended. Try to debug.</p>
 <pre><code>apiVersion: v1
 kind: ReplicationController
 metadata:
@@ -380,11 +383,14 @@ spec:
           protocol: TCP
 </code></pre>
 
-<h2 id="4-how-do-you-get-the-logs-from-all-pods-of-a-replication-controller">4. How do you get the logs from all pods of a Replication Controller?</h2>
-<p><code>Reference</code>: <a href="https://stackoverflow.com/questions/33069736/how-do-i-get-logs-from-all-pods-of-a-kubernetes-replication-controller">logs from all pods in a RC</a></p>
-<h2 id="5-the-pods-from-a-replication-controller-has-stuck-in-terminating-status-and-doesnt-actually-get-deleted-how-do-you-delete-these-pods">5. The Pods from a Replication Controller has stuck in <code>Terminating</code> status and doesn't actually get deleted. How do you delete these Pods.?</h2>
-<p><code>Reference</code>: <a href="https://stackoverflow.com/questions/35453792/pods-stuck-at-terminating-status">Delete Pods forcefully</a></p>
-<h2 id="6-how-do-you-force-pulling-an-image-again-with-the-same-tag">6. How do you force pulling an image again with the same tag?</h2>
+<h2 id="4">4</h2>
+<p>How do you get the logs from all pods of a Replication Controller?
+<code>Reference</code>: <a href="https://stackoverflow.com/questions/33069736/how-do-i-get-logs-from-all-pods-of-a-kubernetes-replication-controller">logs from all pods in a RC</a></p>
+<h2 id="5">5</h2>
+<p>The Pods from a Replication Controller has stuck in <code>Terminating</code> status and doesn't actually get deleted. How do you delete these Pods.?
+<code>Reference</code>: <a href="https://stackoverflow.com/questions/35453792/pods-stuck-at-terminating-status">Delete Pods forcefully</a></p>
+<h2 id="6">6</h2>
+<p>How do you force pulling an image again with the same tag?</p>
 <pre><code>apiVersion: v1
 kind: Pod
 metadata:
@@ -400,9 +406,9 @@ spec:
 </code></pre>
 
 <p><code>Reference</code>: <a href="https://stackoverflow.com/questions/33112789/how-do-i-force-kubernetes-to-re-pull-an-image">Force image pull</a></p>
-<h2 id="7-when-i-try-to-apply-the-following-pod-manifest-i-am-getting-image-ltuserimagegtlatest-not-found-how-would-you-fix-it">7. When I try to apply the following Pod manifest, I am getting <code>image &lt;user/image&gt;:latest not found</code>. How would you fix it?</h2>
-<pre><code> `Tip`: This image is in a private registry.
-</code></pre>
+<h2 id="7">7</h2>
+<p>When I try to apply the following Pod manifest, I am getting <code>image &lt;user/image&gt;:latest not found</code>. How would you fix it?
+     <code>Tip</code>: This image is in a private registry.</p>
 <pre><code>apiVersion: v1
 kind: ReplicationController
 metadata:
@@ -427,7 +433,8 @@ spec:
 </code></pre>
 
 <p><code>Reference</code>: <a href="https://stackoverflow.com/questions/32726923/pulling-images-from-private-registry-in-kubernetes/32972366#32972366">Pulling images from private registry</a></p>
-<h2 id="8-launch-the-following-replication-controller-in-prod-namespace-and-use-kubectl-to-scale-the-replicas-from-3-to-6">8. Launch the following Replication Controller in Prod namespace and use kubectl to scale the replicas from 3 to 6.</h2>
+<h2 id="8">8</h2>
+<p>Launch the following Replication Controller in Prod namespace and use kubectl to scale the replicas from 3 to 6.</p>
 <pre><code>apiVersion: v1
 kind: ReplicationController
 metadata:
@@ -452,8 +459,9 @@ spec:
               protocol: TCP
 </code></pre>
 
-<h2 id="9-pod-that-ive-scheduled-is-in-waiting-state-how-would-i-debug-this-issue">9. Pod that I've scheduled is in waiting state. How would I debug this issue?</h2>
-<p><code>Reference</code>: <a href="https://kubernetes.io/docs/tasks/debug-application-cluster/debug-pod-replication-controller/#my-pod-stays-waiting">My pod stays waiting</a></p>
+<h2 id="9">9</h2>
+<p>Pod that I've scheduled is in waiting state. How would I debug this issue?
+<code>Reference</code>: <a href="https://kubernetes.io/docs/tasks/debug-application-cluster/debug-pod-replication-controller/#my-pod-stays-waiting">My pod stays waiting</a></p>
               
             </div>
           </div>

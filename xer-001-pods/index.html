@@ -190,31 +190,31 @@
     <a class="current" href="./">XER001 - Pods</a>
     <ul class="subnav">
             
-    <li class="toctree-l3"><a href="#xer001-pods-exercises">XER001 - Pods Exercises</a></li>
+    <li class="toctree-l3"><a href="#xer001-pods">XER001 - Pods</a></li>
     
         <ul>
         
-            <li><a class="toctree-l4" href="#1-create-a-pod-manifest-which-uses-ghost-image-and-open-port-2368">1. Create a Pod manifest which uses "ghost" image and open port 2368.</a></li>
+            <li><a class="toctree-l4" href="#1">1</a></li>
         
-            <li><a class="toctree-l4" href="#2-create-a-pod-with-ubuntutrusty-image-and-a-command-to-echo-your_name-which-overrides-the-default-cmdentrypoint-of-the-image">2. Create a Pod with ubuntu:trusty image and a command to echo “YOUR_NAME” which overrides the default CMD/ENTRYPOINT of the image.</a></li>
+            <li><a class="toctree-l4" href="#2">2</a></li>
         
-            <li><a class="toctree-l4" href="#3-apply-the-following-pod-manifest-and-read-the-error-fix-it-by-editing-it">3. Apply the following Pod manifest and read the error. Fix it by editing it.</a></li>
+            <li><a class="toctree-l4" href="#3">3</a></li>
         
-            <li><a class="toctree-l4" href="#4-a-pod-with-the-following-pod-always-crashes-with-crashloopbackoff-error-how-would-you-fix-it">4. A Pod with the following pod always crashes with CrashLoopBackOff error. How would you fix it?</a></li>
+            <li><a class="toctree-l4" href="#4">4</a></li>
         
-            <li><a class="toctree-l4" href="#5-you-are-running-a-pod-with-hostport-option-your-pod-status-stays-pending-what-could-be-the-issue-for-the-pod-not-being-scheduled">5. You are running a Pod with hostPort option. Your Pod status stays “pending”. What could be the issue for the Pod not being scheduled?</a></li>
+            <li><a class="toctree-l4" href="#5">5</a></li>
         
-            <li><a class="toctree-l4" href="#6-the-given-manifest-for-multi-container-pod-is-not-working-as-intended-it-does-not-sync-the-content-between-containers-like-expected-what-could-be-the-issue-find-the-issue-just-by-reading-the-manifest">6. The given manifest for multi-container pod is not working as intended. It does not sync the content between containers like expected. What could be the issue? Find the issue just by reading the manifest.</a></li>
+            <li><a class="toctree-l4" href="#6">6</a></li>
         
-            <li><a class="toctree-l4" href="#7-for-the-above-given-manifest-the-following-command-is-not-working-what-could-be-the-issue">7. For the above given manifest, the following command is not working. What could be the issue?</a></li>
+            <li><a class="toctree-l4" href="#7">7</a></li>
         
-            <li><a class="toctree-l4" href="#8-try-to-apply-the-following-manifest-if-fails-try-to-debug">8. Try to apply the following manifest. If fails, try to debug.</a></li>
+            <li><a class="toctree-l4" href="#8">8</a></li>
         
-            <li><a class="toctree-l4" href="#9-fix-the-following-manifest-dont-apply-it-just-fix-it-by-reading">9. Fix the following manifest. Don't apply it. Just fix it by reading.</a></li>
+            <li><a class="toctree-l4" href="#9">9</a></li>
         
-            <li><a class="toctree-l4" href="#10-mount-varwwwhtml-from-pod-using-the-follwing-manifest-fill-the-missing-fields">10. Mount /var/www/html from Pod using the follwing manifest. Fill the missing fields.</a></li>
+            <li><a class="toctree-l4" href="#10">10</a></li>
         
-            <li><a class="toctree-l4" href="#11-write-a-pod-manifest-with-the-image-nginx-which-has-a-volume-that-mounts-etcnginx-directory-use-hostpath-volume-type">11. Write a Pod manifest with the image nginx which has a volume that mounts /etc/nginx/ directory. Use "hostPath" volume type.</a></li>
+            <li><a class="toctree-l4" href="#11">11</a></li>
         
         </ul>
     
@@ -310,8 +310,9 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="xer001-pods-exercises">XER001 - Pods Exercises</h1>
-<h2 id="1-create-a-pod-manifest-which-uses-ghost-image-and-open-port-2368">1. Create a Pod manifest which uses "ghost" image and open port 2368.</h2>
+                <h1 id="xer001-pods">XER001 - Pods</h1>
+<h2 id="1">1</h2>
+<p>Create a Pod manifest which uses "ghost" image and open port 2368.</p>
 <pre><code>apiVersion: v1
 kind: Pod
 metadata:
@@ -340,9 +341,11 @@ Start Time:     Wed, xx May 201x 15:59:29 +0530
 </code></pre>
 
 <p><code>Reference</code>: <a href="https://hub.docker.com/_/ghost/">Ghost Docker image</a></p>
-<h2 id="2-create-a-pod-with-ubuntutrusty-image-and-a-command-to-echo-your_name-which-overrides-the-default-cmdentrypoint-of-the-image">2. Create a Pod with ubuntu:trusty image and a command to echo “YOUR_NAME” which overrides the default CMD/ENTRYPOINT of the image.</h2>
-<p><code>Reference</code>: <a href="https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/">Define command argument in a Pod</a></p>
-<h2 id="3-apply-the-following-pod-manifest-and-read-the-error-fix-it-by-editing-it">3. Apply the following Pod manifest and read the error. Fix it by editing it.</h2>
+<h2 id="2">2</h2>
+<p>Create a Pod with ubuntu:trusty image and a command to echo “YOUR_NAME” which overrides the default CMD/ENTRYPOINT of the image.
+<code>Reference</code>: <a href="https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/">Define command argument in a Pod</a></p>
+<h2 id="3">3</h2>
+<p>Apply the following Pod manifest and read the error. Fix it by editing it.</p>
 <pre><code>apiVersion: v1apps/beta1
 kind: Pod
 metadata:
@@ -360,15 +363,18 @@ spec:
 </code></pre>
 
 <p><code>Reference</code>: <a href="https://stackoverflow.com/questions/37302776/kubectl-get-pods-kubectl-get-pods-status-imagepullbackoff">Debugging a unscheduled Pod</a></p>
-<h2 id="4-a-pod-with-the-following-pod-always-crashes-with-crashloopbackoff-error-how-would-you-fix-it">4. A Pod with the following pod always crashes with CrashLoopBackOff error. How would you fix it?</h2>
+<h2 id="4">4</h2>
+<p>A Pod with the following pod always crashes with CrashLoopBackOff error. How would you fix it?</p>
 <pre><code>      image: schoolofdevops/nginx:break
       ports: 80
 </code></pre>
 
 <p><code>Reference</code>: <a href="https://sysdig.com/blog/debug-kubernetes-crashloopbackoff/">Debugging a crashed Pod</a></p>
-<h2 id="5-you-are-running-a-pod-with-hostport-option-your-pod-status-stays-pending-what-could-be-the-issue-for-the-pod-not-being-scheduled">5. You are running a Pod with hostPort option. Your Pod status stays “pending”. What could be the issue for the Pod not being scheduled?</h2>
-<p><code>Reference</code>: <a href="https://kubernetes.io/docs/tasks/debug-application-cluster/debug-application/#my-pod-stays-waiting">Debugging a unscheduled Pod</a></p>
-<h2 id="6-the-given-manifest-for-multi-container-pod-is-not-working-as-intended-it-does-not-sync-the-content-between-containers-like-expected-what-could-be-the-issue-find-the-issue-just-by-reading-the-manifest">6. The given manifest for multi-container pod is not working as intended. It does not sync the content between containers like expected. What could be the issue? Find the issue just by reading the manifest.</h2>
+<h2 id="5">5</h2>
+<p>You are running a Pod with hostPort option. Your Pod status stays “pending”. What could be the issue for the Pod not being scheduled?
+<code>Reference</code>: <a href="https://kubernetes.io/docs/tasks/debug-application-cluster/debug-application/#my-pod-stays-waiting">Debugging a unscheduled Pod</a></p>
+<h2 id="6">6</h2>
+<p>The given manifest for multi-container pod is not working as intended. It does not sync the content between containers like expected. What could be the issue? Find the issue just by reading the manifest.</p>
 <pre><code>apiVersion: v1
 kind: Pod
 metadata:
@@ -399,11 +405,13 @@ spec:
       emptyDir: {}
 </code></pre>
 
-<h2 id="7-for-the-above-given-manifest-the-following-command-is-not-working-what-could-be-the-issue">7. For the above given manifest, the following command is not working. What could be the issue?</h2>
+<h2 id="7">7</h2>
+<p>For the above given manifest, the following command is not working. What could be the issue?</p>
 <pre><code>kubeclt exec -it web -sh -c synch
 </code></pre>
 
-<h2 id="8-try-to-apply-the-following-manifest-if-fails-try-to-debug">8. Try to apply the following manifest. If fails, try to debug.</h2>
+<h2 id="8">8</h2>
+<p>Try to apply the following manifest. If fails, try to debug.</p>
 <pre><code>apiVersion: v1
 kind: Pod
 metadata:
@@ -420,7 +428,8 @@ spec:
           protocol: TCP
 </code></pre>
 
-<h2 id="9-fix-the-following-manifest-dont-apply-it-just-fix-it-by-reading">9. Fix the following manifest. Don't apply it. Just fix it by reading.</h2>
+<h2 id="9">9</h2>
+<p>Fix the following manifest. Don't apply it. Just fix it by reading.</p>
 <pre><code>apiVersion: v1
 kind: pod
 metadata:
@@ -436,7 +445,8 @@ spec:
           protocol: TCP
 </code></pre>
 
-<h2 id="10-mount-varwwwhtml-from-pod-using-the-follwing-manifest-fill-the-missing-fields">10. Mount <code>/var/www/html</code> from Pod using the follwing manifest. Fill the missing fields.</h2>
+<h2 id="10">10</h2>
+<p>Mount <code>/var/www/html</code> from Pod using the follwing manifest. Fill the missing fields.</p>
 <pre><code>apiVersion: v1
 kind: Pod
 metadata:
@@ -455,7 +465,8 @@ spec:
       emptyDir: {}
 </code></pre>
 
-<h2 id="11-write-a-pod-manifest-with-the-image-nginx-which-has-a-volume-that-mounts-etcnginx-directory-use-hostpath-volume-type">11. Write a Pod manifest with the image nginx which has a volume that mounts /etc/nginx/ directory. Use "hostPath" volume type.</h2>
+<h2 id="11">11</h2>
+<p>Write a Pod manifest with the image nginx which has a volume that mounts /etc/nginx/ directory. Use "hostPath" volume type.</p>
 <pre><code>apiVersion: v1
 kind: Pod
 metadata:
