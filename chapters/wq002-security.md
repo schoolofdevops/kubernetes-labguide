@@ -1,4 +1,4 @@
-# KWQ001 - Kubernetes Security Web Quest
+# KWQ002 - Kubernetes Security Web Quest
 
 Security is a critical aspect while designing, building and maintaining any application infrastructure including kubernetes environemnts. With this exercise you are on a quest to find the measures you could implement to harden your kubernetes environment holistically.  
 
@@ -27,4 +27,3 @@ Following is the process you could loosely follow,
   * eBook: [Kubernetes Deployment and Security Patterns](https://thenewstack.io/ebooks/kubernetes/kubernetes-deployment-and-security-patterns/)
   * video: [Hacking and Hardening Kubernetes Clusters by Example](https://www.youtube.com/watch?v=vTgQLzeBfRU)
   * video: [Kubernetes Security Best Practices](https://www.youtube.com/watch?v=v6a37uzFrCw)
-  

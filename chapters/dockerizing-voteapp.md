@@ -3,17 +3,17 @@
 [Voteapp](https://github.com/schoolofdevops/vote) is a app written in python. Its a simple, web based  application which serves as a frontend for Instavote project. As a devops engineer, you have been tasked with building an image for vote app and publish it to docker hub registry.
 
 
-### Approach 1: Building docker image for facebooc app manually
+### Approach 1: Building docker image for voteapp manually
 
 
 on the host
 
 ```
 git clone https://github.com/schoolofdevops/vote
-docker container run -idt --name vote -p 8000:80 python:2.7-alpine sh
+docker container run -idt --name build -p 8000:80 python:2.7-alpine sh
 cd vote
-docker cp . vote:/app
-docker exec -it vote sh
+docker cp . build:/app
+docker exec -it build sh
 ```
 
 inside the container
@@ -29,9 +29,9 @@ Validate by accessing http://IPADDRESS:8000
 on the host
 
 ```
-docker diff fb
+docker diff build
 
-docker container commit vote <docker_id>/vote:v1
+docker container commit build <docker_id>/vote:v1
 
 docker login
 
@@ -46,7 +46,7 @@ docker image push <docker_id>/vote:v1
 ### Approach 2: Building image with Dockerfile
 
 
-Change into facebooc directory which containts the source code.  This assumes you have already cloned the repo. If not, clone it from https://github.com/schoolofdevops/facebooc
+Change into vote  directory which containts the source code.  This assumes you have already cloned the repo. If not, clone it from https://github.com/schoolofdevops/vote
 
 ```
 cd vote
@@ -58,24 +58,17 @@ app.py  requirements.txt  static  templates
 Add/create  Dockerfile the the same directory (vote) with the following content,
 
 ```
-# Using official python runtime base image
 FROM python:2.7-alpine
 
-# Set the application directory
 WORKDIR /app
 
-# Install our requirements.txt
-ADD requirements.txt /app/requirements.txt
+COPY . .
+
 RUN pip install -r requirements.txt
 
-# Copy our code from the current folder to /app inside the container
-ADD . /app
-
-# Make port 80 available for links and/or publish
 EXPOSE 80
 
-# Define our command to be run when launching the container
-CMD  gunicorn app:app -b 0.0.0.0:80 --log-file - --access-logfile - --workers 4 --keep-alive 0
+CMD  gunicorn app:app -b 0.0.0.0:80
 ```
 
 Build image using,

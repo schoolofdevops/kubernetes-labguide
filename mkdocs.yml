@@ -30,6 +30,9 @@ pages:
      - Building Deployment Strategies: "vote-deployement_strategies.md"
      - Troubleshooting Tips: "12_troubleshooting.md"
      - Logging: "logging.md"
+  - Exercises:
+     - XER001 - Pods: "xer-001-pods.md"
+     - XER002 - ReplicaSets: "xer-002-rs.md"
   - Web Quests:
      - KWQ001 - CNI Web Quest: "wq001-cni.md"
      - KWQ001 - Kubernetes Security Web Quest: "wq002-security.md"
