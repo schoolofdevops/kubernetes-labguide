@@ -70,7 +70,7 @@
     
         <ul>
         
-            <li><a class="toctree-l4" href="#approach-1-building-docker-image-for-facebooc-app-manually">Approach 1: Building docker image for facebooc app manually</a></li>
+            <li><a class="toctree-l4" href="#approach-1-building-docker-image-for-voteapp-manually">Approach 1: Building docker image for voteapp manually</a></li>
         
             <li><a class="toctree-l4" href="#approach-2-building-image-with-dockerfile">Approach 2: Building image with Dockerfile</a></li>
         
@@ -294,13 +294,13 @@
               
                 <h2 id="lab-build-a-docker-image-for-instavote-frontend-vote-app">Lab : Build a docker image for Instavote frontend vote app</h2>
 <p><a href="https://github.com/schoolofdevops/vote">Voteapp</a> is a app written in python. Its a simple, web based  application which serves as a frontend for Instavote project. As a devops engineer, you have been tasked with building an image for vote app and publish it to docker hub registry.</p>
-<h3 id="approach-1-building-docker-image-for-facebooc-app-manually">Approach 1: Building docker image for facebooc app manually</h3>
+<h3 id="approach-1-building-docker-image-for-voteapp-manually">Approach 1: Building docker image for voteapp manually</h3>
 <p>on the host</p>
 <pre><code>git clone https://github.com/schoolofdevops/vote
-docker container run -idt --name vote -p 8000:80 python:2.7-alpine sh
+docker container run -idt --name build -p 8000:80 python:2.7-alpine sh
 cd vote
-docker cp . vote:/app
-docker exec -it vote sh
+docker cp . build:/app
+docker exec -it build sh
 </code></pre>
 
 <p>inside the container</p>
@@ -311,9 +311,9 @@ gunicorn app:app -b 0.0.0.0:80
 
 <p>Validate by accessing http://IPADDRESS:8000</p>
 <p>on the host</p>
-<pre><code>docker diff fb
+<pre><code>docker diff build
 
-docker container commit vote &lt;docker_id&gt;/vote:v1
+docker container commit build &lt;docker_id&gt;/vote:v1
 
 docker login
 
@@ -322,7 +322,7 @@ docker image push &lt;docker_id&gt;/vote:v1
 </code></pre>
 
 <h3 id="approach-2-building-image-with-dockerfile">Approach 2: Building image with Dockerfile</h3>
-<p>Change into facebooc directory which containts the source code.  This assumes you have already cloned the repo. If not, clone it from https://github.com/schoolofdevops/facebooc</p>
+<p>Change into vote  directory which containts the source code.  This assumes you have already cloned the repo. If not, clone it from https://github.com/schoolofdevops/vote</p>
 <pre><code>cd vote
 ls
 
@@ -330,24 +330,17 @@ app.py  requirements.txt  static  templates
 </code></pre>
 
 <p>Add/create  Dockerfile the the same directory (vote) with the following content,</p>
-<pre><code># Using official python runtime base image
-FROM python:2.7-alpine
+<pre><code>FROM python:2.7-alpine
 
-# Set the application directory
 WORKDIR /app
 
-# Install our requirements.txt
-ADD requirements.txt /app/requirements.txt
+COPY . .
+
 RUN pip install -r requirements.txt
 
-# Copy our code from the current folder to /app inside the container
-ADD . /app
-
-# Make port 80 available for links and/or publish
 EXPOSE 80
 
-# Define our command to be run when launching the container
-CMD  gunicorn app:app -b 0.0.0.0:80 --log-file - --access-logfile - --workers 4 --keep-alive 0
+CMD  gunicorn app:app -b 0.0.0.0:80
 </code></pre>
 
 <p>Build image using,</p>
