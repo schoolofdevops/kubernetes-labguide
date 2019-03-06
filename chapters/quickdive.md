@@ -11,14 +11,14 @@ Purpose of this lab is to quickly get your app up and running and demonstrate ku
 Launch vote application with kubernetes. (simiar to docker run command)
 
 ```
-kubectl  run vote --image=schoolofdevops/vote
+kubectl  run vote --image=schoolofdevops/vote:v1
 ```
 
 Since the above command is now deprecated, you could also use a alternate command such as
 
 `Following is an alternate. run it only if you have not used kubectl run above`
 ```
-kubectl create deployment vote --image=schoolofdevops/vote
+kubectl create deployment vote --image=schoolofdevops/vote:v1
 ```
 
 You could now validate that the instance of vote app is running by using the following commands,
@@ -73,8 +73,22 @@ kubectl get svc
 Connect to the app,  refresh the page to see it load balancing.  Also try to vote and observe what happens.  
 
 
+### Deploying a new version
 
 
+```
+kubectl scale deployment vote --replicas=12
+
+kubectl set image deployment vote vote=schoolofdevops/vote:v2
+
+```
+
+
+watch the rolling update  in action
+
+```
+watch kubectl get deploy,rs,pods
+```
 
 ### Service Discovery
 
@@ -120,4 +134,4 @@ kubectl delete svc db redis result vote
 
 ### Summary
 
-When you deploy an application in kubernetes, you submit it to the api server/ cluster manager. Kubernetes automatically schedules it on a cluster, networks the pods, provides service discovery. In addition as you observed, your application is scalable, high available and is already running behind a  load balancer. 
+When you deploy an application in kubernetes, you submit it to the api server/ cluster manager. Kubernetes automatically schedules it on a cluster, networks the pods, provides service discovery. In addition as you observed, your application is scalable, high available and is already running behind a  load balancer.

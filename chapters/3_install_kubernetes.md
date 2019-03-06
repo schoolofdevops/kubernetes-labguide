@@ -193,16 +193,6 @@ The Dashboard Looks like:
 ![Kubernetes Dashboard.\label{fig:captioned_image}](images/Kubernetes-Dashboard.png)
 
 
-
-## Download the supporting code
-
-Before we proceed further, please checkout the code from the following git repo. This would offer the supporting code for the exercises that follow.
-
-`run this on the host where you have configured kubectl`
-```
-git clone https://github.com/devopsfoo/k8s-code.git
-```
-
 ## Set up Visualiser
 
 Fork the repository and deploy the visualizer on kubernetes
@@ -226,3 +216,16 @@ http://<NODE_IP>:32000/#scale=2.0
 ![kube-visualizer](images/kube-ops-view.png)
 
 Kubernetes visualiser is a third party application which provides a operational view of your kubernetes cluster. Its very useful tool for learning kubernetes as it demonstrates the state of the cluster as well as state of the pods as you make changes. You could read further about it [at this link](https://kubernetes-operational-view.readthedocs.io/en/latest/).  
+
+
+
+
+
+## Download the supporting code
+
+Before we proceed further, please checkout the code from the following git repo. This would offer the supporting code for the exercises that follow.
+
+`run this on the host where you have configured kubectl`
+```
+git clone https://github.com/initcron/k8s-code.git
+```
