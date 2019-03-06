@@ -101,6 +101,8 @@
         
             <li><a class="toctree-l4" href="#load-balancing">Load Balancing</a></li>
         
+            <li><a class="toctree-l4" href="#deploying-a-new-version">Deploying a new version</a></li>
+        
             <li><a class="toctree-l4" href="#service-discovery">Service Discovery</a></li>
         
             <li><a class="toctree-l4" href="#summary">Summary</a></li>
@@ -305,12 +307,12 @@
 <p>Purpose of this lab is to quickly get your app up and running and demonstrate kubernetes key features such as scheduling, high availability, scalability, load balancing, service discovery etc.</p>
 <h3 id="deploying-app-with-kubernetes">Deploying app with kubernetes</h3>
 <p>Launch vote application with kubernetes. (simiar to docker run command)</p>
-<pre><code>kubectl  run vote --image=schoolofdevops/vote
+<pre><code>kubectl  run vote --image=schoolofdevops/vote:v1
 </code></pre>
 
 <p>Since the above command is now deprecated, you could also use a alternate command such as</p>
 <p><code>Following is an alternate. run it only if you have not used kubectl run above</code></p>
-<pre><code>kubectl create deployment vote --image=schoolofdevops/vote
+<pre><code>kubectl create deployment vote --image=schoolofdevops/vote:v1
 </code></pre>
 
 <p>You could now validate that the instance of vote app is running by using the following commands,</p>
@@ -346,6 +348,17 @@ kubectl get svc
 </code></pre>
 
 <p>Connect to the app,  refresh the page to see it load balancing.  Also try to vote and observe what happens.  </p>
+<h3 id="deploying-a-new-version">Deploying a new version</h3>
+<pre><code>kubectl scale deployment vote --replicas=12
+
+kubectl set image deployment vote vote=schoolofdevops/vote:v2
+
+</code></pre>
+
+<p>watch the rolling update  in action</p>
+<pre><code>watch kubectl get deploy,rs,pods
+</code></pre>
+
 <h3 id="service-discovery">Service Discovery</h3>
 <p><strong>Pre Test</strong>: Try to submit a vote from the frontend vote app. Does that work ?</p>
 <p>Now lets launch rest of the apps.</p>
@@ -380,7 +393,7 @@ kubectl delete svc db redis result vote
 </code></pre>
 
 <h3 id="summary">Summary</h3>
-<p>When you deploy an application in kubernetes, you submit it to the api server/ cluster manager. Kubernetes automatically schedules it on a cluster, networks the pods, provides service discovery. In addition as you observed, your application is scalable, high available and is already running behind a  load balancer. </p>
+<p>When you deploy an application in kubernetes, you submit it to the api server/ cluster manager. Kubernetes automatically schedules it on a cluster, networks the pods, provides service discovery. In addition as you observed, your application is scalable, high available and is already running behind a  load balancer.</p>
               
             </div>
           </div>

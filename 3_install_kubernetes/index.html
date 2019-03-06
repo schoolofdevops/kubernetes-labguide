@@ -101,9 +101,9 @@
         
             <li><a class="toctree-l4" href="#enable-kubernetes-dashboard">Enable Kubernetes Dashboard</a></li>
         
-            <li><a class="toctree-l4" href="#download-the-supporting-code">Download the supporting code</a></li>
-        
             <li><a class="toctree-l4" href="#set-up-visualiser">Set up Visualiser</a></li>
+        
+            <li><a class="toctree-l4" href="#download-the-supporting-code">Download the supporting code</a></li>
         
         </ul>
     
@@ -443,12 +443,6 @@ kubectl get events
 
 <p>The Dashboard Looks like:</p>
 <p><img alt="Kubernetes Dashboard.\label{fig:captioned_image}" src="../images/Kubernetes-Dashboard.png" /></p>
-<h2 id="download-the-supporting-code">Download the supporting code</h2>
-<p>Before we proceed further, please checkout the code from the following git repo. This would offer the supporting code for the exercises that follow.</p>
-<p><code>run this on the host where you have configured kubectl</code></p>
-<pre><code>git clone https://github.com/devopsfoo/k8s-code.git
-</code></pre>
-
 <h2 id="set-up-visualiser">Set up Visualiser</h2>
 <p>Fork the repository and deploy the visualizer on kubernetes</p>
 <pre><code>git clone  https://github.com/schoolofdevops/kube-ops-view
@@ -463,6 +457,11 @@ kubectl apply -f kube-ops-view/deploy/
 
 <p><img alt="kube-visualizer" src="../images/kube-ops-view.png" /></p>
 <p>Kubernetes visualiser is a third party application which provides a operational view of your kubernetes cluster. Its very useful tool for learning kubernetes as it demonstrates the state of the cluster as well as state of the pods as you make changes. You could read further about it <a href="https://kubernetes-operational-view.readthedocs.io/en/latest/">at this link</a>.  </p>
+<h2 id="download-the-supporting-code">Download the supporting code</h2>
+<p>Before we proceed further, please checkout the code from the following git repo. This would offer the supporting code for the exercises that follow.</p>
+<p><code>run this on the host where you have configured kubectl</code></p>
+<pre><code>git clone https://github.com/initcron/k8s-code.git
+</code></pre>
               
             </div>
           </div>
