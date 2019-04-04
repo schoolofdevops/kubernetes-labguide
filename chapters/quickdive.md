@@ -26,7 +26,7 @@ You could now validate that the instance of vote app is running by using the fol
 ```
 kubectl get pods
 
-kubectl get deploy,rs,pods
+kubectl get deployments
 ```
 
 
@@ -36,8 +36,8 @@ kubectl get deploy,rs,pods
 Scale the vote app to run 4 instances.
 
 ```
-kubectl scale --replicas=4 deployment/vote
-kubectl get deploy,rs,pods
+kubectl scale deployment vote --replicas=4
+kubectl get deployments,pods
 ```
 
 
@@ -50,7 +50,7 @@ kubectl get pods
 The above command will list pods. Try to delete a few pods and observe how it affects the availability of your application.
 
 ```
-kubectl get pods vote-xxxx vote-yyyy
+kubectl delete pods vote-xxxx vote-yyyy
 kubectl get deploy,rs,pods
 
 ```
@@ -98,18 +98,22 @@ Now lets launch rest of the apps.
 
 
 ```
-kubectl  run redis  --image=redis:alpine
+kubectl  create deployment  redis  --image=redis:alpine
 
 kubectl expose deployment redis --port 6379
 
+```
 
-kubectl  run worker --image=schoolofdevops/worker
+optionally, you could launch rest of the services.
 
-kubectl  run db --image=postgres:9.4
+```
+kubectl  create deployment  worker --image=schoolofdevops/worker
+
+kubectl  create deployment  db --image=postgres:9.4
 
 kubectl expose deployment db --port 5432
 
-kubectl run result --image=schoolofdevops/vote-result
+kubectl create deployment  result --image=schoolofdevops/vote-result
 
 kubectl expose deployment result --type=NodePort --port 80
 
