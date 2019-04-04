@@ -65,7 +65,7 @@ You would notice that the ingress controller is started on all nodes (except man
 
 ### Setting up Named Based Routing for Vote App
 
-We will direct all our request to the ingress controller now, but with differnt hostname e.g. **vote.example.org** or **results.example.org**. And it should direct to the correct service based on the host name.
+We will direct all our request to the ingress controller now, but with differnt hostname e.g. **vote.example.com** or **results.example.com**. And it should direct to the correct service based on the host name.
 
 In order to achieve this you, as a user would create a **ingress** object with a set of rules,
 
@@ -95,14 +95,14 @@ metadata:
     kubernetes.io/ingress.class: traefik
 spec:
   rules:
-    - host: vote.example.org
+    - host: vote.example.com
       http:
         paths:
           - path: /
             backend:
               serviceName: vote
               servicePort: 80
-    - host: results.example.org
+    - host: results.example.com
       http:
         paths:
           - path: /
@@ -150,23 +150,23 @@ You could now see the rule added to ingress controller,
 
 Where,
 
-  * **vote.example.org** and **results.example.org** are added as frontends. These frontends point to respective services **vote** and **results**.
+  * **vote.example.com** and **results.example.com** are added as frontends. These frontends point to respective services **vote** and **results**.
 
   * respective backends also appear on the right hand side of the screen, mapping to each of the service.
 
 #### Adding Local DNS
 
-You have created the ingress rules based on hostnames e.g.  **vote.example.org** and **results.example.org**. In order for you to be able to access those, there has to be a dns entry pointing to your nodes, which are running traefik.
+You have created the ingress rules based on hostnames e.g.  **vote.example.com** and **results.example.com**. In order for you to be able to access those, there has to be a dns entry pointing to your nodes, which are running traefik.
 
 ```bash
 
-  vote.example.org     -------+                        +----- vote:81
+  vote.example.com     -------+                        +----- vote:81
                               |     +-------------+    |
                               |     |   ingress   |    |
                               +===> |   node:80   | ===+
                               |     +-------------+    |
                               |                        |
-  results.example.org  -------+                        +----- results:82
+  results.example.com  -------+                        +----- results:82
 
 ```
 
@@ -185,14 +185,14 @@ sudo vim /etc/hosts
 And add an entry such as ,
 
 ```
-xxx.xxx.xxx.xxx vote.example.org results.example.org
+xxx.xxx.xxx.xxx vote.example.com results.example.com
 ```
 
 where,
 
   * xxx.xxx.xxx.xxx is the actual IP address of one of the nodes running traefik.
 
-And then access the app urls using http://vote.example.org or http://results.example.org
+And then access the app urls using http://vote.example.com or http://results.example.com
 
 ![Name Based Routing](../images/domain-name.png)
 
@@ -237,14 +237,14 @@ metadata:
     ingress.kubernetes.io/auth-secret: "mysecret"
 spec:
   rules:
-    - host: vote.example.org
+    - host: vote.example.com
       http:
         paths:
           - path: /
             backend:
               serviceName: vote
               servicePort: 82
-    - host: results.example.org
+    - host: results.example.com
       http:
         paths:
           - path: /
