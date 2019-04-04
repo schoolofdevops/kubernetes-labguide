@@ -318,13 +318,13 @@
 <p>You could now validate that the instance of vote app is running by using the following commands,</p>
 <pre><code>kubectl get pods
 
-kubectl get deploy,rs,pods
+kubectl get deployments
 </code></pre>
 
 <h3 id="scalability">Scalability</h3>
 <p>Scale the vote app to run 4 instances.</p>
-<pre><code>kubectl scale --replicas=4 deployment/vote
-kubectl get deploy,rs,pods
+<pre><code>kubectl scale deployment vote --replicas=4
+kubectl get deployments,pods
 </code></pre>
 
 <h3 id="high-availability">High Availability</h3>
@@ -332,7 +332,7 @@ kubectl get deploy,rs,pods
 </code></pre>
 
 <p>The above command will list pods. Try to delete a few pods and observe how it affects the availability of your application.</p>
-<pre><code>kubectl get pods vote-xxxx vote-yyyy
+<pre><code>kubectl delete pods vote-xxxx vote-yyyy
 kubectl get deploy,rs,pods
 
 </code></pre>
@@ -362,18 +362,20 @@ kubectl set image deployment vote vote=schoolofdevops/vote:v2
 <h3 id="service-discovery">Service Discovery</h3>
 <p><strong>Pre Test</strong>: Try to submit a vote from the frontend vote app. Does that work ?</p>
 <p>Now lets launch rest of the apps.</p>
-<pre><code>kubectl  run redis  --image=redis:alpine
+<pre><code>kubectl  create deployment  redis  --image=redis:alpine
 
 kubectl expose deployment redis --port 6379
 
+</code></pre>
 
-kubectl  run worker --image=schoolofdevops/worker
+<p>optionally, you could launch rest of the services.</p>
+<pre><code>kubectl  create deployment  worker --image=schoolofdevops/worker
 
-kubectl  run db --image=postgres:9.4
+kubectl  create deployment  db --image=postgres:9.4
 
 kubectl expose deployment db --port 5432
 
-kubectl run result --image=schoolofdevops/vote-result
+kubectl create deployment  result --image=schoolofdevops/vote-result
 
 kubectl expose deployment result --type=NodePort --port 80
 
