@@ -342,7 +342,7 @@ pod/traefik-ingress-controller-vl296   1/1       Running   0          11h
 <p>You would notice that the ingress controller is started on all nodes (except managers). Visit any of the nodes 8080 port e.g. http://IPADDRESS:8080 to see  traefik's management UI.</p>
 <p><img alt="Traefik" src="../images/traefik01.png" /></p>
 <h3 id="setting-up-named-based-routing-for-vote-app">Setting up Named Based Routing for Vote App</h3>
-<p>We will direct all our request to the ingress controller now, but with differnt hostname e.g. <strong>vote.example.org</strong> or <strong>results.example.org</strong>. And it should direct to the correct service based on the host name.</p>
+<p>We will direct all our request to the ingress controller now, but with differnt hostname e.g. <strong>vote.example.com</strong> or <strong>results.example.com</strong>. And it should direct to the correct service based on the host name.</p>
 <p>In order to achieve this you, as a user would create a <strong>ingress</strong> object with a set of rules,</p>
 <pre><code class="bash">
 
@@ -365,14 +365,14 @@ metadata:
     kubernetes.io/ingress.class: traefik
 spec:
   rules:
-    - host: vote.example.org
+    - host: vote.example.com
       http:
         paths:
           - path: /
             backend:
               serviceName: vote
               servicePort: 80
-    - host: results.example.org
+    - host: results.example.com
       http:
         paths:
           - path: /
@@ -413,22 +413,22 @@ kubectl apply -f vote-ing.yaml
 <p>Where,</p>
 <ul>
 <li>
-<p><strong>vote.example.org</strong> and <strong>results.example.org</strong> are added as frontends. These frontends point to respective services <strong>vote</strong> and <strong>results</strong>.</p>
+<p><strong>vote.example.com</strong> and <strong>results.example.com</strong> are added as frontends. These frontends point to respective services <strong>vote</strong> and <strong>results</strong>.</p>
 </li>
 <li>
 <p>respective backends also appear on the right hand side of the screen, mapping to each of the service.</p>
 </li>
 </ul>
 <h4 id="adding-local-dns">Adding Local DNS</h4>
-<p>You have created the ingress rules based on hostnames e.g.  <strong>vote.example.org</strong> and <strong>results.example.org</strong>. In order for you to be able to access those, there has to be a dns entry pointing to your nodes, which are running traefik.</p>
+<p>You have created the ingress rules based on hostnames e.g.  <strong>vote.example.com</strong> and <strong>results.example.com</strong>. In order for you to be able to access those, there has to be a dns entry pointing to your nodes, which are running traefik.</p>
 <pre><code class="bash">
-  vote.example.org     -------+                        +----- vote:81
+  vote.example.com     -------+                        +----- vote:81
                               |     +-------------+    |
                               |     |   ingress   |    |
                               +===&gt; |   node:80   | ===+
                               |     +-------------+    |
                               |                        |
-  results.example.org  -------+                        +----- results:82
+  results.example.com  -------+                        +----- results:82
 
 </code></pre>
 
@@ -442,14 +442,14 @@ kubectl apply -f vote-ing.yaml
 </code></pre>
 
 <p>And add an entry such as ,</p>
-<pre><code>xxx.xxx.xxx.xxx vote.example.org results.example.org
+<pre><code>xxx.xxx.xxx.xxx vote.example.com results.example.com
 </code></pre>
 
 <p>where,</p>
 <ul>
 <li>xxx.xxx.xxx.xxx is the actual IP address of one of the nodes running traefik.</li>
 </ul>
-<p>And then access the app urls using http://vote.example.org or http://results.example.org</p>
+<p>And then access the app urls using http://vote.example.com or http://results.example.com</p>
 <p><img alt="Name Based Routing" src="../images/domain-name.png" /></p>
 <h3 id="adding-http-authentication-with-annotations">Adding HTTP Authentication with Annotations</h3>
 <h4 id="creating-htpasswd-spec-as-secret">Creating htpasswd spec as Secret</h4>
@@ -478,14 +478,14 @@ metadata:
     ingress.kubernetes.io/auth-secret: &quot;mysecret&quot;
 spec:
   rules:
-    - host: vote.example.org
+    - host: vote.example.com
       http:
         paths:
           - path: /
             backend:
               serviceName: vote
               servicePort: 82
-    - host: results.example.org
+    - host: results.example.com
       http:
         paths:
           - path: /
