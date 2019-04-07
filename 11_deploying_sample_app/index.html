@@ -355,23 +355,6 @@
 </ul>
 </li>
 </ul>
-<h3 id="deploying-the-sample-application">Deploying the sample application</h3>
-<p>To create deploy the sample applications,</p>
-<pre><code>kubectl create -f projects/instavote/dev
-</code></pre>
-
-<p>Sample output is like:</p>
-<pre><code>deployment &quot;db&quot; created
-service &quot;db&quot; created
-deployment &quot;redis&quot; created
-service &quot;redis&quot; created
-deployment &quot;vote&quot; created
-service &quot;vote&quot; created
-deployment &quot;worker&quot; created
-deployment &quot;results&quot; created
-service &quot;results&quot; created
-</code></pre>
-
 <h4 id="to-validate">To Validate:</h4>
 <pre><code>kubectl get svc -n instavote
 </code></pre>
@@ -379,11 +362,11 @@ service &quot;results&quot; created
 <p>Sample Output is:</p>
 <pre><code>kubectl get service vote
 NAME         CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
-vote   10.97.104.243   &lt;pending&gt;     80:31808/TCP   1h
+vote   10.97.104.243   &lt;pending&gt;     80:30000/TCP   1h
 </code></pre>
 
 <p>Here the port assigned is 31808, go to the browser and enter</p>
-<pre><code>masterip:31808
+<pre><code>masterip:30000
 </code></pre>
 
 <p><img alt="Front-End.\label{fig:captioned_image}" src="../images/vote-rc.png" /></p>
@@ -395,11 +378,11 @@ vote   10.97.104.243   &lt;pending&gt;     80:31808/TCP   1h
 <p>Sample Output is:</p>
 <pre><code>kubectl get service result
 NAME      CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
-result    10.101.112.16   &lt;pending&gt;     80:32511/TCP   1h
+result    10.101.112.16   &lt;pending&gt;     80:30100/TCP   1h
 </code></pre>
 
 <p>Here the port assigned is 32511, go to the browser and enter</p>
-<pre><code>masterip:32511
+<pre><code>masterip:30100
 </code></pre>
 
 <p><img alt="Result Page.\label{fig:captioned_image}" src="../images/Result.png" /></p>
