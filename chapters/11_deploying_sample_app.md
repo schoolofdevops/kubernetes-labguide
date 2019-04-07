@@ -36,29 +36,6 @@ Following table depicts the state of readiness of the above services.
     * service type: NodePort
 
 
-### Deploying the sample application
-
-To create deploy the sample applications,
-
-```
-kubectl create -f projects/instavote/dev
-```
-
-Sample output is like:
-
-```
-deployment "db" created
-service "db" created
-deployment "redis" created
-service "redis" created
-deployment "vote" created
-service "vote" created
-deployment "worker" created
-deployment "results" created
-service "results" created
-```
-
-
 
 #### To Validate:
 
@@ -69,11 +46,11 @@ Sample Output is:
 ```
 kubectl get service vote
 NAME         CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
-vote   10.97.104.243   <pending>     80:31808/TCP   1h
+vote   10.97.104.243   <pending>     80:30000/TCP   1h
 ```
 Here the port assigned is 31808, go to the browser and enter
 ```
-masterip:31808
+masterip:30000
 ```
 
 ![Front-End.\label{fig:captioned_image}](images/vote-rc.png)
@@ -88,11 +65,11 @@ Sample Output is:
 ```
 kubectl get service result
 NAME      CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
-result    10.101.112.16   <pending>     80:32511/TCP   1h
+result    10.101.112.16   <pending>     80:30100/TCP   1h
 ```
 Here the port assigned is 32511, go to the browser and enter
 ```
-masterip:32511
+masterip:30100
 ```
 ![Result Page.\label{fig:captioned_image}](images/Result.png)
 
