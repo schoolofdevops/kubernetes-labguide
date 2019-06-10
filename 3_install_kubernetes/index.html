@@ -111,7 +111,7 @@
                 
                     <li><a class="toctree-l4" href="#initializing-master">Initializing Master</a></li>
                 
-                    <li><a class="toctree-l4" href="#installing-cni-with-weave">Installing CNI with Weave</a></li>
+                    <li><a class="toctree-l4" href="#configuring-networking-with-calico-plugin">Configuring Networking with Calico Plugin</a></li>
                 
                     <li><a class="toctree-l4" href="#validating-the-setup">Validating the Setup</a></li>
                 
@@ -482,12 +482,12 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 <pre><code>watch kubectl get nodes
 </code></pre>
 
-<h2 id="installing-cni-with-weave">Installing CNI with Weave</h2>
+<h2 id="configuring-networking-with-calico-plugin">Configuring Networking with Calico Plugin</h2>
 <p>Installing overlay network is necessary for the pods to communicate with each other across the hosts. It is necessary to do this before you try to deploy any applications to your cluster.</p>
-<p>There are various overlay networking drivers available for kubernetes. We are going to use <strong>Weave Net</strong>.</p>
+<p>There are various overlay networking drivers available for kubernetes. We are going to use <strong>Calico</strong>.</p>
 <pre><code>
-export kubever=$(kubectl version | base64 | tr -d '\n')
-kubectl apply -f &quot;https://cloud.weave.works/k8s/net?k8s-version=$kubever&quot;
+kubectl apply -f https://docs.projectcalico.org/v3.7/manifests/calico.yaml
+
 </code></pre>
 
 <h2 id="validating-the-setup">Validating the Setup</h2>
