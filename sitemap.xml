@@ -1,183 +1,234 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+    
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-07</lastmod>
+     <loc>None/</loc>
+     <lastmod>2019-06-10</lastmod>
      <changefreq>daily</changefreq>
     </url>
+    
+
+    
+        
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-07</lastmod>
+     <loc>None/operating-containers/</loc>
+     <lastmod>2019-06-10</lastmod>
      <changefreq>daily</changefreq>
     </url>
+        
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-07</lastmod>
+     <loc>None/dockerizing-voteapp/</loc>
+     <lastmod>2019-06-10</lastmod>
      <changefreq>daily</changefreq>
     </url>
+        
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-07</lastmod>
+     <loc>None/docker-networking/</loc>
+     <lastmod>2019-06-10</lastmod>
      <changefreq>daily</changefreq>
     </url>
+        
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-07</lastmod>
+     <loc>None/docker-volumes/</loc>
+     <lastmod>2019-06-10</lastmod>
      <changefreq>daily</changefreq>
     </url>
+        
+    
+
+    
+        
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-07</lastmod>
+     <loc>None/3_install_kubernetes/</loc>
+     <lastmod>2019-06-10</lastmod>
      <changefreq>daily</changefreq>
     </url>
+        
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-07</lastmod>
+     <loc>None/quickdive/</loc>
+     <lastmod>2019-06-10</lastmod>
      <changefreq>daily</changefreq>
     </url>
+        
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-07</lastmod>
+     <loc>None/5-vote-deploying_pods/</loc>
+     <lastmod>2019-06-10</lastmod>
      <changefreq>daily</changefreq>
     </url>
+        
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-07</lastmod>
+     <loc>None/replication/</loc>
+     <lastmod>2019-06-10</lastmod>
      <changefreq>daily</changefreq>
     </url>
+        
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-07</lastmod>
+     <loc>None/7-vote-exposing_app_with_service/</loc>
+     <lastmod>2019-06-10</lastmod>
      <changefreq>daily</changefreq>
     </url>
+        
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-07</lastmod>
+     <loc>None/6-vote-kubernetes_deployment/</loc>
+     <lastmod>2019-06-10</lastmod>
      <changefreq>daily</changefreq>
     </url>
+        
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-07</lastmod>
+     <loc>None/11_deploying_sample_app/</loc>
+     <lastmod>2019-06-10</lastmod>
      <changefreq>daily</changefreq>
     </url>
+        
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-07</lastmod>
+     <loc>None/9-vote-configmaps_and_secrets/</loc>
+     <lastmod>2019-06-10</lastmod>
      <changefreq>daily</changefreq>
     </url>
+        
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-07</lastmod>
+     <loc>None/vote-persistent-volumes/</loc>
+     <lastmod>2019-06-10</lastmod>
      <changefreq>daily</changefreq>
     </url>
+        
+    
+
+    
+        
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-07</lastmod>
+     <loc>None/ingress/</loc>
+     <lastmod>2019-06-10</lastmod>
      <changefreq>daily</changefreq>
     </url>
+        
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-07</lastmod>
+     <loc>None/configuring_authentication_and_authorization/</loc>
+     <lastmod>2019-06-10</lastmod>
      <changefreq>daily</changefreq>
     </url>
+        
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-07</lastmod>
+     <loc>None/advanced_pod_scheduling/</loc>
+     <lastmod>2019-06-10</lastmod>
      <changefreq>daily</changefreq>
     </url>
+        
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-07</lastmod>
+     <loc>None/pods-health-probes/</loc>
+     <lastmod>2019-06-10</lastmod>
      <changefreq>daily</changefreq>
     </url>
+        
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-07</lastmod>
+     <loc>None/helm/</loc>
+     <lastmod>2019-06-10</lastmod>
      <changefreq>daily</changefreq>
     </url>
+        
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-07</lastmod>
+     <loc>None/10_kubernetes_autoscaling/</loc>
+     <lastmod>2019-06-10</lastmod>
      <changefreq>daily</changefreq>
     </url>
+        
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-07</lastmod>
+     <loc>None/network_policies/</loc>
+     <lastmod>2019-06-10</lastmod>
      <changefreq>daily</changefreq>
     </url>
+        
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-07</lastmod>
+     <loc>None/cluster-administration/</loc>
+     <lastmod>2019-06-10</lastmod>
      <changefreq>daily</changefreq>
     </url>
+        
+    
+
+    
+        
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-07</lastmod>
+     <loc>None/13_redis_statefulset/</loc>
+     <lastmod>2019-06-10</lastmod>
      <changefreq>daily</changefreq>
     </url>
+        
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-07</lastmod>
+     <loc>None/vote-deployement_strategies/</loc>
+     <lastmod>2019-06-10</lastmod>
      <changefreq>daily</changefreq>
     </url>
+        
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-07</lastmod>
+     <loc>None/12_troubleshooting/</loc>
+     <lastmod>2019-06-10</lastmod>
      <changefreq>daily</changefreq>
     </url>
+        
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-07</lastmod>
+     <loc>None/logging/</loc>
+     <lastmod>2019-06-10</lastmod>
      <changefreq>daily</changefreq>
     </url>
+        
+    
+
+    
+        
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-07</lastmod>
+     <loc>None/wq001-cni/</loc>
+     <lastmod>2019-06-10</lastmod>
      <changefreq>daily</changefreq>
     </url>
+        
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-07</lastmod>
+     <loc>None/wq002-security/</loc>
+     <lastmod>2019-06-10</lastmod>
      <changefreq>daily</changefreq>
     </url>
+        
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-07</lastmod>
+     <loc>None/wq003-ingress/</loc>
+     <lastmod>2019-06-10</lastmod>
      <changefreq>daily</changefreq>
     </url>
+        
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-07</lastmod>
+     <loc>None/wq004-monitoring/</loc>
+     <lastmod>2019-06-10</lastmod>
      <changefreq>daily</changefreq>
     </url>
+        
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-07</lastmod>
+     <loc>None/wq005-controllers/</loc>
+     <lastmod>2019-06-10</lastmod>
      <changefreq>daily</changefreq>
     </url>
+        
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-07</lastmod>
+     <loc>None/wq006-persistentvolume/</loc>
+     <lastmod>2019-06-10</lastmod>
      <changefreq>daily</changefreq>
     </url>
+        
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-07</lastmod>
+     <loc>None/wq007-maintenance/</loc>
+     <lastmod>2019-06-10</lastmod>
      <changefreq>daily</changefreq>
     </url>
+        
+    
+
+    
+        
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-07</lastmod>
+     <loc>None/rbac-resource-group-mapping/</loc>
+     <lastmod>2019-06-10</lastmod>
      <changefreq>daily</changefreq>
     </url>
-    <url>
-     <loc>None</loc>
-     <lastmod>2019-04-07</lastmod>
-     <changefreq>daily</changefreq>
-    </url>
-    <url>
-     <loc>None</loc>
-     <lastmod>2019-04-07</lastmod>
-     <changefreq>daily</changefreq>
-    </url>
+        
+    
+
 </urlset>
