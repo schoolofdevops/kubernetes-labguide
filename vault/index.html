@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Lab K106 - Defining Release Strategy with Deployments - Kubernetes Lab Guide</title>
+  <title>Integrating Consul and Vault - Kubernetes Lab Guide</title>
   
 
   <link rel="shortcut icon" href="../img/favicon.ico">
@@ -20,7 +20,7 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Lab K106 - Defining Release Strategy with Deployments";
+    var mkdocs_page_name = "Integrating Consul and Vault";
   </script>
   
   <script src="../js/jquery-2.1.1.min.js"></script>
@@ -133,21 +133,8 @@
 
         
             
-    <li class="toctree-l1 current">
-        <a class="current" href="./">Lab K106 - Defining Release Strategy with Deployments</a>
-        
-            <ul>
-            
-                <li class="toctree-l3"><a href="#lab-k106-defining-release-strategy-with-deployment">LAB K106 - Defining Release Strategy with  Deployment</a></li>
-                
-                    <li><a class="toctree-l4" href="#scaling-a-deployment">Scaling a deployment</a></li>
-                
-                    <li><a class="toctree-l4" href="#rolling-updates-in-action">Rolling Updates in Action</a></li>
-                
-                    <li><a class="toctree-l4" href="#undo-and-rollback">Undo and Rollback</a></li>
-                
-            
-            </ul>
+    <li class="toctree-l1 ">
+        <a class="" href="../6-vote-kubernetes_deployment/">Lab K106 - Defining Release Strategy with Deployments</a>
         
     </li>
 
@@ -246,8 +233,23 @@
 
         
             
-    <li class="toctree-l1 ">
-        <a class="" href="../vault/">Integrating Consul and Vault</a>
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Integrating Consul and Vault</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#vault-and-consul-integration-with-kubernetes">Vault and Consul Integration with Kubernetes</a></li>
+                
+                    <li><a class="toctree-l4" href="#setup-consul">Setup Consul</a></li>
+                
+                    <li><a class="toctree-l4" href="#setup-vault">Setup vault</a></li>
+                
+                    <li><a class="toctree-l4" href="#integrate-vault-with-kubernetes">Integrate vault with kubernetes</a></li>
+                
+                    <li><a class="toctree-l4" href="#fetching-secrets-from-the-vault">Fetching secrets from the  vault</a></li>
+                
+            
+            </ul>
         
     </li>
 
@@ -377,11 +379,11 @@
     
       
         
-          <li>Kubernetes Fundamentals &raquo;</li>
+          <li>Additional Topics &raquo;</li>
         
       
     
-    <li>Lab K106 - Defining Release Strategy with Deployments</li>
+    <li>Integrating Consul and Vault</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -391,154 +393,73 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="lab-k106-defining-release-strategy-with-deployment">LAB K106 - Defining Release Strategy with  Deployment</h1>
-<p>A Deployment is a higher level abstraction which sits on top of replica sets and allows you to manage the way applications are deployed, rolled back at a controlled rate.</p>
-<p>Deployment has mainly two responsibilities,</p>
+                <h2 id="vault-and-consul-integration-with-kubernetes">Vault and Consul Integration with Kubernetes</h2>
+<h4 id="setup-consul">Setup Consul</h4>
+<p>Switch to default namespace and run helm to install consul </p>
+<pre><code>kubectl config set-context --current --namespace=default 
+helm  install --name consul stable/consul
+
+</code></pre>
+
+<h4 id="setup-vault">Setup vault</h4>
+<p>Download and run the following script to setup vault client and server. Run this on the host which is running <code>kubectl</code>. </p>
+<pre><code>
+wget -c https://gist.githubusercontent.com/initcron/92664e60bef002379ae22c912970cd4d/raw/36121a01780da8a72975969ab2ef7b308b753539/setup_vault_ubuntu_1804.sh
+
+bash setup_vault_ubuntu_1804.sh
+
+</code></pre>
+
+<p>Note down the vault unseal and root keys. </p>
+<p>Unseal vault by running the following command thrice, and providing with three different unseal keys. </p>
+<pre><code>VAULT_ADDR=http://127.0.0.1:8200
+
+vault operator unseal
+vault operator unseal
+vault operator unseal
+</code></pre>
+
+<p>This completes vault setup. </p>
+<h4 id="integrate-vault-with-kubernetes">Integrate vault with kubernetes</h4>
+<p>Download vault  demo repo </p>
+<pre><code>git clone https://github.com/hashicorp/vault-guides.git
+cd vault-guides/identity/vault-agent-k8s-demo
+</code></pre>
+
+<p>Edit <code>setup-k8s-auth.sh</code></p>
 <ul>
-<li>Provide Fault Tolerance: Maintain the number of replicas for a type of service/app. Schedule/delete pods to meet the desired count.</li>
-<li>Update Strategy: Define a release strategy and update the pods accordingly.</li>
+<li>uncomment line 27  : vault secrets enable -path=secret kv</li>
+<li>Update Line 48: K8S_HOST=IPADDRESS_MASTER</li>
+<li>Update Line 54: PORT/6443</li>
 </ul>
-<pre><code>/k8s-code/projects/instavote/dev/
-cp vote-rs.yaml vote-deploy.yaml
+<p>Setup kubernetes auth method for vault </p>
+<p>login to vault first </p>
+<pre><code>vault login &lt;ROOT_TOKEN&gt;
 </code></pre>
 
-<p>Deployment spec (deployment.spec) contains everything that replica set has + strategy. Lets add it as follows,</p>
-<p><code>file: vote-deploy.yaml</code></p>
-<pre><code>apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: vote
-spec:
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 2
-      maxUnavailable: 1
-  revisionHistoryLimit: 4
-  replicas: 12
-  minReadySeconds: 20
-  selector:
-    matchLabels:
-      role: vote
-    matchExpressions:
-      - {key: version, operator: In, values: [v1, v2, v3, v4, v5]}
-  template:
-    metadata:
-      name: vote
-      labels:
-        app: python
-        role: vote
-        version: v1
-    spec:
-      containers:
-        - name: app
-          image: schoolofdevops/vote:v1
-          resources:
-            requests:
-              memory: &quot;64Mi&quot;
-              cpu: &quot;50m&quot;
-            limits:
-              memory: &quot;128Mi&quot;
-              cpu: &quot;250m&quot;
-</code></pre>
-
-<p>This time, start monitoring with --show-labels options added.</p>
-<pre><code>watch -n 1 kubectl get  pod,deploy,rs,svc --show-labels
-</code></pre>
-
-<p>Lets  create the Deployment. Do monitor the labels of the pod while applying this.</p>
-<pre><code>kubectl apply -f vote-deploy.yaml
-</code></pre>
-
-<p>Observe the chances to pod labels, specifically the <strong>pod-template-hash</strong>.</p>
-<p>Now that the deployment is created. To validate,</p>
-<pre><code>kubectl get deployment
-kubectl get rs --show-labels
-kubectl get deploy,pods,rs
-kubectl rollout status deployment/vote
-kubectl get pods --show-labels
-</code></pre>
-
-<p>Sample Output</p>
-<pre><code>kubectl get deployments
-NAME       DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
-vote   3         3         3            1           3m
-</code></pre>
-
-<h2 id="scaling-a-deployment">Scaling a deployment</h2>
-<p>To scale a deployment in Kubernetes:</p>
-<pre><code>kubectl scale deployment/vote --replicas=15
-
-kubectl rollout status deployment/vote
+<p><code>replace &lt;ROOT_TOKEN&gt; with actual token..</code></p>
+<p>Run setup script </p>
+<pre><code>./setup-k8s-auth.sh
 
 </code></pre>
 
-<p>Sample output:</p>
-<pre><code>
-Waiting for rollout to finish: 5 of 15 updated replicas are available...
-Waiting for rollout to finish: 6 of 15 updated replicas are available...
-deployment &quot;vote&quot; successfully rolled out
+<h4 id="fetching-secrets-from-the-vault">Fetching secrets from the  vault</h4>
+<p>EDIT <code>example-k8s-spec.yml</code></p>
+<ul>
+<li>Update line 43 and 74 : IPADDRESS of VAULT </li>
+</ul>
+<p>Launch example pod with </p>
+<pre><code>kubectl create configmap example-vault-agent-config --from-file=./configs-k8s/
+
+kubectl get configmap example-vault-agent-config -o yaml
+
+kubectl apply -f example-k8s-spec.yml
 </code></pre>
 
-<p>You could also update the deployment by editing it.</p>
-<pre><code>kubectl edit deploy/vote
-</code></pre>
+<p>Find out the IP address of the pod, and test it by running curl </p>
+<pre><code>kubectl get pods -o wide 
 
-<p>[change replicas to 8 from the editor, save and observe]</p>
-<h2 id="rolling-updates-in-action">Rolling Updates in Action</h2>
-<p>Now, update the deployment spec to apply</p>
-<p>file: vote-deploy.yaml</p>
-<pre><code>
-...
-template:
-  metadata:
-    labels:
-      version: v2   
-  spec:
-    containers:
-      - name: app
-        image: schoolofdevops/vote:v2
-
-</code></pre>
-
-<p>apply</p>
-<pre><code>kubectl apply -f vote-deploy.yaml
-
-kubectl rollout status deployment/vote
-</code></pre>
-
-<p>Observe rollout status and monitoring screen.</p>
-<pre><code>
-kubectl rollout history deploy/vote
-
-kubectl rollout history deploy/vote --revision=1
-
-</code></pre>
-
-<p>Try updating the version of the image from v2 to v3,v4,v5. Repeat a few times to observe how it rolls out a new version.  </p>
-<h2 id="undo-and-rollback">Undo and Rollback</h2>
-<p>file: vote-deploy.yaml</p>
-<pre><code>spec:
-  containers:
-    - name: app
-      image: schoolofdevops/vote:rgjerdf
-
-</code></pre>
-
-<p>apply</p>
-<pre><code>kubectl apply -f vote-deploy.yaml
-
-kubectl rollout status
-
-kubectl rollout history deploy/vote
-
-kubectl rollout history deploy/vote --revision=xx
-</code></pre>
-
-<p>where replace xxx with revisions</p>
-<p>Find out the previous revision with sane configs.</p>
-<p>To undo to a sane version (for example revision 3)</p>
-<pre><code>kubectl rollout undo deploy/vote --to-revision=2
+curl IPADDRESS
 </code></pre>
               
             </div>
@@ -547,10 +468,10 @@ kubectl rollout history deploy/vote --revision=xx
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../11_deploying_sample_app/" class="btn btn-neutral float-right" title="Mini Project"/>Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../13_redis_statefulset/" class="btn btn-neutral float-right" title="Creating Replicated Redis Cluster with Statefulsets"/>Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../7-vote-exposing_app_with_service/" class="btn btn-neutral" title="Lab K105 - Load Balancing and Service Discovery with Services"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../cluster-administration/" class="btn btn-neutral" title="Lab K208 - Cluster Administration"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -576,10 +497,10 @@ kubectl rollout history deploy/vote --revision=xx
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../7-vote-exposing_app_with_service/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../cluster-administration/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../11_deploying_sample_app/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../13_redis_statefulset/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
