@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Services - Kubernetes Lab Guide</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Services";
+    var mkdocs_page_input_path = "advanced_services.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> Kubernetes Lab Guide</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="..">Home</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Just Enough Docker</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../operating-containers/">Lab D101 - Operating Containers</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../dockerizing-voteapp/">Lab D102 - Building and Publishing Docker Images</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../docker-networking/">Lab D103 - Docker Networking</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../docker-volumes/">Lab D104 - Docker Volumes</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Kubernetes Fundamentals</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../3_install_kubernetes/">Lab K101 - Setup Kubernetes Cluster</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../quickdive/">Lab K102 - Kubernetes Quickdive</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../5-vote-deploying_pods/">Lab K103 - Kubernetes LaunchPods</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../replication/">Lab K104 - Adding HA and Scalability with ReplicaSets</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../7-vote-exposing_app_with_service/">Lab K105 - Load Balancing and Service Discovery with Services</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../6-vote-kubernetes_deployment/">Lab K106 - Defining Release Strategy with Deployments</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../11_deploying_sample_app/">Mini Project</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../9-vote-configmaps_and_secrets/">Lab K107 - Configurations Management with ConfigMaps</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../vote-persistent-volumes/">Lab K108 - Peristent Volumes</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Advanced Administration</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../ingress/">Lab K201 - Application Routing with Ingress Controllers</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../configuring_authentication_and_authorization/">Lab K202 - Authentication and Authorization (RBAC)</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../advanced_pod_scheduling/">Lab K203 - Advanced Pod Scheduling</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../pods-health-probes/">Lab K204 - Adding health checks with Probes</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../helm/">Lab K205 - Monitoring setup with HELM</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../10_kubernetes_autoscaling/">Lab K206 - Auto Scaling Capacity with HPA</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../network_policies/">Lab K207 - Access Control with Network Policies</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../cluster-administration/">Lab K208 - Cluster Administration</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Additional Topics</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../13_redis_statefulset/">Creating Replicated Redis Cluster with Statefulsets</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../vote-deployement_strategies/">Building Deployment Strategies</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../12_troubleshooting/">Troubleshooting Tips</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../logging/">Logging</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Exercises</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../xer-001-pods/">XER001 - Pods</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../xer-002-rs/">XER002 - ReplicaSets</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Web Quests</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../wq001-cni/">KWQ001 - CNI Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq002-security/">KWQ001 - Kubernetes Security Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq003-ingress/">KWQ003 - Ingress Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq004-monitoring/">KWQ004 - Monitoring Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq005-controllers/">KWQ005 - Controllers Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq006-persistentvolume/">KWQ006 - Persistent Data Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq007-maintenance/">KWQ007 - Cluster Maintenance Web Quest</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">References</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../rbac-resource-group-mapping/">RBAC apiGroups to Resource Mapping</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">Kubernetes Lab Guide</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Services</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="services">Services</h1>
+<p>Services are a way to expose your backend pods to outside world. Services can also be used for internal networks.</p>
+<h2 id="service-discovery">Service Discovery</h2>
+<p>Whenever we create a service, the kubernetes api server will create a route for that service within the cluster. So you will be able to access the service using the dns entry for that service. Usually the service dns will look like <SVC-NAME.NAMESPACE></p>
+<p>Let us create a service for frontend</p>
+<p><code>File: frontend-svc.yml</code></p>
+<pre><code>apiVersion: v1
+kind: Service
+metadata:
+  name: front-end
+  namespace: instavote
+  labels:
+    app: front-end
+    env: dev
+spec:
+  selector:
+    app: front-end
+  ports:
+    - protocol: TCP
+      port: 8079
+</code></pre>
+
+<pre><code>kubectl apply -f frontend-svc.yml
+kubectl exec -it front-end-5cbc986f44-dqws2 sh
+
+nslookup front-end.instavote
+
+Name:      front-end.instavote
+Address 1: 10.233.6.236 front-end.instavote.svc.cluster.local
+</code></pre>
+
+<p>This is achieved by the cluster <strong>dns add-on</strong>. This is how backend of service A consumes service B.</p>
+<h2 id="labels-and-selectors">Labels and Selectors</h2>
+<p>When we create a service, it automatically adds appropriate pods to its backend. How does this happen? This is achieved by a mechanism called <strong>labels and selectors</strong>. We label our pods with keys and values. Our service template has selectors with these keys and values. So when a service is created, it will check for pods running with the same label. If it finds a pod with that label, the pod will be added to endpoint of the service.</p>
+<pre><code>kubectl describe svc front-end
+
+Name:              front-end
+Namespace:         instavote
+Labels:            app=front-end
+                   env=dev
+Annotations:       kubectl.kubernetes.io/last-applied-configuration={&quot;apiVersion&quot;:&quot;v1&quot;,&quot;kind&quot;:&quot;Service&quot;,&quot;metadata&quot;:{&quot;annotations&quot;:{},&quot;labels&quot;:{&quot;app&quot;:&quot;front-end&quot;,&quot;env&quot;:&quot;dev&quot;},&quot;name&quot;:&quot;front-end&quot;,&quot;namespace&quot;:&quot;instavote&quot;},&quot;...
+Selector:          app=front-end
+Type:              ClusterIP
+IP:                10.233.6.236
+Port:              &lt;unset&gt;  8079/TCP
+TargetPort:        8079/TCP
+Endpoints:         10.233.71.13:8079
+Session Affinity:  None
+Events:            &lt;none&gt;
+</code></pre>
+
+<p>Since we have only one pod running with the label <strong>app=front-end</strong>, it is added to the service endpoint list.</p>
+<h2 id="picking-up-the-right-type-of-a-service">Picking up the right type of a service</h2>
+<p>We have four type of services to choose from. Each has a unique use case for which it can be used. Let us see about the types of services below.</p>
+<h3 id="types">Types:</h3>
+<ul>
+<li>ClusterIp<ul>
+<li>Internal network.</li>
+<li>Can not accessed from outside world.</li>
+<li>Best suited for backend services which should not be exposed (ex: DB).</li>
+</ul>
+</li>
+<li>NodePort<ul>
+<li>Can be accessed from outside world.</li>
+<li>NodePort is best suited for development environment(debugging).</li>
+<li>Not suited for production use.</li>
+</ul>
+</li>
+<li>LoadBalancer<ul>
+<li>Normal cloud load balancer.</li>
+<li>Exposes service to outside world.</li>
+</ul>
+</li>
+<li>ExternalName<ul>
+<li>Used for entities which are outside the cluster.</li>
+<li>CNAME record for an external service.</li>
+<li>No ports are defined.</li>
+</ul>
+</li>
+</ul>
+<p>We have one more service configuration, which is not exactly a service type. That is .,
+  * ExternalIP</p>
+<h2 id="cluster-ip-and-dns">Cluster IP and DNS</h2>
+<p>ClusterIP is internal to the cluster. ClusterIP is provided by default. If you do not define the type of the service, then the service is configured with a clusterIP. A typical service type of clusterIP looks like,</p>
+<p><code>File: frontend-svc.yml</code></p>
+<pre><code>apiVersion: v1
+kind: Service
+metadata:
+  name: front-end
+  namespace: instavote
+  labels:
+    app: front-end
+    env: dev
+spec:
+  selector:
+    app: front-end
+  ports:
+    - protocol: TCP
+      port: 8079
+  type: ClusterIP
+</code></pre>
+
+<h2 id="nodeport">NodePort</h2>
+<p>Exposes a port on node within 30000 to 32767 range. If a service is defined as nodePort, we can access the service on <ANY-NODE-IP:NODEPORT>. Let us change the frontend service type to NodePort and see what happens.</p>
+<p><code>File: frontend-svc.yml</code></p>
+<pre><code>apiVersion: v1
+kind: Service
+metadata:
+  name: front-end
+  namespace: instavote
+  labels:
+    app: front-end
+    env: dev
+spec:
+  selector:
+    app: front-end
+  ports:
+    - protocol: TCP
+      port: 8079
+  type: NodePort
+</code></pre>
+
+<p>Lets get the node port created for the front-end service.</p>
+<pre><code>kubectl get svc front-end
+
+
+</code></pre>
+
+<p>Visit this node port on any of node's IP. In my case,</p>
+<h2 id="externalip">ExternalIP</h2>
+<p>ExternalIP is not exactly a service type. It can be coupled with any other service type. For example a service with NodePort can be used with ExternalIP as well. Only cache here is, the external IP has to one of the node/master's IP. It is used to route the traffic to one or more cluster nodes.</p>
+<p><code>File: frontend-svc.yml</code></p>
+<pre><code>apiVersion: v1
+kind: Service
+metadata:
+  name: front-end
+  namespace: instavote
+  labels:
+    app: front-end
+    env: dev
+spec:
+  selector:
+    app: front-end
+  ports:
+    - protocol: TCP
+      port: 8079
+  type: NodePort
+  externalIPs:
+  - 10.40.1.26
+  - 10.40.1.11
+</code></pre>
+
+<p>Lets check how externalIPs works,</p>
+<pre><code>kubectl describe svc front-end
+
+curl 10.40.1.26
+curl 10.40.1.11
+</code></pre>
+
+<h2 id="loadbalancer">LoadBalancer</h2>
+<p>Service type LoadBalancer is only supported on AWS,GCE,Azure and Openstack. If you have you cluster running on any of these clouds, give it a try. It will create a load balancer for us with a ephemeral IP. We can also specify a loadBalancerIP. Mostly not recommended to use. Using service type LoadBalancer will rise your cloud provider spendings. Think about launching 10 load balancers for 10 different services. Thats where <strong>ingress</strong> come into picture (explained in the later part).</p>
+<pre><code>apiVersion: v1
+kind: Service
+metadata:
+  name: front-end
+  namespace: instavote
+  labels:
+    app: front-end
+    env: dev
+spec:
+  selector:
+    app: front-end
+  ports:
+    - protocol: TCP
+      port: 8079
+  type: LoadBalancer
+</code></pre>
+
+<h2 id="headless-services-with-endpointsexternal-names">Headless services with Endpoints/External Names</h2>
+<p>Sometimes you may to decouple the services from backend pods. Sometimes you may want to use some external services outside the cluster and want to integrate those external services with the cluster. For these kind of use cases we can use <strong>Headless services</strong>. Let us see an example.</p>
+<p>Let us consider a scenario where you have your redis cluster hosted outside the cluster. Your backend in cluster need to use this redis cluster. In this case, you will create a service with ExternalName, which is nothing but a CNAME record of your redis cluster. This type of services will neither have any ports defined nor have any selectors. But, how do you make sure the backend pods uses this service? For that, you will create a custom endpoint, in which map your service to specific endpoints.</p>
+<p><code>Ex: External Name service</code></p>
+<pre><code>kind: Service
+apiVersion: v1
+metadata:
+  name: redis-aws
+  namespace: instavote
+spec:
+  type: ExternalName
+  externalName: redis.aws.schoolofdevops.com
+</code></pre>
+
+<p><code>Ex: Endpoints</code></p>
+<pre><code>kind: Endpoints
+apiVersion: v1
+metadata:
+  name: redis-aws
+subsets:
+  - addresses:
+      - ip: 10.40.30.123
+      - ip: 10.40.30.324
+      - ip: 10.40.30.478
+    ports:
+      - port: 9376
+</code></pre>
+
+<p>These IPs have to be manually managed by the cluster administrator.</p>
+<h2 id="ingress">Ingress</h2>
+<p>Ingress controller is an Kubernetes object that manages external access to the backend services. This is the preferred way of exposing your services.</p>
+<h3 id="ingress-controller">Ingress Controller</h3>
+<p>To use an ingress resource, an ingress controller (ex. nginx, traefik) must be running. This controller has to be deployed manually.</p>
+<p>To create an ingress controller in our cluster, run the following commands,</p>
+<pre><code>kubectl apply -f traefik-rbac.yaml
+kubectl apply -f traefik-deployment.yaml
+</code></pre>
+
+<p>Check whether the ingress controller is running or not.</p>
+<pre><code>kubectl get pods -n kube-system
+
+[...]
+kubernetes-dashboard-75c5ff6844-r9sk8         1/1       Running   6          3d
+nginx-proxy-node3                             1/1       Running   8          27d
+nginx-proxy-node4                             1/1       Running   7          27d
+traefik-ingress-controller-568dd77566-vk72b   1/1       Running   0          5m
+</code></pre>
+
+<h3 id="purpose-of-an-ingress">Purpose of an Ingress</h3>
+<p>Ingress can be used for,
+  * Load balancing,
+  * SSL Termination,
+  * Name based virtual hosting.</p>
+<h3 id="types-of-ingress">Types of Ingress</h3>
+<p>Let us see about different implementation of ingress.</p>
+<pre><code>Keep or delete the following(Need to come up with use cases).
+### Single Service Ingress
+
+### Simple fanout Ingress
+
+### Name based virtual hosting
+
+### TLS
+
+### Load Balancer
+</code></pre>
+
+<h2 id="services-vs-ingress">Services Vs Ingress</h2>
+<ol>
+<li>Service type LoadBalancer</li>
+<li>Service type Nodeport</li>
+</ol>
+<h2 id="creating-service-resources-for-applications-and-backing-services">Creating service resources for applications and backing services</h2>
+<hr />
+<p>Need a demo set up for types: load balancer and external name
+Need input on this: Creating service resources for applications and backing services, Service API specs, Traffic Policy
+Can add some points about scaling of ingress controller (running it as a daemonset on all the nodes)</p>
+              
+            </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+
+</body>
+</html>

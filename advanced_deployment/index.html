@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Advanced deployment - Kubernetes Lab Guide</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Advanced deployment";
+    var mkdocs_page_input_path = "advanced_deployment.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> Kubernetes Lab Guide</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="..">Home</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Just Enough Docker</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../operating-containers/">Lab D101 - Operating Containers</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../dockerizing-voteapp/">Lab D102 - Building and Publishing Docker Images</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../docker-networking/">Lab D103 - Docker Networking</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../docker-volumes/">Lab D104 - Docker Volumes</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Kubernetes Fundamentals</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../3_install_kubernetes/">Lab K101 - Setup Kubernetes Cluster</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../quickdive/">Lab K102 - Kubernetes Quickdive</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../5-vote-deploying_pods/">Lab K103 - Kubernetes LaunchPods</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../replication/">Lab K104 - Adding HA and Scalability with ReplicaSets</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../7-vote-exposing_app_with_service/">Lab K105 - Load Balancing and Service Discovery with Services</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../6-vote-kubernetes_deployment/">Lab K106 - Defining Release Strategy with Deployments</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../11_deploying_sample_app/">Mini Project</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../9-vote-configmaps_and_secrets/">Lab K107 - Configurations Management with ConfigMaps</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../vote-persistent-volumes/">Lab K108 - Peristent Volumes</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Advanced Administration</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../ingress/">Lab K201 - Application Routing with Ingress Controllers</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../configuring_authentication_and_authorization/">Lab K202 - Authentication and Authorization (RBAC)</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../advanced_pod_scheduling/">Lab K203 - Advanced Pod Scheduling</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../pods-health-probes/">Lab K204 - Adding health checks with Probes</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../helm/">Lab K205 - Monitoring setup with HELM</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../10_kubernetes_autoscaling/">Lab K206 - Auto Scaling Capacity with HPA</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../network_policies/">Lab K207 - Access Control with Network Policies</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../cluster-administration/">Lab K208 - Cluster Administration</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Additional Topics</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../13_redis_statefulset/">Creating Replicated Redis Cluster with Statefulsets</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../vote-deployement_strategies/">Building Deployment Strategies</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../12_troubleshooting/">Troubleshooting Tips</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../logging/">Logging</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Exercises</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../xer-001-pods/">XER001 - Pods</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../xer-002-rs/">XER002 - ReplicaSets</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Web Quests</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../wq001-cni/">KWQ001 - CNI Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq002-security/">KWQ001 - Kubernetes Security Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq003-ingress/">KWQ003 - Ingress Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq004-monitoring/">KWQ004 - Monitoring Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq005-controllers/">KWQ005 - Controllers Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq006-persistentvolume/">KWQ006 - Persistent Data Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq007-maintenance/">KWQ007 - Cluster Maintenance Web Quest</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">References</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../rbac-resource-group-mapping/">RBAC apiGroups to Resource Mapping</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">Kubernetes Lab Guide</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Advanced deployment</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h2 id="deployments">Deployments</h2>
+<p>Deployments provide reliability and scalability to our application stack. Deployment makes sure that desired number of pods, which is specified declaratively in the deployment file (ex. catalogue-deploy.yml), are always up and running. If a pod fails to run, deployment will remove that pod and replace it with a new one.</p>
+<h3 id="deployments-vs-replication-controllers">Deployments vs Replication Controllers</h3>
+<p>Replication Controllers are the older version of Replica Sets. In some ways RC are superior than RS and in some cases it is inferior. But, how does replication work when compared to deployments?</p>
+<p>Replication Controllers are,
+  * Older method of deploying application
+  * Updates to the application is done with <strong>kubectl rolling-update command</strong>
+  * Does not support roll back feature like in Deployments.
+  * It has no backends, interacts with pods directly.</p>
+<p>Deployments are,
+  * The newer method of deploying application.
+  * Provides both <strong>rolling update and rollback</strong>
+  * Replica Sets are the backend of Deployments.</p>
+<h3 id="deployment-api-specs">Deployment API Specs</h3>
+<p>A typical deployment file looks like the following,</p>
+<pre><code>apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: &lt;name-of-deployment&gt;
+  label:
+    &lt;deployment-labels&gt;
+spec:
+  replicas: &lt;number-of-replicas&gt;
+  template:
+    metadata:
+      label:
+        &lt;pod-labels&gt;
+    spec:
+      containers:
+        &lt;pod-spec&gt;
+</code></pre>
+
+<h3 id="defining-deployment-strategies">Defining Deployment Strategies</h3>
+<p>We have two types of deployment strategies in Kubernetes, which are,
+  * Rolling Update
+  * Recreate.</p>
+<h3 id="rolling-update">Rolling Update</h3>
+<p>Let us look at our catalogue deployment file,</p>
+<p><code>File: catalogue-deploy.yml</code></p>
+<pre><code>apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: catalogue
+  namespace: instavote
+  labels:
+    app: catalogue
+    env: dev
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: catalogue
+        env: dev
+    spec:
+      tolerations:
+        - key: &quot;dedicate&quot;
+          operator: &quot;Equal&quot;
+          value: &quot;catalogue&quot;
+          effect: &quot;NoExecute&quot;
+      containers:
+        - name: catalogue
+          image: schoolofdevops/catalogue
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+</code></pre>
+
+<p>We have not defined any deployment strategies here. Let us apply this deployment file.</p>
+<pre><code>kubectl apply -f catalogue-deploy.yml
+
+[output]
+deployment &quot;catalogue&quot; created
+</code></pre>
+
+<pre><code>kubectl get deployment catalogue --export -o yaml
+
+[...]
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+</code></pre>
+
+<p>As we can see, deployment strategy of <strong>rolling update is applied by default</strong>. When we use rolling update,
+  * We can avoid down time since old version of application is still receiving traffic.
+  * Only a few pod is updated at a time.</p>
+<p>Along with the type RollingUpdate, we see two fields.
+  * maxSurge
+  * maxUnavailable</p>
+<h4 id="maxsurge">MaxSurge</h4>
+<p>The maximum batch size of the available pods will get updated at once. For example, if we have 4 pods running with max surge value of 25%, then one pod will be updated at once.</p>
+<h4 id="maxunavailable">MaxUnavailable</h4>
+<p>As the title implies, how many pods can be unavailable during the update process.</p>
+<p>Rolling updates are the preferred way to update an application. It is slower than <strong>recreate</strong> type, but it provides us with zero downtime deployments.
+When you create a deployment, a <strong>replica set</strong> for that deployment is also created.</p>
+<pre><code>kubectl get rs --selector app=catalogue
+
+[output]
+NAME                   DESIRED   CURRENT   READY     AGE
+catalogue-6bc67654d5   1         1         1         17m
+</code></pre>
+
+<p>When you do an update, a new replica set is created. But the old replica set is kept for roll back purposes.</p>
+<p>Let us change the deployment to use a new version.</p>
+<p><code>File: catalogue-deploy.yml</code></p>
+<pre><code>[...]
+      containers:
+        - name: catalogue
+          image: schoolofdevops/catalogue:v1
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+</code></pre>
+
+<p>Apply the changes</p>
+<pre><code>kubectl apply -f catalogue-deploy.yml
+
+kubectl get pods --selector app=catalogue
+
+[output]
+NAME                         READY     STATUS              RESTARTS   AGE
+catalogue-6bc67654d5-tbn9h   0/1       ContainerCreating   0          7s
+catalogue-6c4f7b49d8-bdtgh   1/1       Running             0          8m
+
+kubectl get rs --selector app=catalogue
+
+[output]
+NAME                   DESIRED   CURRENT   READY     AGE
+catalogue-6bc67654d5   0         0         0         21m
+catalogue-6c4f7b49d8   1         1         1         1m
+
+kubectl rollout status deployment catalogue
+
+[output]
+deployment &quot;catalogue&quot; successfully rolled
+
+kubectl rollout history deployment catalogue
+
+[output]
+deployments &quot;catalogue&quot;
+REVISION  CHANGE-CAUSE
+1         &lt;none&gt;
+2         &lt;none&gt;
+</code></pre>
+
+<p>As we can see, we have two revisions of our deployment. This revisions are used for roll backs about which we will learn later in this chapter.</p>
+<h3 id="recreate">Recreate</h3>
+<p>When the <strong>Recreate</strong> deployment strategy is used,
+  * The old pods will be deleted
+  * Then the new pods will be created.</p>
+<p>This will create some downtime in our stack. Hence, this strategy is only recommended for development use cases.</p>
+<p>Let us change the deployment strategy to <strong>recreate</strong> and image tag to <em>latest</em>.</p>
+<p><code>File: catalogue-deploy.yml</code></p>
+<pre><code>apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: catalogue
+  namespace: instavote
+  labels:
+    app: catalogue
+    env: dev
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: catalogue
+        env: dev
+    spec:
+      tolerations:
+        - key: &quot;dedicate&quot;
+          operator: &quot;Equal&quot;
+          value: &quot;catalogue&quot;
+          effect: &quot;NoExecute&quot;
+      containers:
+        - name: catalogue
+          image: schoolofdevops/catalogue:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+
+</code></pre>
+
+<h3 id="rollbacks">Rollbacks</h3>
+<p>As we discussed earlier, the major advantage of using deployments over replication controller is its roll back feature. Let us see how it is done.</p>
+<p>First check the image being used by the deployment.</p>
+<pre><code>kubectl describe deployment catalogue
+
+[...]
+  Containers:
+   catalogue:
+    Image:        schoolofdevops/catalogue:v1
+    Port:         80/TCP
+    Environment:  &lt;none&gt;
+    Mounts:       &lt;none&gt;
+  Volumes:        &lt;none&gt;
+</code></pre>
+
+<p>The current deployment has the image with the tag <strong>v1</strong>.</p>
+<pre><code>kubectl rollout history deployment catalogue
+
+[output]
+deployments &quot;catalogue&quot;
+REVISION  CHANGE-CAUSE
+1         &lt;none&gt;
+2         &lt;none&gt;
+</code></pre>
+
+<p>We have two revisions. Revision 1 is the first ever deployment we have done while revision 2 is the one in which we changed the image tag to v1. Let us rollback to revision 1.</p>
+<p>Let us rollback to revision 1 which has the image tag of <strong>none</strong>.</p>
+<pre><code>kubectl rollout undo deployment catalogue --to-revision=1
+
+[output]
+deployment &quot;catalogue&quot;
+</code></pre>
+
+<pre><code>kubectl describe deployment catalogue
+
+[...]
+  Containers:
+   catalogue:
+    Image:        schoolofdevops/catalogue
+    Port:         80/TCP
+    Environment:  &lt;none&gt;
+    Mounts:       &lt;none&gt;
+  Volumes:        &lt;none&gt;
+</code></pre>
+
+<h3 id="pauseunpause">Pause/Unpause</h3>
+<p>When you are in the middle of a new update for your application and you found out that the application is behaving as intended. In those situations,
+  1. we can pause the update,
+  2. fix the issue,
+  3. resume the update.</p>
+<p>Let us change the image tag to V2 in pod spec.</p>
+<p><code>File: catalogue-deploy.yml</code></p>
+<pre><code>      containers:
+        - name: catalogue
+          image: schoolofdevops/catalogue:V2
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+</code></pre>
+
+<p>Apply the changes.</p>
+<pre><code>kubectl apply -f catalogue-deploy.yml
+
+kubectl get pods
+
+[Output]
+NAME                         READY     STATUS         RESTARTS   AGE
+catalogue-6c4f7b49d8-g5dgc   1/1       Running        0          16m
+catalogue-765554cc7-xsbhs    0/1       ErrImagePull   0          9s
+</code></pre>
+
+<p>Our deployment is failing. From some debugging, we can conclude that we are using a wrong image tag.</p>
+<p>Now pause the update</p>
+<pre><code>kubectl rollout pause
+</code></pre>
+
+<p>Set the deployment to use <strong>v2</strong> version of the image.</p>
+<pre><code>kubectl set image deployment catalogue catalogue=schoolofdevops/catalogue:v2
+
+[output]
+deployment &quot;catalogue&quot; image updated
+</code></pre>
+
+<p>Now resume the update</p>
+<pre><code>kubectl rollout resume deployment catalogue
+kubectl rollout status deployment catalogue
+
+[Ouput]
+deployment &quot;catalogue&quot; successfully rolled out
+</code></pre>
+
+<pre><code>kubectl get pods
+
+[Output]
+NAME                         READY     STATUS    RESTARTS   AGE
+catalogue-6875c8df8f-k4hls   1/1       Running   0          1m
+</code></pre>
+
+<p>When we do this, we skip the need of creating a new rolling update altogether.</p>
+<h3 id="additional-release-strategies">Additional Release Strategies</h3>
+<p>Along with rolling update and recreate strategies, we can also do,</p>
+<ul>
+<li>Canary releases</li>
+<li>Blue/Green deployments.</li>
+</ul>
+<h3 id="canary-releases">Canary Releases</h3>
+<h3 id="bluegreen-deployments">Blue/Green Deployments</h3>
+<hr />
+<ol>
+<li>Create two more catalogue images with different products.</li>
+<li>Recreate type gives an error. Need to be fixed.</li>
+<li>Add Use-cases for recreate strategy type.</li>
+<li>Add additional details of why we skip creating a replica set / rolling update in pause/unpause section.</li>
+</ol>
+              
+            </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+
+</body>
+</html>

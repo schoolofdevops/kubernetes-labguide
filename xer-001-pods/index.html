@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>XER001 - Pods - Kubernetes Lab Guide</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "XER001 - Pods";
+    var mkdocs_page_input_path = "xer-001-pods.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> Kubernetes Lab Guide</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="..">Home</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Just Enough Docker</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../operating-containers/">Lab D101 - Operating Containers</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../dockerizing-voteapp/">Lab D102 - Building and Publishing Docker Images</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../docker-networking/">Lab D103 - Docker Networking</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../docker-volumes/">Lab D104 - Docker Volumes</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Kubernetes Fundamentals</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../3_install_kubernetes/">Lab K101 - Setup Kubernetes Cluster</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../quickdive/">Lab K102 - Kubernetes Quickdive</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../5-vote-deploying_pods/">Lab K103 - Kubernetes LaunchPods</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../replication/">Lab K104 - Adding HA and Scalability with ReplicaSets</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../7-vote-exposing_app_with_service/">Lab K105 - Load Balancing and Service Discovery with Services</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../6-vote-kubernetes_deployment/">Lab K106 - Defining Release Strategy with Deployments</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../11_deploying_sample_app/">Mini Project</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../9-vote-configmaps_and_secrets/">Lab K107 - Configurations Management with ConfigMaps</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../vote-persistent-volumes/">Lab K108 - Peristent Volumes</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Advanced Administration</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../ingress/">Lab K201 - Application Routing with Ingress Controllers</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../configuring_authentication_and_authorization/">Lab K202 - Authentication and Authorization (RBAC)</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../advanced_pod_scheduling/">Lab K203 - Advanced Pod Scheduling</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../pods-health-probes/">Lab K204 - Adding health checks with Probes</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../helm/">Lab K205 - Monitoring setup with HELM</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../10_kubernetes_autoscaling/">Lab K206 - Auto Scaling Capacity with HPA</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../network_policies/">Lab K207 - Access Control with Network Policies</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../cluster-administration/">Lab K208 - Cluster Administration</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Additional Topics</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../13_redis_statefulset/">Creating Replicated Redis Cluster with Statefulsets</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../vote-deployement_strategies/">Building Deployment Strategies</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../12_troubleshooting/">Troubleshooting Tips</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../logging/">Logging</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Exercises</span>
+    <ul class="subnav">
+                <li class=" current">
+                    
+    <a class="current" href="./">XER001 - Pods</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#xer001-pods">XER001 - Pods</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#1">1</a></li>
+        
+            <li><a class="toctree-l4" href="#2">2</a></li>
+        
+            <li><a class="toctree-l4" href="#3">3</a></li>
+        
+            <li><a class="toctree-l4" href="#4">4</a></li>
+        
+            <li><a class="toctree-l4" href="#5">5</a></li>
+        
+            <li><a class="toctree-l4" href="#6">6</a></li>
+        
+            <li><a class="toctree-l4" href="#7">7</a></li>
+        
+            <li><a class="toctree-l4" href="#8">8</a></li>
+        
+            <li><a class="toctree-l4" href="#9">9</a></li>
+        
+            <li><a class="toctree-l4" href="#10">10</a></li>
+        
+            <li><a class="toctree-l4" href="#11">11</a></li>
+        
+        </ul>
+    
+
+    </ul>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../xer-002-rs/">XER002 - ReplicaSets</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Web Quests</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../wq001-cni/">KWQ001 - CNI Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq002-security/">KWQ001 - Kubernetes Security Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq003-ingress/">KWQ003 - Ingress Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq004-monitoring/">KWQ004 - Monitoring Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq005-controllers/">KWQ005 - Controllers Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq006-persistentvolume/">KWQ006 - Persistent Data Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../wq007-maintenance/">KWQ007 - Cluster Maintenance Web Quest</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">References</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../rbac-resource-group-mapping/">RBAC apiGroups to Resource Mapping</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">Kubernetes Lab Guide</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Exercises &raquo;</li>
+        
+      
+    
+    <li>XER001 - Pods</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="xer001-pods">XER001 - Pods</h1>
+<h2 id="1">1</h2>
+<p>Create a Pod manifest which uses "ghost" image and open port 2368.</p>
+<pre><code>apiVersion: v1
+kind: Pod
+metadata:
+  name: ghost
+spec:
+  containers:
+  - image: xxx
+    name: ghost
+    ports:
+    - containerPort: xxx
+      hostPort: xxx
+</code></pre>
+
+<p>Get the name of the Node in which the Pod is scheduled by running,</p>
+<pre><code>kubectl describe pod &lt;POD_NAME&gt;
+
+[output]
+Name:           &lt;POD_NAME&gt;
+Namespace:      default
+Node:           &lt;NODE_NAME&gt;/&lt;NODE_IP&gt;
+Start Time:     Wed, xx May 201x 15:59:29 +0530
+</code></pre>
+
+<p>Try to access the application on the host's port 2368.</p>
+<pre><code>curl &lt;NODE_IP&gt;:2368
+</code></pre>
+
+<p><code>Reference</code>: <a href="https://hub.docker.com/_/ghost/">Ghost Docker image</a></p>
+<h2 id="2">2</h2>
+<p>Create a Pod with ubuntu:trusty image and a command to echo “YOUR_NAME” which overrides the default CMD/ENTRYPOINT of the image.
+<code>Reference</code>: <a href="https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/">Define command argument in a Pod</a></p>
+<h2 id="3">3</h2>
+<p>Apply the following Pod manifest and read the error. Fix it by editing it.</p>
+<pre><code>apiVersion: v1apps/beta1
+kind: Pod
+metadata:
+  name: mogambo-frontend
+  label:
+    role: frontend
+spec:
+  containers:
+    - name: frontend
+      image: schoolofdevops/frontend:orange
+      ports:
+        - containerName: web
+          Port: 8079
+          protocol: TCP
+</code></pre>
+
+<p><code>Reference</code>: <a href="https://stackoverflow.com/questions/37302776/kubectl-get-pods-kubectl-get-pods-status-imagepullbackoff">Debugging a unscheduled Pod</a></p>
+<h2 id="4">4</h2>
+<p>A Pod with the following pod always crashes with CrashLoopBackOff error. How would you fix it?</p>
+<pre><code>      image: schoolofdevops/nginx:break
+      ports: 80
+</code></pre>
+
+<p><code>Reference</code>: <a href="https://sysdig.com/blog/debug-kubernetes-crashloopbackoff/">Debugging a crashed Pod</a></p>
+<h2 id="5">5</h2>
+<p>You are running a Pod with hostPort option. Your Pod status stays “pending”. What could be the issue for the Pod not being scheduled?
+<code>Reference</code>: <a href="https://kubernetes.io/docs/tasks/debug-application-cluster/debug-application/#my-pod-stays-waiting">Debugging a unscheduled Pod</a></p>
+<h2 id="6">6</h2>
+<p>The given manifest for multi-container pod is not working as intended. It does not sync the content between containers like expected. What could be the issue? Find the issue just by reading the manifest.</p>
+<pre><code>apiVersion: v1
+kind: Pod
+metadata:
+  name: web
+  labels:
+    tier: front
+    app: nginx
+    role: ui
+spec:
+  containers:
+    - name: nginx
+      image: nginx:stable-alpine
+      ports:
+        - containerPort: 80
+          protocol: TCP
+      volumeMounts:
+        - name: data
+          mountPath: /var/www/html-sample-app
+
+    - name: sync
+      image: schoolofdevops/sync:v2
+      volumeMounts:
+        - name: datanew
+          mountPath: /var/www/app
+
+  volumes:
+    - name: data
+      emptyDir: {}
+</code></pre>
+
+<h2 id="7">7</h2>
+<p>For the above given manifest, the following command is not working. What could be the issue?</p>
+<pre><code>kubeclt exec -it web -sh -c synch
+</code></pre>
+
+<h2 id="8">8</h2>
+<p>Try to apply the following manifest. If fails, try to debug.</p>
+<pre><code>apiVersion: v1
+kind: Pod
+metadata:
+  name: web
+  labels:
+    app:
+    role: role
+spec:
+  containers:
+    - name: web
+      image: robotshop/rs-web:latest
+      ports:
+        - containerPort: 8080
+          protocol: TCP
+</code></pre>
+
+<h2 id="9">9</h2>
+<p>Fix the following manifest. Don't apply it. Just fix it by reading.</p>
+<pre><code>apiVersion: v1
+kind: pod
+metadata:
+  name: web
+labels:
+  role: role
+spec:
+  containers:
+    - name: web
+      image: robotshop/rs-web:latest
+      ports:
+        - containerport: 8080
+          protocol: TCP
+</code></pre>
+
+<h2 id="10">10</h2>
+<p>Mount <code>/var/www/html</code> from Pod using the follwing manifest. Fill the missing fields.</p>
+<pre><code>apiVersion: v1
+kind: Pod
+metadata:
+  name: web
+  labels:
+    role: role
+spec:
+  containers:
+    - name: web
+      image: robotshop/rs-web:latest
+      ports:
+        - containerPort: 8080
+          protocol: TCP
+  volumes:
+    - name: roboshop-storage
+      emptyDir: {}
+</code></pre>
+
+<h2 id="11">11</h2>
+<p>Write a Pod manifest with the image nginx which has a volume that mounts /etc/nginx/ directory. Use "hostPath" volume type.</p>
+<pre><code>apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  containers:
+  - image: nginx
+    name: nginx
+    ports:
+    - containerPort: 80
+    volumeMounts:
+      xxx
+</code></pre>
+
+<p><code>Reference</code>: <a href="https://kubernetes.io/docs/concepts/storage/volumes/">Volumes</a></p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../xer-002-rs/" class="btn btn-neutral float-right" title="XER002 - ReplicaSets">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../logging/" class="btn btn-neutral" title="Logging"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../logging/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../xer-002-rs/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+
+</body>
+</html>
