@@ -3,7 +3,7 @@
 
 |      |      |
 | :------------- | :------------- |
-| Duration       | 2days     |
+| Duration       | 2-4 days     |
 | Level     | Intermediate, Advanced |
 | Modules          | 10 |
 | Flipped Class | Yes |
