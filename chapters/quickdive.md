@@ -125,7 +125,7 @@ kubectl expose deployment result --type=NodePort --port 80
   * Access results ui application. When you submit vote, do the results change ?
 
 
-#### Cleaing up
+#### Cleaning up
 
 Once you are done observing, you could delete it with the following commands,
 
