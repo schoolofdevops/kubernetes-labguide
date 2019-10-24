@@ -115,6 +115,9 @@ Review **grafana-customvalues.yaml** and then launch grafana as,
 helm install --name grafana --values grafana-customvalues.yaml  . --dry-run
 helm install --name grafana --values grafana-customvalues.yaml  .
 
+sed -i 's/extensions\/v1beta1/apps\/v1/g' templates/*
+sed -i 's/apps\/v1/extensions\/v1beta1/g' templates/*ingress*
+
 helm list
 helm status grafana
 ```
