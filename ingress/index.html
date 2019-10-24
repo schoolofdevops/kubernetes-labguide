@@ -317,10 +317,9 @@
 <p>We pick <strong>DaemonSet</strong>, which will ensure that one instance of <strong>traefik</strong> is run on every node.  Also, we use a specific configuration <strong>hostNetwork</strong> so that the pod running <strong>traefik</strong> attaches to the network of underlying host, and not go through <strong>kube-proxy</strong>. This would avoid extra network hop and increase performance  a bit.  </p>
 <p>You could refer to <a href="https://docs.traefik.io/user-guide/kubernetes/">official traefik docs</a> to understand the installation options and how to use those.</p>
 <p>Deploy ingress controller with daemonset as</p>
-<pre><code>
-cd k8s-code/ingress/traefik
-kubectl apply -f traefik-rbac.yaml
-kubectl apply -f traefik-ds.yaml
+<pre><code>kubectl apply -f https://raw.githubusercontent.com/containous/traefik/v1.7/examples/k8s/traefik-rbac.yaml
+kubectl apply -f https://raw.githubusercontent.com/containous/traefik/v1.7/examples/k8s/traefik-ds.yaml
+
 </code></pre>
 
 <p>Validate</p>
