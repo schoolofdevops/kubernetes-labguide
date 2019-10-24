@@ -34,10 +34,9 @@ You could refer to [official traefik docs](https://docs.traefik.io/user-guide/ku
 Deploy ingress controller with daemonset as
 
 ```
+kubectl apply -f https://raw.githubusercontent.com/containous/traefik/v1.7/examples/k8s/traefik-rbac.yaml
+kubectl apply -f https://raw.githubusercontent.com/containous/traefik/v1.7/examples/k8s/traefik-ds.yaml
 
-cd k8s-code/ingress/traefik
-kubectl apply -f traefik-rbac.yaml
-kubectl apply -f traefik-ds.yaml
 ```
 
 Validate
