@@ -109,9 +109,9 @@
     
         <ul>
         
-            <li><a class="toctree-l4" href="#scaling-a-deployment">Scaling a deployment</a></li>
+            <li><a class="toctree-l4" href="#rolling-out-a-new-version">Rolling out a new version</a></li>
         
-            <li><a class="toctree-l4" href="#rolling-updates-in-action">Rolling Updates in Action</a></li>
+            <li><a class="toctree-l4" href="#breaking-a-rollout">Breaking a Rollout</a></li>
         
             <li><a class="toctree-l4" href="#undo-and-rollback">Undo and Rollback</a></li>
         
@@ -296,9 +296,10 @@
               
                 <h1 id="lab-k106-defining-release-strategy-with-deployment">LAB K106 - Defining Release Strategy with  Deployment</h1>
 <p>A Deployment is a higher level abstraction which sits on top of replica sets and allows you to manage the way applications are deployed, rolled back at a controlled rate.</p>
-<p>Deployment has mainly two responsibilities,</p>
+<p>Deployment provides three features,</p>
 <ul>
-<li>Provide Fault Tolerance: Maintain the number of replicas for a type of service/app. Schedule/delete pods to meet the desired count.</li>
+<li>Availability: Maintain the number of replicas for a type of service/app. Schedule/delete pods to meet the desired count.</li>
+<li>Scalability: Updating the replica count, allows you to scale in and out, and its the responsibility of the deployment to provide with that scalability. You could scale manually or use horizontalPodAutoscaler to do it automatically.  </li>
 <li>Update Strategy: Define a release strategy and update the pods accordingly.</li>
 </ul>
 <pre><code>/k8s-code/projects/instavote/dev/
@@ -345,8 +346,8 @@ spec:
               cpu: &quot;250m&quot;
 </code></pre>
 
-<p>This time, start monitoring with --show-labels options added.</p>
-<pre><code>watch -n 1 kubectl get  pod,deploy,rs,svc --show-labels
+<p>In a additional terminal where you have kubectl client setup, launch the monitoring console by running the following command. Ensure you have --show-labels options set.</p>
+<pre><code>watch -n 1 kubectl get all --show-labels
 </code></pre>
 
 <p>Lets  create the Deployment. Do monitor the labels of the pod while applying this.</p>
@@ -362,34 +363,8 @@ kubectl rollout status deployment/vote
 kubectl get pods --show-labels
 </code></pre>
 
-<p>Sample Output</p>
-<pre><code>kubectl get deployments
-NAME       DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
-vote   3         3         3            1           3m
-</code></pre>
-
-<h2 id="scaling-a-deployment">Scaling a deployment</h2>
-<p>To scale a deployment in Kubernetes:</p>
-<pre><code>kubectl scale deployment/vote --replicas=15
-
-kubectl rollout status deployment/vote
-
-</code></pre>
-
-<p>Sample output:</p>
-<pre><code>
-Waiting for rollout to finish: 5 of 15 updated replicas are available...
-Waiting for rollout to finish: 6 of 15 updated replicas are available...
-deployment &quot;vote&quot; successfully rolled out
-</code></pre>
-
-<p>You could also update the deployment by editing it.</p>
-<pre><code>kubectl edit deploy/vote
-</code></pre>
-
-<p>[change replicas to 8 from the editor, save and observe]</p>
-<h2 id="rolling-updates-in-action">Rolling Updates in Action</h2>
-<p>Now, update the deployment spec to apply</p>
+<h2 id="rolling-out-a-new-version">Rolling out a new version</h2>
+<p>Now, update the deployment spec to use a new version of the image.</p>
 <p>file: vote-deploy.yaml</p>
 <pre><code>
 ...
@@ -404,22 +379,27 @@ template:
 
 </code></pre>
 
-<p>apply</p>
+<p>and trigger a rollout by applying it</p>
 <pre><code>kubectl apply -f vote-deploy.yaml
 
 kubectl rollout status deployment/vote
 </code></pre>
 
-<p>Observe rollout status and monitoring screen.</p>
-<pre><code>
-kubectl rollout history deploy/vote
-
-kubectl rollout history deploy/vote --revision=1
-
-</code></pre>
-
+<p>Observe the following</p>
+<ul>
+<li>rollout status using the command above</li>
+<li>following fields for vote deployment on monitoring screen<ul>
+<li>READY count (will reflect surged replicas e.g. 14/12)</li>
+<li>AVAILABLE count ( will never fall below REPLICAS - maxUnavilable)</li>
+<li>UP-TO-DATE field will reflect replicas with latest version defined in deployment spec</li>
+</ul>
+</li>
+<li>observe that a new replicaset is created for every rollout.  </li>
+<li>Continuously refresh the vote application in the browser to see new version if being rolled out without a downtime.  </li>
+</ul>
 <p>Try updating the version of the image from v2 to v3,v4,v5. Repeat a few times to observe how it rolls out a new version.  </p>
-<h2 id="undo-and-rollback">Undo and Rollback</h2>
+<h2 id="breaking-a-rollout">Breaking a Rollout</h2>
+<p>Introduce an error by using an image which does not exist.</p>
 <p>file: vote-deploy.yaml</p>
 <pre><code>spec:
   containers:
@@ -432,15 +412,20 @@ kubectl rollout history deploy/vote --revision=1
 <pre><code>kubectl apply -f vote-deploy.yaml
 
 kubectl rollout status
+</code></pre>
 
+<p>Observe how  deployment handles the failure in the rolls out.</p>
+<h2 id="undo-and-rollback">Undo and Rollback</h2>
+<p>To observe  the rollout history use the following commands.</p>
+<pre><code>
 kubectl rollout history deploy/vote
 
 kubectl rollout history deploy/vote --revision=xx
 </code></pre>
 
-<p>where replace xxx with revisions</p>
+<p>where replace xx with revisions</p>
 <p>Find out the previous revision with sane configs.</p>
-<p>To undo to a sane version (for example revision 3)</p>
+<p>To undo to a sane version (for example revision 2)</p>
 <pre><code>kubectl rollout undo deploy/vote --to-revision=2
 </code></pre>
               
