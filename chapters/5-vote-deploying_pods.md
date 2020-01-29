@@ -2,7 +2,18 @@
 
 In this lab, you would learn how to launch applications using  the basic deployment unit of kubernetes i.e. **pods**. This time, you are going to do it by writing declarative configs with *yaml* syntax.
 
-### Resource Configs
+## Launching pods without YAML  
+
+You could use [generators](https://kubernetes.io/docs/reference/kubectl/conventions/#generators) to launch a pod by specifying just the image.  
+
+For example, if you would like to launch a pod for redis, with image redis:alpine, the following command would work,
+
+```
+kubectl run redis --generator=run-pod/v1 --image=redis
+```
+
+
+## Kubernetes Resources and writing YAML specs
 
 Each entity created with kubernetes is a resource including pod, service, deployments, replication controller etc. Resources can be defined as YAML or JSON.  Here is the syntax to create a YAML specification.
 
@@ -23,13 +34,20 @@ To find the versino of kubernetes use the following command,
 kubectl version -o yaml
 ```
 
+To list the running pods,
+
+```
+kubectl get pods
+
+```
+
 To list API objects, use the following commands,
 
 ```
 kubectl api-resources
 ```
 
-#### Writing Pod Spec
+### Writing Pod Spec
 
 Lets now create the  Pod config by adding the kind and specs to schma given in the file vote-pod.yaml as follows.
 
@@ -41,14 +59,15 @@ metadata:
 spec:
 ```
 
-Following are the specs to launch the vote application,
+
+**Problem Statement:** Create a YAML spec to launch a  pod with one container to run vote application, which matches the following specs.
 
   * pod:
     * name: vote
     * labels:
         * app: python
         * role: vote
-        *  version: v1
+        * version: v1
   * container
     * name: app
     * image: schoolofdevops/vote:v1
@@ -108,7 +127,9 @@ To **view** pods
 ```
 kubectl get pods
 
-kubectl get po -o wide
+kubectl get po
+
+kubectl get pods -o wide
 
 kubectl get pods vote
 ```

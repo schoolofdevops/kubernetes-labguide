@@ -2,9 +2,10 @@
 
 A Deployment is a higher level abstraction which sits on top of replica sets and allows you to manage the way applications are deployed, rolled back at a controlled rate.
 
-Deployment has mainly two responsibilities,
+Deployment provides three features,
 
-  * Provide Fault Tolerance: Maintain the number of replicas for a type of service/app. Schedule/delete pods to meet the desired count.
+  * Availability: Maintain the number of replicas for a type of service/app. Schedule/delete pods to meet the desired count.
+  * Scalability: Updating the replica count, allows you to scale in and out, and its the responsibility of the deployment to provide with that scalability. You could scale manually or use horizontalPodAutoscaler to do it automatically.  
   * Update Strategy: Define a release strategy and update the pods accordingly.
 
 ```
@@ -57,10 +58,9 @@ spec:
 ```
 
 
-This time, start monitoring with --show-labels options added.
-
+In a additional terminal where you have kubectl client setup, launch the monitoring console by running the following command. Ensure you have --show-labels options set.
 ```
-watch -n 1 kubectl get  pod,deploy,rs,svc --show-labels
+watch -n 1 kubectl get all --show-labels
 ```
 
 
@@ -82,46 +82,11 @@ kubectl get deploy,pods,rs
 kubectl rollout status deployment/vote
 kubectl get pods --show-labels
 ```
-Sample Output
-```
-kubectl get deployments
-NAME       DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
-vote   3         3         3            1           3m
-```
 
 
-## Scaling a deployment  
+## Rolling out a new version
 
-To scale a deployment in Kubernetes:
-
-```
-kubectl scale deployment/vote --replicas=15
-
-kubectl rollout status deployment/vote
-
-```
-
-Sample output:
-```
-
-Waiting for rollout to finish: 5 of 15 updated replicas are available...
-Waiting for rollout to finish: 6 of 15 updated replicas are available...
-deployment "vote" successfully rolled out
-```
-
-You could also update the deployment by editing it.
-
-```
-kubectl edit deploy/vote
-```
-
-[change replicas to 8 from the editor, save and observe]
-
-
-
-## Rolling Updates in Action
-
-Now, update the deployment spec to apply
+Now, update the deployment spec to use a new version of the image.
 
 file: vote-deploy.yaml
 ```
@@ -138,7 +103,7 @@ template:
 
 ```
 
-apply
+and trigger a rollout by applying it
 
 ```
 kubectl apply -f vote-deploy.yaml
@@ -146,21 +111,21 @@ kubectl apply -f vote-deploy.yaml
 kubectl rollout status deployment/vote
 ```
 
-Observe rollout status and monitoring screen.
+Observe the following
 
-
-
-```
-
-kubectl rollout history deploy/vote
-
-kubectl rollout history deploy/vote --revision=1
-
-```
+  * rollout status using the command above
+  * following fields for vote deployment on monitoring screen
+    * READY count (will reflect surged replicas e.g. 14/12)
+    * AVAILABLE count ( will never fall below REPLICAS - maxUnavilable)
+    * UP-TO-DATE field will reflect replicas with latest version defined in deployment spec
+  * observe that a new replicaset is created for every rollout.  
+  * Continuously refresh the vote application in the browser to see new version if being rolled out without a downtime.  
 
 Try updating the version of the image from v2 to v3,v4,v5. Repeat a few times to observe how it rolls out a new version.  
 
-## Undo and Rollback
+## Breaking a Rollout  
+
+Introduce an error by using an image which does not exist.
 
 file: vote-deploy.yaml
 ```
@@ -177,17 +142,26 @@ apply
 kubectl apply -f vote-deploy.yaml
 
 kubectl rollout status
+```
+
+Observe how  deployment handles the failure in the rolls out.
+
+## Undo and Rollback
+
+To observe  the rollout history use the following commands.
+
+```
 
 kubectl rollout history deploy/vote
 
 kubectl rollout history deploy/vote --revision=xx
 ```
 
-where replace xxx with revisions
+where replace xx with revisions
 
 Find out the previous revision with sane configs.
 
-To undo to a sane version (for example revision 3)
+To undo to a sane version (for example revision 2)
 
 ```
 kubectl rollout undo deploy/vote --to-revision=2
