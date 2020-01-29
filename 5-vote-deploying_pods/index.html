@@ -99,6 +99,8 @@
         
             <li><a class="toctree-l4" href="#launching-pods-without-yaml">Launching pods without YAML</a></li>
         
+            <li><a class="toctree-l4" href="#kubernetes-resources-and-writing-yaml-specs">Kubernetes Resources and writing YAML specs</a></li>
+        
             <li><a class="toctree-l4" href="#adding-a-volume-for-data-persistence">Adding a Volume for data persistence</a></li>
         
             <li><a class="toctree-l4" href="#creating-multi-container-pods">Creating Multi Container Pods</a></li>
@@ -304,7 +306,7 @@
 <pre><code>kubectl run redis --generator=run-pod/v1 --image=redis
 </code></pre>
 
-<h3 id="resource-configs">Resource Configs</h3>
+<h2 id="kubernetes-resources-and-writing-yaml-specs">Kubernetes Resources and writing YAML specs</h2>
 <p>Each entity created with kubernetes is a resource including pod, service, deployments, replication controller etc. Resources can be defined as YAML or JSON.  Here is the syntax to create a YAML specification.</p>
 <p><strong>AKMS</strong> =&gt; Resource Configs Specs</p>
 <pre><code>apiVersion: v1
