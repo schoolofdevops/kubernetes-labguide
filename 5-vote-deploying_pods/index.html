@@ -97,9 +97,7 @@
     
         <ul>
         
-            <li><a class="toctree-l4" href="#resource-configs">Resource Configs</a></li>
-        
-            <li><a class="toctree-l4" href="#launching-and-operating-pods">Launching and operating Pods</a></li>
+            <li><a class="toctree-l4" href="#launching-pods-without-yaml">Launching pods without YAML</a></li>
         
             <li><a class="toctree-l4" href="#adding-a-volume-for-data-persistence">Adding a Volume for data persistence</a></li>
         
@@ -300,6 +298,12 @@
               
                 <h1 id="lab-k103-launching-pods-with-kubernetes">Lab K103: Launching Pods with Kubernetes</h1>
 <p>In this lab, you would learn how to launch applications using  the basic deployment unit of kubernetes i.e. <strong>pods</strong>. This time, you are going to do it by writing declarative configs with <em>yaml</em> syntax.</p>
+<h2 id="launching-pods-without-yaml">Launching pods without YAML</h2>
+<p>You could use <a href="https://kubernetes.io/docs/reference/kubectl/conventions/#generators">generators</a> to launch a pod by specifying just the image.  </p>
+<p>For example, if you would like to launch a pod for redis, with image redis:alpine, the following command would work,</p>
+<pre><code>kubectl run redis --generator=run-pod/v1 --image=redis
+</code></pre>
+
 <h3 id="resource-configs">Resource Configs</h3>
 <p>Each entity created with kubernetes is a resource including pod, service, deployments, replication controller etc. Resources can be defined as YAML or JSON.  Here is the syntax to create a YAML specification.</p>
 <p><strong>AKMS</strong> =&gt; Resource Configs Specs</p>
@@ -312,6 +316,11 @@ spec:
 <p>Use this <a href="https://kubernetes.io/docs/reference/">Kubernetes API Reference Document</a> while writing the API specs. This is the most important reference  while working with kubernetes, so its highly advisible that you bookmark it for the version of kubernetes that you use.</p>
 <p>To find the versino of kubernetes use the following command,</p>
 <pre><code>kubectl version -o yaml
+</code></pre>
+
+<p>To list the running pods,</p>
+<pre><code>kubectl get pods
+
 </code></pre>
 
 <p>To list API objects, use the following commands,</p>
@@ -382,7 +391,9 @@ kubectl apply -f FILE
 <p>To <strong>view</strong> pods</p>
 <pre><code>kubectl get pods
 
-kubectl get po -o wide
+kubectl get po
+
+kubectl get pods -o wide
 
 kubectl get pods vote
 </code></pre>
