@@ -181,6 +181,8 @@
         
             <li><a class="toctree-l4" href="#bluegreen-releases">Blue/Green  Releases</a></li>
         
+            <li><a class="toctree-l4" href="#pauseunpause-live-deployments">Pause/Unpause live deployments</a></li>
+        
         </ul>
     
 
@@ -342,11 +344,11 @@ kubectl rollout status deplloyment/vote
 <h2 id="ab-testing-previously-canary">A/B Testing  (Previously Canary)</h2>
 <p><code>Please note canary section is been renamed to A/B testing as this is more appropriate name for  the kind of release strategy being described here</code></p>
 <p>In this section of the lab, you will deploy a A/B testing release which will distribute percentage of total traffic to a newer version. This will allow you to deploy and test your code in production, safely, with a subset of your users.</p>
-<h4 id="whats-the-differnce-between-canary-and-ab-testing">Whats the differnce between Canary and A/B Testing ?</h4>
+<h3 id="whats-the-differnce-between-canary-and-ab-testing">Whats the differnce between Canary and A/B Testing ?</h3>
 <p>Well, with canary, you could typically choose which subset of clients you would want to send to the newer versions, based on some criteria, such as client name, user name, type of device, certain specific header etc.</p>
-<p>A/B testing is simpler version of Canary, where the subset of clients redirected to the new version randomly e.g. 20% of the total traffic going to v2, remaining to v1.  This could be easily achieved with Kubernetes using the method described here. Canary needs more advanced configurations, typically lacking with kubernetes, and thats where you may want to consider using a service mesh such as Istio. </p>
+<p>A/B testing is simpler version of Canary, where the subset of clients redirected to the new version randomly e.g. 20% of the total traffic going to v2, remaining to v1.  This could be easily achieved with Kubernetes using the method described here. Canary needs more advanced configurations, typically lacking with kubernetes, and thats where you may want to consider using a service mesh such as Istio.</p>
 <pre><code>cd k8s-code/projets/instavote/dev
-mkdir abtesting
+mkdir ab
 cp vote-deploy.yaml ab/vote-ab-deploy.yaml
 
 </code></pre>
@@ -355,7 +357,7 @@ cp vote-deploy.yaml ab/vote-ab-deploy.yaml
 <ul>
 <li>metadata.name: vote-ab</li>
 <li>spec.replicas: 3</li>
-<li>spec.selector.matchExpressions: - {key: version, operator: In, values: [v1, v2, v3, v4]}</li>
+<li>spec.selector.matchExpressions: - {key: version, operator: Exists</li>
 <li>template.metadata.labels.version: v4</li>
 <li>template.spec.containers.image: schoolofdevops/vote:v4</li>
 </ul>
@@ -377,7 +379,7 @@ spec:
     matchLabels:
       role: vote
     matchExpressions:
-      - {key: version, operator: In, values: [v1, v2, v3, v4, v5]}
+      - {key: version, operator: Exists}
   minReadySeconds: 40
   template:
     metadata:
@@ -422,8 +424,8 @@ kubectl describe service/vote
 </code></pre>
 
 <p>Now its <strong>18</strong>, which is 3 more than the previous number. Those are the pods created by the ab deployment. And the above output proves that its actually sending traffic to both versions.</p>
-<h4 id="delete-ab">Delete ab</h4>
-<p>Once validated, you could clean up ab release using</p>
+<h3 id="delete-ab-deployment">Delete A/B Deployment</h3>
+<p>Once validated, you could update the main deployment to rollout the new version 100%(procedure not given here) and  clean up ab release using</p>
 <pre><code>kubectl delete -f ab/vote-ab-deploy.yaml
 </code></pre>
 
@@ -460,7 +462,7 @@ spec:
     matchLabels:
       role: vote
     matchExpressions:
-      - {key: version, operator: In, values: [v1, v2, v3]}
+      - {key: version, operator: Exists}
   template:
     metadata:
       name: vote
@@ -498,7 +500,7 @@ spec:
     matchLabels:
       role: vote
     matchExpressions:
-      - {key: version, operator: In, values: [v1, v2, v3, v4]}
+      - {key: version, operator: Exists}
   template:
     metadata:
       name: vote
@@ -729,7 +731,7 @@ spec:
 <pre><code>kubectl apply -f vote-svc.yaml
 </code></pre>
 
-<h3 id="pauseunpause">Pause/Unpause</h3>
+<h2 id="pauseunpause-live-deployments">Pause/Unpause live deployments</h2>
 <p>When you are in the middle of a new update for your application and you found out that the application is behaving as intended. In those situations,
   1. we can pause the update,
   2. fix the issue,
