@@ -6,7 +6,7 @@ What will you learn
   * initContainers
 
 
-## Deploying Redis Service
+## Creating a headless service
 
 We will use Redis as Statefulsets for our instavote application stack.
 It is similar to Deployment, but Statefulsets requires a `Service Name`.
@@ -55,7 +55,7 @@ kubectl describe  svc redis
 
 
 
-## Redis ConfigMap
+## Adding Redis configurations with ConfigMap
 
 Lets now add the redis configuration with configmap.
 
@@ -130,7 +130,7 @@ We have to deploy redis master/slave set up from one statefulset cluster. This r
           mountPath: /mnt/config-map
 ```
 
-### Redis Statefulsets
+### Deploying Redis Master Slaves with Statefulsets
 
 These redis containers are started after initContainers are succefully run and exit. One thing to note here, these containers mount the same volume, `conf`, from the initContainers which has the proper Redis configuration.
 
