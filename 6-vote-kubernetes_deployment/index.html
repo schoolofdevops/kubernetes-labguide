@@ -312,6 +312,8 @@ cp vote-rs.yaml vote-deploy.yaml
 kind: Deployment
 metadata:
   name: vote
+  labels:
+    role: vote 
 spec:
   strategy:
     type: RollingUpdate
@@ -350,8 +352,10 @@ spec:
 <pre><code>watch -n 1 kubectl get all --show-labels
 </code></pre>
 
-<p>Lets  create the Deployment. Do monitor the labels of the pod while applying this.</p>
+<p>Lets  create the Deployment. Do monitor the labels of the pod while applying this. Also clean up the previous replicaset to start with a clean state.</p>
 <pre><code>kubectl apply -f vote-deploy.yaml
+
+kubectl delete rs vote
 </code></pre>
 
 <p>Observe the chances to pod labels, specifically the <strong>pod-template-hash</strong>.</p>
@@ -381,11 +385,18 @@ template:
 
 <p>and trigger a rollout by applying it</p>
 <pre><code>kubectl apply -f vote-deploy.yaml
-
-kubectl rollout status deployment/vote
 </code></pre>
 
-<p>Observe the following</p>
+<p>Open a couple of additional terminals on the host where kubectl is configured and launch the following monitoring commands.</p>
+<p>Terminal 1</p>
+<pre><code>kubectl rollout status deployment/vote
+</code></pre>
+
+<p>Terminal 2</p>
+<pre><code>kubectl get all -l &quot;role=vote&quot;
+</code></pre>
+
+<p><strong>What to watch for ?</strong></p>
 <ul>
 <li>rollout status using the command above</li>
 <li>following fields for vote deployment on monitoring screen<ul>
