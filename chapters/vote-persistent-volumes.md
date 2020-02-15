@@ -1,4 +1,4 @@
-# Dynamic Storage Provisioning 
+# Dynamic Storage Provisioning
 
 This tutorial explains how kubernetes storage works and the complete workflow for the dynamic provisioning. The topics include
 
@@ -138,6 +138,17 @@ kubectl get pods
   * Do you see the pod for db running ?
 
 Observe the dynamic provisioning, go to the host which is running nfs provisioner and look inside */srv* path to find the provisioned volume.
+
+## Fix result app after recreating db
+
+Result app which connects with the db looses the connection and ceases to work after db is redeployed. This is a bug in the application. However, to do a quick fix, redeploy result app as
+
+```
+kubectl scale deploy result --replicas=0
+kubectl scale deploy result --replicas=2
+```
+
+This would recreate the pods for result app and you should see it working again. 
 
 #### Summary
 
