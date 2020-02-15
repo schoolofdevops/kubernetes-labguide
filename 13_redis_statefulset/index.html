@@ -173,7 +173,7 @@
         
             <li><a class="toctree-l4" href="#creating-a-headless-service">Creating a headless service</a></li>
         
-            <li><a class="toctree-l4" href="#redis-configmap">Redis ConfigMap</a></li>
+            <li><a class="toctree-l4" href="#adding-redis-configurations-with-configmap">Adding Redis configurations with ConfigMap</a></li>
         
             <li><a class="toctree-l4" href="#using-initcontainers-to-configure-redis-replication">Using initContainers to configure redis replication</a></li>
         
@@ -339,7 +339,7 @@ kubectl get svc
 kubectl describe  svc redis
 </code></pre>
 
-<h2 id="redis-configmap">Redis ConfigMap</h2>
+<h2 id="adding-redis-configurations-with-configmap">Adding Redis configurations with ConfigMap</h2>
 <p>Lets now add the redis configuration with configmap.</p>
 <p>Redis ConfigMap has two keys
   * master.conf - to provide  Redis master configs
@@ -402,7 +402,7 @@ kubectl describe cm redis
           mountPath: /mnt/config-map
 </code></pre>
 
-<h3 id="redis-statefulsets">Redis Statefulsets</h3>
+<h3 id="deploying-redis-master-slaves-with-statefulsets">Deploying Redis Master Slaves with Statefulsets</h3>
 <p>These redis containers are started after initContainers are succefully run and exit. One thing to note here, these containers mount the same volume, <code>conf</code>, from the initContainers which has the proper Redis configuration.</p>
 <p><code>file: redis-sts.yaml</code></p>
 <pre><code>[...]
