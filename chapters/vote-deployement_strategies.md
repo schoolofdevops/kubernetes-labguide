@@ -27,32 +27,14 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: vote
+  labels:
+    role: vote
 spec:
   strategy:
     type: Recreate
   revisionHistoryLimit: 4
   paused: false
-  replicas: 15
-  minReadySeconds: 20
-  selector:
-    matchLabels:
-      role: vote
-    matchExpressions:
-      - {key: version, operator: In, values: [v1, v2, v3, v4]}
-  template:
-    metadata:
-      name: vote
-      labels:
-        app: python
-        role: vote
-        version: v4
-    spec:
-      containers:
-        - name: app
-          image: schoolofdevops/vote:v4
-          ports:
-            - containerPort: 80
-              protocol: TCP
+.....
 ```
 
 and apply
@@ -74,31 +56,42 @@ You would observe that
 
 
 
-## Canary  Releases
+## A/B Testing  (Previously Canary)
+
+`Please note canary section is been renamed to A/B testing as this is more appropriate name for  the kind of release strategy being described here`
+
+In this section of the lab, you will deploy a A/B testing release which will distribute percentage of total traffic to a newer version. This will allow you to deploy and test your code in production, safely, with a subset of your users.
+
+
+### Whats the differnce between Canary and A/B Testing ?
+
+Well, with canary, you could typically choose which subset of clients you would want to send to the newer versions, based on some criteria, such as client name, user name, type of device, certain specific header etc.
+
+A/B testing is simpler version of Canary, where the subset of clients redirected to the new version randomly e.g. 20% of the total traffic going to v2, remaining to v1.  This could be easily achieved with Kubernetes using the method described here. Canary needs more advanced configurations, typically lacking with kubernetes, and thats where you may want to consider using a service mesh such as Istio.
 
 ```
 cd k8s-code/projets/instavote/dev
-mkdir canary
-cp vote-deploy.yaml canary/vote-canary-deploy.yaml
+mkdir ab
+cp vote-deploy.yaml ab/vote-ab-deploy.yaml
 
 ```
 
-change the following fields in *vote-canary-deploy.yaml*
+change the following fields in *vote-ab-deploy.yaml*
 
-  * metadata.name: vote-canary
+  * metadata.name: vote-ab
   * spec.replicas: 3
-  * spec.selector.matchExpressions: - {key: version, operator: In, values: [v1, v2, v3, v4]}
+  * spec.selector.matchExpressions: - {key: version, operator: Exists
   * template.metadata.labels.version: v4
   * template.spec.containers.image: schoolofdevops/vote:v4
 
-File: canary/frontend-canary-deploy.yml
+File: ab/frontend-ab-deploy.yml
 
 
 ```
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: vote-canary
+  name: vote-ab
 spec:
   strategy:
     type: RollingUpdate
@@ -112,7 +105,7 @@ spec:
     matchLabels:
       role: vote
     matchExpressions:
-      - {key: version, operator: In, values: [v1, v2, v3, v4, v5]}
+      - {key: version, operator: Exists}
   minReadySeconds: 40
   template:
     metadata:
@@ -144,11 +137,11 @@ Endpoints:                10.32.0.10:80,10.32.0.11:80,10.32.0.4:80 + 12 more...
 
 In this example current endpoints are **15**
 
-Now create the  deployment for canary release
+Now create the  deployment for ab release
 
 ```
 
-kubectl apply -f canary/frontend-canary-deploy.yml
+kubectl apply -f ab/frontend-ab-deploy.yml
 
 ```
 
@@ -167,14 +160,14 @@ When you describe vote service, observe the number of endpoints
 Endpoints:                10.32.0.10:80,10.32.0.11:80,10.32.0.16:80 + 15 more...
 ```
 
-Now its **18**, which is 3 more than the previous number. Those are the pods created by the canary deployment. And the above output proves that its actually sending traffic to both versions.
+Now its **18**, which is 3 more than the previous number. Those are the pods created by the ab deployment. And the above output proves that its actually sending traffic to both versions.
 
-#### Delete Canary
+### Delete A/B Deployment
 
-Once validated, you could clean up canary release using
+Once validated, you could update the main deployment to rollout the new version 100%(procedure not given here) and  clean up ab release using
 
 ```
-kubectl delete -f canary/vote-canary-deploy.yaml
+kubectl delete -f ab/vote-ab-deploy.yaml
 ```
 
 
@@ -220,7 +213,7 @@ spec:
     matchLabels:
       role: vote
     matchExpressions:
-      - {key: version, operator: In, values: [v1, v2, v3]}
+      - {key: version, operator: Exists}
   template:
     metadata:
       name: vote
@@ -259,7 +252,7 @@ spec:
     matchLabels:
       role: vote
     matchExpressions:
-      - {key: version, operator: In, values: [v1, v2, v3, v4]}
+      - {key: version, operator: Exists}
   template:
     metadata:
       name: vote
@@ -536,7 +529,7 @@ And apply
 kubectl apply -f vote-svc.yaml
 ```
 
-### Pause/Unpause
+## Pause/Unpause live deployments  
 
 When you are in the middle of a new update for your application and you found out that the application is behaving as intended. In those situations,
   1. we can pause the update,
