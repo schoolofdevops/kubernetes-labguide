@@ -1,7 +1,61 @@
-# Steps to set up NFS based Persistent Volumes
+# Dynamic Storage Provisioning 
+
+This tutorial explains how kubernetes storage works and the complete workflow for the dynamic provisioning. The topics include
+
+  * Storage Classes
+  * PersistentVolumeClaim
+  * persistentVolume
+  * Provisioner
+
+Pre Reading :
+
+  * [Kubernetes Storage Concepts](https://youtu.be/hqE5c5pyfrk?t=461)
+  * [Storage Classes](https://kubernetes.io/docs/concepts/storage/storage-classes/)
 
 
-### Creating a Persistent Volume Claim
+## Redploy db with a a reference to PVC
+
+Lets begin by redeploying the db deployment, this time by configuring it to refer to the persistentVolumeClaim
+
+`file: db-deploy-pvc.yaml`
+
+```
+...
+spec:
+   containers:
+   - image: postgres:9.4
+     imagePullPolicy: Always
+     name: db
+     ports:
+     - containerPort: 5432
+       protocol: TCP
+     #mount db-vol to postgres data path
+     volumeMounts:
+     - name: db-vol
+       mountPath: /var/lib/postgresql/data
+   #create a volume with pvc
+   volumes:
+   - name: db-vol
+     persistentVolumeClaim:
+       claimName: db-pvc
+```
+
+Apply *db-deploy-pcv.yaml*  as
+
+```
+kubectl apply -f db-deploy-pvc.yaml
+
+kubectl get pod -o wide --selector='role=db'
+
+kubectl get pvc,pv
+```
+
+  * Observe and note which host the pod for *db* is launched.
+  * What state is it in ? why?
+  * Has the persistentVolumeClaim been bound to a persistentVolume ? Why?
+
+
+## Creating a Persistent Volume Claim
 
 switch to project directory
 
@@ -42,47 +96,9 @@ kubectl get pvc,pv
 
 ```
 
-Now, to use this PVC, db deployment needs to be updated with *volume* and *volumeMounts* configs as given in example below.
-
-
-`file: db-deploy-pvc.yaml`
-
-```
-...
-spec:
-   containers:
-   - image: postgres:9.4
-     imagePullPolicy: Always
-     name: db
-     ports:
-     - containerPort: 5432
-       protocol: TCP
-     #mount db-vol to postgres data path
-     volumeMounts:
-     - name: db-vol
-       mountPath: /var/lib/postgresql/data
-   #create a volume with pvc
-   volumes:
-   - name: db-vol
-     persistentVolumeClaim:
-       claimName: db-pvc
-```
-
-Apply *db-deploy-pcv.yaml*  as
-
-```
-kubectl apply -f db-deploy-pvc.yaml
-
-kubectl get pod -o wide --selector='role=db'
-
-kubectl get pvc,pv
-```
-
-  * Observe and note which host the pod for *db* is launched.
-  * What state is it in ? why?
-  * Has the persistentVolumeClaim been bound to a persistentVolume ? Why?
-
-
+  * Is persistentVolumeClaim created ?  Why ?
+  * Is persistentVolume created ?  Why ?
+  * Is the persistentVolumeClaim bound with a persistentVolume ?
 
 
 ## Set up NFS Provisioner in kubernetes
