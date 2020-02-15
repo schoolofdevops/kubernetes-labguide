@@ -595,3 +595,13 @@ vote-6875c8df8f-k4hls   1/1       Running   0          1m
 ```
 
 When you do this, you skip the need of creating a new rolling update altogether.
+
+
+## Case for Service Mesh
+
+When kubernetes offers ways to create Blue/Green release strategy, do zero down time deployments, implement A/B Testing, why do you need Service Mesh ?
+
+Well here are a few reasons
+  * Kubernetes does not support Canary out of the box. you could get close by achieving A/B Testing, but still a canary release would be useful in many cases.
+  * Even though you could create A/B testing and Blue/Green deployments, its more or less using some hacks and by the usage of multiple deployments and service configurations. With Istio, you could pretty much achieve all of this with service configurations, and setup many advanced rules.
+  * Its not just about release strategies, Istio offers much more by extending existing awesome kubernetes features. It essentially offloads all the routing, traffic management configurations from developers by managing it all at the platform level.  
