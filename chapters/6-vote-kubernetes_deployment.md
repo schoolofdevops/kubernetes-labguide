@@ -23,6 +23,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: vote
+  labels:
+    role: vote 
 spec:
   strategy:
     type: RollingUpdate
@@ -64,10 +66,12 @@ watch -n 1 kubectl get all --show-labels
 ```
 
 
-Lets  create the Deployment. Do monitor the labels of the pod while applying this.
+Lets  create the Deployment. Do monitor the labels of the pod while applying this. Also clean up the previous replicaset to start with a clean state.
 
 ```
 kubectl apply -f vote-deploy.yaml
+
+kubectl delete rs vote
 ```
 
 Observe the chances to pod labels, specifically the **pod-template-hash**.
@@ -107,11 +111,22 @@ and trigger a rollout by applying it
 
 ```
 kubectl apply -f vote-deploy.yaml
+```
 
+Open a couple of additional terminals on the host where kubectl is configured and launch the following monitoring commands.
+
+Terminal 1
+```
 kubectl rollout status deployment/vote
 ```
 
-Observe the following
+
+Terminal 2
+```
+kubectl get all -l "role=vote"
+```
+
+**What to watch for ?**
 
   * rollout status using the command above
   * following fields for vote deployment on monitoring screen
