@@ -117,9 +117,11 @@
     <a class="current" href="./">Lab K108 - Peristent Volumes</a>
     <ul class="subnav">
             
-    <li class="toctree-l3"><a href="#steps-to-set-up-nfs-based-persistent-volumes">Steps to set up NFS based Persistent Volumes</a></li>
+    <li class="toctree-l3"><a href="#dynamic-storage-provisioning">Dynamic Storage Provisioning</a></li>
     
         <ul>
+        
+            <li><a class="toctree-l4" href="#redploy-db-with-a-a-reference-to-pvc">Redploy db with a a reference to PVC</a></li>
         
             <li><a class="toctree-l4" href="#creating-a-persistent-volume-claim">Creating a Persistent Volume Claim</a></li>
         
@@ -292,40 +294,21 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="steps-to-set-up-nfs-based-persistent-volumes">Steps to set up NFS based Persistent Volumes</h1>
-<h3 id="creating-a-persistent-volume-claim">Creating a Persistent Volume Claim</h3>
-<p>switch to project directory</p>
-<pre><code>cd k8s-code/projects/instavote/dev/
-</code></pre>
-
-<p>Create the following file with the specs below</p>
-<p><code>file: db-pvc.yaml</code></p>
-<pre><code>kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: db-pvc
-spec:
-  accessModes:
-    - ReadWriteOnce
-  volumeMode: Filesystem
-  resources:
-    requests:
-      storage: 2Gi
-  storageClassName: nfs
-
-</code></pre>
-
-<p>create the Persistent Volume Claim and validate</p>
-<pre><code>kubectl get pvc
-
-
-kubectl apply -f db-pvc.yaml
-
-kubectl get pvc,pv
-
-</code></pre>
-
-<p>Now, to use this PVC, db deployment needs to be updated with <em>volume</em> and <em>volumeMounts</em> configs as given in example below.</p>
+                <h1 id="dynamic-storage-provisioning">Dynamic Storage Provisioning</h1>
+<p>This tutorial explains how kubernetes storage works and the complete workflow for the dynamic provisioning. The topics include</p>
+<ul>
+<li>Storage Classes</li>
+<li>PersistentVolumeClaim</li>
+<li>persistentVolume</li>
+<li>Provisioner</li>
+</ul>
+<p>Pre Reading :</p>
+<ul>
+<li><a href="https://youtu.be/hqE5c5pyfrk?t=461">Kubernetes Storage Concepts</a></li>
+<li><a href="https://kubernetes.io/docs/concepts/storage/storage-classes/">Storage Classes</a></li>
+</ul>
+<h2 id="redploy-db-with-a-a-reference-to-pvc">Redploy db with a a reference to PVC</h2>
+<p>Lets begin by redeploying the db deployment, this time by configuring it to refer to the persistentVolumeClaim</p>
 <p><code>file: db-deploy-pvc.yaml</code></p>
 <pre><code>...
 spec:
@@ -359,6 +342,43 @@ kubectl get pvc,pv
 <li>Observe and note which host the pod for <em>db</em> is launched.</li>
 <li>What state is it in ? why?</li>
 <li>Has the persistentVolumeClaim been bound to a persistentVolume ? Why?</li>
+</ul>
+<h2 id="creating-a-persistent-volume-claim">Creating a Persistent Volume Claim</h2>
+<p>switch to project directory</p>
+<pre><code>cd k8s-code/projects/instavote/dev/
+</code></pre>
+
+<p>Create the following file with the specs below</p>
+<p><code>file: db-pvc.yaml</code></p>
+<pre><code>kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: db-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 2Gi
+  storageClassName: nfs
+
+</code></pre>
+
+<p>create the Persistent Volume Claim and validate</p>
+<pre><code>kubectl get pvc
+
+
+kubectl apply -f db-pvc.yaml
+
+kubectl get pvc,pv
+
+</code></pre>
+
+<ul>
+<li>Is persistentVolumeClaim created ?  Why ?</li>
+<li>Is persistentVolume created ?  Why ?</li>
+<li>Is the persistentVolumeClaim bound with a persistentVolume ?</li>
 </ul>
 <h2 id="set-up-nfs-provisioner-in-kubernetes">Set up NFS Provisioner in kubernetes</h2>
 <p>Change into nfs provisioner installation dir</p>

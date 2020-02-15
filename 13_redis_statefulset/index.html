@@ -171,13 +171,13 @@
     
         <ul>
         
-            <li><a class="toctree-l4" href="#redis-service">Redis Service</a></li>
+            <li><a class="toctree-l4" href="#deploying-redis-service">Deploying Redis Service</a></li>
         
             <li><a class="toctree-l4" href="#redis-configmap">Redis ConfigMap</a></li>
         
-            <li><a class="toctree-l4" href="#redis-initcontainers">Redis initContainers</a></li>
+            <li><a class="toctree-l4" href="#using-initcontainers-to-configure-redis-replication">Using initContainers to configure redis replication</a></li>
         
-            <li><a class="toctree-l4" href="#redis-statefulsets">Redis Statefulsets</a></li>
+            <li><a class="toctree-l4" href="#nano-project-configuring-persistent-volume-claim-per-instance-of-redis">Nano Project: Configuring persistent volume claim per instance of redis</a></li>
         
         </ul>
     
@@ -302,11 +302,16 @@
 <li>Statefulsets  </li>
 <li>initContainers</li>
 </ul>
-<h3 id="redis-service">Redis Service</h3>
-<p>We will use Redis as Statefulsets for our Vote application.
-It is similar to Deployment, but Statefulsets requires a <code>Service Name</code>.
-So we will create a <code>headless service</code> (service without endpoints) first.</p>
-<p><code>file: redis-svc.yml</code></p>
+<h2 id="deploying-redis-service">Deploying Redis Service</h2>
+<p>We will use Redis as Statefulsets for our instavote application stack.
+It is similar to Deployment, but Statefulsets requires a <code>Service Name</code>.</p>
+<p>Lets being by cleaning up the existing redis installation</p>
+<pre><code>kubectl delete svc redis
+kubectl delete deploy redis
+</code></pre>
+
+<p>So we will create a <strong>headless</strong> service for redis first. A headless service is the one which will be created with no ClusterIP of its own, but will return the actual IP address of its endpoints (e.g. pods), which we would create later in this case.</p>
+<p><code>file: dev/redis-sts/redis-svc.yml</code></p>
 <pre><code>kind: Service
 metadata:
   name: redis
@@ -324,15 +329,21 @@ spec:
     role: master
 </code></pre>
 
-<p>apply</p>
+<p>Observe
+  * clusterIP value is set to None
+  * selector has been updated to send traffic only to the master</p>
+<p>now apply this and validate</p>
 <pre><code>kubectl apply -f redis-svc.yml
+
+kubectl get svc
+kubectl describe  svc redis
 </code></pre>
 
-<p><em>Note: clusterIP's value is set to None</em>.</p>
-<h3 id="redis-configmap">Redis ConfigMap</h3>
-<p>Redis ConfigMap has two sections.
-  * master.conf - for Redis master
-  * slave.conf - for Redis slave</p>
+<h2 id="redis-configmap">Redis ConfigMap</h2>
+<p>Lets now add the redis configuration with configmap.</p>
+<p>Redis ConfigMap has two keys
+  * master.conf - to provide  Redis master configs
+  * slave.conf - to provide  Redis slave configs</p>
 <p><code>file: redis-cm.yml</code></p>
 <pre><code>apiVersion: v1
 kind: ConfigMap
@@ -355,12 +366,15 @@ data:
     slaveof redis-0.redis 6379
 </code></pre>
 
-<p>apply</p>
+<p>apply and validate</p>
 <pre><code>kubectl apply -f redis-svc.yml
+
+kubectl get cm
+kubectl describe cm redis
 </code></pre>
 
-<h3 id="redis-initcontainers">Redis initContainers</h3>
-<p>We have to deploy redis master/slave set up from one statefulset cluster. This requires two different redis cofigurations , which needs to be described in one Pod template. This complexity can be resolved by using init containers. These init containers copy the appropriate redis configuration by analysing the hostname of the pod. If the Pod's (host)name has <code>0</code> as <strong>Ordinal number</strong>, then it is choosen as the master and master.conf is copied to /etc/ directory. Other Pods will get slave.conf as configuration.</p>
+<h2 id="using-initcontainers-to-configure-redis-replication">Using initContainers to configure redis replication</h2>
+<p>We have to deploy redis master/slave set up from one statefulset cluster. This requires two different redis cofigurations , which needs to be described in one Pod template. This complexity can be resolved by using init containers. These init containers copy the appropriate redis configuration by analysing the hostname of the pod. If the Pod's (host)name has <code>0</code> as <strong>Ordinal number</strong>, then it is choosen as the master and master.conf is copied to /etc/ directory. Every other  pod will be configured as a replica with  slave.conf as configuration.</p>
 <p><code>file: redis-sts.yml</code></p>
 <pre><code>[...]
       initContainers:
@@ -389,7 +403,7 @@ data:
 </code></pre>
 
 <h3 id="redis-statefulsets">Redis Statefulsets</h3>
-<p>These redis containers are started after initContainers are succefully ran. One thing to note here, these containers mount the same volume, <code>conf</code>, from the initContainers which has the proper Redis configuration.</p>
+<p>These redis containers are started after initContainers are succefully run and exit. One thing to note here, these containers mount the same volume, <code>conf</code>, from the initContainers which has the proper Redis configuration.</p>
 <p><code>file: redis-sts.yaml</code></p>
 <pre><code>[...]
       containers:
@@ -415,6 +429,32 @@ data:
 <pre><code>kubectl apply -f redis-sts.yml
 </code></pre>
 
+<p>Validate the MASTER-SLAVE configuration</p>
+<pre><code>kubectl exec redis-0 redis-cli ROLE
+
+kubectl exec redis-1 redis-cli ROLE
+</code></pre>
+
+<p>redis-0 should have been  configured as master, redis-1 as slave.  You should also see that redis-1 is been configured as the slave of redis-0.redis as follows,</p>
+<pre><code>kubectl exec redis-1 redis-cli ROLE
+slave
+redis-0.redis
+6379
+connected
+28
+</code></pre>
+
+<p>This validated the redis master slave configuration.</p>
+<h2 id="nano-project-configuring-persistent-volume-claim-per-instance-of-redis">Nano Project: Configuring persistent volume claim per instance of redis</h2>
+<p>Similar to databases, each redis instance needs its own data store, which should also be persistent. Current code that you have applied uses emptyDir as the volume type. This is a problem as emptyDir gets deleted when the pod is deleted, and is not persistent.    </p>
+<p>Your task is to update the YAML file for the statefulset  with the following changes,</p>
+<ul>
+<li>use volumeClaimTemplate instead of volumes for volume <strong>redis-data</strong>. This will ensure a persistentVolumeClaim per replica/pod. All other volumes remain unchanged.</li>
+<li>Provide the storageClass as NFS, a provisioner for which is already been configured</li>
+<li>Size of the volume could be 200Mi as its just a key value store used by the instavote app to store the votes.</li>
+<li>accessModes should be ReadWriteOnce as the volumes for redis should not be shared between multiple instances.</li>
+</ul>
+<p>Update the statefulSet, apply and validate that persistentVolumeClaim and persistentVolume are created for each instance/pod of redis application.</p>
 <h5 id="reading-list">Reading List</h5>
 <ul>
 <li><a href="https://redis.io/topics/replication">Redis Replication</a></li>
