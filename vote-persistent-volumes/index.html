@@ -127,6 +127,8 @@
         
             <li><a class="toctree-l4" href="#set-up-nfs-provisioner-in-kubernetes">Set up NFS Provisioner in kubernetes</a></li>
         
+            <li><a class="toctree-l4" href="#fix-result-app-after-recreating-db">Fix result app after recreating db</a></li>
+        
         </ul>
     
 
@@ -407,6 +409,13 @@ kubectl get pods
 <li>Do you see the pod for db running ?</li>
 </ul>
 <p>Observe the dynamic provisioning, go to the host which is running nfs provisioner and look inside <em>/srv</em> path to find the provisioned volume.</p>
+<h2 id="fix-result-app-after-recreating-db">Fix result app after recreating db</h2>
+<p>Result app which connects with the db looses the connection and ceases to work after db is redeployed. This is a bug in the application. However, to do a quick fix, redeploy result app as</p>
+<pre><code>kubectl scale deploy result --replicas=0
+kubectl scale deploy result --replicas=2
+</code></pre>
+
+<p>This would recreate the pods for result app and you should see it working again. </p>
 <h4 id="summary">Summary</h4>
 <p>In this lab, you not only setup dynamic provisioning using NFS, but also learnt about statefulsets as well as rbac policies applied to the nfs provisioner.</p>
               
