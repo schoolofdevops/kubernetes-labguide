@@ -150,7 +150,11 @@
         
             <li><a class="toctree-l4" href="#installing-helm">Installing  Helm</a></li>
         
-            <li><a class="toctree-l4" href="#setting-up-monitoring-stack-with-helm">Setting up Monitoring Stack with HELM</a></li>
+            <li><a class="toctree-l4" href="#setup-a-repository-and-install-wordpress">Setup a repository and install Wordpress</a></li>
+        
+            <li><a class="toctree-l4" href="#install-prometheus-with-helm">Install Prometheus with Helm</a></li>
+        
+            <li><a class="toctree-l4" href="#summary">Summary</a></li>
         
         </ul>
     
@@ -301,47 +305,43 @@ chmod 700 get_helm.sh
 ./get_helm.sh
 </code></pre>
 
+<pre><code>curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+
+</code></pre>
+
 <p>Verify the installtion is successful,</p>
 <pre><code>helm --help
+helm version
 </code></pre>
 
-<p>Lets now setup  RBAC configurations required for Tiller, a component of helm that runs inside the kubernetes cluster.</p>
-<p><code>file: tiller-rbac.yaml</code></p>
-<pre><code>apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: tiller
-  namespace: kube-system
----
-apiVersion: rbac.authorization.k8s.io/v1beta1
-kind: ClusterRoleBinding
-metadata:
-  name: tiller
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: cluster-admin
-subjects:
-  - kind: ServiceAccount
-    name: tiller
-    namespace: kube-system
+<h2 id="setup-a-repository-and-install-wordpress">Setup a repository and install Wordpress</h2>
+<pre><code>helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+
+helm repo list
 </code></pre>
 
-<p>Apply the ClusterRole and ClusterRoleBinding.</p>
-<pre><code>kubectl apply -f tiller-rbac.yaml
+<p>Try installing wordpress with helm</p>
+<pre><code>helm search repo wordpress
 
+helm install --name blog  stable/wordpress
+
+kubectl get all -l &quot;release=blog&quot;
 </code></pre>
 
-<p>This is where we actually initialize Tiller in our Kubernetes cluster.</p>
-<pre><code>helm init --service-account tiller
+<p>You could observe all the components deployed with the helm chart for wordpress. If both wordpress and mariadb pods are running, you should be able to access wordpress by using the nodePort. A Sample page looks like follows,  </p>
+<p><img alt="Wordpress UI" src="../images/wordpress.png" /></p>
+<p>Once you are done testing the wordpress application, to uninstall it, use the following sequence of commands.</p>
+<pre><code>helm list
+helm uninstall blog
+kubectl get all -l &quot;release=blog&quot;
 </code></pre>
 
-<h2 id="setting-up-monitoring-stack-with-helm">Setting up Monitoring Stack with HELM</h2>
-<p>You will now setup prometheus and grafana monitoring stacks with helm, with a few customisations.</p>
-<h4 id="install-prometheus-with-helm">Install Prometheus with Helm</h4>
+<h2 id="install-prometheus-with-helm">Install Prometheus with Helm</h2>
+<p>You will now setup prometheus and grafana monitoring stacks with helm, with a few customizations.</p>
 <p>Before proceeding, you could review the <a href="https://github.com/helm/charts/tree/master/stable/prometheus">Official Prometheus Helm Chart</a>  from the repository.</p>
 <p>Search and download a chart for prometheus</p>
-<pre><code>helm search prometheus
+<pre><code>cd ~
+helm search repo prometheus
 helm fetch --untar stable/prometheus
 cd prometheus
 </code></pre>
@@ -351,18 +351,21 @@ cd prometheus
 </code></pre>
 
 <p>Review <strong>prometheus-customvalues.yaml</strong> and then launch prometheus stack as,</p>
-<pre><code>helm install --name prometheus --values prometheus-customvalues.yaml  . --dry-run
-helm install --name prometheus --values prometheus-customvalues.yaml  .
+<pre><code>helm install prometheus --values prometheus-customvalues.yaml  . --dry-run
+helm install prometheus --values prometheus-customvalues.yaml  .
 
 helm list
 helm status prometheus
+
+kubectl get all -l &quot;release=prometheus&quot;
 </code></pre>
 
 <p>You should be able to access prometheus UI by using either the <em>nodePort</em> service or a <em>ingress</em> rule.</p>
 <h4 id="deploying-grafana-with-helm">Deploying Grafana with HELM</h4>
 <p>You could refer to the <a href="https://github.com/helm/charts/tree/master/stable/grafana">Official Grafana Helm Chart repository</a> before proceeding.</p>
 <p>Search and download a chart for prometheus</p>
-<pre><code>helm search grafana
+<pre><code>cd ~
+helm search repo grafana
 helm fetch --untar stable/grafana
 cd grafana
 </code></pre>
@@ -372,14 +375,13 @@ cd grafana
 </code></pre>
 
 <p>Review <strong>grafana-customvalues.yaml</strong> and then launch grafana as,</p>
-<pre><code>helm install --name grafana --values grafana-customvalues.yaml  . --dry-run
-helm install --name grafana --values grafana-customvalues.yaml  .
-
-sed -i 's/extensions\/v1beta1/apps\/v1/g' templates/*
-sed -i 's/apps\/v1/extensions\/v1beta1/g' templates/*ingress*
+<pre><code>helm install grafana --values grafana-customvalues.yaml  . --dry-run
+helm install grafana --values grafana-customvalues.yaml  .
 
 helm list
 helm status grafana
+
+kubectl get all -l &quot;release=grafana&quot;
 </code></pre>
 
 <p>You should be able to access grafana UI by using either the <em>nodePort</em> service or a <em>ingress</em> rule.</p>
@@ -394,7 +396,7 @@ helm status grafana
 <pre><code>helm upgrade -f grafana-customvalues.yaml grafana .
 </code></pre>
 
-<h5 id="summary">Summary</h5>
+<h2 id="summary">Summary</h2>
 <p>In this lab, we not only learnt about HELM, a kubernetes package manager, but  also have setup a sophisticated health monitoring system with prometheus and grafana.</p>
               
             </div>
