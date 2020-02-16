@@ -144,11 +144,11 @@ Observe the dynamic provisioning, go to the host which is running nfs provisione
 Result app which connects with the db looses the connection and ceases to work after db is redeployed. This is a bug in the application. However, to do a quick fix, redeploy result app as
 
 ```
-kubectl scale deploy result --replicas=0
-kubectl scale deploy result --replicas=2
+kubectl rollout restart deploy result
+
 ```
 
-This would recreate the pods for result app and you should see it working again. 
+This would recreate the pods for result app and you should see it working again.
 
 #### Summary
 
