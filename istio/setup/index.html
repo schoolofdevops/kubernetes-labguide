@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+  <title>Setting up Istio Service Mesh on Kubernetes - Kubernetes Lab Guide</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Setting up Istio Service Mesh on Kubernetes";
+    var mkdocs_page_input_path = "istio/setup.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> Kubernetes Lab Guide</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../..">Home</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Just Enough Docker</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../operating-containers/">Lab D101 - Operating Containers</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../dockerizing-voteapp/">Lab D102 - Building and Publishing Docker Images</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../docker-networking/">Lab D103 - Docker Networking</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../docker-volumes/">Lab D104 - Docker Volumes</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Kubernetes Fundamentals</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../3_install_kubernetes/">Lab K101 - Setup Kubernetes Cluster</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../quickdive/">Lab K102 - Kubernetes Quickdive</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../5-vote-deploying_pods/">Lab K103 - Kubernetes LaunchPods</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../replication/">Lab K104 - Adding HA and Scalability with ReplicaSets</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../7-vote-exposing_app_with_service/">Lab K105 - Load Balancing and Service Discovery with Services</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../6-vote-kubernetes_deployment/">Lab K106 - Defining Release Strategy with Deployments</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../11_deploying_sample_app/">Mini Project</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../9-vote-configmaps_and_secrets/">Lab K107 - Configurations Management with ConfigMaps</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../vote-persistent-volumes/">Lab K108 - Peristent Volumes</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Advanced Administration</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../ingress/">Lab K201 - Application Routing with Ingress Controllers</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../configuring_authentication_and_authorization/">Lab K202 - Authentication and Authorization (RBAC)</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../advanced_pod_scheduling/">Lab K203 - Advanced Pod Scheduling</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../pods-health-probes/">Lab K204 - Adding health checks with Probes</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../helm/">Lab K205 - Monitoring setup with HELM</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../10_kubernetes_autoscaling/">Lab K206 - Auto Scaling Capacity with HPA</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../network_policies/">Lab K207 - Access Control with Network Policies</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../cluster-administration/">Lab K208 - Cluster Administration</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Additional Topics</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../13_redis_statefulset/">Creating Replicated Redis Cluster with Statefulsets</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../vote-deployement_strategies/">Building Deployment Strategies</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../12_troubleshooting/">Troubleshooting Tips</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../logging/">Logging</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Exercises</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../xer-001-pods/">XER001 - Pods</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../xer-002-rs/">XER002 - ReplicaSets</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Web Quests</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../wq001-cni/">KWQ001 - CNI Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../wq002-security/">KWQ001 - Kubernetes Security Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../wq003-ingress/">KWQ003 - Ingress Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../wq004-monitoring/">KWQ004 - Monitoring Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../wq005-controllers/">KWQ005 - Controllers Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../wq006-persistentvolume/">KWQ006 - Persistent Data Web Quest</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../wq007-maintenance/">KWQ007 - Cluster Maintenance Web Quest</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">References</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../rbac-resource-group-mapping/">RBAC apiGroups to Resource Mapping</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">Kubernetes Lab Guide</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Setting up Istio Service Mesh on Kubernetes</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="setting-up-istio-service-mesh-on-kubernetes">Setting up Istio Service Mesh on Kubernetes</h1>
+<p>If you already have prometheus and grafana configured, clean it up as istio will come with its own monitoring setup.</p>
+<p>Assuming you have installed helm version 3,</p>
+<pre><code>helm list
+
+</code></pre>
+
+<p>[sample output]</p>
+<pre><code>NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                   APP VERSION
+grafana         instavote       1               2020-02-15 06:55:38.895788799 +0000 UTC deployed        grafana-4.6.3           6.6.0
+prometheus      instavote       1               2020-02-15 06:54:00.177788896 +0000 UTC deployed        prometheus-10.4.0       2.15.2
+</code></pre>
+
+<p>Uninstall prometheus and grafana as,</p>
+<pre><code>helm uninstall prometheus
+helm uninstall grafana
+</code></pre>
+
+<h2 id="install-istio-control-plane">Install Istio Control Plane</h2>
+<p>Download and install version 1.4.4. of istio using istioctl utility as,</p>
+<pre><code>cd ~
+curl -L https://istio.io/downloadIstio | sh -
+cd istio-1.4.4/
+export PATH=$PWD/bin:$PATH
+echo &quot;export PATH=$PWD/bin:$PATH&quot; &gt;&gt; ~/.bashrc
+</code></pre>
+
+<p>Install istio with demo configuration profile. This is a quick start profile. You could customize the profile and apply it later.</p>
+<pre><code>istioctl manifest apply --set profile=demo
+</code></pre>
+
+<p>validate</p>
+<pre><code>kubectl get pods -n istio-system
+</code></pre>
+
+<p>[Sample Output]</p>
+<pre><code>NAME                                      READY   STATUS    RESTARTS   AGE
+grafana-6b65874977-8mlrq                  1/1     Running   0          6h26m
+istio-citadel-58c44d6964-9vsl2            1/1     Running   0          6h26m
+istio-egressgateway-74b6995559-w6hx8      1/1     Running   0          6h26m
+istio-galley-5bf54d9674-plq6j             1/1     Running   0          6h26m
+istio-ingressgateway-7f4b56656f-cs6gw     1/1     Running   0          6h26m
+istio-pilot-568855fb7-lbt2v               1/1     Running   0          6h26m
+istio-policy-fdb9d6845-prmb5              1/1     Running   4          6h26m
+istio-sidecar-injector-56b7656fd8-ws7hr   1/1     Running   0          6h26m
+istio-telemetry-676db4d695-8kmgh          1/1     Running   3          6h26m
+istio-tracing-c66d67cd9-db2bp             1/1     Running   0          6h26m
+kiali-8559969566-sjrqm                    1/1     Running   0          6h26m
+prometheus-66c5887c86-vpbnk               1/1     Running   0          6h26m
+</code></pre>
+
+<p>As you notice, Istio is been installed with all components including prometheus and grafana in its own <strong>istio-system</strong> namespace.</p>
+<h2 id="nano-project-expose-istio-services-with-nodeport">Nano Project: Expose istio services with NodePort</h2>
+<pre><code>kubectl get svc -n istio-system
+</code></pre>
+
+<p>[sample output]</p>
+<pre><code>grafana                  ClusterIP      10.108.218.221   &lt;none&gt;        3000/TCP                                                                                                                     6h27m
+istio-citadel            ClusterIP      10.99.97.53      &lt;none&gt;        8060/TCP,15014/TCP                                                                                                           6h27m
+istio-egressgateway      ClusterIP      10.101.104.101   &lt;none&gt;        80/TCP,443/TCP,15443/TCP                                                                                                     6h27m
+istio-galley             ClusterIP      10.100.6.131     &lt;none&gt;        443/TCP,15014/TCP,9901/TCP,15019/TCP                                                                                         6h27m
+istio-ingressgateway     LoadBalancer   10.100.139.2     &lt;pending&gt;     15020:31152/TCP,80:32201/TCP,443:32595/TCP,15029:30669/TCP,15030:32260/TCP,15031:31472/TCP,15032:30961/TCP,15443:31147/TCP   6h27m
+istio-pilot              ClusterIP      10.102.149.206   &lt;none&gt;        15010/TCP,15011/TCP,8080/TCP,15014/TCP                                                                                       6h27m
+istio-policy             ClusterIP      10.105.1.93      &lt;none&gt;        9091/TCP,15004/TCP,15014/TCP                                                                                                 6h27m
+istio-sidecar-injector   ClusterIP      10.102.207.177   &lt;none&gt;        443/TCP                                                                                                                      6h27m
+istio-telemetry          ClusterIP      10.110.151.201   &lt;none&gt;        9091/TCP,15004/TCP,15014/TCP,42422/TCP                                                                                       6h27m
+jaeger-agent             ClusterIP      None             &lt;none&gt;        5775/UDP,6831/UDP,6832/UDP                                                                                                   6h27m
+jaeger-collector         ClusterIP      10.107.193.83    &lt;none&gt;        14267/TCP,14268/TCP,14250/TCP                                                                                                6h27m
+jaeger-query             ClusterIP      10.108.133.235   &lt;none&gt;        16686/TCP                                                                                                                    6h27m
+kiali                    ClusterIP      10.108.29.253    &lt;none&gt;        20001/TCP                                                                                                                    6h27m
+prometheus               ClusterIP      10.96.44.190     &lt;none&gt;        9090/TCP                                                                                                                     6h27m
+tracing                  ClusterIP      10.104.140.214   &lt;none&gt;        80/TCP                                                                                                                       6h27m
+zipkin                   ClusterIP      10.105.49.167    &lt;none&gt;        9411/TCP                                                                                                                     6h27m
+</code></pre>
+
+<p>You would observe that istio is been deployed with either CLusterIP or LoadBalancer as type of services. You may need to access some of these services from outside, and the quickest way to do so would be using NodePort as the service type.</p>
+<p>Your task is to open the following services to outside traffic using NodePort as the service type</p>
+<ul>
+<li>Grafana</li>
+<li>Istio Ingress Gateway</li>
+<li>zipkin</li>
+<li>tracing</li>
+<li>kiali</li>
+</ul>
+<h2 id="deploy-bookinfo-sample-app">Deploy bookinfo sample app</h2>
+<p>To deploy a sample microservices app <a href="https://istio.io/docs/examples/bookinfo/">bookinfo</a>, first create a bookinfo namespace and switch to it.</p>
+<pre><code>kubectl create namespace bookinfo
+kubectl label namespace bookinfo istio-injection=enabled
+kubectl get ns --show-labels
+kubectl config set-context --current --namespace=bookinfo
+</code></pre>
+
+<p>Now deploy bookinfo sample app as,</p>
+<p><code>ensure you are in the istio-xxx directory before running these commands</code></p>
+<pre><code>kubectl apply -f samples/bookinfo/platform/kube/bookinfo.yaml
+
+</code></pre>
+
+<p>validate that all services have been deployed with the following command</p>
+<pre><code>kubectl get all
+
+</code></pre>
+
+<p>[sample output]</p>
+<pre><code>NAME                                  READY   STATUS    RESTARTS   AGE
+pod/details-v1-78d78fbddf-csfd2       2/2     Running   0          71s
+pod/productpage-v1-596598f447-t7bn4   2/2     Running   0          70s
+pod/ratings-v1-6c9dbf6b45-b4h6h       2/2     Running   0          70s
+pod/reviews-v1-7bb8ffd9b6-4tq7s       2/2     Running   0          70s
+pod/reviews-v2-d7d75fff8-zkq7l        2/2     Running   0          70s
+pod/reviews-v3-68964bc4c8-mq8xq       2/2     Running   0          70s
+
+NAME                  TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
+service/details       ClusterIP   10.103.247.170   &lt;none&gt;        9080/TCP   71s
+service/productpage   ClusterIP   10.103.250.98    &lt;none&gt;        9080/TCP   70s
+service/ratings       ClusterIP   10.105.113.217   &lt;none&gt;        9080/TCP   70s
+service/reviews       ClusterIP   10.97.164.129    &lt;none&gt;        9080/TCP   70s
+
+NAME                             READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/details-v1       1/1     1            1           71s
+deployment.apps/productpage-v1   1/1     1            1           70s
+deployment.apps/ratings-v1       1/1     1            1           70s
+deployment.apps/reviews-v1       1/1     1            1           70s
+deployment.apps/reviews-v2       1/1     1            1           70s
+deployment.apps/reviews-v3       1/1     1            1           70s
+
+NAME                                        DESIRED   CURRENT   READY   AGE
+replicaset.apps/details-v1-78d78fbddf       1         1         1       71s
+replicaset.apps/productpage-v1-596598f447   1         1         1       70s
+replicaset.apps/ratings-v1-6c9dbf6b45       1         1         1       70s
+replicaset.apps/reviews-v1-7bb8ffd9b6       1         1         1       70s
+replicaset.apps/reviews-v2-d7d75fff8        1         1         1       70s
+replicaset.apps/reviews-v3-68964bc4c8       1         1         1       70s
+</code></pre>
+
+<p>You should see the following microservices deployed,</p>
+<ul>
+<li>productpage-v1</li>
+<li>details-v1</li>
+<li>ratings-v1</li>
+<li>reviews-v1</li>
+<li>reviews-v2</li>
+<li>reviews-v3</li>
+</ul>
+<p>You would also see each of the pod is running atleast 2 pods, that validates that envoy proxy is been injected along with each of your application.  If you see these services running, you have a working istio cluster with a sample app running on top of your kubernetes environment.</p>
+<h2 id="exposing-bookinfo-app-from-outside">Exposing bookinfo app from outside</h2>
+<p>Istio has its own way of handling traffic and exposing it outside. Istio creates two difference resources which are equivalent of what kubernetes service offers.  </p>
+<ul>
+<li>Gateway</li>
+<li>VirtualService</li>
+</ul>
+<p>To expose the bookinfo application externally, create and examine gateway and VirtualService as,</p>
+<pre><code>kubectl apply -f samples/bookinfo/networking/bookinfo-gateway.yaml
+
+</code></pre>
+
+<p>validate</p>
+<pre><code>kubectl get virtualservice,gateway
+
+or
+
+istioctl get all
+</code></pre>
+
+<p>Observe the output of  following</p>
+<pre><code>kubectl describe gateway bookinfo
+kubectl describe virtualservice bookinfo
+</code></pre>
+
+<p>To access this application, you need to know the following two things,</p>
+<ul>
+<li>IP Address/Hostname of host which is running Ingress Gateway</li>
+<li>NodePort mapping to port 80 for Ingress Gateway</li>
+</ul>
+<p>Use the following commands and note down the IP Address/Hostname and NodePort for ingress</p>
+<pre><code>kubectl get pod -l istio=ingressgateway -n istio-system -o jsonpath='{.items[0].status.hostIP}'
+
+kubectl get svc -l istio=ingressgateway -n istio-system
+</code></pre>
+
+<p>[sample output]</p>
+<pre><code>kubectl get pod -l istio=ingressgateway -n istio-system -o jsonpath='{.items[0].status.hostIP}'
+178.128.53.126
+
+
+kubectl get svc -l istio=ingressgateway -n istio-system
+
+NAME                   TYPE           CLUSTER-IP     EXTERNAL-IP   PORT(S)                                                                                                                      AGE
+istio-ingressgateway   LoadBalancer   10.100.139.2   &lt;pending&gt;     15020:31152/TCP,80:32201/TCP,443:32595/TCP,15029:30669/TCP,15030:32260/TCP,15031:31472/TCP,15032:30961/TCP,15443:31147/TCP   8h
+</code></pre>
+
+<p>In the example above, IP address of my ingress host is 178.128.53.126 and NodePort mapping to 80 is 32201.</p>
+<p>Now to access bookinfo frontend app, I would construct a url as follows</p>
+<p>http://178.128.53.126:32201/productpage</p>
+<p>Alternately you could use the hostname/fqdn of the host if you know it.</p>
+<p>If you load this url in the browser, you should see the product page for bookinfo app as,</p>
+<p><img alt="bookinfo product page" src="../../images/bookinfo.png" /></p>
+<h2 id="apply-destination-rules">Apply Destination Rules</h2>
+<pre><code>kubectl apply -f samples/bookinfo/networking/destination-rule-all.yaml
+
+kubectl get dr
+
+kubectl describe dr rating
+
+</code></pre>
+              
+            </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+      
+    </span>
+</div>
+    <script>var base_url = '../..';</script>
+    <script src="../../js/theme.js" defer></script>
+      <script src="../../search/main.js" defer></script>
+
+</body>
+</html>
