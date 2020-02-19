@@ -329,9 +329,11 @@ spec:
     role: master
 </code></pre>
 
-<p>Observe
-  * clusterIP value is set to None
-  * selector has been updated to send traffic only to the master</p>
+<p>Observe</p>
+<ul>
+<li>clusterIP value is set to None</li>
+<li>selector has been updated to send traffic only to the master</li>
+</ul>
 <p>now apply this and validate</p>
 <pre><code>kubectl apply -f redis-svc.yml
 
@@ -367,7 +369,7 @@ data:
 </code></pre>
 
 <p>apply and validate</p>
-<pre><code>kubectl apply -f redis-svc.yml
+<pre><code>kubectl apply -f redis-cm.yml
 
 kubectl get cm
 kubectl describe cm redis

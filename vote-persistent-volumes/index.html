@@ -129,6 +129,8 @@
         
             <li><a class="toctree-l4" href="#fix-result-app-after-recreating-db">Fix result app after recreating db</a></li>
         
+            <li><a class="toctree-l4" href="#nano-project">Nano Project</a></li>
+        
         </ul>
     
 
@@ -416,6 +418,12 @@ kubectl get pods
 </code></pre>
 
 <p>This would recreate the pods for result app and you should see it working again.</p>
+<h2 id="nano-project">Nano Project</h2>
+<p>Similar to postgres which mounts the data at /var/lib/postgresql/data and consumes it to store the database files, Redis creates and stores the file at <strong>/data</strong> path.  Your task is to have a nfs volume of size <strong>200Mi</strong> created and mounted at /data for the redis container.</p>
+<p>You could follow these steps to complete this task
+  * create a pvc by name <strong>redis</strong>
+  * create a volume in the pod spec with type persistentVolumeClaim. Call is <strong>redis-data</strong>
+  * add volumeMounts to the container spec (part of the same deployment file) running redis and have it mount <strong>redis-data</strong> volume created in the pod spec above.</p>
 <h4 id="summary">Summary</h4>
 <p>In this lab, you not only setup dynamic provisioning using NFS, but also learnt about statefulsets as well as rbac policies applied to the nfs provisioner.</p>
               

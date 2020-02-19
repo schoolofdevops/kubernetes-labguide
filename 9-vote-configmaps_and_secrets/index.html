@@ -113,13 +113,15 @@
     <a class="current" href="./">Lab K107 - Configurations Management with ConfigMaps</a>
     <ul class="subnav">
             
-    <li class="toctree-l3"><a href="#configurations-management-with-configmaps">Configurations Management with ConfigMaps</a></li>
+    <li class="toctree-l3"><a href="#configurations-management-with-configmaps-and-secrets">Configurations Management with ConfigMaps and Secrets</a></li>
     
         <ul>
         
             <li><a class="toctree-l4" href="#injecting-env-variables-with-configmaps">Injecting env variables with configmaps</a></li>
         
             <li><a class="toctree-l4" href="#note-automatic-updation-of-deployments-on-configmap-updates">Note: Automatic Updation of deployments on ConfigMap  Updates</a></li>
+        
+            <li><a class="toctree-l4" href="#enabling-http-authentication-for-traefik-with-secrets">Enabling HTTP Authentication for Traefik  with Secrets</a></li>
         
         </ul>
     
@@ -292,7 +294,7 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="configurations-management-with-configmaps">Configurations Management with ConfigMaps</h1>
+                <h1 id="configurations-management-with-configmaps-and-secrets">Configurations Management with ConfigMaps and Secrets</h1>
 <p>Configmap is one of the ways to provide configurations to your application.</p>
 <h3 id="injecting-env-variables-with-configmaps">Injecting env variables with configmaps</h3>
 <p>Create our configmap for vote app</p>
@@ -360,6 +362,83 @@ kubectl  rollout status deploy/vote
 <li>To update, create a new configMaps and do not update the previous one. Treat it as immutable.</li>
 <li>Update deployment spec to use the new version of the configMaps. This will ensure immediate update.</li>
 </ul>
+<h2 id="enabling-http-authentication-for-traefik-with-secrets">Enabling HTTP Authentication for Traefik  with Secrets</h2>
+<p>In this part of the lab, you will</p>
+<ul>
+<li>Create a secret with an existing file</li>
+<li>Modify a ingress rule to use that secret via annotations</li>
+<li>Validate if traefik, the ingress controller, automatically picks up the configurations and enables http auth s</li>
+</ul>
+<p>Lets create  htpasswd spec as Secret   </p>
+<pre><code>  apt install -yq apache2-utils
+  htpasswd -c auth devops
+</code></pre>
+
+<p>Or use <a href="http://www.htaccesstools.com/htpasswd-generator/">Online htpasswd generator</a> to generate a htpasswd spec. if you use the online generator, copy the contents to a file by name <code>auth</code> in the current directory.</p>
+<p>Then generate the secret as,</p>
+<pre><code>  kubectl create secret generic mysecret --from-file auth
+
+  kubectl get secret
+
+  kubectl describe secret mysecret
+</code></pre>
+
+<p>And then add annotations to the ingress object so that it is read by the ingress controller to update configurations.</p>
+<p><code>file: vote-ing.yaml</code></p>
+<pre><code>apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: vote
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    ingress.kubernetes.io/auth-type: &quot;basic&quot;
+    ingress.kubernetes.io/auth-secret: &quot;mysecret&quot;
+spec:
+  rules:
+    - host: vote.example.com
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: vote
+              servicePort: 82
+    - host: results.example.com
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: results
+              servicePort: 81
+
+</code></pre>
+
+<p>where,</p>
+<ul>
+<li><em>ingress.kubernetes.io/auth-type: "basic"</em> defines authentication type that needs to be added.</li>
+<li><em>ingress.kubernetes.io/auth-secret: "mysecret"</em> refers to the secret created earlier.</li>
+</ul>
+<p>apply</p>
+<pre><code>kubectl apply -f vote-ing.yaml
+kubectl get ing/vote -o yaml
+</code></pre>
+
+<p>Observe the annotations field. No sooner than you apply this spec, ingress controller reads the event and a basic http authentication is set with the secret you added.</p>
+<pre><code class="bash">
+                      +----------+
+       +--update----&gt; | traefik  |
+       |              |  configs |
+       |              +----------+
+  +----+----+--+            ^
+  | ingress    |            :
+  | controller |            :
+  +----+-------+            :
+       |              +-----+-------+
+       +---watch----&gt; | ingress     | &lt;------- user
+                      | annotations |
+                      +-------------+
+</code></pre>
+
+<p><img alt="Name Based Routing" src="../images/domain-name.png" /></p>
               
             </div>
           </div>
