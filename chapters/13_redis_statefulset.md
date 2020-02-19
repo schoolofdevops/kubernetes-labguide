@@ -41,6 +41,7 @@ spec:
 ```
 
 Observe
+
   * clusterIP value is set to None
   * selector has been updated to send traffic only to the master
 
@@ -90,7 +91,7 @@ data:
 apply and validate
 
 ```
-kubectl apply -f redis-svc.yml
+kubectl apply -f redis-cm.yml
 
 kubectl get cm
 kubectl describe cm redis

@@ -28,7 +28,7 @@ kubectl get namespace --show-labels
 
 Now, define a restrictive network policy which would,
 
-  * Block all incoming connections from any source except for pods from the same namespace  
+  * Block all incoming connections 
   * Block all outgoing connections
 
 ```bash

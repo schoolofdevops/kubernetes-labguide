@@ -32,7 +32,7 @@ Try installing wordpress with helm
 ```
 helm search repo wordpress
 
-helm install --name blog  stable/wordpress
+helm install blog  stable/wordpress
 
 kubectl get all -l "release=blog"
 ```
