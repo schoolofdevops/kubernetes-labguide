@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Lab K104 - Adding HA and Scalability with ReplicaSets - Kubernetes Tutorial</title>
+  <title>Lab D102 - Building and Publishing Docker Images - Kubernetes Tutorial</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -17,9 +17,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Lab K104 - Adding HA and Scalability with ReplicaSets";
-    var mkdocs_page_input_path = "replication.md";
-    var mkdocs_page_url = "/replication/";
+    var mkdocs_page_name = "Lab D102 - Building and Publishing Docker Images";
+    var mkdocs_page_input_path = "building-publishing-docker-images.md";
+    var mkdocs_page_url = "/building-publishing-docker-images/";
   </script>
   
   <script src="../js/jquery-2.1.1.min.js" defer></script>
@@ -59,11 +59,25 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../operating-containers/">Lab D101 - Operating Containers</a>
+    <a class="" href="../operating-docker-containers/">Lab D101 - Operating Containers</a>
                 </li>
-                <li class="">
+                <li class=" current">
                     
-    <a class="" href="../dockerizing-voteapp/">Lab D102 - Building and Publishing Docker Images</a>
+    <a class="current" href="./">Lab D102 - Building and Publishing Docker Images</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#lab-build-a-docker-image-for-instavote-frontend-vote-app">Lab : Build a docker image for Instavote frontend vote app</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#approach-1-building-docker-image-for-voteapp-manually">Approach 1: Building docker image for voteapp manually</a></li>
+        
+            <li><a class="toctree-l4" href="#approach-2-building-image-with-dockerfile">Approach 2: Building image with Dockerfile</a></li>
+        
+        </ul>
+    
+
+    </ul>
                 </li>
                 <li class="">
                     
@@ -82,55 +96,39 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../3_install_kubernetes/">Lab K101 - Setup Kubernetes Cluster</a>
+    <a class="" href="../install_kubernetes_with_kubeadm/">Lab K101 - Setup Kubernetes Cluster</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../quickdive/">Lab K102 - Kubernetes Quickdive</a>
+    <a class="" href="../kubernetes_quickdive/">Lab K102 - Kubernetes Quickdive</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../5-vote-deploying_pods/">Lab K103 - Kubernetes LaunchPods</a>
-                </li>
-                <li class=" current">
-                    
-    <a class="current" href="./">Lab K104 - Adding HA and Scalability with ReplicaSets</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l3"><a href="#lab-k104-adding-ha-and-scalability-with-replicasets">Lab K104 - Adding HA and Scalability with ReplicaSets</a></li>
-    
-        <ul>
-        
-            <li><a class="toctree-l4" href="#creating-a-namespace-and-switching-to-it">Creating a Namespace and switching to it</a></li>
-        
-            <li><a class="toctree-l4" href="#creating-a-namespace">Creating a namespace</a></li>
-        
-            <li><a class="toctree-l4" href="#adding-replicaset-configurations">Adding ReplicaSet Configurations</a></li>
-        
-        </ul>
-    
-
-    </ul>
+    <a class="" href="../create-and-deploy-kubernetes-pods/">Lab K103 - Kubernetes LaunchPods</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../7-vote-exposing_app_with_service/">Lab K105 - Load Balancing and Service Discovery with Services</a>
+    <a class="" href="../kubernetes-replicasets-howto/">Lab K104 - Adding HA and Scalability with ReplicaSets</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../6-vote-kubernetes_deployment/">Lab K106 - Defining Release Strategy with Deployments</a>
+    <a class="" href="../kubernetes-service-networking/">Lab K105 - Load Balancing and Service Discovery with Services</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../11_deploying_sample_app/">Mini Project</a>
+    <a class="" href="../kubernetes-rollouts-rollbacks-deployments/">Lab K106 - Defining Release Strategy with Deployments</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../9-vote-configmaps_and_secrets/">Lab K107 - Configurations Management with ConfigMaps</a>
+    <a class="" href="../kubernetes-sample-project/">Mini Project</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../vote-persistent-volumes/">Lab K108 - Peristent Volumes</a>
+    <a class="" href="../kubernetes-configuration-management-configmaps-secrets/">Lab K107 - Configurations Management with ConfigMaps</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../kubernetes-dynamic-storage-provisioning/">Lab K108 - Peristent Volumes</a>
                 </li>
     </ul>
 	    </li>
@@ -280,11 +278,11 @@
     
       
         
-          <li>Kubernetes Fundamentals &raquo;</li>
+          <li>Just Enough Docker &raquo;</li>
         
       
     
-    <li>Lab K104 - Adding HA and Scalability with ReplicaSets</li>
+    <li>Lab D102 - Building and Publishing Docker Images</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -294,186 +292,78 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="lab-k104-adding-ha-and-scalability-with-replicasets">Lab K104 - Adding HA and Scalability with ReplicaSets</h1>
-<p>If you are not running a monitoring screen, start it in a new terminal with the following command.</p>
-<pre><code>watch -n 1 kubectl get  pod,deploy,rs,svc
+                <h2 id="lab-build-a-docker-image-for-instavote-frontend-vote-app">Lab : Build a docker image for Instavote frontend vote app</h2>
+<p><a href="https://github.com/schoolofdevops/vote">Voteapp</a> is a app written in python. Its a simple, web based  application which serves as a frontend for Instavote project. As a devops engineer, you have been tasked with building an image for vote app and publish it to docker hub registry.</p>
+<h3 id="approach-1-building-docker-image-for-voteapp-manually">Approach 1: Building docker image for voteapp manually</h3>
+<p>on the host</p>
+<pre><code>git clone https://github.com/schoolofdevops/vote
+docker container run -idt --name build -p 8000:80 python:2.7-alpine sh
+cd vote
+docker cp . build:/app
+docker exec -it build sh
 </code></pre>
 
-<h3 id="creating-a-namespace-and-switching-to-it">Creating a Namespace and switching to it</h3>
-<p>Check current config</p>
-<pre><code>
-kubectl config view
+<p>inside the container</p>
+<pre><code>cd /app
+pip install -r requirements.txt
+gunicorn app:app -b 0.0.0.0:80
 </code></pre>
 
-<p>You could also examine the current configs in file <strong>cat ~/.kube/config</strong></p>
-<h2 id="creating-a-namespace">Creating a namespace</h2>
-<p>Namespaces offers separation of resources running on the same physical infrastructure into virtual clusters. It is typically useful in mid to large scale environments with multiple projects, teams and need separate scopes. It could also be useful to map to your workflow stages e.g. dev, stage, prod.   </p>
-<p>Lets create a namespace called <strong>instavote</strong>  </p>
-<pre><code>kubectl get ns
+<p>Validate by accessing http://IPADDRESS:8000</p>
+<p>on the host</p>
+<pre><code>docker diff build
 
-kubectl create namespace instavote
+docker container commit build &lt;docker_id&gt;/vote:v1
 
-kubectl get ns
+docker login
 
-</code></pre>
-
-<p>And switch to it</p>
-<pre><code>
-kubectl config --help
-
-kubectl config get-contexts
-
-kubectl config current-context
-
-kubectl config set-context --help
-
-kubectl config set-context --current --namespace=instavote
-
-kubectl config get-contexts
-
-kubectl config view
-
+docker image push &lt;docker_id&gt;/vote:v1
 
 </code></pre>
 
-<p><strong>Exercise</strong>: Go back to the monitoring screen and observe what happens after switching the namespace.</p>
-<p>To understand how ReplicaSets works with the selectors  lets launch a pod in the new namespace with existing specs.</p>
-<pre><code>cd k8s-code/pods
-kubectl apply -f vote-pod.yaml
+<h3 id="approach-2-building-image-with-dockerfile">Approach 2: Building image with Dockerfile</h3>
+<p>Change into vote  directory which containts the source code.  This assumes you have already cloned the repo. If not, clone it from https://github.com/schoolofdevops/vote</p>
+<pre><code>cd vote
+ls
 
-kubectl get pods
+app.py  requirements.txt  static  templates
 </code></pre>
 
-<h2 id="adding-replicaset-configurations">Adding ReplicaSet Configurations</h2>
-<p>Lets now write the spec for the Rplica Set. This is going to mainly contain,</p>
-<ul>
-<li>replicas</li>
-<li>selector</li>
-<li>template (pod spec )</li>
-<li>minReadySeconds</li>
-</ul>
-<p>From here on, we would switch to the project and environment specific path and work from there.</p>
-<pre><code>cd projects/instavote/dev
+<p>Add/create  Dockerfile the the same directory (vote) with the following content,</p>
+<pre><code>FROM python:2.7-alpine
 
+WORKDIR /app
+
+COPY . .
+
+RUN pip install -r requirements.txt
+
+EXPOSE 80
+
+CMD  gunicorn app:app -b 0.0.0.0:80
 </code></pre>
 
-<p><code>edit file: vote-rs.yaml</code></p>
-<pre><code>apiVersion: xxx
-kind: xxx
-metadata:
-  xxx
-spec:
-  xxx
-  template:
-    metadata:
-      name: vote
-      labels:
-        app: python
-        role: vote
-        version: v1
-    spec:
-      containers:
-        - name: app
-          image: schoolofdevops/vote:v1
-          resources:
-            requests:
-              memory: &quot;64Mi&quot;
-              cpu: &quot;50m&quot;
-            limits:
-              memory: &quot;128Mi&quot;
-              cpu: &quot;250m&quot;
+<p>Build image using,</p>
+<pre><code> docker build -t &lt;docker_id&gt;/vote:v2 .
 </code></pre>
 
-<p>Above file already containts the spec that you had written for the pod. You would observe its already been added as part of <em>spec.template</em> for replicaset.</p>
-<p>Lets now add the details specific to replicaset.</p>
-<p><em>file: vote-rs.yaml</em></p>
-<pre><code>apiVersion: apps/v1
-kind: ReplicaSet
-metadata:
-  name: vote
-spec:
-  replicas: 4
-  minReadySeconds: 20
-  selector:
-    matchLabels:
-      role: vote
-    matchExpressions:
-      - {key: version, operator: In, values: [v1, v2, v3, v4, v5]}
-  template:
-    metadata:
-      name: vote
-      labels:
-        app: python
-        role: vote
-        version: v1
-    spec:
-      containers:
-        - name: app
-          image: schoolofdevops/vote:v1
-          resources:
-            requests:
-              memory: &quot;64Mi&quot;
-              cpu: &quot;50m&quot;
-            limits:
-              memory: &quot;128Mi&quot;
-              cpu: &quot;250m&quot;
+<p>where,
+  <docker_id> : your docker registry user/namespace. Replace this with the actual user</p>
+<p>validate</p>
+<pre><code>docker image ls
+docker image history &lt;docker_id&gt;/vote:v2
+docker image history &lt;docker_id&gt;/vote:v1
+
+docker container run -idt -P &lt;docker_id&gt;/vote:v2
+docker ps
 </code></pre>
 
-<p>The complete file will look similar to above. Lets now go ahead and apply it.</p>
-<pre><code>kubectl apply -f vote-rs.yaml --dry-run
-
-kubectl apply -f vote-rs.yaml
-
-kubectl get rs
-
-kubectl describe rs vote
-
-kubectl get pods
-
-kubectl get pods --show-labels
+<p>Check by connecting to your host:port to validate if vote web application shows up.</p>
+<p>Once validated, tag and push</p>
+<pre><code>docker image tag &lt;docker_id&gt;/vote:v2 &lt;docker_id&gt;/vote:latest
+docker login
+docker push &lt;docker_id&gt;/vote
 </code></pre>
-
-<h3 id="high-availability">High Availability</h3>
-<p>Try deleting pods created by the replicaset,</p>
-<p><code>replace pod-xxxx and pod-yyyy with actuals</code></p>
-<pre><code>kubectl get pods
-
-kubectl delete pods vote-xxxx vote-yyyy
-</code></pre>
-
-<p>Observe as the pods are automatically created again.</p>
-<p>Lets now delete the pod created independent of replica set.</p>
-<pre><code>kubectl get pods
-kubectl delete pods  vote
-</code></pre>
-
-<p>Observe what happens.
-  * Does replica set take any action after deleting the pod created outside of its spec ? Why?</p>
-<h3 id="exercise-deploying-new-version-of-the-application">Exercise: Deploying new version of the application</h3>
-<pre><code>kubectl edit rs/vote
-</code></pre>
-
-<p>Update the version of the image from <strong>schoolofdevops/vote:v1</strong> to <strong>schoolofdevops/vote:v2</strong></p>
-<p>Save the file.</p>
-<p>Observe what happens ?</p>
-<ul>
-<li>Did application get  updated.</li>
-<li>Did updating replicaset launched new pods to deploy new version ?</li>
-</ul>
-<h3 id="scalability">Scalability</h3>
-<p>Scaling up application is as easy as running,  </p>
-<pre><code>kubectl scale --replicas=8 rs/vote
-
-kubectl get pods --show-labels
-</code></pre>
-
-<p>Observe what happens</p>
-<ul>
-<li>Did the number of  replicas increase to 8 ?</li>
-<li>Which version of the app are the new pods running with ?</li>
-</ul>
-<h4 id="summary">Summary</h4>
-<p>With <strong>ReplicaSets</strong> your application is now high available as well as scalable. However ReplicaSet by itself does not have the intelligence to trigger a rollout if you update the version. For that, you are going to need a <strong>deployment</strong> which is something you would learn in an upcoming  lesson.</p>
               
             </div>
           </div>
@@ -481,10 +371,10 @@ kubectl get pods --show-labels
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../7-vote-exposing_app_with_service/" class="btn btn-neutral float-right" title="Lab K105 - Load Balancing and Service Discovery with Services">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../docker-networking/" class="btn btn-neutral float-right" title="Lab D103 - Docker Networking">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../5-vote-deploying_pods/" class="btn btn-neutral" title="Lab K103 - Kubernetes LaunchPods"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../operating-docker-containers/" class="btn btn-neutral" title="Lab D101 - Operating Containers"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -510,10 +400,10 @@ kubectl get pods --show-labels
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../5-vote-deploying_pods/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../operating-docker-containers/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../7-vote-exposing_app_with_service/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../docker-networking/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

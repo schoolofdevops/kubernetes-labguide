@@ -6,12 +6,12 @@
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>http://kubernetes-tutorial.schoolofdevops.com/operating-containers/</loc>
+     <loc>http://kubernetes-tutorial.schoolofdevops.com/operating-docker-containers/</loc>
      <lastmod>2020-02-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>http://kubernetes-tutorial.schoolofdevops.com/dockerizing-voteapp/</loc>
+     <loc>http://kubernetes-tutorial.schoolofdevops.com/building-publishing-docker-images/</loc>
      <lastmod>2020-02-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
@@ -26,47 +26,47 @@
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>http://kubernetes-tutorial.schoolofdevops.com/3_install_kubernetes/</loc>
+     <loc>http://kubernetes-tutorial.schoolofdevops.com/install_kubernetes_with_kubeadm/</loc>
      <lastmod>2020-02-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>http://kubernetes-tutorial.schoolofdevops.com/quickdive/</loc>
+     <loc>http://kubernetes-tutorial.schoolofdevops.com/kubernetes_quickdive/</loc>
      <lastmod>2020-02-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>http://kubernetes-tutorial.schoolofdevops.com/5-vote-deploying_pods/</loc>
+     <loc>http://kubernetes-tutorial.schoolofdevops.com/create-and-deploy-kubernetes-pods/</loc>
      <lastmod>2020-02-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>http://kubernetes-tutorial.schoolofdevops.com/replication/</loc>
+     <loc>http://kubernetes-tutorial.schoolofdevops.com/kubernetes-replicasets-howto/</loc>
      <lastmod>2020-02-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>http://kubernetes-tutorial.schoolofdevops.com/7-vote-exposing_app_with_service/</loc>
+     <loc>http://kubernetes-tutorial.schoolofdevops.com/kubernetes-service-networking/</loc>
      <lastmod>2020-02-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>http://kubernetes-tutorial.schoolofdevops.com/6-vote-kubernetes_deployment/</loc>
+     <loc>http://kubernetes-tutorial.schoolofdevops.com/kubernetes-rollouts-rollbacks-deployments/</loc>
      <lastmod>2020-02-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>http://kubernetes-tutorial.schoolofdevops.com/11_deploying_sample_app/</loc>
+     <loc>http://kubernetes-tutorial.schoolofdevops.com/kubernetes-sample-project/</loc>
      <lastmod>2020-02-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>http://kubernetes-tutorial.schoolofdevops.com/9-vote-configmaps_and_secrets/</loc>
+     <loc>http://kubernetes-tutorial.schoolofdevops.com/kubernetes-configuration-management-configmaps-secrets/</loc>
      <lastmod>2020-02-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>http://kubernetes-tutorial.schoolofdevops.com/vote-persistent-volumes/</loc>
+     <loc>http://kubernetes-tutorial.schoolofdevops.com/kubernetes-dynamic-storage-provisioning/</loc>
      <lastmod>2020-02-26</lastmod>
      <changefreq>daily</changefreq>
     </url>

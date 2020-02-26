@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Lab K107 - Configurations Management with ConfigMaps - Kubernetes Tutorial</title>
+  <title>9 vote configmaps and secrets - Kubernetes Tutorial</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -17,7 +17,7 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Lab K107 - Configurations Management with ConfigMaps";
+    var mkdocs_page_name = "9 vote configmaps and secrets";
     var mkdocs_page_input_path = "9-vote-configmaps_and_secrets.md";
     var mkdocs_page_url = "/9-vote-configmaps_and_secrets/";
   </script>
@@ -59,11 +59,11 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../operating-containers/">Lab D101 - Operating Containers</a>
+    <a class="" href="../operating-docker-containers/">Lab D101 - Operating Containers</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../dockerizing-voteapp/">Lab D102 - Building and Publishing Docker Images</a>
+    <a class="" href="../building-publishing-docker-images/">Lab D102 - Building and Publishing Docker Images</a>
                 </li>
                 <li class="">
                     
@@ -82,55 +82,39 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../3_install_kubernetes/">Lab K101 - Setup Kubernetes Cluster</a>
+    <a class="" href="../install_kubernetes_with_kubeadm/">Lab K101 - Setup Kubernetes Cluster</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../quickdive/">Lab K102 - Kubernetes Quickdive</a>
+    <a class="" href="../kubernetes_quickdive/">Lab K102 - Kubernetes Quickdive</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../5-vote-deploying_pods/">Lab K103 - Kubernetes LaunchPods</a>
+    <a class="" href="../create-and-deploy-kubernetes-pods/">Lab K103 - Kubernetes LaunchPods</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../replication/">Lab K104 - Adding HA and Scalability with ReplicaSets</a>
+    <a class="" href="../kubernetes-replicasets-howto/">Lab K104 - Adding HA and Scalability with ReplicaSets</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../7-vote-exposing_app_with_service/">Lab K105 - Load Balancing and Service Discovery with Services</a>
+    <a class="" href="../kubernetes-service-networking/">Lab K105 - Load Balancing and Service Discovery with Services</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../6-vote-kubernetes_deployment/">Lab K106 - Defining Release Strategy with Deployments</a>
+    <a class="" href="../kubernetes-rollouts-rollbacks-deployments/">Lab K106 - Defining Release Strategy with Deployments</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../11_deploying_sample_app/">Mini Project</a>
-                </li>
-                <li class=" current">
-                    
-    <a class="current" href="./">Lab K107 - Configurations Management with ConfigMaps</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l3"><a href="#configurations-management-with-configmaps-and-secrets">Configurations Management with ConfigMaps and Secrets</a></li>
-    
-        <ul>
-        
-            <li><a class="toctree-l4" href="#injecting-env-variables-with-configmaps">Injecting env variables with configmaps</a></li>
-        
-            <li><a class="toctree-l4" href="#note-automatic-updation-of-deployments-on-configmap-updates">Note: Automatic Updation of deployments on ConfigMap  Updates</a></li>
-        
-            <li><a class="toctree-l4" href="#enabling-http-authentication-for-traefik-with-secrets">Enabling HTTP Authentication for Traefik  with Secrets</a></li>
-        
-        </ul>
-    
-
-    </ul>
+    <a class="" href="../kubernetes-sample-project/">Mini Project</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../vote-persistent-volumes/">Lab K108 - Peristent Volumes</a>
+    <a class="" href="../kubernetes-configuration-management-configmaps-secrets/">Lab K107 - Configurations Management with ConfigMaps</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../kubernetes-dynamic-storage-provisioning/">Lab K108 - Peristent Volumes</a>
                 </li>
     </ul>
 	    </li>
@@ -279,12 +263,8 @@
     <li><a href="..">Docs</a> &raquo;</li>
     
       
-        
-          <li>Kubernetes Fundamentals &raquo;</li>
-        
-      
     
-    <li>Lab K107 - Configurations Management with ConfigMaps</li>
+    <li>9 vote configmaps and secrets</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -294,164 +274,11 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="configurations-management-with-configmaps-and-secrets">Configurations Management with ConfigMaps and Secrets</h1>
-<p>Configmap is one of the ways to provide configurations to your application.</p>
-<h3 id="injecting-env-variables-with-configmaps">Injecting env variables with configmaps</h3>
-<p>Create our configmap for vote app</p>
-<p>file:  projects/instavote/dev/vote-cm.yaml</p>
-<pre><code>apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: vote
-  namespace: instavote
-data:
-  OPTION_A: Visa
-  OPTION_B: Mastercard
-</code></pre>
-
-<p>In the above given configmap, we define two environment variables,</p>
-<ol>
-<li>OPTION_A=EMACS</li>
-<li>OPTION_B=VI</li>
-</ol>
-<p>Lets create the configmap object</p>
-<pre><code>kubectl get cm
-kubectl apply -f vote-cm.yaml
-kubectl get cm
-kubectl describe cm vote
-
-
-</code></pre>
-
-<p>In order to use this configmap in the deployment, we need to reference it from the deployment file.</p>
-<p>Check the deployment file for vote add for the following block.</p>
-<p>file: <code>vote-deploy.yaml</code></p>
-<pre><code>...
-    spec:
-      containers:
-      - image: schoolofdevops/vote
-        imagePullPolicy: Always
-        name: vote
-        envFrom:
-          - configMapRef:
-              name: vote
-        ports:
-        - containerPort: 80
-          protocol: TCP
-        restartPolicy: Always
-</code></pre>
-
-<p>So when you create your deployment, these configurations will be made available to your application. In this example, the values defined in the configmap (Visa and Mastercard) will override the default values(CATS and DOGS) present in your source code.</p>
-<pre><code>kubectl apply -f vote-deploy.yaml
-</code></pre>
-
-<p>Watch the monitoring screen for deployment in progress.</p>
-<pre><code>kubectl get deploy --show-labels
-kubectl get rs --show-labels
-kubectl  rollout status deploy/vote
-
-</code></pre>
-
-<p><img alt="ConfigMap Dashboard.\label{fig:captioned_image}" src="../images/Configmap.png" /></p>
-<h3 id="note-automatic-updation-of-deployments-on-configmap-updates">Note: Automatic Updation of deployments on ConfigMap  Updates</h3>
-<p>Currently, updating configMap does not ensure a new rollout of a deployment. What this means is even after updading configMaps, pods will not immediately reflect the changes.  </p>
-<p>There is a feature request for this https://github.com/kubernetes/kubernetes/issues/22368</p>
-<p>Currently, this can be done by using immutable configMaps.  </p>
-<ul>
-<li>Create a configMaps and apply it with deployment.</li>
-<li>To update, create a new configMaps and do not update the previous one. Treat it as immutable.</li>
-<li>Update deployment spec to use the new version of the configMaps. This will ensure immediate update.</li>
-</ul>
-<h2 id="enabling-http-authentication-for-traefik-with-secrets">Enabling HTTP Authentication for Traefik  with Secrets</h2>
-<p>In this part of the lab, you will</p>
-<ul>
-<li>Create a secret with an existing file</li>
-<li>Modify a ingress rule to use that secret via annotations</li>
-<li>Validate if traefik, the ingress controller, automatically picks up the configurations and enables http auth s</li>
-</ul>
-<p>Lets create  htpasswd spec as Secret   </p>
-<pre><code>  apt install -yq apache2-utils
-  htpasswd -c auth devops
-</code></pre>
-
-<p>Or use <a href="http://www.htaccesstools.com/htpasswd-generator/">Online htpasswd generator</a> to generate a htpasswd spec. if you use the online generator, copy the contents to a file by name <code>auth</code> in the current directory.</p>
-<p>Then generate the secret as,</p>
-<pre><code>  kubectl create secret generic mysecret --from-file auth
-
-  kubectl get secret
-
-  kubectl describe secret mysecret
-</code></pre>
-
-<p>And then add annotations to the ingress object so that it is read by the ingress controller to update configurations.</p>
-<p><code>file: vote-ing.yaml</code></p>
-<pre><code>apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  name: vote
-  annotations:
-    kubernetes.io/ingress.class: traefik
-    ingress.kubernetes.io/auth-type: &quot;basic&quot;
-    ingress.kubernetes.io/auth-secret: &quot;mysecret&quot;
-spec:
-  rules:
-    - host: vote.example.com
-      http:
-        paths:
-          - path: /
-            backend:
-              serviceName: vote
-              servicePort: 82
-    - host: results.example.com
-      http:
-        paths:
-          - path: /
-            backend:
-              serviceName: results
-              servicePort: 81
-
-</code></pre>
-
-<p>where,</p>
-<ul>
-<li><em>ingress.kubernetes.io/auth-type: "basic"</em> defines authentication type that needs to be added.</li>
-<li><em>ingress.kubernetes.io/auth-secret: "mysecret"</em> refers to the secret created earlier.</li>
-</ul>
-<p>apply</p>
-<pre><code>kubectl apply -f vote-ing.yaml
-kubectl get ing/vote -o yaml
-</code></pre>
-
-<p>Observe the annotations field. No sooner than you apply this spec, ingress controller reads the event and a basic http authentication is set with the secret you added.</p>
-<pre><code class="bash">
-                      +----------+
-       +--update----&gt; | traefik  |
-       |              |  configs |
-       |              +----------+
-  +----+----+--+            ^
-  | ingress    |            :
-  | controller |            :
-  +----+-------+            :
-       |              +-----+-------+
-       +---watch----&gt; | ingress     | &lt;------- user
-                      | annotations |
-                      +-------------+
-</code></pre>
-
-<p><img alt="Name Based Routing" src="../images/domain-name.png" /></p>
+                
               
             </div>
           </div>
           <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="../vote-persistent-volumes/" class="btn btn-neutral float-right" title="Lab K108 - Peristent Volumes">Next <span class="icon icon-circle-arrow-right"></span></a>
-      
-      
-        <a href="../11_deploying_sample_app/" class="btn btn-neutral" title="Mini Project"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-      
-    </div>
   
 
   <hr/>
@@ -475,10 +302,6 @@ kubectl get ing/vote -o yaml
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../11_deploying_sample_app/" style="color: #fcfcfc;">&laquo; Previous</a></span>
-      
-      
-        <span style="margin-left: 15px"><a href="../vote-persistent-volumes/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

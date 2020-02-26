@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Lab K106 - Defining Release Strategy with Deployments - Kubernetes Tutorial</title>
+  <title>Mini Project - Kubernetes Tutorial</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -17,9 +17,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Lab K106 - Defining Release Strategy with Deployments";
-    var mkdocs_page_input_path = "6-vote-kubernetes_deployment.md";
-    var mkdocs_page_url = "/6-vote-kubernetes_deployment/";
+    var mkdocs_page_name = "Mini Project";
+    var mkdocs_page_input_path = "kubernetes-sample-project.md";
+    var mkdocs_page_url = "/kubernetes-sample-project/";
   </script>
   
   <script src="../js/jquery-2.1.1.min.js" defer></script>
@@ -59,11 +59,11 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../operating-containers/">Lab D101 - Operating Containers</a>
+    <a class="" href="../operating-docker-containers/">Lab D101 - Operating Containers</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../dockerizing-voteapp/">Lab D102 - Building and Publishing Docker Images</a>
+    <a class="" href="../building-publishing-docker-images/">Lab D102 - Building and Publishing Docker Images</a>
                 </li>
                 <li class="">
                     
@@ -82,38 +82,38 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../3_install_kubernetes/">Lab K101 - Setup Kubernetes Cluster</a>
+    <a class="" href="../install_kubernetes_with_kubeadm/">Lab K101 - Setup Kubernetes Cluster</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../quickdive/">Lab K102 - Kubernetes Quickdive</a>
+    <a class="" href="../kubernetes_quickdive/">Lab K102 - Kubernetes Quickdive</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../5-vote-deploying_pods/">Lab K103 - Kubernetes LaunchPods</a>
+    <a class="" href="../create-and-deploy-kubernetes-pods/">Lab K103 - Kubernetes LaunchPods</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../replication/">Lab K104 - Adding HA and Scalability with ReplicaSets</a>
+    <a class="" href="../kubernetes-replicasets-howto/">Lab K104 - Adding HA and Scalability with ReplicaSets</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../7-vote-exposing_app_with_service/">Lab K105 - Load Balancing and Service Discovery with Services</a>
+    <a class="" href="../kubernetes-service-networking/">Lab K105 - Load Balancing and Service Discovery with Services</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../kubernetes-rollouts-rollbacks-deployments/">Lab K106 - Defining Release Strategy with Deployments</a>
                 </li>
                 <li class=" current">
                     
-    <a class="current" href="./">Lab K106 - Defining Release Strategy with Deployments</a>
+    <a class="current" href="./">Mini Project</a>
     <ul class="subnav">
             
-    <li class="toctree-l3"><a href="#lab-k106-defining-release-strategy-with-deployment">LAB K106 - Defining Release Strategy with  Deployment</a></li>
+    <li class="toctree-l3"><a href="#mini-project-deploying-multi-tier-application-stack">Mini Project: Deploying Multi Tier Application Stack</a></li>
     
         <ul>
         
-            <li><a class="toctree-l4" href="#rolling-out-a-new-version">Rolling out a new version</a></li>
-        
-            <li><a class="toctree-l4" href="#breaking-a-rollout">Breaking a Rollout</a></li>
-        
-            <li><a class="toctree-l4" href="#undo-and-rollback">Undo and Rollback</a></li>
+            <li><a class="toctree-l4" href="#tasks">Tasks</a></li>
         
         </ul>
     
@@ -122,15 +122,11 @@
                 </li>
                 <li class="">
                     
-    <a class="" href="../11_deploying_sample_app/">Mini Project</a>
+    <a class="" href="../kubernetes-configuration-management-configmaps-secrets/">Lab K107 - Configurations Management with ConfigMaps</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../9-vote-configmaps_and_secrets/">Lab K107 - Configurations Management with ConfigMaps</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../vote-persistent-volumes/">Lab K108 - Peristent Volumes</a>
+    <a class="" href="../kubernetes-dynamic-storage-provisioning/">Lab K108 - Peristent Volumes</a>
                 </li>
     </ul>
 	    </li>
@@ -284,7 +280,7 @@
         
       
     
-    <li>Lab K106 - Defining Release Strategy with Deployments</li>
+    <li>Mini Project</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -294,151 +290,103 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="lab-k106-defining-release-strategy-with-deployment">LAB K106 - Defining Release Strategy with  Deployment</h1>
-<p>A Deployment is a higher level abstraction which sits on top of replica sets and allows you to manage the way applications are deployed, rolled back at a controlled rate.</p>
-<p>Deployment provides three features,</p>
+                <h1 id="mini-project-deploying-multi-tier-application-stack">Mini Project: Deploying Multi Tier Application Stack</h1>
+<p>In this project , you would write definitions for deploying the vote application stack with all components/tiers which include,</p>
 <ul>
-<li>Availability: Maintain the number of replicas for a type of service/app. Schedule/delete pods to meet the desired count.</li>
-<li>Scalability: Updating the replica count, allows you to scale in and out, and its the responsibility of the deployment to provide with that scalability. You could scale manually or use horizontalPodAutoscaler to do it automatically.  </li>
-<li>Update Strategy: Define a release strategy and update the pods accordingly.</li>
+<li>vote ui</li>
+<li>redis</li>
+<li>worker</li>
+<li>db</li>
+<li>results ui</li>
 </ul>
-<pre><code>/k8s-code/projects/instavote/dev/
-cp vote-rs.yaml vote-deploy.yaml
-</code></pre>
-
-<p>Deployment spec (deployment.spec) contains everything that replica set has + strategy. Lets add it as follows,</p>
-<p><code>file: vote-deploy.yaml</code></p>
-<pre><code>apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: vote
-  labels:
-    role: vote 
-spec:
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 2
-      maxUnavailable: 1
-  revisionHistoryLimit: 4
-  replicas: 12
-  minReadySeconds: 20
-  selector:
-    matchLabels:
-      role: vote
-    matchExpressions:
-      - {key: version, operator: In, values: [v1, v2, v3, v4, v5]}
-  template:
-    metadata:
-      name: vote
-      labels:
-        app: python
-        role: vote
-        version: v1
-    spec:
-      containers:
-        - name: app
-          image: schoolofdevops/vote:v1
-          resources:
-            requests:
-              memory: &quot;64Mi&quot;
-              cpu: &quot;50m&quot;
-            limits:
-              memory: &quot;128Mi&quot;
-              cpu: &quot;250m&quot;
-</code></pre>
-
-<p>In a additional terminal where you have kubectl client setup, launch the monitoring console by running the following command. Ensure you have --show-labels options set.</p>
-<pre><code>watch -n 1 kubectl get all --show-labels
-</code></pre>
-
-<p>Lets  create the Deployment. Do monitor the labels of the pod while applying this. Also clean up the previous replicaset to start with a clean state.</p>
-<pre><code>kubectl apply -f vote-deploy.yaml
-
-kubectl delete rs vote
-</code></pre>
-
-<p>Observe the chances to pod labels, specifically the <strong>pod-template-hash</strong>.</p>
-<p>Now that the deployment is created. To validate,</p>
-<pre><code>kubectl get deployment
-kubectl get rs --show-labels
-kubectl get deploy,pods,rs
-kubectl rollout status deployment/vote
-kubectl get pods --show-labels
-</code></pre>
-
-<h2 id="rolling-out-a-new-version">Rolling out a new version</h2>
-<p>Now, update the deployment spec to use a new version of the image.</p>
-<p>file: vote-deploy.yaml</p>
-<pre><code>
-...
-template:
-  metadata:
-    labels:
-      version: v2   
-  spec:
-    containers:
-      - name: app
-        image: schoolofdevops/vote:v2
-
-</code></pre>
-
-<p>and trigger a rollout by applying it</p>
-<pre><code>kubectl apply -f vote-deploy.yaml
-</code></pre>
-
-<p>Open a couple of additional terminals on the host where kubectl is configured and launch the following monitoring commands.</p>
-<p>Terminal 1</p>
-<pre><code>kubectl rollout status deployment/vote
-</code></pre>
-
-<p>Terminal 2</p>
-<pre><code>kubectl get all -l &quot;role=vote&quot;
-</code></pre>
-
-<p><strong>What to watch for ?</strong></p>
+<h2 id="tasks">Tasks</h2>
 <ul>
-<li>rollout status using the command above</li>
-<li>following fields for vote deployment on monitoring screen<ul>
-<li>READY count (will reflect surged replicas e.g. 14/12)</li>
-<li>AVAILABLE count ( will never fall below REPLICAS - maxUnavilable)</li>
-<li>UP-TO-DATE field will reflect replicas with latest version defined in deployment spec</li>
+<li>Create deployments for all applications</li>
+<li>Define services for each tier applicable</li>
+<li>Launch/apply the definitions</li>
+</ul>
+<p>Following table depicts the state of readiness of the above services.</p>
+<table>
+<thead>
+<tr>
+<th align="left">App</th>
+<th align="left">Deployment</th>
+<th align="left">Service</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">vote</td>
+<td align="left">ready</td>
+<td align="left">ready</td>
+</tr>
+<tr>
+<td align="left">redis</td>
+<td align="left">ready</td>
+<td align="left">ready</td>
+</tr>
+<tr>
+<td align="left">worker</td>
+<td align="left">TODO</td>
+<td align="left">n/a</td>
+</tr>
+<tr>
+<td align="left">db</td>
+<td align="left">ready</td>
+<td align="left">ready</td>
+</tr>
+<tr>
+<td align="left">results</td>
+<td align="left">TODO</td>
+<td align="left">TODO</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Specs:</strong></p>
+<ul>
+<li>worker<ul>
+<li>image: schoolofdevops/worker:latest</li>
 </ul>
 </li>
-<li>observe that a new replicaset is created for every rollout.  </li>
-<li>Continuously refresh the vote application in the browser to see new version if being rolled out without a downtime.  </li>
+<li>results<ul>
+<li>image: schoolofdevops/vote-result</li>
+<li>port: 80</li>
+<li>service type: NodePort</li>
 </ul>
-<p>Try updating the version of the image from v2 to v3,v4,v5. Repeat a few times to observe how it rolls out a new version.  </p>
-<h2 id="breaking-a-rollout">Breaking a Rollout</h2>
-<p>Introduce an error by using an image which does not exist.</p>
-<p>file: vote-deploy.yaml</p>
-<pre><code>spec:
-  containers:
-    - name: app
-      image: schoolofdevops/vote:rgjerdf
-
+</li>
+</ul>
+<h4 id="to-validate">To Validate:</h4>
+<pre><code>kubectl get svc -n instavote
 </code></pre>
 
-<p>apply</p>
-<pre><code>kubectl apply -f vote-deploy.yaml
-
-kubectl rollout status
+<p>Sample Output is:</p>
+<pre><code>kubectl get service vote
+NAME         CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+vote   10.97.104.243   &lt;pending&gt;     80:30000/TCP   1h
 </code></pre>
 
-<p>Observe how  deployment handles the failure in the rolls out.</p>
-<h2 id="undo-and-rollback">Undo and Rollback</h2>
-<p>To observe  the rollout history use the following commands.</p>
-<pre><code>
-kubectl rollout history deploy/vote
-
-kubectl rollout history deploy/vote --revision=xx
+<p>Here the port assigned is 31808, go to the browser and enter</p>
+<pre><code>masterip:30000
 </code></pre>
 
-<p>where replace xx with revisions</p>
-<p>Find out the previous revision with sane configs.</p>
-<p>To undo to a sane version (for example revision 2)</p>
-<pre><code>kubectl rollout undo deploy/vote --to-revision=2
+<p><img alt="Front-End.\label{fig:captioned_image}" src="../images/vote-rc.png" /></p>
+<p>This will load the page where you can vote.</p>
+<p>To check the result:</p>
+<pre><code>kubectl get service result
 </code></pre>
+
+<p>Sample Output is:</p>
+<pre><code>kubectl get service result
+NAME      CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+result    10.101.112.16   &lt;pending&gt;     80:30100/TCP   1h
+</code></pre>
+
+<p>Here the port assigned is 32511, go to the browser and enter</p>
+<pre><code>masterip:30100
+</code></pre>
+
+<p><img alt="Result Page.\label{fig:captioned_image}" src="../images/Result.png" /></p>
+<p>This is the page where you should see the results for the vote application stack.</p>
               
             </div>
           </div>
@@ -446,10 +394,10 @@ kubectl rollout history deploy/vote --revision=xx
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../11_deploying_sample_app/" class="btn btn-neutral float-right" title="Mini Project">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../kubernetes-configuration-management-configmaps-secrets/" class="btn btn-neutral float-right" title="Lab K107 - Configurations Management with ConfigMaps">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../7-vote-exposing_app_with_service/" class="btn btn-neutral" title="Lab K105 - Load Balancing and Service Discovery with Services"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../kubernetes-rollouts-rollbacks-deployments/" class="btn btn-neutral" title="Lab K106 - Defining Release Strategy with Deployments"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -475,10 +423,10 @@ kubectl rollout history deploy/vote --revision=xx
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../7-vote-exposing_app_with_service/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../kubernetes-rollouts-rollbacks-deployments/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../11_deploying_sample_app/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../kubernetes-configuration-management-configmaps-secrets/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
