@@ -107,9 +107,15 @@
         
             <li><a class="toctree-l4" href="#publishing-external-facing-app-with-nodeport">Publishing external facing app with NodePort</a></li>
         
-            <li><a class="toctree-l4" href="#exposing-app-with-externalip">Exposing app with ExternalIP</a></li>
+            <li><a class="toctree-l4" href="#services-under-the-hood">Services Under the Hood</a></li>
+        
+            <li><a class="toctree-l4" href="#exposing-a-service-with-externalips">Exposing a Service with ExternalIPs</a></li>
         
             <li><a class="toctree-l4" href="#internal-service-discovery">Internal Service Discovery</a></li>
+        
+            <li><a class="toctree-l4" href="#summary">Summary</a></li>
+        
+            <li><a class="toctree-l4" href="#reading-list">Reading List</a></li>
         
         </ul>
     
@@ -298,7 +304,7 @@
 <p>In this lab, you would not only publish the application deployed with replicaset earlier, but also learn about the load balancing and service discovery features offered by kubernetes.</p>
 <p>Concepts related to Kubernetes Services are depicted in the following diagram,</p>
 <p><img alt="kubernetes service.\label{fig:captioned_image}" src="../images/k8s_service.jpg" /></p>
-<h3 id="publishing-external-facing-app-with-nodeport">Publishing external facing app with NodePort</h3>
+<h2 id="publishing-external-facing-app-with-nodeport">Publishing external facing app with NodePort</h2>
 <p>Kubernetes comes with four types of services viz.</p>
 <ul>
 <li>ClusterIP</li>
@@ -372,12 +378,12 @@ Events:                   &lt;none&gt;
 <p>Sample output will be:</p>
 <p><img alt="Vote" src="../images/vote-rc.png" /></p>
 <p>If you refresh the page, you should also notice its sending traffic to diffent pod each time, in round robin fashion.</p>
-<h4 id="exercises">Exercises</h4>
+<h3 id="exercises">Exercises</h3>
 <ul>
 <li>Change the selector criteria to use a non existant label. Use <code>kubectl edit svc./vote</code> to update and apply the configuration. Observe the output of describe command and check the endpoints. Do you see any ?  How are  selectors and pod labels related ?</li>
 <li>Observe the number of endpoints. Then change the scale of replicas created by the replicasets. Does it have any effect on the number of endpoints ?    </li>
 </ul>
-<h4 id="services-under-the-hood">Services Under the Hood</h4>
+<h2 id="services-under-the-hood">Services Under the Hood</h2>
 <p>Lets traverse the route of the <strong>network packet</strong> that comes in on port 30000 on any node in your cluster.</p>
 <pre><code>iptables -nvL -t nat  
 iptables -nvL -t nat  | grep 30000
@@ -427,22 +433,20 @@ vote-qxmfl   1/1       Running   0          1h        10.32.0.5   k-02
 
 <p>10.32.0.6 matches ip of vote-58bpv  </p>
 <p>to check how the packet is routed next use,</p>
-<pre><code>route -n
+<pre><code>ip route show
 </code></pre>
 
 <p>[output]</p>
-<pre><code>Kernel IP routing table
-Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
-0.0.0.0         206.189.144.1   0.0.0.0         UG    0      0        0 eth0
-10.15.0.0       0.0.0.0         255.255.0.0     U     0      0        0 eth0
-10.32.0.0       0.0.0.0         255.240.0.0     U     0      0        0 weave
-172.17.0.0      0.0.0.0         255.255.0.0     U     0      0        0 docker0
-206.189.144.0   0.0.0.0         255.255.240.0   U     0      0        0 eth0
+<pre><code>default via 128.199.128.1 dev eth0 onlink
+10.15.0.0/16 dev eth0  proto kernel  scope link  src 10.15.0.10
+10.32.0.0/12 dev weave  proto kernel  scope link  src 10.32.0.1
+128.199.128.0/18 dev eth0  proto kernel  scope link  src 128.199.185.90
+172.17.0.0/16 dev docker0  proto kernel  scope link  src 172.17.0.1 linkdown
 
 </code></pre>
 
-<p>where, 10.32.0.0 is going over <strong>weave</strong> interface.</p>
-<h3 id="exposing-app-with-externalip">Exposing app with ExternalIP</h3>
+<p>where, 10.32.0.0/12 is going over <strong>weave</strong> interface.</p>
+<h2 id="exposing-a-service-with-externalips">Exposing a Service with ExternalIPs</h2>
 <p>Observe the output of service list, specifically note the <strong>EXTERNAL-IP</strong> colum in the output.</p>
 <pre><code>kubectl  get svc
 </code></pre>
@@ -557,7 +561,7 @@ kubernetes-dashboard   NodePort    10.104.42.73   &lt;none&gt;        80:31000/T
 </code></pre>
 
 <p>where, <strong>10.96.0.10</strong> is the ClusterIP assigned to <strong>kube-dns</strong> and matches the configuration in <strong>/etc/resolv.conf</strong> above.</p>
-<h4 id="creating-endpoints-for-redis">Creating Endpoints for Redis</h4>
+<h3 id="creating-endpoints-for-redis">Creating Endpoints for Redis</h3>
 <p>Service is been created, but you still need to launch the actual pods running <strong>redis</strong> application.</p>
 <p>Create the endpoints now,</p>
 <pre><code>kubectl apply -f redis-deploy.yaml
@@ -582,9 +586,9 @@ Events:            &lt;none&gt;
 </code></pre>
 
 <p>Again, visit the vote app from browser, attempt to register your vote.  observe what happens. This time the vote should be registered successfully.</p>
-<h4 id="summary">Summary</h4>
+<h2 id="summary">Summary</h2>
 <p>In this lab, you have published a front facing application, learnt how services are implemented under the hood as well as added service discovery to provide  connection strings automatically.</p>
-<h5 id="reading">Reading</h5>
+<h2 id="reading-list">Reading List</h2>
 <ul>
 <li><a href="https://kubernetes.io/docs/tasks/debug-application-cluster/debug-service/">Debugging Services</a></li>
 <li><a href="https://kubernetes.io/docs/concepts/services-networking/service/">Kubernetes Services Documentation</a></li>
