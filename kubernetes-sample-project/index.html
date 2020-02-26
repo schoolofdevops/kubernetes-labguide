@@ -123,7 +123,7 @@
     
         <ul>
         
-            <li><a class="toctree-l4" href="#tasks">Tasks</a></li>
+            <li><a class="toctree-l4" href="#project-description">Project Description</a></li>
         
         </ul>
     
@@ -306,17 +306,18 @@
                 <h1 id="mini-project-deploying-multi-tier-application-stack">Mini Project: Deploying Multi Tier Application Stack</h1>
 <p>In this project , you would write definitions for deploying the vote application stack with all components/tiers which include,</p>
 <ul>
-<li>vote ui</li>
+<li>vote</li>
 <li>redis</li>
 <li>worker</li>
 <li>db</li>
-<li>results ui</li>
+<li>result</li>
 </ul>
-<h2 id="tasks">Tasks</h2>
+<h2 id="project-description">Project Description</h2>
 <ul>
-<li>Create deployments for all applications</li>
-<li>Define services for each tier applicable</li>
-<li>Launch/apply the definitions</li>
+<li>Apply the deployment and service code for the applications marked as ready</li>
+<li>Complete the code for  deployments and services marked as TODO</li>
+<li>Apply the definitions that you have completed</li>
+<li>Validate the application workflow is operational by loading vote and result applications from the browser</li>
 </ul>
 <p>Following table depicts the state of readiness of the above services.</p>
 <table>
@@ -349,13 +350,38 @@
 <td align="left">ready</td>
 </tr>
 <tr>
-<td align="left">results</td>
+<td align="left">result</td>
 <td align="left">TODO</td>
 <td align="left">TODO</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Specs:</strong></p>
+<h3 id="apply-existing-code">Apply existing code</h3>
+<pre><code>git clone https://github.com/devopsfoo/k8s-code.git
+
+cd k8s-code/projects/instavote/dev/
+
+kubectl create namespace instavote
+
+kubectl config set-context --current --namespace=instavote
+
+kubectl apply -f vote-rs.yaml -f vote-svc.yaml
+kubectl apply -f redis-deploy.yaml -f redis-svc.yaml
+kubectl apply -f db-deploy.yaml -f db-svc.yaml
+</code></pre>
+
+<p>validate</p>
+<pre><code>kubectl get all
+</code></pre>
+
+<p>Where you should see,</p>
+<ul>
+<li>replicaset and service for vote app created</li>
+<li>deployments and services for redis and db created</li>
+</ul>
+<p>If you see the above objects, proceed with the next task.</p>
+<h3 id="completing-code-for-worker-and-result-apps">Completing Code for worker and result apps</h3>
+<p>You would find the files available in the same directory as above i.e. <em>k8s-code/projects/instavote/dev/</em> with either partial or blank code. Your job is to complete the deployment and service yaml specs and apply those. While writing the specs, you could refer to the following specification.  </p>
 <ul>
 <li>worker<ul>
 <li>image: schoolofdevops/worker:latest</li>
@@ -363,43 +389,24 @@
 </li>
 <li>results<ul>
 <li>image: schoolofdevops/vote-result</li>
-<li>port: 80</li>
+<li>application port: 80</li>
 <li>service type: NodePort</li>
 </ul>
 </li>
 </ul>
 <h4 id="to-validate">To Validate:</h4>
-<pre><code>kubectl get svc -n instavote
+<pre><code>kubectl get all
 </code></pre>
 
-<p>Sample Output is:</p>
-<pre><code>kubectl get service vote
-NAME         CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
-vote   10.97.104.243   &lt;pending&gt;     80:30000/TCP   1h
-</code></pre>
-
-<p>Here the port assigned is 31808, go to the browser and enter</p>
-<pre><code>masterip:30000
-</code></pre>
-
+<p>The above command should show,
+  * five deployments and four services created
+  * services for vote and result app should have been exposed with NodePort</p>
+<p>Find out the NodePort for vote and service apps and load those from your browser.</p>
 <p><img alt="Front-End.\label{fig:captioned_image}" src="../images/vote-rc.png" /></p>
-<p>This will load the page where you can vote.</p>
-<p>To check the result:</p>
-<pre><code>kubectl get service result
-</code></pre>
-
-<p>Sample Output is:</p>
-<pre><code>kubectl get service result
-NAME      CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
-result    10.101.112.16   &lt;pending&gt;     80:30100/TCP   1h
-</code></pre>
-
-<p>Here the port assigned is 32511, go to the browser and enter</p>
-<pre><code>masterip:30100
-</code></pre>
-
+<p>This is how the vote application should look like.</p>
 <p><img alt="Result Page.\label{fig:captioned_image}" src="../images/Result.png" /></p>
-<p>This is the page where you should see the results for the vote application stack.</p>
+<p>Above is how the result app should look like.</p>
+<p>Final validation is, if you submit the vote, you should see the results changing accordingly. You would see this behavior only if all deployments and services are created and configured properly.</p>
               
             </div>
           </div>
@@ -419,6 +426,8 @@ result    10.101.112.16   &lt;pending&gt;     80:30100/TCP   1h
 
   <div role="contentinfo">
     <!-- Copyright etc -->
+    
+      <p>Copyright @ 2017-2020 Gourav Shah, School of Devops. Some rights reserved. License CC BY-NC-SA</p>
     
   </div>
 
