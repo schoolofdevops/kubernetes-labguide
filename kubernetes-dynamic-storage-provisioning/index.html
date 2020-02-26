@@ -131,6 +131,8 @@
     
         <ul>
         
+            <li><a class="toctree-l4" href="#concepts">Concepts</a></li>
+        
             <li><a class="toctree-l4" href="#redploy-db-with-a-a-reference-to-pvc">Redploy db with a a reference to PVC</a></li>
         
             <li><a class="toctree-l4" href="#creating-a-persistent-volume-claim">Creating a Persistent Volume Claim</a></li>
@@ -324,6 +326,8 @@
 <li><a href="https://youtu.be/hqE5c5pyfrk?t=461">Kubernetes Storage Concepts</a></li>
 <li><a href="https://kubernetes.io/docs/concepts/storage/storage-classes/">Storage Classes</a></li>
 </ul>
+<h2 id="concepts">Concepts</h2>
+<p>![kubernetes Storage Concepts](images/storage_mindmap.png</p>
 <h2 id="redploy-db-with-a-a-reference-to-pvc">Redploy db with a a reference to PVC</h2>
 <p>Lets begin by redeploying the db deployment, this time by configuring it to refer to the persistentVolumeClaim</p>
 <p><code>file: db-deploy-pvc.yaml</code></p>
@@ -433,10 +437,12 @@ kubectl get pods
 <p>This would recreate the pods for result app and you should see it working again.</p>
 <h2 id="nano-project">Nano Project</h2>
 <p>Similar to postgres which mounts the data at /var/lib/postgresql/data and consumes it to store the database files, Redis creates and stores the file at <strong>/data</strong> path.  Your task is to have a nfs volume of size <strong>200Mi</strong> created and mounted at /data for the redis container.</p>
-<p>You could follow these steps to complete this task
-  * create a pvc by name <strong>redis</strong>
-  * create a volume in the pod spec with type persistentVolumeClaim. Call is <strong>redis-data</strong>
-  * add volumeMounts to the container spec (part of the same deployment file) running redis and have it mount <strong>redis-data</strong> volume created in the pod spec above.</p>
+<p>You could follow these steps to complete this task</p>
+<ul>
+<li>create a pvc by name <strong>redis</strong></li>
+<li>create a volume in the pod spec with type persistentVolumeClaim. Call is <strong>redis-data</strong></li>
+<li>add volumeMounts to the container spec (part of the same deployment file) running redis and have it mount <strong>redis-data</strong> volume created in the pod spec above.</li>
+</ul>
 <h4 id="summary">Summary</h4>
 <p>In this lab, you not only setup dynamic provisioning using NFS, but also learnt about statefulsets as well as rbac policies applied to the nfs provisioner.</p>
               
