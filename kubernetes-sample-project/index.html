@@ -357,11 +357,8 @@
 </tbody>
 </table>
 <h3 id="apply-existing-code">Apply existing code</h3>
-<pre><code>git clone https://github.com/devopsfoo/k8s-code.git
-
+<pre><code>
 cd k8s-code/projects/instavote/dev/
-
-kubectl create namespace instavote
 
 kubectl config set-context --current --namespace=instavote
 
