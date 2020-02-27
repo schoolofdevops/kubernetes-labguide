@@ -315,6 +315,7 @@
 <li>Scalability: Updating the replica count, allows you to scale in and out, and its the responsibility of the deployment to provide with that scalability. You could scale manually or use horizontalPodAutoscaler to do it automatically.  </li>
 <li>Update Strategy: Define a release strategy and update the pods accordingly.</li>
 </ul>
+<p><img alt="deployment specs mindmap" src="../images/deployment_mindmap.png" /></p>
 <pre><code>/k8s-code/projects/instavote/dev/
 cp vote-rs.yaml vote-deploy.yaml
 </code></pre>
@@ -326,7 +327,7 @@ kind: Deployment
 metadata:
   name: vote
   labels:
-    role: vote 
+    role: vote
 spec:
   strategy:
     type: RollingUpdate
