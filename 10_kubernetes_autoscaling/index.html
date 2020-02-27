@@ -408,7 +408,7 @@ spec:
       containers:
       - name: siege
         image: schoolofdevops/loadtest:v1
-        command: [&quot;siege&quot;,  &quot;--concurrent=5&quot;, &quot;--benchmark&quot;, &quot;--time=10m&quot;, &quot;http://vote&quot;]
+        command: [&quot;siege&quot;,  &quot;--concurrent=5&quot;, &quot;--benchmark&quot;, &quot;--time=6m&quot;, &quot;http://vote&quot;]
       restartPolicy: Never
   backoffLimit: 4
 </code></pre>
