@@ -311,11 +311,12 @@
 <p>A Deployment is a higher level abstraction which sits on top of replica sets and allows you to manage the way applications are deployed, rolled back at a controlled rate.</p>
 <p>Deployment provides three features,</p>
 <ul>
-<li>Availability: Maintain the number of replicas for a type of service/app. Schedule/delete pods to meet the desired count.</li>
-<li>Scalability: Updating the replica count, allows you to scale in and out, and its the responsibility of the deployment to provide with that scalability. You could scale manually or use horizontalPodAutoscaler to do it automatically.  </li>
-<li>Update Strategy: Define a release strategy and update the pods accordingly.</li>
+<li><strong>Availability</strong>: Maintain the number of replicas for a type of service/app. Schedule/delete pods to meet the desired count.</li>
+<li><strong>Scalability</strong>: Updating the replica count, allows you to scale in and out, and its the responsibility of the deployment to provide with that scalability. You could scale manually or use horizontalPodAutoscaler to do it automatically.  </li>
+<li><strong>Update Strategy</strong>: Define a release strategy and update the pods accordingly.</li>
 </ul>
 <p><img alt="deployment specs mindmap" src="../images/deployment_mindmap.png" /></p>
+<p>Since deployment is just a superset of replicaset specs, lets begin  creating  a deployment by copying over the existing replicaset code for vote app. </p>
 <pre><code>/k8s-code/projects/instavote/dev/
 cp vote-rs.yaml vote-deploy.yaml
 </code></pre>
