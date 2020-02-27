@@ -13,6 +13,10 @@ Pre Reading :
   * [Storage Classes](https://kubernetes.io/docs/concepts/storage/storage-classes/)
 
 
+## Concepts
+
+![kubernetes Storage Concepts](images/storage_mindmap.png)
+
 ## Redploy db with a a reference to PVC
 
 Lets begin by redeploying the db deployment, this time by configuring it to refer to the persistentVolumeClaim
@@ -155,6 +159,7 @@ This would recreate the pods for result app and you should see it working again.
 Similar to postgres which mounts the data at /var/lib/postgresql/data and consumes it to store the database files, Redis creates and stores the file at **/data** path.  Your task is to have a nfs volume of size **200Mi** created and mounted at /data for the redis container.
 
 You could follow these steps to complete this task
+
   * create a pvc by name **redis**
   * create a volume in the pod spec with type persistentVolumeClaim. Call is **redis-data**
   * add volumeMounts to the container spec (part of the same deployment file) running redis and have it mount **redis-data** volume created in the pod spec above.

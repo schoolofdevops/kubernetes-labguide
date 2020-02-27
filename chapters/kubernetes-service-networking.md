@@ -1,4 +1,4 @@
-# LAB K105 - Load Balancing and Service Discovery with Services
+# Service Networking, Load Balancing and Service Discovery
 
 In this lab, you would not only publish the application deployed with replicaset earlier, but also learn about the load balancing and service discovery features offered by kubernetes.
 
@@ -9,7 +9,9 @@ Concepts related to Kubernetes Services are depicted in the following diagram,
 ![kubernetes service.\label{fig:captioned_image}](images/k8s_service.jpg)
 
 
-### Publishing external facing app with NodePort
+![kubernetes Service Networking Mindmap](images/service_mindmap.png)
+
+## Publishing external facing app with NodePort
 
 Kubernetes comes with four types of services viz.
 
@@ -106,14 +108,14 @@ Sample output will be:
 If you refresh the page, you should also notice its sending traffic to diffent pod each time, in round robin fashion.
 
 
-#### Exercises  
+### Exercises  
 
   * Change the selector criteria to use a non existant label. Use `kubectl edit svc./vote` to update and apply the configuration. Observe the output of describe command and check the endpoints. Do you see any ?  How are  selectors and pod labels related ?
   * Observe the number of endpoints. Then change the scale of replicas created by the replicasets. Does it have any effect on the number of endpoints ?    
 
 
 
-#### Services Under the Hood
+## Services Under the Hood
 
 Lets traverse the route of the **network packet** that comes in on port 30000 on any node in your cluster.
 
@@ -180,27 +182,25 @@ vote-qxmfl   1/1       Running   0          1h        10.32.0.5   k-02
 to check how the packet is routed next use,
 
 ```
-route -n
+ip route show
 ```
 
 [output]
 ```
-Kernel IP routing table
-Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
-0.0.0.0         206.189.144.1   0.0.0.0         UG    0      0        0 eth0
-10.15.0.0       0.0.0.0         255.255.0.0     U     0      0        0 eth0
-10.32.0.0       0.0.0.0         255.240.0.0     U     0      0        0 weave
-172.17.0.0      0.0.0.0         255.255.0.0     U     0      0        0 docker0
-206.189.144.0   0.0.0.0         255.255.240.0   U     0      0        0 eth0
+default via 128.199.128.1 dev eth0 onlink
+10.15.0.0/16 dev eth0  proto kernel  scope link  src 10.15.0.10
+10.32.0.0/12 dev weave  proto kernel  scope link  src 10.32.0.1
+128.199.128.0/18 dev eth0  proto kernel  scope link  src 128.199.185.90
+172.17.0.0/16 dev docker0  proto kernel  scope link  src 172.17.0.1 linkdown
 
 ```
 
-where, 10.32.0.0 is going over **weave** interface.
+where, 10.32.0.0/12 is going over **weave** interface.
 
 
 
 
-### Exposing app with ExternalIP
+## Exposing a Service with ExternalIPs
 
 Observe the output of service list, specifically note the **EXTERNAL-IP** colum in the output.
 
@@ -353,7 +353,7 @@ kubernetes-dashboard   NodePort    10.104.42.73   <none>        80:31000/TCP    
 
 where, **10.96.0.10** is the ClusterIP assigned to **kube-dns** and matches the configuration in **/etc/resolv.conf** above.
 
-#### Creating Endpoints for Redis
+### Creating Endpoints for Redis
 
 Service is been created, but you still need to launch the actual pods running **redis** application.
 
@@ -386,12 +386,12 @@ Events:            <none>
 Again, visit the vote app from browser, attempt to register your vote.  observe what happens. This time the vote should be registered successfully.
 
 
-#### Summary
+## Summary
 
 In this lab, you have published a front facing application, learnt how services are implemented under the hood as well as added service discovery to provide  connection strings automatically.
 
 
-##### Reading
+## Reading List
 
 
   * [Debugging Services](https://kubernetes.io/docs/tasks/debug-application-cluster/debug-service/)

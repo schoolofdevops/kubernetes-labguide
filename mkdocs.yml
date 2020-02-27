@@ -1,21 +1,25 @@
-site_name: Kubernetes Lab Guide
+site_name: Kubernetes Tutorial
+site_url: http://kubernetes-tutorial.schoolofdevops.com/
+site_author: Gourav Shah
+site_description: Complete Kubernetes Tutorial by Example
+google_analytics: ['UA-36802546-16', 'kubernetes-tutorial.schoolofdevops.com']
 pages:
   - Home: "index.md"
   - Just Enough Docker:
-     - Lab D101 - Operating Containers: "operating-containers.md"
-     - Lab D102 - Building and Publishing Docker Images: "dockerizing-voteapp.md"
+     - Lab D101 - Operating Containers: "operating-docker-containers.md"
+     - Lab D102 - Building and Publishing Docker Images: "building-publishing-docker-images.md"
      - Lab D103 - Docker Networking: "docker-networking.md"
      - Lab D104 - Docker Volumes: "docker-volumes.md"
   - Kubernetes Fundamentals:
-     - Lab K101 - Setup Kubernetes Cluster: "3_install_kubernetes.md"
-     - Lab K102 - Kubernetes Quickdive: "quickdive.md"
-     - Lab K103 - Kubernetes LaunchPods: "5-vote-deploying_pods.md"
-     - Lab K104 - Adding HA and Scalability with ReplicaSets: "replication.md"
-     - Lab K105 - Load Balancing and Service Discovery with Services: "7-vote-exposing_app_with_service.md"
-     - Lab K106 - Defining Release Strategy with Deployments: "6-vote-kubernetes_deployment.md"
-     - Mini Project: "11_deploying_sample_app.md"
-     - Lab K107 - Configurations Management with ConfigMaps: "9-vote-configmaps_and_secrets.md"
-     - Lab K108 - Peristent Volumes: "vote-persistent-volumes.md"
+     - Lab K101 - Setup Kubernetes Cluster: "install_kubernetes_with_kubeadm.md"
+     - Lab K102 - Kubernetes Quickdive: "kubernetes_quickdive.md"
+     - Lab K103 - Kubernetes LaunchPods: "create-and-deploy-kubernetes-pods.md"
+     - Lab K104 - Adding HA and Scalability with ReplicaSets: "kubernetes-replicasets-howto.md"
+     - Lab K105 - Load Balancing and Service Discovery with Services: "kubernetes-service-networking.md"
+     - Lab K106 - Defining Release Strategy with Deployments: "kubernetes-rollouts-rollbacks-deployments.md"
+     - Mini Project: "kubernetes-sample-project.md"
+     - Lab K107 - Configurations Management with ConfigMaps: "kubernetes-configuration-management-configmaps-secrets.md"
+     - Lab K108 - Peristent Volumes: "kubernetes-dynamic-storage-provisioning.md"
   - Advanced Administration:
      - Lab K201 - Application Routing with Ingress Controllers : "ingress.md"
      - Lab K202 - Authentication and Authorization (RBAC): "configuring_authentication_and_authorization.md"
@@ -47,3 +51,14 @@ docs_dir: chapters
 theme: readthedocs
 plugins:
     - search
+repo_url: https://github.com/schoolofdevops/kubernetes-labguide
+edit_uri: edit/master/chapters
+copyright: Copyright @ 2017-2020 Gourav Shah, School of Devops. Some rights reserved. License CC BY-NC-SA 
+extra:
+  social:
+    - type: 'github'
+      link: 'https://github.com/schoolofdevops'
+    - type: 'twitter'
+      link: 'https://twitter.com/gouravhah'
+    - type: 'linkedin'
+      link: 'https://www.linkedin.com/in/gouravshah'

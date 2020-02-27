@@ -35,7 +35,7 @@ Deploy  metric server with the following commands,
 ```
 cd ~
 git clone  https://github.com/kubernetes-incubator/metrics-server.git
-kubectl apply -f metrics-server/deploy/1.8+/
+kubectl apply -f metrics-server/deploy/kubernetes/
 ```
 
 Validate
@@ -92,8 +92,8 @@ metadata:
   name: vote
 spec:
   minReplicas: 4
-  maxReplicas: 15
-  targetCPUUtilizationPercentage: 40
+  maxReplicas: 45
+  targetCPUUtilizationPercentage: 70
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
@@ -138,7 +138,7 @@ spec:
       containers:
       - name: siege
         image: schoolofdevops/loadtest:v1
-        command: ["siege",  "--concurrent=5", "--benchmark", "--time=10m", "http://vote"]
+        command: ["siege",  "--concurrent=5", "--benchmark", "--time=6m", "http://vote"]
       restartPolicy: Never
   backoffLimit: 4
 ```
