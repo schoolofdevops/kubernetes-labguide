@@ -185,7 +185,7 @@ Dashboard would be setup and available on port 31000. To access it go to the bro
 `use any of your node's (VM/Server) IP here`
 
 ```
-http://NODEIP:31000/#!/node?namespace=kube-node-lease
+http://NODEIP:31000/#!/node?namespace=default
 ```
 
 The Dashboard Looks like:
