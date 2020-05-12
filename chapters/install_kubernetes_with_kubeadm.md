@@ -174,7 +174,7 @@ After the Pod networks is installled, We can install another add-on service whic
 
 Installing Dashboard:
 ```
-kubectl apply -f https://gist.githubusercontent.com/initcron/32ff89394c881414ea7ef7f4d3a1d499/raw/4863613585d05f9360321c7141cc32b8aa305605/kube-dashboard.yaml
+kubectl apply -f https://gist.githubusercontent.com/initcron/32ff89394c881414ea7ef7f4d3a1d499/raw/3422fbffadecec8ccd2bc7aacd1ca1c575936649/kube-dashboard.yaml
 
 ```
 This will create a pod for the Kubernetes Dashboard.
@@ -185,7 +185,7 @@ Dashboard would be setup and available on port 31000. To access it go to the bro
 `use any of your node's (VM/Server) IP here`
 
 ```
-http://NODEIP:31000
+http://NODEIP:31000/#!/node?namespace=kube-node-lease
 ```
 
 The Dashboard Looks like:
