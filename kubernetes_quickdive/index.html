@@ -87,8 +87,6 @@
     <li class="toctree-l2"><a class="reference internal" href="#load-balancing">Load Balancing</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#deploying-a-new-version">Deploying a new version</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#service-discovery">Service Discovery</a>
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#cleaning-up">Cleaning up</a>
     </li>
@@ -215,12 +213,7 @@
 <p>In this lab you are going to deploy the <strong>instavote</strong> application stack <a href="https://github.com/schoolofdevops/example-voting-app">as described here</a> in a kubernetes environment using <strong>kubectl</strong> commands. Later, you would learn how to do the same by writing declarive <em>yaml</em> syntax.  </p>
 <p>Purpose of this lab is to quickly get your app up and running and demonstrate kubernetes key features such as scheduling, high availability, scalability, load balancing, service discovery etc.</p>
 <h3 id="deploying-app-with-kubernetes">Deploying app with kubernetes</h3>
-<p>Launch vote application with kubernetes. (simiar to docker run command)</p>
-<pre><code>kubectl  run vote --image=schoolofdevops/vote:v1
-</code></pre>
-
-<p>Since the above command is now deprecated, you could also use a alternate command such as</p>
-<p><code>Following is an alternate. run it only if you have not used kubectl run above</code></p>
+<p>Launch vote application with kubernetes. </p>
 <pre><code>kubectl create deployment vote --image=schoolofdevops/vote:v1
 </code></pre>
 
@@ -250,9 +243,9 @@ kubectl get deploy,rs,pods
 <p>Publish the application (similar to using -P for port mapping)</p>
 <pre><code>
 
-kubectl expose deployment vote --type=NodePort --port 80
+kubectl create service nodeport vote --tcp=80:80 --node-port=30300
 
-kubectl get svc
+kubectl get service
 
 </code></pre>
 
@@ -265,42 +258,15 @@ kubectl set image deployment vote vote=schoolofdevops/vote:v2
 </code></pre>
 
 <p>watch the rolling update  in action</p>
-<pre><code>watch kubectl get deploy,rs,pods
+<pre><code>kubectl rollout status deploy/vote
 </code></pre>
 
-<h3 id="service-discovery">Service Discovery</h3>
-<p><strong>Pre Test</strong>: Try to submit a vote from the frontend vote app. Does that work ?</p>
-<p>Now lets launch rest of the apps.</p>
-<pre><code>kubectl  create deployment  redis  --image=redis:alpine
-
-kubectl expose deployment redis --port 6379
-
-</code></pre>
-
-<p>optionally, you could launch rest of the services.</p>
-<pre><code>kubectl  create deployment  worker --image=schoolofdevops/worker
-
-kubectl  create deployment  db --image=postgres:9.4
-
-kubectl expose deployment db --port 5432
-
-kubectl create deployment  result --image=schoolofdevops/vote-result
-
-kubectl expose deployment result --type=NodePort --port 80
-
-</code></pre>
-
-<p><strong>Post Tests</strong>:</p>
-<ul>
-<li>Try to submit a vote from the frontend vote app. Does that work ?  If yes, try to deduce how it could connect to the backend applications such as redis.</li>
-<li>Access results ui application. When you submit vote, do the results change ?</li>
-</ul>
 <h4 id="cleaning-up">Cleaning up</h4>
 <p>Once you are done observing, you could delete it with the following commands,</p>
 <pre><code>
-kubectl delete deploy db redis vote worker result
+kubectl delete deploy vote
 
-kubectl delete svc db redis result vote
+kubectl delete service vote
 </code></pre>
 
 <h3 id="summary">Summary</h3>

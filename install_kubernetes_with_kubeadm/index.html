@@ -92,13 +92,13 @@
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#initialization-of-the-nodes-previously-minions">Initialization of the Nodes (Previously Minions)</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#setup-the-admin-client-kubectl">Setup the admin client - Kubectl</a>
+    <li class="toctree-l3"><a class="reference internal" href="#confgure-kubectl-client">Confgure kubectl Client</a>
     </li>
         </ul>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#installing-cni-with-weave">Installing CNI with Weave</a>
+    <li class="toctree-l2"><a class="reference internal" href="#configure-networking-with-weave-cni-plugin">Configure Networking with Weave CNI Plugin</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#validating-the-setup">Validating the Setup</a>
+    <li class="toctree-l2"><a class="reference internal" href="#e2e-testing">e2e Testing</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#enable-kubernetes-dashboard">Enable Kubernetes Dashboard</a>
     </li>
@@ -233,14 +233,12 @@
 <tr>
 <th>OS</th>
 <th>Version</th>
-<th>Codename</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><strong>Ubuntu</strong></td>
-<td><strong>16.04 / 18.04</strong></td>
-<td><strong>Xenial</strong></td>
+<td><strong> 18.04 / 20.04 </strong></td>
 </tr>
 </tbody>
 </table>
@@ -296,7 +294,7 @@ EOF
 
 <p><code>dont copy above command as is, this is just a sample, use actual</code></p>
 <p>Copy and paste it on all node.</p>
-<h3 id="setup-the-admin-client-kubectl">Setup the admin client - Kubectl</h3>
+<h3 id="confgure-kubectl-client">Confgure kubectl Client</h3>
 <p><code>on Master Node</code></p>
 <pre><code>mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
@@ -311,7 +309,7 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 <pre><code>watch kubectl get nodes
 </code></pre>
 
-<h2 id="installing-cni-with-weave">Installing CNI with Weave</h2>
+<h2 id="configure-networking-with-weave-cni-plugin">Configure Networking with Weave CNI Plugin</h2>
 <p>Installing overlay network is necessary for the pods to communicate with each other across the hosts. It is necessary to do this before you try to deploy any applications to your cluster.</p>
 <p>There are various overlay networking drivers available for kubernetes. We are going to use <strong>Weave Net</strong>.</p>
 <pre><code>
@@ -319,7 +317,7 @@ export kubever=$(kubectl version | base64 | tr -d '\n')
 kubectl apply -f &quot;https://cloud.weave.works/k8s/net?k8s-version=$kubever&quot;
 </code></pre>
 
-<h2 id="validating-the-setup">Validating the Setup</h2>
+<h2 id="e2e-testing">e2e Testing</h2>
 <p>You could validate the status of this cluster, health of pods and whether all the components are up or not by using a few or all of the following commands.</p>
 <p>To check if nodes are ready</p>
 <pre><code>kubectl get nodes
