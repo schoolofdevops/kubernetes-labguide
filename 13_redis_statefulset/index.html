@@ -9,7 +9,7 @@
   <meta name="author" content="Gourav Shah">
   <link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/13_redis_statefulset/">
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Creating Replicated Redis Cluster with Statefulsets - Kubernetes Tutorial</title>
+  <title>Lab K402 Statefulsets - Kubernetes Tutorial</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
 
   <link rel="stylesheet" href="../css/theme.css" />
@@ -18,7 +18,7 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Creating Replicated Redis Cluster with Statefulsets";
+    var mkdocs_page_name = "Lab K402 Statefulsets";
     var mkdocs_page_input_path = "13_redis_statefulset.md";
     var mkdocs_page_url = "/13_redis_statefulset/";
   </script>
@@ -72,49 +72,60 @@
                     <li class="toctree-l1"><a class="reference internal" href="../docker-volumes/">Lab D104 - Docker Volumes</a>
                     </li>
                 </ul>
-                <p class="caption"><span class="caption-text">Kubernetes Fundamentals</span></p>
+                <p class="caption"><span class="caption-text">Kubernetes CKA/CKAD Fundamentals</span></p>
                 <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../install_kubernetes_with_kubeadm/">Lab K101 - Setup Kubernetes Cluster</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../install_kubernetes_with_kubeadm/">Lab K101 - Install Kubernetes with Kubeadm</a>
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../kubernetes_quickdive/">Lab K102 - Kubernetes Quickdive</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../create-and-deploy-kubernetes-pods/">Lab K103 - Kubernetes LaunchPods</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../create-and-deploy-kubernetes-pods/">Lab K103 - Pods Basics</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../kubernetes-replicasets-howto/">Lab K104 - Adding HA and Scalability with ReplicaSets</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../kubernetes-replicasets-howto/">Lab K104 - Namespaces and ReplicaSets</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../kubernetes-service-networking/">Lab K105 - Load Balancing and Service Discovery with Services</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../kubernetes-service-networking/">Lab K105 - Services & Netowrking</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../kubernetes-rollouts-rollbacks-deployments/">Lab K106 - Defining Release Strategy with Deployments</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../cni/">Lab K106 - CNI</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../kubernetes-sample-project/">Mini Project</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../kubernetes-rollouts-rollbacks-deployments/">Lab K107 - Deployments</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../kubernetes-configuration-management-configmaps-secrets/">Lab K107 - Configurations Management with ConfigMaps</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../kubernetes-sample-project/">Lab K108 - Mini Project</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../kubernetes-dynamic-storage-provisioning/">Lab K108 - Peristent Volumes</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../kubernetes-dynamic-storage-provisioning/">Lab K109 - Storage</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../kubernetes-configuration-management-configmaps-secrets/">Lab K110 - Configurations Management</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../rbac_101/">Lab K111 - RBAC Concepts</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../ingress/">Lab K112 - Application Routing with Ingress Controllers</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../helm/">Lab K113 - HELM and Kustomize</a>
                     </li>
                 </ul>
-                <p class="caption"><span class="caption-text">Advanced Administration</span></p>
+                <p class="caption"><span class="caption-text">CKAD Topics</span></p>
                 <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../ingress/">Lab K201 - Application Routing with Ingress Controllers</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../advanced_pod_design/">Lab K201 - Advanced Pod Design</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../configuring_authentication_and_authorization/">Lab K202 - Authentication and Authorization (RBAC)</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../network_policies/">Lab K207 - Network Policies</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../advanced_pod_scheduling/">Lab K203 - Advanced Pod Scheduling</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../pods-health-probes/">Lab K204 - Observability and Application Troubleshooting</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../pods-health-probes/">Lab K204 - Adding health checks with Probes</a>
+                </ul>
+                <p class="caption"><span class="caption-text">CKA Topics</span></p>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../10_kubernetes_autoscaling/">Lab K301 - Auto Scaling Capacity with HPA</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../helm/">Lab K205 - Monitoring setup with HELM</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../advanced_pod_scheduling/">Lab K302 - Advanced Pod Scheduling</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../10_kubernetes_autoscaling/">Lab K206 - Auto Scaling Capacity with HPA</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../cluster-administration/">Lab K303 - Cluster Administration</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../network_policies/">Lab K207 - Access Control with Network Policies</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../cluster-administration/">Lab K208 - Cluster Administration</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../cluster-troubleshooting/">Lab K304 - Cluster Troubleshooting</a>
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Additional Topics</span></p>
                 <ul class="current">
-                    <li class="toctree-l1 current"><a class="reference internal current" href="./">Creating Replicated Redis Cluster with Statefulsets</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../configuring_authentication_and_authorization/">Lab K401 - Creating Users, Groups and Authorization</a>
+                    </li>
+                    <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K402 Statefulsets</a>
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#creating-a-headless-service">Creating a headless service</a>
     </li>
@@ -134,7 +145,7 @@
     </li>
     </ul>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../vote-deployement_strategies/">Building Deployment Strategies</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../vote-deployement_strategies/">Lab K403 Building Deployment Strategies</a>
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../12_troubleshooting/">Troubleshooting Tips</a>
                     </li>
@@ -195,7 +206,7 @@
         
       
     
-    <li>Creating Replicated Redis Cluster with Statefulsets</li>
+    <li>Lab K402 Statefulsets</li>
     <li class="wy-breadcrumbs-aside">
       
         <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/13_redis_statefulset.md"
@@ -389,10 +400,10 @@ connected
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../vote-deployement_strategies/" class="btn btn-neutral float-right" title="Building Deployment Strategies">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../vote-deployement_strategies/" class="btn btn-neutral float-right" title="Lab K403 Building Deployment Strategies">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../cluster-administration/" class="btn btn-neutral" title="Lab K208 - Cluster Administration"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../configuring_authentication_and_authorization/" class="btn btn-neutral" title="Lab K401 - Creating Users, Groups and Authorization"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -422,7 +433,7 @@ connected
           <a href="https://github.com/schoolofdevops/kubernetes-labguide/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
-        <span><a href="../cluster-administration/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../configuring_authentication_and_authorization/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
         <span style="margin-left: 15px"><a href="../vote-deployement_strategies/" style="color: #fcfcfc">Next &raquo;</a></span>

@@ -40,6 +40,10 @@
      <lastmod>2020-08-21</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
+     <loc>http://kubernetes-tutorial.schoolofdevops.com/cni/</loc>
+     <lastmod>2020-08-21</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
      <loc>http://kubernetes-tutorial.schoolofdevops.com/kubernetes-rollouts-rollbacks-deployments/</loc>
      <lastmod>2020-08-21</lastmod>
      <changefreq>daily</changefreq>
@@ -48,11 +52,15 @@
      <lastmod>2020-08-21</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
+     <loc>http://kubernetes-tutorial.schoolofdevops.com/kubernetes-dynamic-storage-provisioning/</loc>
+     <lastmod>2020-08-21</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
      <loc>http://kubernetes-tutorial.schoolofdevops.com/kubernetes-configuration-management-configmaps-secrets/</loc>
      <lastmod>2020-08-21</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
-     <loc>http://kubernetes-tutorial.schoolofdevops.com/kubernetes-dynamic-storage-provisioning/</loc>
+     <loc>http://kubernetes-tutorial.schoolofdevops.com/rbac_101/</loc>
      <lastmod>2020-08-21</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
@@ -60,23 +68,11 @@
      <lastmod>2020-08-21</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
-     <loc>http://kubernetes-tutorial.schoolofdevops.com/configuring_authentication_and_authorization/</loc>
-     <lastmod>2020-08-21</lastmod>
-     <changefreq>daily</changefreq>
-    </url><url>
-     <loc>http://kubernetes-tutorial.schoolofdevops.com/advanced_pod_scheduling/</loc>
-     <lastmod>2020-08-21</lastmod>
-     <changefreq>daily</changefreq>
-    </url><url>
-     <loc>http://kubernetes-tutorial.schoolofdevops.com/pods-health-probes/</loc>
-     <lastmod>2020-08-21</lastmod>
-     <changefreq>daily</changefreq>
-    </url><url>
      <loc>http://kubernetes-tutorial.schoolofdevops.com/helm/</loc>
      <lastmod>2020-08-21</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
-     <loc>http://kubernetes-tutorial.schoolofdevops.com/10_kubernetes_autoscaling/</loc>
+     <loc>http://kubernetes-tutorial.schoolofdevops.com/advanced_pod_design/</loc>
      <lastmod>2020-08-21</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
@@ -84,7 +80,27 @@
      <lastmod>2020-08-21</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
+     <loc>http://kubernetes-tutorial.schoolofdevops.com/pods-health-probes/</loc>
+     <lastmod>2020-08-21</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>http://kubernetes-tutorial.schoolofdevops.com/10_kubernetes_autoscaling/</loc>
+     <lastmod>2020-08-21</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>http://kubernetes-tutorial.schoolofdevops.com/advanced_pod_scheduling/</loc>
+     <lastmod>2020-08-21</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
      <loc>http://kubernetes-tutorial.schoolofdevops.com/cluster-administration/</loc>
+     <lastmod>2020-08-21</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>http://kubernetes-tutorial.schoolofdevops.com/cluster-troubleshooting/</loc>
+     <lastmod>2020-08-21</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>http://kubernetes-tutorial.schoolofdevops.com/configuring_authentication_and_authorization/</loc>
      <lastmod>2020-08-21</lastmod>
      <changefreq>daily</changefreq>
     </url><url>

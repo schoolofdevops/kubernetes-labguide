@@ -7,9 +7,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <meta name="author" content="Gourav Shah">
-  <link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/building-publishing-docker-images/">
+  <link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/cni/">
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Lab D102 - Building and Publishing Docker Images - Kubernetes Tutorial</title>
+  <title>Lab K106 - CNI - Kubernetes Tutorial</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
 
   <link rel="stylesheet" href="../css/theme.css" />
@@ -18,9 +18,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Lab D102 - Building and Publishing Docker Images";
-    var mkdocs_page_input_path = "building-publishing-docker-images.md";
-    var mkdocs_page_url = "/building-publishing-docker-images/";
+    var mkdocs_page_name = "Lab K106 - CNI";
+    var mkdocs_page_input_path = "cni.md";
+    var mkdocs_page_url = "/cni/";
   </script>
   
   <script src="../js/jquery-2.1.1.min.js" defer></script>
@@ -62,16 +62,10 @@
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Just Enough Docker</span></p>
-                <ul class="current">
+                <ul>
                     <li class="toctree-l1"><a class="reference internal" href="../operating-docker-containers/">Lab D101 - Operating Containers</a>
                     </li>
-                    <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab D102 - Building and Publishing Docker Images</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#approach-1-building-docker-image-for-voteapp-manually">Approach 1: Building docker image for voteapp manually</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#approach-2-building-image-with-dockerfile">Approach 2: Building image with Dockerfile</a>
-    </li>
-    </ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../building-publishing-docker-images/">Lab D102 - Building and Publishing Docker Images</a>
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../docker-networking/">Lab D103 - Docker Networking</a>
                     </li>
@@ -79,7 +73,7 @@
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Kubernetes CKA/CKAD Fundamentals</span></p>
-                <ul>
+                <ul class="current">
                     <li class="toctree-l1"><a class="reference internal" href="../install_kubernetes_with_kubeadm/">Lab K101 - Install Kubernetes with Kubeadm</a>
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../kubernetes_quickdive/">Lab K102 - Kubernetes Quickdive</a>
@@ -90,7 +84,7 @@
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../kubernetes-service-networking/">Lab K105 - Services & Netowrking</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../cni/">Lab K106 - CNI</a>
+                    <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K106 - CNI</a>
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../kubernetes-rollouts-rollbacks-deployments/">Lab K107 - Deployments</a>
                     </li>
@@ -190,14 +184,14 @@
     
       
         
-          <li>Just Enough Docker &raquo;</li>
+          <li>Kubernetes CKA/CKAD Fundamentals &raquo;</li>
         
       
     
-    <li>Lab D102 - Building and Publishing Docker Images</li>
+    <li>Lab K106 - CNI</li>
     <li class="wy-breadcrumbs-aside">
       
-        <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/building-publishing-docker-images.md"
+        <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/cni.md"
           class="icon icon-github"> Edit on GitHub</a>
       
     </li>
@@ -208,78 +202,7 @@
           <div role="main">
             <div class="section">
               
-                <h2 id="lab-build-a-docker-image-for-instavote-frontend-vote-app">Lab : Build a docker image for Instavote frontend vote app</h2>
-<p><a href="https://github.com/schoolofdevops/vote">Voteapp</a> is a app written in python. Its a simple, web based  application which serves as a frontend for Instavote project. As a devops engineer, you have been tasked with building an image for vote app and publish it to docker hub registry.</p>
-<h3 id="approach-1-building-docker-image-for-voteapp-manually">Approach 1: Building docker image for voteapp manually</h3>
-<p>on the host</p>
-<pre><code>git clone https://github.com/schoolofdevops/vote
-docker container run -idt --name build -p 8000:80 python:2.7-alpine sh
-cd vote
-docker cp . build:/app
-docker exec -it build sh
-</code></pre>
-
-<p>inside the container</p>
-<pre><code>cd /app
-pip install -r requirements.txt
-gunicorn app:app -b 0.0.0.0:80
-</code></pre>
-
-<p>Validate by accessing http://IPADDRESS:8000</p>
-<p>on the host</p>
-<pre><code>docker diff build
-
-docker container commit build &lt;docker_id&gt;/vote:v1
-
-docker login
-
-docker image push &lt;docker_id&gt;/vote:v1
-
-</code></pre>
-
-<h3 id="approach-2-building-image-with-dockerfile">Approach 2: Building image with Dockerfile</h3>
-<p>Change into vote  directory which containts the source code.  This assumes you have already cloned the repo. If not, clone it from https://github.com/schoolofdevops/vote</p>
-<pre><code>cd vote
-ls
-
-app.py  requirements.txt  static  templates
-</code></pre>
-
-<p>Add/create  Dockerfile the the same directory (vote) with the following content,</p>
-<pre><code>FROM python:2.7-alpine
-
-WORKDIR /app
-
-COPY . .
-
-RUN pip install -r requirements.txt
-
-EXPOSE 80
-
-CMD  gunicorn app:app -b 0.0.0.0:80
-</code></pre>
-
-<p>Build image using,</p>
-<pre><code> docker build -t &lt;docker_id&gt;/vote:v2 .
-</code></pre>
-
-<p>where,
-  <docker_id> : your docker registry user/namespace. Replace this with the actual user</p>
-<p>validate</p>
-<pre><code>docker image ls
-docker image history &lt;docker_id&gt;/vote:v2
-docker image history &lt;docker_id&gt;/vote:v1
-
-docker container run -idt -P &lt;docker_id&gt;/vote:v2
-docker ps
-</code></pre>
-
-<p>Check by connecting to your host:port to validate if vote web application shows up.</p>
-<p>Once validated, tag and push</p>
-<pre><code>docker image tag &lt;docker_id&gt;/vote:v2 &lt;docker_id&gt;/vote:latest
-docker login
-docker push &lt;docker_id&gt;/vote
-</code></pre>
+                
               
             </div>
           </div>
@@ -287,10 +210,10 @@ docker push &lt;docker_id&gt;/vote
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../docker-networking/" class="btn btn-neutral float-right" title="Lab D103 - Docker Networking">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../kubernetes-rollouts-rollbacks-deployments/" class="btn btn-neutral float-right" title="Lab K107 - Deployments">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../operating-docker-containers/" class="btn btn-neutral" title="Lab D101 - Operating Containers"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../kubernetes-service-networking/" class="btn btn-neutral" title="Lab K105 - Services & Netowrking"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -320,10 +243,10 @@ docker push &lt;docker_id&gt;/vote
           <a href="https://github.com/schoolofdevops/kubernetes-labguide/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
-        <span><a href="../operating-docker-containers/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../kubernetes-service-networking/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../docker-networking/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../kubernetes-rollouts-rollbacks-deployments/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
