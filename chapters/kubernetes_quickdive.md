@@ -66,7 +66,7 @@ kubectl get service
 Connect to the app,  refresh the page to see it load balancing.  Also try to vote and observe what happens.  
 
 
-### Deploying a new version
+### Roll Out a New Version
 
 
 ```
