@@ -155,7 +155,7 @@ kube-03   Ready     <none>    4m        v1.8.2
 Additional Status Commands
 
 ```
-kubectl version
+kubectl version -o yaml
 
 kubectl cluster-info
 
