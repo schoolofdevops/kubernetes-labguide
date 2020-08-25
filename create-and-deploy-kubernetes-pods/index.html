@@ -80,7 +80,7 @@
                     </li>
                     <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K103 - Pods Basics</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#launching-pods-without-yaml">Launching pods without YAML</a>
+    <li class="toctree-l2"><a class="reference internal" href="#launching-pods-manually">Launching Pods Manually</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#kubernetes-resources-and-writing-yaml-specs">Kubernetes Resources and writing YAML specs</a>
         <ul>
@@ -92,7 +92,7 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#adding-a-volume-for-data-persistence">Adding a Volume for data persistence</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#creating-multi-container-pods">Creating Multi Container Pods</a>
+    <li class="toctree-l2"><a class="reference internal" href="#creating-multi-container-pods-sidecar-example">Creating Multi Container Pods - Sidecar Example</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#adding-resource-requests-and-limits">Adding Resource requests and limits</a>
         <ul>
@@ -232,10 +232,10 @@
               
                 <h1 id="lab-k103-launching-pods-with-kubernetes">Lab K103: Launching Pods with Kubernetes</h1>
 <p>In this lab, you would learn how to launch applications using  the basic deployment unit of kubernetes i.e. <strong>pods</strong>. This time, you are going to do it by writing declarative configs with <em>yaml</em> syntax.</p>
-<h2 id="launching-pods-without-yaml">Launching pods without YAML</h2>
-<p>You could use <a href="https://kubernetes.io/docs/reference/kubectl/conventions/#generators">generators</a> to launch a pod by specifying just the image.  </p>
+<h2 id="launching-pods-manually">Launching Pods Manually</h2>
+<p>You could use <code>kubectl run</code> to launch a pod by specifying just the image.  </p>
 <p>For example, if you would like to launch a pod for redis, with image redis:alpine, the following command would work,</p>
-<pre><code>kubectl run redis --generator=run-pod/v1 --image=redis
+<pre><code>kubectl run redis  --image=redis
 </code></pre>
 
 <h2 id="kubernetes-resources-and-writing-yaml-specs">Kubernetes Resources and writing YAML specs</h2>
@@ -273,6 +273,7 @@ spec:
 <p><strong>Problem Statement:</strong> Create a YAML spec to launch a  pod with one container to run vote application, which matches the following specs.</p>
 <ul>
 <li>pod:<ul>
+<li>metadata: </li>
 <li>name: vote</li>
 <li>labels:<ul>
 <li>app: python</li>
@@ -282,7 +283,7 @@ spec:
 </li>
 </ul>
 </li>
-<li>container<ul>
+<li>containers: <ul>
 <li>name: app</li>
 <li>image: schoolofdevops/vote:v1</li>
 </ul>
@@ -328,6 +329,8 @@ kubectl apply -f FILE
 kubectl get po
 
 kubectl get pods -o wide
+
+kubectl get pods --show-labels
 
 kubectl get pods vote
 </code></pre>
@@ -400,7 +403,7 @@ kubectl get events
 </code></pre>
 
 <p><strong>Exercise</strong> : Examine <strong>/var/lib/pgdata</strong> on the systems to check if the directory is been created and if the data is present.</p>
-<h2 id="creating-multi-container-pods">Creating Multi Container Pods</h2>
+<h2 id="creating-multi-container-pods-sidecar-example">Creating Multi Container Pods - Sidecar Example</h2>
 <p>file: multi_container_pod.yml</p>
 <pre><code>apiVersion: v1
 kind: Pod
