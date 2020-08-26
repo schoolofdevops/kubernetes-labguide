@@ -225,6 +225,7 @@
             <div class="section">
               
                 <h1 id="service-networking-load-balancing-and-service-discovery">Service Networking, Load Balancing and Service Discovery</h1>
+<p>kubectl create service nodeport vote --tcp=80:80 --node-port=30000 --dry-run=client -o yaml &gt; my-svc.yaml</p>
 <p>In this lab, you would not only publish the application deployed with replicaset earlier, but also learn about the load balancing and service discovery features offered by kubernetes.</p>
 <p>Concepts related to Kubernetes Services are depicted in the following diagram,</p>
 <p><img alt="kubernetes service.\label{fig:captioned_image}" src="../images/k8s_service.jpg" /></p>
