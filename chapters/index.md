@@ -1,6 +1,6 @@
-# Kubernetes Tutorial
+# Kubernete Tutorials with CKA and CKAD Prep Guide 
 
-Welcome to the Kubernetes Tutorial  by School of Devops
+Welcome to the Kubernetes Tutorial with CKA and CKAD Prep Guide  by School of Devops
 
 This document was originally created as  a Lab Guide to go along with the [Kubernetes Course by School of Devops](http://www.schoolofdevops.com/). However, you could also use it on its own now to practice learning kubernetes topics.
 

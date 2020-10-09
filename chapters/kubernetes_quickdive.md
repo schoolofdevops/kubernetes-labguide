@@ -8,15 +8,8 @@ Purpose of this lab is to quickly get your app up and running and demonstrate ku
 
 ### Deploying app with kubernetes
 
-Launch vote application with kubernetes. (simiar to docker run command)
+Launch vote application with kubernetes. 
 
-```
-kubectl  run vote --image=schoolofdevops/vote:v1
-```
-
-Since the above command is now deprecated, you could also use a alternate command such as
-
-`Following is an alternate. run it only if you have not used kubectl run above`
 ```
 kubectl create deployment vote --image=schoolofdevops/vote:v1
 ```
@@ -63,9 +56,9 @@ Publish the application (similar to using -P for port mapping)
 ```
 
 
-kubectl expose deployment vote --type=NodePort --port 80
+kubectl create service nodeport vote --tcp=80:80 --node-port=30300
 
-kubectl get svc
+kubectl get service
 
 ```
 
@@ -73,7 +66,7 @@ kubectl get svc
 Connect to the app,  refresh the page to see it load balancing.  Also try to vote and observe what happens.  
 
 
-### Deploying a new version
+### Roll Out a New Version
 
 
 ```
@@ -87,42 +80,9 @@ kubectl set image deployment vote vote=schoolofdevops/vote:v2
 watch the rolling update  in action
 
 ```
-watch kubectl get deploy,rs,pods
+kubectl rollout status deploy/vote
 ```
 
-### Service Discovery
-
-**Pre Test**: Try to submit a vote from the frontend vote app. Does that work ?
-
-Now lets launch rest of the apps.
-
-
-```
-kubectl  create deployment  redis  --image=redis:alpine
-
-kubectl expose deployment redis --port 6379
-
-```
-
-optionally, you could launch rest of the services.
-
-```
-kubectl  create deployment  worker --image=schoolofdevops/worker
-
-kubectl  create deployment  db --image=postgres:9.4
-
-kubectl expose deployment db --port 5432
-
-kubectl create deployment  result --image=schoolofdevops/vote-result
-
-kubectl expose deployment result --type=NodePort --port 80
-
-```
-
-**Post Tests**:
-
-  * Try to submit a vote from the frontend vote app. Does that work ?  If yes, try to deduce how it could connect to the backend applications such as redis.
-  * Access results ui application. When you submit vote, do the results change ?
 
 
 #### Cleaning up
@@ -131,9 +91,9 @@ Once you are done observing, you could delete it with the following commands,
 
 ```
 
-kubectl delete deploy db redis vote worker result
+kubectl delete deploy vote
 
-kubectl delete svc db redis result vote
+kubectl delete service vote
 ```
 
 ### Summary

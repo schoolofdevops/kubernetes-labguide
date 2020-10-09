@@ -2,14 +2,14 @@
 
 In this lab, you would learn how to launch applications using  the basic deployment unit of kubernetes i.e. **pods**. This time, you are going to do it by writing declarative configs with *yaml* syntax.
 
-## Launching pods without YAML  
+## Launching Pods Manually  
 
-You could use [generators](https://kubernetes.io/docs/reference/kubectl/conventions/#generators) to launch a pod by specifying just the image.  
+You could use ``` kubectl run ``` to launch a pod by specifying just the image.  
 
 For example, if you would like to launch a pod for redis, with image redis:alpine, the following command would work,
 
 ```
-kubectl run redis --generator=run-pod/v1 --image=redis
+kubectl run redis  --image=redis
 ```
 
 
@@ -63,12 +63,13 @@ spec:
 **Problem Statement:** Create a YAML spec to launch a  pod with one container to run vote application, which matches the following specs.
 
   * pod:
-    * name: vote
-    * labels:
+    * metadata: 
+      * name: vote
+      * labels:
         * app: python
         * role: vote
         * version: v1
-  * container
+  * containers: 
     * name: app
     * image: schoolofdevops/vote:v1
 
@@ -130,6 +131,8 @@ kubectl get pods
 kubectl get po
 
 kubectl get pods -o wide
+
+kubectl get pods --show-labels
 
 kubectl get pods vote
 ```
@@ -222,7 +225,7 @@ kubectl get events
 
 
 
-## Creating Multi Container Pods
+## Creating Multi Container Pods - Sidecar Example
 
 file: multi_container_pod.yml
 

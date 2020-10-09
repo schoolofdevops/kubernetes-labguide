@@ -10,9 +10,9 @@ Kubernetes is an open-source system for automating deployment, scaling, and mana
 The below steps are applicable for the below mentioned OS
 
 
-| OS | Version | Codename |  
-| --- | --- | -- |  
-| **Ubuntu** | **16.04 / 18.04** | **Xenial** |  
+| OS | Version | 
+| --- | --- | 
+| **Ubuntu** | ** 18.04 / 20.04 ** | 
 
 ## Base Setup
 `Skip this step if using a pre configured lab environment`
@@ -92,7 +92,7 @@ kubeadm join --token c04797.8db60f6b2c0dd078 192.168.12.10:6443 --discovery-toke
 Copy and paste it on all node.
 
 
-### Setup the admin client - Kubectl
+### Confgure kubectl Client 
 
 
 `on Master Node`
@@ -115,7 +115,7 @@ You could also put the above command on a watch to observe the nodes getting rea
 watch kubectl get nodes
 ```
 
-## Installing CNI with Weave
+## Configure Networking with Weave CNI Plugin
 
 Installing overlay network is necessary for the pods to communicate with each other across the hosts. It is necessary to do this before you try to deploy any applications to your cluster.
 
@@ -129,7 +129,7 @@ kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$kubever"
 
 
 
-## Validating the Setup
+## e2e Testing
 
 You could validate the status of this cluster, health of pods and whether all the components are up or not by using a few or all of the following commands.
 
@@ -155,7 +155,7 @@ kube-03   Ready     <none>    4m        v1.8.2
 Additional Status Commands
 
 ```
-kubectl version
+kubectl version -o yaml
 
 kubectl cluster-info
 
@@ -174,7 +174,7 @@ After the Pod networks is installled, We can install another add-on service whic
 
 Installing Dashboard:
 ```
-kubectl apply -f https://gist.githubusercontent.com/initcron/32ff89394c881414ea7ef7f4d3a1d499/raw/4863613585d05f9360321c7141cc32b8aa305605/kube-dashboard.yaml
+kubectl apply -f https://gist.githubusercontent.com/initcron/32ff89394c881414ea7ef7f4d3a1d499/raw/3422fbffadecec8ccd2bc7aacd1ca1c575936649/kube-dashboard.yaml
 
 ```
 This will create a pod for the Kubernetes Dashboard.
@@ -185,7 +185,7 @@ Dashboard would be setup and available on port 31000. To access it go to the bro
 `use any of your node's (VM/Server) IP here`
 
 ```
-http://NODEIP:31000
+http://NODEIP:31000/#!/node?namespace=default
 ```
 
 The Dashboard Looks like:

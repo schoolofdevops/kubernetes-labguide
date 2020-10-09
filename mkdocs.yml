@@ -1,4 +1,4 @@
-site_name: Kubernetes Tutorial
+site_name: Kubernetes Tutorial with CKA/CKAD Prep
 site_url: http://kubernetes-tutorial.schoolofdevops.com/
 site_author: Gourav Shah
 site_description: Complete Kubernetes Tutorial by Example
@@ -10,28 +10,33 @@ pages:
      - Lab D102 - Building and Publishing Docker Images: "building-publishing-docker-images.md"
      - Lab D103 - Docker Networking: "docker-networking.md"
      - Lab D104 - Docker Volumes: "docker-volumes.md"
-  - Kubernetes Fundamentals:
-     - Lab K101 - Setup Kubernetes Cluster: "install_kubernetes_with_kubeadm.md"
+  - Kubernetes CKA/CKAD Fundamentals:
+     - Lab K101 - Install Kubernetes with Kubeadm: "install_kubernetes_with_kubeadm.md"
      - Lab K102 - Kubernetes Quickdive: "kubernetes_quickdive.md"
-     - Lab K103 - Kubernetes LaunchPods: "create-and-deploy-kubernetes-pods.md"
-     - Lab K104 - Adding HA and Scalability with ReplicaSets: "kubernetes-replicasets-howto.md"
-     - Lab K105 - Load Balancing and Service Discovery with Services: "kubernetes-service-networking.md"
-     - Lab K106 - Defining Release Strategy with Deployments: "kubernetes-rollouts-rollbacks-deployments.md"
-     - Mini Project: "kubernetes-sample-project.md"
-     - Lab K107 - Configurations Management with ConfigMaps: "kubernetes-configuration-management-configmaps-secrets.md"
-     - Lab K108 - Peristent Volumes: "kubernetes-dynamic-storage-provisioning.md"
-  - Advanced Administration:
-     - Lab K201 - Application Routing with Ingress Controllers : "ingress.md"
-     - Lab K202 - Authentication and Authorization (RBAC): "configuring_authentication_and_authorization.md"
-     - Lab K203 - Advanced Pod Scheduling: "advanced_pod_scheduling.md"
-     - Lab K204 - Adding health checks with Probes: "pods-health-probes.md"
-     - Lab K205 - Monitoring setup with HELM: "helm.md"
-     - Lab K206 - Auto Scaling Capacity with HPA : "10_kubernetes_autoscaling.md"
-     - Lab K207 - Access Control with Network Policies: "network_policies.md"
-     - Lab K208 - Cluster Administration: "cluster-administration.md"
+     - Lab K103 - Pods Basics: "create-and-deploy-kubernetes-pods.md"
+     - Lab K104 - Namespaces and ReplicaSets: "kubernetes-replicasets-howto.md"
+     - Lab K105 - Services & Netowrking: "kubernetes-service-networking.md"
+     - Lab K106 - CNI: "cni.md"
+     - Lab K107 - Deployments: "kubernetes-rollouts-rollbacks-deployments.md"
+     - Lab K108 - Mini Project: "kubernetes-sample-project.md"
+     - Lab K109 - Storage: "kubernetes-dynamic-storage-provisioning.md"
+     - Lab K110 - Configurations Management: "kubernetes-configuration-management-configmaps-secrets.md"
+     - Lab K111 - RBAC Concepts : "rbac_101.md"
+     - Lab K112 - Application Routing with Ingress Controllers : "ingress.md"
+     - Lab K113 - HELM and Kustomize: "helm.md"
+  - CKAD Topics:
+     - Lab K201 - Advanced Pod Design: "advanced_pod_design.md"
+     - Lab K207 - Network Policies: "network_policies.md"
+     - Lab K204 - Observability and Application Troubleshooting: "pods-health-probes.md"
+  - CKA Topics:
+     - Lab K301 - Auto Scaling Capacity with HPA : "10_kubernetes_autoscaling.md"
+     - Lab K302 - Advanced Pod Scheduling: "advanced_pod_scheduling.md"
+     - Lab K303 - Cluster Administration: "cluster-administration.md"
+     - Lab K304 - Cluster Troubleshooting: "cluster-troubleshooting.md"
   - Additional Topics:
-     - Creating Replicated Redis Cluster with Statefulsets: "13_redis_statefulset.md"
-     - Building Deployment Strategies: "vote-deployement_strategies.md"
+     - Lab K401 - Creating Users, Groups and Authorization: "configuring_authentication_and_authorization.md"
+     - Lab K402 Statefulsets: "13_redis_statefulset.md"
+     - Lab K403 Building Deployment Strategies: "vote-deployement_strategies.md"
      - Troubleshooting Tips: "12_troubleshooting.md"
      - Logging: "logging.md"
   - Exercises:
