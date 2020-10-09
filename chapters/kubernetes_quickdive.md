@@ -1,4 +1,4 @@
-# LAB K102: Kubernetes Quick Dive
+# Kubernetes Quick Dive
 
 In this lab you are going to deploy the **instavote** application stack [as described here](https://github.com/schoolofdevops/example-voting-app) in a kubernetes environment using **kubectl** commands. Later, you would learn how to do the same by writing declarive *yaml* syntax.  
 
@@ -8,7 +8,7 @@ Purpose of this lab is to quickly get your app up and running and demonstrate ku
 
 ### Deploying app with kubernetes
 
-Launch vote application with kubernetes. 
+Launch vote application with kubernetes.
 
 ```
 kubectl create deployment vote --image=schoolofdevops/vote:v1

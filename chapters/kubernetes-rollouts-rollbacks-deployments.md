@@ -1,4 +1,4 @@
-# LAB K106 - Defining Release Strategy with  Deployment
+# Defining Release Strategy with  Deployment
 
 A Deployment is a higher level abstraction which sits on top of replica sets and allows you to manage the way applications are deployed, rolled back at a controlled rate.
 
@@ -10,8 +10,13 @@ Deployment provides three features,
 
 ![deployment specs mindmap](images/deployment_mindmap.png)
 
+Begin by deleting the previously created replicaset as the presence of it may lead to duplicate set of pods. 
 
-Since deployment is just a superset of replicaset specs, lets begin  creating  a deployment by copying over the existing replicaset code for vote app. 
+```
+kubectl delete rs vote
+```
+
+Since deployment is just a superset of replicaset specs, lets begin  creating  a deployment by copying over the existing replicaset code for vote app.
 
 ```
 /k8s-code/projects/instavote/dev/

@@ -1,5 +1,5 @@
 
-# LAB - Setting up Kubernetes Cluster with Kubeadm  
+# Setting up Kubernetes Cluster with Kubeadm  
 
 This documents describes how to setup kubernetes from scratch on your own nodes, without using a managed service. This setup uses **kubeadm** to install and configure kubernetes cluster.
 
@@ -10,9 +10,9 @@ Kubernetes is an open-source system for automating deployment, scaling, and mana
 The below steps are applicable for the below mentioned OS
 
 
-| OS | Version | 
-| --- | --- | 
-| **Ubuntu** | ** 18.04 / 20.04 ** | 
+| OS | Version |
+| --- | --- |
+| **Ubuntu** | ** 18.04 / 20.04 ** |
 
 ## Base Setup
 `Skip this step if using a pre configured lab environment`
@@ -92,7 +92,7 @@ kubeadm join --token c04797.8db60f6b2c0dd078 192.168.12.10:6443 --discovery-toke
 Copy and paste it on all node.
 
 
-### Confgure kubectl Client 
+### Confgure kubectl Client
 
 
 `on Master Node`

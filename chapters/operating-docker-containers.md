@@ -1,4 +1,4 @@
-# Lab: Getting Started with Docker Operations
+# Getting Started with Docker Operations
 
 In this chapter, we are going to learn about docker shell, the command line utility and how to use it to
 launch containers. We will also learn what it means to run a container, its lifecycle and perform basic

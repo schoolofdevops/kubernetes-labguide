@@ -18,8 +18,8 @@ pages:
      - Lab K105 - Services & Netowrking: "kubernetes-service-networking.md"
      - Lab K106 - CNI: "cni.md"
      - Lab K107 - Deployments: "kubernetes-rollouts-rollbacks-deployments.md"
-     - Lab K108 - Mini Project: "kubernetes-sample-project.md"
-     - Lab K109 - Storage: "kubernetes-dynamic-storage-provisioning.md"
+     - Lab K108 - Storage: "kubernetes-dynamic-storage-provisioning.md"
+     - Lab K109 - Mini Project: "kubernetes-sample-project.md"
      - Lab K110 - Configurations Management: "kubernetes-configuration-management-configmaps-secrets.md"
      - Lab K111 - RBAC Concepts : "rbac_101.md"
      - Lab K112 - Application Routing with Ingress Controllers : "ingress.md"
@@ -58,7 +58,7 @@ plugins:
     - search
 repo_url: https://github.com/schoolofdevops/kubernetes-labguide
 edit_uri: edit/master/chapters
-copyright: Copyright @ 2017-2020 Gourav Shah, School of Devops. Some rights reserved. License CC BY-NC-SA 
+copyright: Copyright @ 2017-2020 Gourav Shah, School of Devops. Some rights reserved. License CC BY-NC-SA
 extra:
   social:
     - type: 'github'

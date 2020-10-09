@@ -1,5 +1,5 @@
 
-# Lab K104 - Adding HA and Scalability with ReplicaSets
+# Adding HA and Scalability with ReplicaSets
 
 If you are not running a monitoring screen, start it in a new terminal with the following command.
 
