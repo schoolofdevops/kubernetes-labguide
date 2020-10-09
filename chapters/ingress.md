@@ -41,7 +41,7 @@ kubectl apply -f https://raw.githubusercontent.com/containous/traefik/v1.7/examp
 
 Validate
 ```
-kubectl get svc,ds,pods -n kube-system  --selector='k8s-app=traefik-ingress-lb'
+kubectl get svc,ds -n kube-system  
 ```
 
 [output]
@@ -86,28 +86,26 @@ In order to achieve this you, as a user would create a **ingress** object with a
 `file: vote-ing.yaml`
 
 ```
-apiVersion: extensions/v1beta1
+---
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: vote
+  namespace: instavote
   annotations:
     kubernetes.io/ingress.class: traefik
 spec:
   rules:
-    - host: vote.example.com
-      http:
-        paths:
-          - path: /
-            backend:
-              serviceName: vote
-              servicePort: 80
-    - host: results.example.com
-      http:
-        paths:
-          - path: /
-            backend:
-              serviceName: results
-              servicePort: 80
+  - host: vote.example.com
+    http:
+      paths:
+      - path: /
+        pathType: Exact
+        backend:
+          service:
+            name: vote
+            port:
+              number: 80
 ```
 
 And apply
@@ -184,7 +182,7 @@ sudo vim /etc/hosts
 And add an entry such as ,
 
 ```
-xxx.xxx.xxx.xxx vote.example.com results.example.com
+xxx.xxx.xxx.xxx vote.example.com results.example.com  kube-ops-view.example.org
 ```
 
 where,
@@ -225,32 +223,30 @@ And then add annotations to the ingress object so that it is read by the ingress
 
 `file: vote-ing.yaml`
 
+
 ```
-apiVersion: extensions/v1beta1
+---
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: vote
+  namespace: instavote
   annotations:
     kubernetes.io/ingress.class: traefik
     ingress.kubernetes.io/auth-type: "basic"
     ingress.kubernetes.io/auth-secret: "mysecret"
 spec:
   rules:
-    - host: vote.example.com
-      http:
-        paths:
-          - path: /
-            backend:
-              serviceName: vote
-              servicePort: 82
-    - host: results.example.com
-      http:
-        paths:
-          - path: /
-            backend:
-              serviceName: results
-              servicePort: 81
-
+  - host: vote.example.com
+    http:
+      paths:
+      - path: /
+        pathType: Exact
+        backend:
+          service:
+            name: vote
+            port:
+              number: 80
 ```
 
 where,
