@@ -339,6 +339,10 @@
 <li><strong>Update Strategy</strong>: Define a release strategy and update the pods accordingly.</li>
 </ul>
 <p><img alt="deployment specs mindmap" src="../images/deployment_mindmap.png" /></p>
+<p>Begin by deleting the previously created replicaset as the presence of it may lead to duplicate set of pods. </p>
+<pre><code>kubectl delete rs vote
+</code></pre>
+
 <p>Since deployment is just a superset of replicaset specs, lets begin  creating  a deployment by copying over the existing replicaset code for vote app.</p>
 <pre><code>/k8s-code/projects/instavote/dev/
 cp vote-rs.yaml vote-deploy.yaml
