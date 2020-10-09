@@ -397,7 +397,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: vote
-  namespace: default
+  namespace: instavote
   annotations:
     kubernetes.io/ingress.class: traefik
 spec:
@@ -506,7 +506,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: vote
-  namespace: default
+  namespace: instavote
   annotations:
     kubernetes.io/ingress.class: traefik
     ingress.kubernetes.io/auth-type: &quot;basic&quot;
