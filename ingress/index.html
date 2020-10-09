@@ -359,7 +359,7 @@ kubectl apply -f https://raw.githubusercontent.com/containous/traefik/v1.7/examp
 </code></pre>
 
 <p>Validate</p>
-<pre><code>kubectl get svc,ds,pods -n kube-system  --selector='k8s-app=traefik-ingress-lb'
+<pre><code>kubectl get svc,ds -n kube-system  
 </code></pre>
 
 <p>[output]</p>
@@ -392,28 +392,26 @@ pod/traefik-ingress-controller-vl296   1/1       Running   0          11h
 </code></pre>
 
 <p><code>file: vote-ing.yaml</code></p>
-<pre><code>apiVersion: extensions/v1beta1
+<pre><code>---
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: vote
+  namespace: default
   annotations:
     kubernetes.io/ingress.class: traefik
 spec:
   rules:
-    - host: vote.example.com
-      http:
-        paths:
-          - path: /
-            backend:
-              serviceName: vote
-              servicePort: 80
-    - host: results.example.com
-      http:
-        paths:
-          - path: /
-            backend:
-              serviceName: results
-              servicePort: 80
+  - host: vote.example.com
+    http:
+      paths:
+      - path: /
+        pathType: Exact
+        backend:
+          service:
+            name: vote
+            port:
+              number: 80
 </code></pre>
 
 <p>And apply</p>
@@ -477,7 +475,7 @@ kubectl apply -f vote-ing.yaml
 </code></pre>
 
 <p>And add an entry such as ,</p>
-<pre><code>xxx.xxx.xxx.xxx vote.example.com results.example.com
+<pre><code>xxx.xxx.xxx.xxx vote.example.com results.example.com  kube-ops-view.example.org
 </code></pre>
 
 <p>where,</p>
@@ -503,31 +501,28 @@ kubectl describe secret mysecret
 
 <p>And then add annotations to the ingress object so that it is read by the ingress controller to update configurations.</p>
 <p><code>file: vote-ing.yaml</code></p>
-<pre><code>apiVersion: extensions/v1beta1
+<pre><code>---
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: vote
+  namespace: default
   annotations:
     kubernetes.io/ingress.class: traefik
     ingress.kubernetes.io/auth-type: &quot;basic&quot;
     ingress.kubernetes.io/auth-secret: &quot;mysecret&quot;
 spec:
   rules:
-    - host: vote.example.com
-      http:
-        paths:
-          - path: /
-            backend:
-              serviceName: vote
-              servicePort: 82
-    - host: results.example.com
-      http:
-        paths:
-          - path: /
-            backend:
-              serviceName: results
-              servicePort: 81
-
+  - host: vote.example.com
+    http:
+      paths:
+      - path: /
+        pathType: Exact
+        backend:
+          service:
+            name: vote
+            port:
+              number: 80
 </code></pre>
 
 <p>where,</p>
