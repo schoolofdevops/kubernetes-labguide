@@ -227,7 +227,7 @@ kubectl get events
 
 ## Creating Multi Container Pods - Sidecar Example
 
-file: multi_container_pod.yml
+file: multi_container_pod.yaml
 
 ```
 apiVersion: v1
@@ -263,7 +263,7 @@ spec:
 To create this pod
 
 ```
-kubectl apply -f multi_container_pod.yml
+kubectl apply -f multi_container_pod.yaml
 ```
 
 Check Status
