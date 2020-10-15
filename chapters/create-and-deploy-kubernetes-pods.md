@@ -28,7 +28,7 @@ spec:
 
 Use this [Kubernetes API Reference Document](https://kubernetes.io/docs/reference/) while writing the API specs. This is the most important reference  while working with kubernetes, so its highly advisible that you bookmark it for the version of kubernetes that you use.
 
-To find the versino of kubernetes use the following command,
+To find the version of kubernetes use the following command,
 
 ```
 kubectl version -o yaml
