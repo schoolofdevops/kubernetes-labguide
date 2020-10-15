@@ -144,8 +144,9 @@ Chain KUBE-SVC-VIQHAVHDK4QE7NA4 (2 references)
 ```
 
 Where,
-  * counrt of KUBE-SEP-xxx matches number of pods
-  * KUBE-SEP-BAI3HQ7SV7RZ2CI6  is a chain created for one of host. examine that next
+
+  * count of KUBE-SEP-xxx matches number of pods.
+  * KUBE-SEP-BAI3HQ7SV7RZ2CI6 is an example of a chain created for one of the hosts. Examine that next.
 
 ```
 
