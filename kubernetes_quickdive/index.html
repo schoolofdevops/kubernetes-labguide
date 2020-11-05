@@ -394,11 +394,40 @@ kubectl set image deployment vote vote=schoolofdevops/vote:v5
 
 <h3 id="exercise-deploy-complete-instavote-app">Exercise - Deploy Complete Instavote App</h3>
 <p>Deploy the services with the following spec to complete this application stack.</p>
-<p>| Service Name  | Image     | Service Type     | Service Port   | Node Port   |
-| :------------- | :------------- | :------------- | :------------- |
-|  redis      |   redis:alpine     | ClusterIP       | 6379     | N/A     |
-|  worker      |   schoolofdevops/worker:latest     | No Service Needed       | N/A     | N/A     |
-|  db      |   postgres:9.4     | NodePort       | 5342     | N/A |</p>
+<table>
+<thead>
+<tr>
+<th align="left">Service Name</th>
+<th align="left">Image</th>
+<th align="left">Service Type</th>
+<th align="left">Service Port</th>
+<th align="left">Node Port</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">redis</td>
+<td align="left">redis:alpine</td>
+<td align="left">ClusterIP</td>
+<td align="left">6379</td>
+<td align="left">N/A</td>
+</tr>
+<tr>
+<td align="left">worker</td>
+<td align="left">schoolofdevops/worker:latest</td>
+<td align="left">No Service Needed</td>
+<td align="left">N/A</td>
+<td align="left">N/A</td>
+</tr>
+<tr>
+<td align="left">db</td>
+<td align="left">postgres:9.4</td>
+<td align="left">NodePort</td>
+<td align="left">5342</td>
+<td align="left">N/A</td>
+</tr>
+</tbody>
+</table>
 <p>|  result      |   schoolofdevops/vote-result     | NodePort       | 80     | 30400 |</p>
 <p>If you see <strong>db</strong> deployment failing, fix it by adding the environment var as,</p>
 <pre><code>kubectl set env deployment/db POSTGRES_HOST_AUTH_METHOD=trust
