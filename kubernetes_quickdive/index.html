@@ -430,6 +430,12 @@ kubectl set image deployment vote vote=schoolofdevops/vote:v5
 kubectl apply -f https://raw.githubusercontent.com/initcron/k8s-code/master/projects/instavote/dev/db-svc.yaml
 </code></pre>
 
+<p>To validate,</p>
+<ul>
+<li>Browse to vote and result services exposed outside to see the UI</li>
+<li>When you submit a vote, it should be reflected on result</li>
+<li>To submit multiple votes, use either a different browser, or use incognito window.  </li>
+</ul>
 <h4 id="cleaning-up">Cleaning up</h4>
 <p>Once you are done observing, you could delete it with the following commands,</p>
 <pre><code>
