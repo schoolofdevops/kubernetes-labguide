@@ -426,9 +426,15 @@ kubectl set image deployment vote vote=schoolofdevops/vote:v5
 <td align="left">5342</td>
 <td align="left">N/A</td>
 </tr>
+<tr>
+<td align="left">result</td>
+<td align="left">schoolofdevops/vote-result</td>
+<td align="left">NodePort</td>
+<td align="left">80</td>
+<td align="left">30400</td>
+</tr>
 </tbody>
 </table>
-<p>|  result      |   schoolofdevops/vote-result     | NodePort       | 80     | 30400 |</p>
 <p>If you see <strong>db</strong> deployment failing, fix it by adding the environment var as,</p>
 <pre><code>kubectl set env deployment/db POSTGRES_HOST_AUTH_METHOD=trust
 </code></pre>
