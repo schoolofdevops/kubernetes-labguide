@@ -109,9 +109,11 @@
         
             <li><a class="toctree-l4" href="#high-availability">High Availability</a></li>
         
-            <li><a class="toctree-l4" href="#load-balancing">Load Balancing</a></li>
+            <li><a class="toctree-l4" href="#load-balancing-with-services">Load Balancing with Services</a></li>
         
             <li><a class="toctree-l4" href="#roll-out-a-new-version">Roll Out a New Version</a></li>
+        
+            <li><a class="toctree-l4" href="#exercise-deploy-complete-instavote-app">Exercise - Deploy Complete Instavote App</a></li>
         
             <li><a class="toctree-l4" href="#summary">Summary</a></li>
         
@@ -341,13 +343,15 @@
 <p>Purpose of this lab is to quickly get your app up and running and demonstrate kubernetes key features such as scheduling, high availability, scalability, load balancing, service discovery etc.</p>
 <h3 id="deploying-app-with-kubernetes">Deploying app with kubernetes</h3>
 <p>Launch vote application with kubernetes.</p>
-<pre><code>kubectl create deployment vote --image=schoolofdevops/vote:v1
+<pre><code>kubectl create deployment vote --image=schoolofdevops/vote:v4
 </code></pre>
 
 <p>You could now validate that the instance of vote app is running by using the following commands,</p>
 <pre><code>kubectl get pods
 
-kubectl get deployments
+kubectl get deploy
+
+kubectl get all
 </code></pre>
 
 <h3 id="scalability">Scalability</h3>
@@ -366,7 +370,7 @@ kubectl get deploy,rs,pods
 
 </code></pre>
 
-<h3 id="load-balancing">Load Balancing</h3>
+<h3 id="load-balancing-with-services">Load Balancing with Services</h3>
 <p>Publish the application (similar to using -P for port mapping)</p>
 <pre><code>
 
@@ -380,7 +384,7 @@ kubectl get service
 <h3 id="roll-out-a-new-version">Roll Out a New Version</h3>
 <pre><code>kubectl scale deployment vote --replicas=12
 
-kubectl set image deployment vote vote=schoolofdevops/vote:v2
+kubectl set image deployment vote vote=schoolofdevops/vote:v5
 
 </code></pre>
 
@@ -388,12 +392,50 @@ kubectl set image deployment vote vote=schoolofdevops/vote:v2
 <pre><code>kubectl rollout status deploy/vote
 </code></pre>
 
+<h3 id="exercise-deploy-complete-instavote-app">Exercise - Deploy Complete Instavote App</h3>
+<p>Deploy the services with the following spec to complete this application stack.</p>
+<table>
+<thead>
+<tr>
+<th align="left">Service Name</th>
+<th align="left">Image</th>
+<th align="left">Service Port</th>
+<th align="left">Expose Outside</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">redis</td>
+<td align="left">redis:alpine</td>
+<td align="left">6379</td>
+<td align="left">No</td>
+</tr>
+<tr>
+<td align="left">worker</td>
+<td align="left">schoolofdevops/worker:latest</td>
+<td align="left">N/A</td>
+<td align="left">No</td>
+</tr>
+<tr>
+<td align="left">result</td>
+<td align="left">schoolofdevops/vote-result</td>
+<td align="left">80</td>
+<td align="left">Yes</td>
+</tr>
+</tbody>
+</table>
+<p>Before you do so, deploy the database service which needs some special configurations by using the following commands,</p>
+<pre><code>kubectl apply -f https://raw.githubusercontent.com/initcron/k8s-code/master/projects/instavote/dev/db-deploy.yaml
+
+kubectl apply -f https://raw.githubusercontent.com/initcron/k8s-code/master/projects/instavote/dev/db-svc.yaml
+</code></pre>
+
 <h4 id="cleaning-up">Cleaning up</h4>
 <p>Once you are done observing, you could delete it with the following commands,</p>
 <pre><code>
-kubectl delete deploy vote
+kubectl delete deploy vote redis worker db result
 
-kubectl delete service vote
+kubectl delete service vote redis db result
 </code></pre>
 
 <h3 id="summary">Summary</h3>
