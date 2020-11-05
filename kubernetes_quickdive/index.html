@@ -422,7 +422,7 @@ kubectl set image deployment vote vote=schoolofdevops/vote:v5
 <tr>
 <td align="left">db</td>
 <td align="left">postgres:9.4</td>
-<td align="left">NodePort</td>
+<td align="left">ClusterIP</td>
 <td align="left">5342</td>
 <td align="left">N/A</td>
 </tr>
@@ -436,7 +436,7 @@ kubectl set image deployment vote vote=schoolofdevops/vote:v5
 </tbody>
 </table>
 <p>If you see <strong>db</strong> deployment failing, fix it by adding the environment var as,</p>
-<pre><code>kubectl set env deployment/db POSTGRES_HOST_AUTH_METHOD=trust
+<pre><code>kubectl set env deployment db POSTGRES_HOST_AUTH_METHOD=trust
 </code></pre>
 
 <p>After deploying all services to validate,</p>
