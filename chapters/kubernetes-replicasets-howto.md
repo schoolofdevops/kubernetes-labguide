@@ -8,7 +8,7 @@ watch kubectl get all
 ```
 
 
-### Creating a Namespace and switching to it
+## PART I - Namespaces
 
 
 Check current config
@@ -19,7 +19,7 @@ kubectl config view
 
 You could also examine the current configs in file **cat ~/.kube/config**
 
-## Creating a namespace
+## Creating a Namespace and Switching to it
 
 Namespaces offers separation of resources running on the same physical infrastructure into virtual clusters. It is typically useful in mid to large scale environments with multiple projects, teams and need separate scopes. It could also be useful to map to your workflow stages e.g. dev, stage, prod.   
 
@@ -57,6 +57,7 @@ kubectl config view
 
 **Exercise**: Go back to the monitoring screen and observe what happens after switching the namespace.
 
+## PART II - ReplicaSets
 
 To understand how ReplicaSets works with the selectors  lets launch a pod in the new namespace with existing specs.
 
@@ -67,14 +68,14 @@ kubectl apply -f vote-pod.yaml
 kubectl get pods
 ```
 
-## Adding ReplicaSet Configurations
+### Adding ReplicaSet Configurations
 
-Lets now write the spec for the Rplica Set. This is going to mainly contain,
+Lets now write the spec for the ReplicaSet. This is going to mainly contain,
 
-  * replicas
-  * selector
+  * replicas : define the scalability configs here
+  * selector : define configs which provide as a base for checking availibility
   * template (pod spec )
-  * minReadySeconds
+  * minReadySeconds : duration to wait after pod is ready till its declared as available (used by deployment)
 
 
 From here on, we would switch to the project and environment specific path and work from there.
@@ -158,7 +159,7 @@ The complete file will look similar to above. Lets now go ahead and apply it.
 
 
 ```
-kubectl apply -f vote-rs.yaml --dry-run
+kubectl apply -f vote-rs.yaml --dry-run=client
 
 kubectl apply -f vote-rs.yaml
 
@@ -194,11 +195,34 @@ kubectl delete pods  vote
 Observe what happens.
   * Does replica set take any action after deleting the pod created outside of its spec ? Why?
 
+
+### Scalability
+
+  Scaling out and scaling in your application is as easy as running,  
+
+```
+  kubectl scale rs vote --replicas=8
+  kubectl get pods --show-labels
+
+  kubectl scale rs vote --replicas=25
+  kubectl get pods --show-labels
+
+  kubectl scale rs vote --replicas=7
+  kubectl get pods --show-labels
+
+```  
+
+
+Observe what happens
+
+  * Did the number of  replicas increase to 8, then to 25 and reduced to 7 ?
+
+
 ### Exercise: Deploying new version of the application
 
 
 ```
-kubectl edit rs/vote
+kubectl edit rs vote
 ```
 
 Update the version of the image from **schoolofdevops/vote:v1** to **schoolofdevops/vote:v2**
@@ -209,22 +233,6 @@ Observe what happens ?
 
   * Did application get  updated.
   * Did updating replicaset launched new pods to deploy new version ?
-
-
-### Scalability
-
-Scaling up application is as easy as running,  
-
-```
-kubectl scale --replicas=8 rs/vote
-
-kubectl get pods --show-labels
-```  
-
-Observe what happens
-
-  * Did the number of  replicas increase to 8 ?
-  * Which version of the app are the new pods running with ?
 
 
 #### Summary
