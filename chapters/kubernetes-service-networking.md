@@ -25,13 +25,13 @@ Lets create a  service of type **NodePort** to understand how it works.
 To check the status of kubernetes objects,
 
 ```
-kubectl get pods,rs,svc
+kubectl get all
 ```
 
 You could also start watching the above output for changes. To do so, open a separate terminal window and run,
 
 ```
-watch -n 1 kubectl get  pod,deploy,rs,svc
+watch kubectl get all
 ```
 
 
