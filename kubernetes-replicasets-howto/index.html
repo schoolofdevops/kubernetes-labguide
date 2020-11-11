@@ -111,11 +111,11 @@
     
         <ul>
         
-            <li><a class="toctree-l4" href="#creating-a-namespace-and-switching-to-it">Creating a Namespace and switching to it</a></li>
+            <li><a class="toctree-l4" href="#part-i-namespaces">PART I - Namespaces</a></li>
         
-            <li><a class="toctree-l4" href="#creating-a-namespace">Creating a namespace</a></li>
+            <li><a class="toctree-l4" href="#creating-a-namespace-and-switching-to-it">Creating a Namespace and Switching to it</a></li>
         
-            <li><a class="toctree-l4" href="#adding-replicaset-configurations">Adding ReplicaSet Configurations</a></li>
+            <li><a class="toctree-l4" href="#part-ii-replicasets">PART II - ReplicaSets</a></li>
         
         </ul>
     
@@ -335,14 +335,14 @@
 <pre><code>watch kubectl get all
 </code></pre>
 
-<h3 id="creating-a-namespace-and-switching-to-it">Creating a Namespace and switching to it</h3>
+<h2 id="part-i-namespaces">PART I - Namespaces</h2>
 <p>Check current config</p>
 <pre><code>
 kubectl config view
 </code></pre>
 
 <p>You could also examine the current configs in file <strong>cat ~/.kube/config</strong></p>
-<h2 id="creating-a-namespace">Creating a namespace</h2>
+<h2 id="creating-a-namespace-and-switching-to-it">Creating a Namespace and Switching to it</h2>
 <p>Namespaces offers separation of resources running on the same physical infrastructure into virtual clusters. It is typically useful in mid to large scale environments with multiple projects, teams and need separate scopes. It could also be useful to map to your workflow stages e.g. dev, stage, prod.   </p>
 <p>Lets create a namespace called <strong>instavote</strong>  </p>
 <pre><code>kubectl get ns
@@ -373,6 +373,7 @@ kubectl config view
 </code></pre>
 
 <p><strong>Exercise</strong>: Go back to the monitoring screen and observe what happens after switching the namespace.</p>
+<h2 id="part-ii-replicasets">PART II - ReplicaSets</h2>
 <p>To understand how ReplicaSets works with the selectors  lets launch a pod in the new namespace with existing specs.</p>
 <pre><code>cd k8s-code/pods
 kubectl apply -f vote-pod.yaml
@@ -380,13 +381,13 @@ kubectl apply -f vote-pod.yaml
 kubectl get pods
 </code></pre>
 
-<h2 id="adding-replicaset-configurations">Adding ReplicaSet Configurations</h2>
-<p>Lets now write the spec for the Rplica Set. This is going to mainly contain,</p>
+<h3 id="adding-replicaset-configurations">Adding ReplicaSet Configurations</h3>
+<p>Lets now write the spec for the ReplicaSet. This is going to mainly contain,</p>
 <ul>
-<li>replicas</li>
-<li>selector</li>
+<li>replicas : define the scalability configs here</li>
+<li>selector : define configs which provide as a base for checking availibility</li>
 <li>template (pod spec )</li>
-<li>minReadySeconds</li>
+<li>minReadySeconds : duration to wait after pod is ready till its declared as available (used by deployment)</li>
 </ul>
 <p>From here on, we would switch to the project and environment specific path and work from there.</p>
 <pre><code>cd projects/instavote/dev
@@ -456,7 +457,7 @@ spec:
 </code></pre>
 
 <p>The complete file will look similar to above. Lets now go ahead and apply it.</p>
-<pre><code>kubectl apply -f vote-rs.yaml --dry-run
+<pre><code>kubectl apply -f vote-rs.yaml --dry-run=client
 
 kubectl apply -f vote-rs.yaml
 
@@ -485,8 +486,21 @@ kubectl delete pods  vote
 
 <p>Observe what happens.
   * Does replica set take any action after deleting the pod created outside of its spec ? Why?</p>
+<h3 id="scalability">Scalability</h3>
+<p>Scaling out and scaling in your application is as easy as running,  </p>
+<p>```
+  kubectl scale rs vote --replicas=8
+  kubectl get pods --show-labels</p>
+<p>kubectl scale rs vote --replicas=25
+  kubectl get pods --show-labels</p>
+<p>kubectl scale rs vote --replicas=7
+  kubectl get pods --show-labels</p>
+<p>```  </p>
+<p>Observe what happens</p>
+<pre><code>* Did the number of  replicas increase to 8, then to 25 and reduced to 7 ?
+</code></pre>
 <h3 id="exercise-deploying-new-version-of-the-application">Exercise: Deploying new version of the application</h3>
-<pre><code>kubectl edit rs/vote
+<pre><code>kubectl edit rs vote
 </code></pre>
 
 <p>Update the version of the image from <strong>schoolofdevops/vote:v1</strong> to <strong>schoolofdevops/vote:v2</strong></p>
@@ -495,18 +509,6 @@ kubectl delete pods  vote
 <ul>
 <li>Did application get  updated.</li>
 <li>Did updating replicaset launched new pods to deploy new version ?</li>
-</ul>
-<h3 id="scalability">Scalability</h3>
-<p>Scaling up application is as easy as running,  </p>
-<pre><code>kubectl scale --replicas=8 rs/vote
-
-kubectl get pods --show-labels
-</code></pre>
-
-<p>Observe what happens</p>
-<ul>
-<li>Did the number of  replicas increase to 8 ?</li>
-<li>Which version of the app are the new pods running with ?</li>
 </ul>
 <h4 id="summary">Summary</h4>
 <p>With <strong>ReplicaSets</strong> your application is now high available as well as scalable. However ReplicaSet by itself does not have the intelligence to trigger a rollout if you update the version. For that, you are going to need a <strong>deployment</strong> which is something you would learn in an upcoming  lesson.</p>
