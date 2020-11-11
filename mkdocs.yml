@@ -15,7 +15,7 @@ pages:
      - Lab K102 - Kubernetes Quickdive: "kubernetes_quickdive.md"
      - Lab K103 - Pods Basics: "create-and-deploy-kubernetes-pods.md"
      - Lab K104 - Namespaces and ReplicaSets: "kubernetes-replicasets-howto.md"
-     - Lab K105 - Services & Netowrking: "kubernetes-service-networking.md"
+     - Lab K105 - Services & Networking: "kubernetes-service-networking.md"
      - Lab K106 - CNI: "cni.md"
      - Lab K107 - Deployments: "kubernetes-rollouts-rollbacks-deployments.md"
      - Lab K108 - Storage: "kubernetes-dynamic-storage-provisioning.md"

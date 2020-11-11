@@ -1,4 +1,4 @@
-# Lab K103: Launching Pods with Kubernetes
+# Launching Pods with Kubernetes
 
 In this lab, you would learn how to launch applications using  the basic deployment unit of kubernetes i.e. **pods**. This time, you are going to do it by writing declarative configs with *yaml* syntax.
 
@@ -63,13 +63,13 @@ spec:
 **Problem Statement:** Create a YAML spec to launch a  pod with one container to run vote application, which matches the following specs.
 
   * pod:
-    * metadata: 
+    * metadata:
       * name: vote
       * labels:
         * app: python
         * role: vote
         * version: v1
-  * containers: 
+  * containers:
     * name: app
     * image: schoolofdevops/vote:v1
 
@@ -133,6 +133,8 @@ kubectl get po
 kubectl get pods -o wide
 
 kubectl get pods --show-labels
+
+kubectl get pods -l "role=vote,version=v1"
 
 kubectl get pods vote
 ```
@@ -216,12 +218,22 @@ To create this pod,
 ```
 kubectl apply -f db-pod.yaml
 
+kubectl get pods
+```
+
+At this time, you may see the pod in ```CrashLoopBackOff``` state. Try debugging the issue by checking the logs and resolve it before proceeding.
+
+Once resolved, check the pod is in running state
+```
+kubectl get pods
+
 kubectl describe pod db
 
 kubectl get events
 ```
 
-**Exercise** : Examine **/var/lib/pgdata** on the systems to check if the directory is been created and if the data is present.
+
+**Exercise** : Examine **/var/lib/pgdata** on the node on which its scheduled (use ```kubectl get pods -o wide``` to find the node) to check if the directory is been created and if the data is present.
 
 
 
