@@ -488,14 +488,17 @@ kubectl delete pods  vote
   * Does replica set take any action after deleting the pod created outside of its spec ? Why?</p>
 <h3 id="scalability">Scalability</h3>
 <p>Scaling out and scaling in your application is as easy as running,  </p>
-<p>```
-  kubectl scale rs vote --replicas=8
-  kubectl get pods --show-labels</p>
-<p>kubectl scale rs vote --replicas=25
-  kubectl get pods --show-labels</p>
-<p>kubectl scale rs vote --replicas=7
-  kubectl get pods --show-labels</p>
-<p>```  </p>
+<pre><code>  kubectl scale rs vote --replicas=8
+  kubectl get pods --show-labels
+
+  kubectl scale rs vote --replicas=25
+  kubectl get pods --show-labels
+
+  kubectl scale rs vote --replicas=7
+  kubectl get pods --show-labels
+
+</code></pre>
+
 <p>Observe what happens</p>
 <pre><code>* Did the number of  replicas increase to 8, then to 25 and reduced to 7 ?
 </code></pre>
