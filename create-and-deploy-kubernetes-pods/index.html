@@ -128,7 +128,7 @@
                 </li>
                 <li class="">
                     
-    <a class="" href="../kubernetes-service-networking/">Lab K105 - Services & Netowrking</a>
+    <a class="" href="../kubernetes-service-networking/">Lab K105 - Services & Networking</a>
                 </li>
                 <li class="">
                     
@@ -377,7 +377,7 @@ spec:
 <p><strong>Problem Statement:</strong> Create a YAML spec to launch a  pod with one container to run vote application, which matches the following specs.</p>
 <ul>
 <li>pod:<ul>
-<li>metadata: </li>
+<li>metadata:</li>
 <li>name: vote</li>
 <li>labels:<ul>
 <li>app: python</li>
@@ -387,7 +387,7 @@ spec:
 </li>
 </ul>
 </li>
-<li>containers: <ul>
+<li>containers:<ul>
 <li>name: app</li>
 <li>image: schoolofdevops/vote:v1</li>
 </ul>
@@ -435,6 +435,8 @@ kubectl get po
 kubectl get pods -o wide
 
 kubectl get pods --show-labels
+
+kubectl get pods -l &quot;role=vote,version=v1&quot;
 
 kubectl get pods vote
 </code></pre>
@@ -501,12 +503,19 @@ spec:
 <p>To create this pod,</p>
 <pre><code>kubectl apply -f db-pod.yaml
 
+kubectl get pods
+</code></pre>
+
+<p>At this time, you may see the pod in <code>CrashLoopBackOff</code> state. Try debugging the issue by checking the logs and resolve it before proceeding.</p>
+<p>Once resolved, check the pod is in running state</p>
+<pre><code>kubectl get pods
+
 kubectl describe pod db
 
 kubectl get events
 </code></pre>
 
-<p><strong>Exercise</strong> : Examine <strong>/var/lib/pgdata</strong> on the systems to check if the directory is been created and if the data is present.</p>
+<p><strong>Exercise</strong> : Examine <strong>/var/lib/pgdata</strong> on the node on which its scheduled (use <code>kubectl get pods -o wide</code> to find the node) to check if the directory is been created and if the data is present.</p>
 <h2 id="creating-multi-container-pods-sidecar-example">Creating Multi Container Pods - Sidecar Example</h2>
 <p>file: multi_container_pod.yml</p>
 <pre><code>apiVersion: v1
