@@ -4,12 +4,11 @@
 If you are not running a monitoring screen, start it in a new terminal with the following command.
 
 ```
-watch -n 1 kubectl get  pod,deploy,rs,svc
+watch kubectl get all
 ```
 
 
 ### Creating a Namespace and switching to it
-
 
 
 Check current config

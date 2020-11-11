@@ -104,7 +104,7 @@ To launch a monitoring screen to see whats being launched, use the following com
 
 
 ```
-watch -n 1  kubectl get pods,deploy,rs,svc
+watch kubectl get all
 
 ```
 
@@ -116,7 +116,14 @@ kubectl apply --help
 kubectl apply -f FILE
 ```
 
-To **launch** pod using configs above,
+
+to do a dry run before applying use the following command,
+
+```
+kubectl apply -f vote-pod.yaml --dry-run=client
+```
+
+to finally  **launch** pod using configs above, remove dry run options and run as
 
 ```
 kubectl apply -f vote-pod.yaml
