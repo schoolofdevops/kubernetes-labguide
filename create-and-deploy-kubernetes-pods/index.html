@@ -412,7 +412,7 @@ spec:
 <p><a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.13/#pod-v1-core">Use this example link to refer to pod spec</a></p>
 <h3 id="launching-and-operating-pods">Launching and operating Pods</h3>
 <p>To launch a monitoring screen to see whats being launched, use the following command in a new terminal window where kubectl is configured.</p>
-<pre><code>watch -n 1  kubectl get pods,deploy,rs,svc
+<pre><code>watch kubectl get all
 
 </code></pre>
 
@@ -422,7 +422,11 @@ kubectl apply --help
 kubectl apply -f FILE
 </code></pre>
 
-<p>To <strong>launch</strong> pod using configs above,</p>
+<p>to do a dry run before applying use the following command,</p>
+<pre><code>kubectl apply -f vote-pod.yaml --dry-run=client
+</code></pre>
+
+<p>to finally  <strong>launch</strong> pod using configs above, remove dry run options and run as</p>
 <pre><code>kubectl apply -f vote-pod.yaml
 
 </code></pre>
