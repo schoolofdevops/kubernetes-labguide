@@ -76,12 +76,11 @@ watch -n 1 kubectl get all --show-labels
 ```
 
 
-Lets  create the Deployment. Do monitor the labels of the pod while applying this. Also clean up the previous replicaset to start with a clean state.
+Lets  create the Deployment. Do monitor the labels of the pod while applying this.
 
 ```
 kubectl apply -f vote-deploy.yaml
 
-kubectl delete rs vote
 ```
 
 Observe the chances to pod labels, specifically the **pod-template-hash**.

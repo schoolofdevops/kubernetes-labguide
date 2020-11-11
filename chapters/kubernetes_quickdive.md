@@ -11,7 +11,7 @@ Purpose of this lab is to quickly get your app up and running and demonstrate ku
 Launch vote application with kubernetes.
 
 ```
-kubectl create deployment vote --image=schoolofdevops/vote:v1
+kubectl create deployment vote --image=schoolofdevops/vote:v4
 ```
 
 You could now validate that the instance of vote app is running by using the following commands,
@@ -19,7 +19,9 @@ You could now validate that the instance of vote app is running by using the fol
 ```
 kubectl get pods
 
-kubectl get deployments
+kubectl get deploy
+
+kubectl get all
 ```
 
 
@@ -49,7 +51,7 @@ kubectl get deploy,rs,pods
 ```
 
 
-### Load Balancing
+### Load Balancing with Services
 
 Publish the application (similar to using -P for port mapping)
 
@@ -72,7 +74,7 @@ Connect to the app,  refresh the page to see it load balancing.  Also try to vot
 ```
 kubectl scale deployment vote --replicas=12
 
-kubectl set image deployment vote vote=schoolofdevops/vote:v2
+kubectl set image deployment vote vote=schoolofdevops/vote:v5
 
 ```
 
@@ -83,7 +85,28 @@ watch the rolling update  in action
 kubectl rollout status deploy/vote
 ```
 
+### Exercise - Deploy Complete Instavote App
 
+Deploy the services with the following spec to complete this application stack.
+
+| Service Name  | Image     | Service Type     | Service Port   | Node Port   |
+| :------------- | :------------- | :------------- | :------------- | :------------- |
+|  redis      |   redis:alpine     | ClusterIP       | 6379     | N/A     |
+|  worker      |   schoolofdevops/worker:latest     | No Service Needed       | N/A     | N/A     |
+|  db      |   postgres:9.4     | ClusterIP       | 5342     | N/A |
+|  result      |   schoolofdevops/vote-result     | NodePort       | 80     | 30400 |
+
+If you see **db** deployment failing, fix it by adding the environment var as,
+
+```
+kubectl set env deployment db POSTGRES_HOST_AUTH_METHOD=trust
+```
+
+After deploying all services to validate,
+
+  * Browse to vote and result services exposed outside to see the UI
+  * When you submit a vote, it should be reflected on result
+  * To submit multiple votes, use either a different browser, or use incognito window.  
 
 #### Cleaning up
 
@@ -91,9 +114,9 @@ Once you are done observing, you could delete it with the following commands,
 
 ```
 
-kubectl delete deploy vote
+kubectl delete deploy vote redis worker db result
 
-kubectl delete service vote
+kubectl delete service vote redis db result
 ```
 
 ### Summary
