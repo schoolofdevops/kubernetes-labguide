@@ -17,7 +17,7 @@ Pre Reading :
 
 ![kubernetes Storage Concepts](images/storage_mindmap.png)
 
-## Redploy db with a a reference to PVC
+## Deploy Database with a Persistent Volume Claim
 
 Lets begin by redeploying the db deployment, this time by configuring it to refer to the persistentVolumeClaim
 
@@ -87,6 +87,7 @@ spec:
 
 ```
 
+`if you are not using a Ubuntu bases setup described in the installation part of this guide, set  StorageClassName to "local-path" instead of "nfs" in the above file.`
 
 create the Persistent Volume Claim and validate
 
@@ -105,14 +106,22 @@ kubectl get pvc,pv
   * Is the persistentVolumeClaim bound with a persistentVolume ?
 
 
-## Set up NFS Provisioner in kubernetes
+## Set up Storage Provisioner in kubernetes
+
+Launch a local path provisioner using the following command,
+
+```
+kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisioner/master/deploy/local-path-storage.yaml
+
+```
+
+`Only if you are using the ubuntu based setup following installation part of this lab guide, proceed with creating NFS based storageclass, else skip this sub section and jump to validation steps`
 
 Change into nfs provisioner installation dir
 
 ```
 cd k8s-code/storage
 ```
-
 
 Deploy nfs-client provisioner.
 
@@ -131,6 +140,8 @@ kubectl logs -f nfs-provisioner-0
 
 ```
 
+### Validate
+
 Now, observe the output of  the following commands,
 
 ```
@@ -143,18 +154,8 @@ kubectl get pods
 
 Observe the dynamic provisioning, go to the host which is running nfs provisioner and look inside */srv* path to find the provisioned volume.
 
-## Fix result app after recreating db
 
-Result app which connects with the db looses the connection and ceases to work after db is redeployed. This is a bug in the application. However, to do a quick fix, redeploy result app as
-
-```
-kubectl rollout restart deploy result
-
-```
-
-This would recreate the pods for result app and you should see it working again.
-
-## Nano Project
+## Nano Project [Optional Exercise]
 
 Similar to postgres which mounts the data at /var/lib/postgresql/data and consumes it to store the database files, Redis creates and stores the file at **/data** path.  Your task is to have a nfs volume of size **200Mi** created and mounted at /data for the redis container.
 

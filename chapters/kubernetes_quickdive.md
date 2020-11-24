@@ -8,7 +8,18 @@ Purpose of this lab is to quickly get your app up and running and demonstrate ku
 
 ### Deploying app with kubernetes
 
-Launch vote application with kubernetes.
+Before launching the app, create a new namespace and switch to it
+
+```
+kubectl get ns
+kubectl create namespace instavote
+kubectl get ns
+kubectl config get-contexts
+kubectl config set-context --current --namespace=instavote
+kubectl config get-contexts
+```
+
+Launch vote application with kubernetes in the newly created namespace. 
 
 ```
 kubectl create deployment vote --image=schoolofdevops/vote:v4
