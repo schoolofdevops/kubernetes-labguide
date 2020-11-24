@@ -351,11 +351,11 @@
 </ul>
 <p>Lets create a  service of type <strong>NodePort</strong> to understand how it works.</p>
 <p>To check the status of kubernetes objects,</p>
-<pre><code>kubectl get pods,rs,svc
+<pre><code>kubectl get all
 </code></pre>
 
 <p>You could also start watching the above output for changes. To do so, open a separate terminal window and run,</p>
-<pre><code>watch -n 1 kubectl get  pod,deploy,rs,svc
+<pre><code>watch kubectl get all
 </code></pre>
 
 <p>Refer to <a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.13/#service-v1-core">Service Specs</a> to understand the properties that you could write.</p>
