@@ -133,11 +133,9 @@
         
             <li><a class="toctree-l4" href="#creating-a-persistent-volume-claim">Creating a Persistent Volume Claim</a></li>
         
-            <li><a class="toctree-l4" href="#set-up-nfs-provisioner-in-kubernetes">Set up NFS Provisioner in kubernetes</a></li>
+            <li><a class="toctree-l4" href="#set-up-storage-provisioner-in-kubernetes">Set up Storage Provisioner in kubernetes</a></li>
         
-            <li><a class="toctree-l4" href="#fix-result-app-after-recreating-db">Fix result app after recreating db</a></li>
-        
-            <li><a class="toctree-l4" href="#nano-project">Nano Project</a></li>
+            <li><a class="toctree-l4" href="#nano-project-optional-exercise">Nano Project [Optional Exercise]</a></li>
         
         </ul>
     
@@ -409,6 +407,7 @@ spec:
 
 </code></pre>
 
+<p><code>if you are not using a Ubuntu bases setup described in the installation part of this guide, set local-path as the StorageClassName instead of nfs in the above file.</code></p>
 <p>create the Persistent Volume Claim and validate</p>
 <pre><code>kubectl get pvc
 
@@ -424,7 +423,13 @@ kubectl get pvc,pv
 <li>Is persistentVolume created ?  Why ?</li>
 <li>Is the persistentVolumeClaim bound with a persistentVolume ?</li>
 </ul>
-<h2 id="set-up-nfs-provisioner-in-kubernetes">Set up NFS Provisioner in kubernetes</h2>
+<h2 id="set-up-storage-provisioner-in-kubernetes">Set up Storage Provisioner in kubernetes</h2>
+<p>Launch a local path provisioner using the following command,</p>
+<pre><code>kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisioner/master/deploy/local-path-storage.yaml
+
+</code></pre>
+
+<p>If you are using the ubuntu based setup following installation part of this lab guide, proceed with creating NFS based storageclass, else skip this sub section.</p>
 <p>Change into nfs provisioner installation dir</p>
 <pre><code>cd k8s-code/storage
 </code></pre>
@@ -451,14 +456,7 @@ kubectl get pods
 <li>Do you see the pod for db running ?</li>
 </ul>
 <p>Observe the dynamic provisioning, go to the host which is running nfs provisioner and look inside <em>/srv</em> path to find the provisioned volume.</p>
-<h2 id="fix-result-app-after-recreating-db">Fix result app after recreating db</h2>
-<p>Result app which connects with the db looses the connection and ceases to work after db is redeployed. This is a bug in the application. However, to do a quick fix, redeploy result app as</p>
-<pre><code>kubectl rollout restart deploy result
-
-</code></pre>
-
-<p>This would recreate the pods for result app and you should see it working again.</p>
-<h2 id="nano-project">Nano Project</h2>
+<h2 id="nano-project-optional-exercise">Nano Project [Optional Exercise]</h2>
 <p>Similar to postgres which mounts the data at /var/lib/postgresql/data and consumes it to store the database files, Redis creates and stores the file at <strong>/data</strong> path.  Your task is to have a nfs volume of size <strong>200Mi</strong> created and mounted at /data for the redis container.</p>
 <p>You could follow these steps to complete this task</p>
 <ul>
