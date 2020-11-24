@@ -342,7 +342,16 @@
 <p>In this lab you are going to deploy the <strong>instavote</strong> application stack <a href="https://github.com/schoolofdevops/example-voting-app">as described here</a> in a kubernetes environment using <strong>kubectl</strong> commands. Later, you would learn how to do the same by writing declarive <em>yaml</em> syntax.  </p>
 <p>Purpose of this lab is to quickly get your app up and running and demonstrate kubernetes key features such as scheduling, high availability, scalability, load balancing, service discovery etc.</p>
 <h3 id="deploying-app-with-kubernetes">Deploying app with kubernetes</h3>
-<p>Launch vote application with kubernetes.</p>
+<p>Before launching the app, create a new namespace and switch to it</p>
+<pre><code>kubectl get ns
+kubectl create namespace instavote
+kubectl get ns
+kubectl config get-contexts
+kubectl config set-context --current --namespace=instavote
+kubectl config get-contexts
+</code></pre>
+
+<p>Launch vote application with kubernetes in the newly created namespace. </p>
 <pre><code>kubectl create deployment vote --image=schoolofdevops/vote:v4
 </code></pre>
 
