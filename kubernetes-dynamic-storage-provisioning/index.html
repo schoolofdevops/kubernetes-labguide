@@ -429,7 +429,7 @@ kubectl get pvc,pv
 
 </code></pre>
 
-<p><code>If you are using the ubuntu based setup following installation part of this lab guide, proceed with creating NFS based storageclass, else skip this sub section.</code></p>
+<p><code>If you are using the ubuntu based setup following installation part of this lab guide, proceed with creating NFS based storageclass, else skip this sub section and jump to validation steps</code></p>
 <p>Change into nfs provisioner installation dir</p>
 <pre><code>cd k8s-code/storage
 </code></pre>
@@ -446,6 +446,7 @@ kubectl logs -f nfs-provisioner-0
 
 </code></pre>
 
+<h3 id="validate">Validate</h3>
 <p>Now, observe the output of  the following commands,</p>
 <pre><code>kubectl get pvc,pv
 kubectl get pods
