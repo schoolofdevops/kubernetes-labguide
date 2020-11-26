@@ -348,7 +348,8 @@ kubectl delete deploy redis
 
 <p>So we will create a <strong>headless</strong> service for redis first. A headless service is the one which will be created with no ClusterIP of its own, but will return the actual IP address of its endpoints (e.g. pods), which we would create later in this case.</p>
 <p><code>file: dev/redis-sts/redis-svc.yml</code></p>
-<pre><code>kind: Service
+<pre><code>apiVersion: v1
+kind: Service
 metadata:
   name: redis
   labels:
@@ -362,7 +363,7 @@ spec:
   clusterIP: None
   selector:
     app: redis
-    role: master
+    statefulset.kubernetes.io/pod-name: redis-0
 </code></pre>
 
 <p>Observe</p>
@@ -371,7 +372,8 @@ spec:
 <li>selector has been updated to send traffic only to the master</li>
 </ul>
 <p>now apply this and validate</p>
-<pre><code>kubectl apply -f redis-svc.yml
+<pre><code>cd k8s-code/projects/instavote/dev/redis-sts
+kubectl apply -f redis-svc.yml
 
 kubectl get svc
 kubectl describe  svc redis
@@ -441,7 +443,7 @@ kubectl describe cm redis
 </code></pre>
 
 <h3 id="deploying-redis-master-slaves-with-statefulsets">Deploying Redis Master Slaves with Statefulsets</h3>
-<p>These redis containers are started after initContainers are succefully run and exit. One thing to note here, these containers mount the same volume, <code>conf</code>, from the initContainers which has the proper Redis configuration.</p>
+<p>These redis containers are started after initContainers are successfully run and exit. One thing to note here, these containers mount the same volume, <code>conf</code>, from the initContainers which has the proper Redis configuration.</p>
 <p><code>file: redis-sts.yaml</code></p>
 <pre><code>[...]
       containers:
