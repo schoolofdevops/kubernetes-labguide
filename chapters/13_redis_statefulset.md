@@ -23,6 +23,7 @@ So we will create a **headless** service for redis first. A headless service is 
 `file: dev/redis-sts/redis-svc.yml`
 
 ```
+apiVersion: v1
 kind: Service
 metadata:
   name: redis
@@ -37,7 +38,7 @@ spec:
   clusterIP: None
   selector:
     app: redis
-    role: master
+    statefulset.kubernetes.io/pod-name: redis-0
 ```
 
 Observe
@@ -48,6 +49,7 @@ Observe
 now apply this and validate
 
 ```
+cd k8s-code/projects/instavote/dev/redis-sts
 kubectl apply -f redis-svc.yml
 
 kubectl get svc
@@ -133,7 +135,7 @@ We have to deploy redis master/slave set up from one statefulset cluster. This r
 
 ### Deploying Redis Master Slaves with Statefulsets
 
-These redis containers are started after initContainers are succefully run and exit. One thing to note here, these containers mount the same volume, `conf`, from the initContainers which has the proper Redis configuration.
+These redis containers are started after initContainers are successfully run and exit. One thing to note here, these containers mount the same volume, `conf`, from the initContainers which has the proper Redis configuration.
 
 `file: redis-sts.yaml`
 

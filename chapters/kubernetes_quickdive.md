@@ -104,7 +104,7 @@ Deploy the services with the following spec to complete this application stack.
 | :------------- | :------------- | :------------- | :------------- | :------------- |
 |  redis      |   redis:alpine     | ClusterIP       | 6379     | N/A     |
 |  worker      |   schoolofdevops/worker:latest     | No Service Needed       | N/A     | N/A     |
-|  db      |   postgres:9.4     | ClusterIP       | 5342     | N/A |
+|  db      |   postgres:9.4     | ClusterIP       | 5432     | N/A |
 |  result      |   schoolofdevops/vote-result     | NodePort       | 80     | 30400 |
 
 If you see **db** deployment failing, fix it by adding the environment var as,
