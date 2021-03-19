@@ -48,13 +48,17 @@ Apply *db-deploy-pcv.yaml*  as
 
 ```
 kubectl apply -f db-deploy-pvc.yaml
-
-kubectl get pod -o wide --selector='role=db'
-
-kubectl get pvc,pv
 ```
 
-  * Observe and note which host the pod for *db* is launched.
+To monitor resources for this lab, open a new terminal and start watching for relevant objecting using the following command. 
+
+```
+
+watch kubectl get pods,pvc,pv,storageclasses 
+```
+We will call the terminal where you are running the above command as your **Monitoring Screen**. 
+
+  * Observe and note if the pod for *db* is launched.
   * What state is it in ? why?
   * Has the persistentVolumeClaim been bound to a persistentVolume ? Why?
 
@@ -130,13 +134,13 @@ kubectl apply -f nfs
 
 ```
 
-This will create all the objects required to setup a nfs provisioner. It would be launched with  Statefulsets. [Read the official documentation on Statefulsets](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/) to understand how its differnt than deployments.
+This will create all the objects required to setup a nfs provisioner. At this time, you should also see **storageclass** created for nfs on your monitoring screen. It would be launched with  Statefulsets. [Read the official documentation on Statefulsets](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/) to understand how its differnt than deployments.
 
 
 ```
 kubectl get storageclass
 kubectl get pods
-kubectl logs -f nfs-provisioner-0
+kubectl logs -f nfs-provisioner-0 -n storage
 
 ```
 
@@ -154,6 +158,39 @@ kubectl get pods
 
 Observe the dynamic provisioning, go to the host which is running nfs provisioner and look inside */srv* path to find the provisioned volume.
 
+
+### Troubleshooting NFS Provisioner 
+
+If you do not see the volume been provisioned despite creating storageclass, it may be due to a problem with API server configurations.  
+
+To find out if thats the case, check the logs for **nfs-provisioner** first. 
+
+
+```
+I0319 16:00:21.091140       1 controller.go:1052] scheduleOperation[lock-provision-instavote/db-pvc[06780d6b-a6d0-4701-bd72-faaa507b0e5a]]
+I0319 16:00:21.106978       1 leaderelection.go:154] attempting to acquire leader lease...
+I0319 16:00:21.121501       1 leaderelection.go:176] successfully acquired lease to provision for pvc instavote/db-pvc
+I0319 16:00:21.121686       1 controller.go:1052] scheduleOperation[provision-instavote/db-pvc[06780d6b-a6d0-4701-bd72-faaa507b0e5a]]
+E0319 16:00:21.155945       1 controller.go:751] Unexpected error getting claim reference to claim "instavote/db-pvc": selfLink was empty, can't make reference
+
+``` 
+If you see messages similar to above with error string containing `selfLink was empty`, you could fix it by updating API Server configurations.  
+
+To update API server configurations, update the pod spec that launches the API Server. 
+
+On the master node edit the file : ```/etc/kubernetes/manifests/kube-apiserver.yaml```
+
+and add ```- --feature-gates=RemoveSelfLink=false``` option the the command. An example is as below. 
+
+```
+  - command:
+    - kube-apiserver
+    - --advertise-address=143.198.50.211
+    - --allow-privileged=true
+    - --feature-gates=RemoveSelfLink=false
+```
+
+Once you make this change, save the file, wait for a minute or so and you shall see the volume provisioned. 
 
 ## Nano Project [Optional Exercise]
 
