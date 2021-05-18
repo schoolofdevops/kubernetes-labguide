@@ -111,6 +111,10 @@
         
             <li><a class="toctree-l4" href="#kubernetes-resources-and-writing-yaml-specs">Kubernetes Resources and writing YAML specs</a></li>
         
+            <li><a class="toctree-l4" href="#lab-part-i">LAB PART I</a></li>
+        
+            <li><a class="toctree-l4" href="#lab-part-ii">LAB PART II</a></li>
+        
             <li><a class="toctree-l4" href="#adding-a-volume-for-data-persistence">Adding a Volume for data persistence</a></li>
         
             <li><a class="toctree-l4" href="#creating-multi-container-pods-sidecar-example">Creating Multi Container Pods - Sidecar Example</a></li>
@@ -365,6 +369,7 @@ spec:
 <pre><code>kubectl api-resources
 </code></pre>
 
+<h2 id="lab-part-i">LAB PART I</h2>
 <h3 id="writing-pod-spec">Writing Pod Spec</h3>
 <p>Lets now create the  Pod config by adding the kind and specs to schma given in the file vote-pod.yaml as follows.</p>
 <p>Filename: k8s-code/pods/vote-pod.yaml</p>
@@ -467,6 +472,7 @@ ps aux
 </code></pre>
 
 <p><code>use ^d or exit to log out</code></p>
+<h2 id="lab-part-ii">LAB PART II</h2>
 <h2 id="adding-a-volume-for-data-persistence">Adding a Volume for data persistence</h2>
 <p>Lets create a pod for database and attach a volume to it. To achieve this we will need to</p>
 <ul>
@@ -559,7 +565,7 @@ spec:
 <p>Check Status</p>
 <pre><code>root@kube-01:~# kubectl get pods
 NAME      READY     STATUS              RESTARTS   AGE
-nginx     0/2       ContainerCreating   0          7s
+web     0/2       ContainerCreating   0          7s
 vote      1/1       Running             0          3m
 </code></pre>
 
