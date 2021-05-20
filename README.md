@@ -41,7 +41,7 @@ As part of this course you will,
 
    * Design a **scalable, resilient, secure** solution for deploying microservices application stack in production using primitives offered by kubernetes.
    * Install and configure a simple(non HA) multi node kubernetes cluster  with **kubeadm**. You would also have a conceptual understanding of  how to build a production quality cluster with high availability, scalability,  redundancy and  security considerations.
-   * Learn how applications from a micro services stack interconnect with **services** as well as expose public facing services with various options including nodeport, externalIP, ingress etc.
+   * Learn how applications from a microservices stack interconnect with **services** as well as expose public facing services with various options including nodeport, externalIP, ingress etc.
    * Achieve  **Continuous Deployment** with different release strategies  such as **Zero Downtime, Blue/Green, Canary** etc.  
    * Learn how to manage **persistent storage** in a kubernetes environment
    * Learn about the network primitives including **CNI** plugins, service networking and iptables, ingress etc.
@@ -55,7 +55,7 @@ Even though this course covers many concepts related to kubernetes, since its a 
   * Cloud specific provisioning and integration
   * HA deployment of a kubernetes cluster with multi masters
   * In depth kubernetes administration
-  * Writing Micro Services Applications
+  * Writing Microservices Applications
   * Alternate container runtimes e.g. rocker/rkt, runc
 
 
@@ -119,7 +119,7 @@ All participants should have completed the following checklist before attending 
 ## Topics
 Following are the topics which would be covered as part of this course. Detailed course outline follows.
 
-  * Design Workshop:  Mapping Mogambo's Micro Services Architecture to Kubernetes
+  * Design Workshop:  Mapping Mogambo's Microservices Architecture to Kubernetes
   * Design Workshop: Production grade Kubernetes Architecture design
   * Setup Kubernetes Cluster
   * Advanced Pod Scheduling
@@ -149,7 +149,7 @@ This is the detailed course outline with day wise list of contents
   will collectively come up with the solutions design, which is then discussed
   in the class, which is followed by the implementation of a common solution.
 
-### Module 1:  Design Workshop - Mapping Mogambo's Micro Services Architecture to Kubernetes
+### Module 1:  Design Workshop - Mapping Mogambo's Microservices Architecture to Kubernetes
   * Introduction to the Use Case
   * Mogambo - The organization and the Application
   * Architecture and Problem Statement
@@ -267,7 +267,7 @@ This is the detailed course outline with day wise list of contents
   * OS Upgrade
   * Backups and Restore
 
-## Badge : Kubernetes Champion
+## Badge: Kubernetes Champion
 
 Successful completion of this course along with the project work and an assessment at the end of this course would qualify you to receive a Docker Champion badge by School of Devops. This badge is compliant with [Mozilla's Open Badge Standards](https://openbadges.org/) and can be added to your social profiles (e.g. LinkedIn) and is verifiable.
 
@@ -284,7 +284,7 @@ Here is the list of curated resources which you could refer to to learn about do
   * [Life of a Packet](https://www.youtube.com/watch?v=0Omvgd7Hg1I)
 
 #### Video Courses
-  * [Scalable Micro Services with Kubernetes](https://in.udacity.com/course/scalable-microservices-with-kubernetes--ud615) by Carter Morgan, Kelsey Hightower, Gundega Dekena
+  * [Scalable Microservices with Kubernetes](https://in.udacity.com/course/scalable-microservices-with-kubernetes--ud615) by Carter Morgan, Kelsey Hightower, Gundega Dekena
 
 #### Safaribooks Online
   * Kubernetes Up and Running - Kelsey Hightower
