@@ -356,7 +356,7 @@ spec:
 </code></pre>
 
 <p>Use this <a href="https://kubernetes.io/docs/reference/">Kubernetes API Reference Document</a> while writing the API specs. This is the most important reference  while working with kubernetes, so its highly advisible that you bookmark it for the version of kubernetes that you use.</p>
-<p>To find the versino of kubernetes use the following command,</p>
+<p>To find the version of kubernetes use the following command,</p>
 <pre><code>kubectl version -o yaml
 </code></pre>
 
@@ -527,7 +527,7 @@ kubectl get events
 
 <p><strong>Exercise</strong> : Examine <strong>/var/lib/pgdata</strong> on the node on which its scheduled (use <code>kubectl get pods -o wide</code> to find the node) to check if the directory is been created and if the data is present.</p>
 <h2 id="creating-multi-container-pods-sidecar-example">Creating Multi Container Pods - Sidecar Example</h2>
-<p>file: multi_container_pod.yml</p>
+<p>file: multi_container_pod.yaml</p>
 <pre><code>apiVersion: v1
 kind: Pod
 metadata:
@@ -559,7 +559,7 @@ spec:
 </code></pre>
 
 <p>To create this pod</p>
-<pre><code>kubectl apply -f multi_container_pod.yml
+<pre><code>kubectl apply -f multi_container_pod.yaml
 </code></pre>
 
 <p>Check Status</p>

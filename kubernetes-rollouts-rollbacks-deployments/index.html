@@ -339,7 +339,7 @@
 <li><strong>Update Strategy</strong>: Define a release strategy and update the pods accordingly.</li>
 </ul>
 <p><img alt="deployment specs mindmap" src="../images/deployment_mindmap.png" /></p>
-<p>Begin by deleting the previously created replicaset as the presence of it may lead to duplicate set of pods. </p>
+<p>Begin by deleting the previously created replicaset as the presence of it may lead to duplicate set of pods.</p>
 <pre><code>kubectl delete rs vote
 </code></pre>
 
@@ -369,7 +369,8 @@ spec:
     matchLabels:
       role: vote
     matchExpressions:
-      - {key: version, operator: In, values: [v1, v2, v3, v4, v5]}
+      - key: version
+        operator: Exists
   template:
     metadata:
       name: vote
@@ -477,8 +478,12 @@ kubectl rollout history deploy/vote --revision=xx
 
 <p>where replace xx with revisions</p>
 <p>Find out the previous revision with sane configs.</p>
-<p>To undo to a sane version (for example revision 2)</p>
+<p>To rollback to a specific version (for example revision 2)</p>
 <pre><code>kubectl rollout undo deploy/vote --to-revision=2
+</code></pre>
+
+<p>To simply roll back to the previous version</p>
+<pre><code>kubectl rollout undo deploy/vote
 </code></pre>
               
             </div>

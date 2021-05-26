@@ -441,9 +441,11 @@ iptables -nvL -t nat  | grep 30000
 
 </code></pre>
 
-<p>Where,
-  * counrt of KUBE-SEP-xxx matches number of pods
-  * KUBE-SEP-BAI3HQ7SV7RZ2CI6  is a chain created for one of host. examine that next</p>
+<p>Where,</p>
+<ul>
+<li>count of KUBE-SEP-xxx matches number of pods.</li>
+<li>KUBE-SEP-BAI3HQ7SV7RZ2CI6 is an example of a chain created for one of the hosts. Examine that next.</li>
+</ul>
 <pre><code>
 
 iptables -nvL -t nat  | grep KUBE-SEP-BAI3HQ7SV7RZ2CI6  -A 3
