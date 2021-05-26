@@ -4,7 +4,7 @@
 If you are not running a monitoring screen, start it in a new terminal with the following command.
 
 ```
-watch kubectl get all
+watch kubectl get all --show-labels
 ```
 
 
@@ -22,6 +22,14 @@ You could also examine the current configs in file **cat ~/.kube/config**
 ## Creating a Namespace and Switching to it
 
 Namespaces offers separation of resources running on the same physical infrastructure into virtual clusters. It is typically useful in mid to large scale environments with multiple projects, teams and need separate scopes. It could also be useful to map to your workflow stages e.g. dev, stage, prod.   
+
+Before you create a namespace, delete all the pods in the default namespace that you may have created earlier and which you would not need.
+
+e.g.
+
+```
+kubectl delete pod vote db web
+```
 
 Lets create a namespace called **instavote**  
 
@@ -54,12 +62,23 @@ kubectl config view
 
 ```
 
-
 **Exercise**: Go back to the monitoring screen and observe what happens after switching the namespace.
+
+e.g.
+
+```
+kubectl config set-context --current --namespace=default
+
+kubectl config set-context --current --namespace=kube-system
+
+kubectl config set-context --current --namespace=instavote
+```
+
+
 
 ## PART II - ReplicaSets
 
-To understand how ReplicaSets works with the selectors  lets launch a pod in the new namespace with existing specs.
+To understand how ReplicaSets works with the selectors  lets launch a pod in the new namespace with existing spec.
 
 ```
 cd k8s-code/pods
@@ -134,7 +153,8 @@ spec:
     matchLabels:
       role: vote
     matchExpressions:
-      - {key: version, operator: In, values: [v1, v2, v3, v4, v5]}
+      - key: version
+        operator: Exists
   template:
     metadata:
       name: vote
@@ -225,9 +245,10 @@ Observe what happens
 kubectl edit rs vote
 ```
 
-Update the version of the image from **schoolofdevops/vote:v1** to **schoolofdevops/vote:v2**
+  * Update the version of the image from **schoolofdevops/vote:v1** to **schoolofdevops/vote:v2**
+  * From template.metadata.labels update `version=v1` to `version=v2`
 
-Save the file.
+Save the file. If you are using `kubectl edit` it would apply the changes immediately as you save, without needing to use `kubectl apply` command.
 
 Observe what happens ?
 

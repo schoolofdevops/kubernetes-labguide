@@ -47,6 +47,8 @@ To list API objects, use the following commands,
 kubectl api-resources
 ```
 
+## LAB PART I 
+
 ### Writing Pod Spec
 
 Lets now create the  Pod config by adding the kind and specs to schma given in the file vote-pod.yaml as follows.
@@ -177,6 +179,7 @@ ps aux
 `use ^d or exit to log out`
 
 
+## LAB PART II
 
 ## Adding a Volume for data persistence
 
@@ -290,7 +293,7 @@ Check Status
 ```
 root@kube-01:~# kubectl get pods
 NAME      READY     STATUS              RESTARTS   AGE
-nginx     0/2       ContainerCreating   0          7s
+web     0/2       ContainerCreating   0          7s
 vote      1/1       Running             0          3m
 ```
 
