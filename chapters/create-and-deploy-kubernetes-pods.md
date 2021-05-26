@@ -28,7 +28,7 @@ spec:
 
 Use this [Kubernetes API Reference Document](https://kubernetes.io/docs/reference/) while writing the API specs. This is the most important reference  while working with kubernetes, so its highly advisible that you bookmark it for the version of kubernetes that you use.
 
-To find the versino of kubernetes use the following command,
+To find the version of kubernetes use the following command,
 
 ```
 kubectl version -o yaml
@@ -249,7 +249,7 @@ kubectl get events
 
 ## Creating Multi Container Pods - Sidecar Example
 
-file: multi_container_pod.yml
+file: multi_container_pod.yaml
 
 ```
 apiVersion: v1
@@ -285,7 +285,7 @@ spec:
 To create this pod
 
 ```
-kubectl apply -f multi_container_pod.yml
+kubectl apply -f multi_container_pod.yaml
 ```
 
 Check Status
