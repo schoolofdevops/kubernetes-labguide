@@ -332,7 +332,7 @@
               
                 <h1 id="adding-ha-and-scalability-with-replicasets">Adding HA and Scalability with ReplicaSets</h1>
 <p>If you are not running a monitoring screen, start it in a new terminal with the following command.</p>
-<pre><code>watch kubectl get all
+<pre><code>watch kubectl get all --show-labels
 </code></pre>
 
 <h2 id="part-i-namespaces">PART I - Namespaces</h2>
@@ -344,6 +344,11 @@ kubectl config view
 <p>You could also examine the current configs in file <strong>cat ~/.kube/config</strong></p>
 <h2 id="creating-a-namespace-and-switching-to-it">Creating a Namespace and Switching to it</h2>
 <p>Namespaces offers separation of resources running on the same physical infrastructure into virtual clusters. It is typically useful in mid to large scale environments with multiple projects, teams and need separate scopes. It could also be useful to map to your workflow stages e.g. dev, stage, prod.   </p>
+<p>Before you create a namespace, delete all the pods in the default namespace that you may have created earlier and which you would not need.</p>
+<p>e.g.</p>
+<pre><code>kubectl delete pod vote db web
+</code></pre>
+
 <p>Lets create a namespace called <strong>instavote</strong>  </p>
 <pre><code>kubectl get ns
 
@@ -373,8 +378,16 @@ kubectl config view
 </code></pre>
 
 <p><strong>Exercise</strong>: Go back to the monitoring screen and observe what happens after switching the namespace.</p>
+<p>e.g.</p>
+<pre><code>kubectl config set-context --current --namespace=default
+
+kubectl config set-context --current --namespace=kube-system
+
+kubectl config set-context --current --namespace=instavote
+</code></pre>
+
 <h2 id="part-ii-replicasets">PART II - ReplicaSets</h2>
-<p>To understand how ReplicaSets works with the selectors  lets launch a pod in the new namespace with existing specs.</p>
+<p>To understand how ReplicaSets works with the selectors  lets launch a pod in the new namespace with existing spec.</p>
 <pre><code>cd k8s-code/pods
 kubectl apply -f vote-pod.yaml
 
@@ -435,7 +448,8 @@ spec:
     matchLabels:
       role: vote
     matchExpressions:
-      - {key: version, operator: In, values: [v1, v2, v3, v4, v5]}
+      - key: version
+        operator: Exists
   template:
     metadata:
       name: vote
@@ -507,8 +521,11 @@ kubectl delete pods  vote
 <pre><code>kubectl edit rs vote
 </code></pre>
 
-<p>Update the version of the image from <strong>schoolofdevops/vote:v1</strong> to <strong>schoolofdevops/vote:v2</strong></p>
-<p>Save the file.</p>
+<ul>
+<li>Update the version of the image from <strong>schoolofdevops/vote:v1</strong> to <strong>schoolofdevops/vote:v2</strong></li>
+<li>From template.metadata.labels update <code>version=v1</code> to <code>version=v2</code></li>
+</ul>
+<p>Save the file. If you are using <code>kubectl edit</code> it would apply the changes immediately as you save, without needing to use <code>kubectl apply</code> command.</p>
 <p>Observe what happens ?</p>
 <ul>
 <li>Did application get  updated.</li>
