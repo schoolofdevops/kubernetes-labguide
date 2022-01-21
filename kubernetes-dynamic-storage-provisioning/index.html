@@ -7,13 +7,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <meta name="author" content="Gourav Shah">
+  <link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/kubernetes-dynamic-storage-provisioning/">
   <link rel="shortcut icon" href="../img/favicon.ico">
   <title>Lab K108 - Storage - Kubernetes Tutorial with CKA/CKAD Prep</title>
-  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
 
-  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
-  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  <link rel="stylesheet" href="../css/theme.css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
   
   <script>
     // Current page data
@@ -24,9 +25,8 @@
   
   <script src="../js/jquery-2.1.1.min.js" defer></script>
   <script src="../js/modernizr-2.8.3.min.js" defer></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
   <script>hljs.initHighlightingOnLoad();</script> 
-  
   <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -45,259 +45,147 @@
 
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
       <div class="wy-side-nav-search">
         <a href=".." class="icon icon-home"> Kubernetes Tutorial with CKA/CKAD Prep</a>
         <div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
   </form>
 </div>
       </div>
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-	<ul class="current">
-	  
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="..">Home</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <span class="caption-text">Just Enough Docker</span>
-    <ul class="subnav">
-                <li class="">
-                    
-    <a class="" href="../operating-docker-containers/">Lab D101 - Operating Containers</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../building-publishing-docker-images/">Lab D102 - Building and Publishing Docker Images</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../docker-networking/">Lab D103 - Docker Networking</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../docker-volumes/">Lab D104 - Docker Volumes</a>
-                </li>
-    </ul>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <span class="caption-text">Kubernetes CKA/CKAD Fundamentals</span>
-    <ul class="subnav">
-                <li class="">
-                    
-    <a class="" href="../install_kubernetes_with_kubeadm/">Lab K101 - Install Kubernetes with Kubeadm</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../kubernetes_quickdive/">Lab K102 - Kubernetes Quickdive</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../create-and-deploy-kubernetes-pods/">Lab K103 - Pods Basics</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../kubernetes-replicasets-howto/">Lab K104 - Namespaces and ReplicaSets</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../kubernetes-service-networking/">Lab K105 - Services & Networking</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../cni/">Lab K106 - CNI</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../kubernetes-rollouts-rollbacks-deployments/">Lab K107 - Deployments</a>
-                </li>
-                <li class=" current">
-                    
-    <a class="current" href="./">Lab K108 - Storage</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l3"><a href="#dynamic-storage-provisioning">Dynamic Storage Provisioning</a></li>
-    
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">Just Enough Docker</span></p>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../operating-docker-containers/">Lab D101 - Operating Containers</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../building-publishing-docker-images/">Lab D102 - Building and Publishing Docker Images</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../docker-networking/">Lab D103 - Docker Networking</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../docker-volumes/">Lab D104 - Docker Volumes</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">Kubernetes CKA/CKAD Fundamentals</span></p>
+                <ul class="current">
+                    <li class="toctree-l1"><a class="reference internal" href="../install_kubernetes_with_kubeadm/">Lab K101 - Install Kubernetes with Kubeadm</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../kubernetes_quickdive/">Lab K102 - Kubernetes Quickdive</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../create-and-deploy-kubernetes-pods/">Lab K103 - Pods Basics</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../kubernetes-replicasets-howto/">Lab K104 - Namespaces and ReplicaSets</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../kubernetes-service-networking/">Lab K105 - Services & Networking</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../cni/">Lab K106 - CNI</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../kubernetes-rollouts-rollbacks-deployments/">Lab K107 - Deployments</a>
+                    </li>
+                    <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K108 - Storage</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#concepts">Concepts</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#deploy-database-with-a-persistent-volume-claim">Deploy Database with a Persistent Volume Claim</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#creating-a-persistent-volume-claim">Creating a Persistent Volume Claim</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#set-up-storage-provisioner-in-kubernetes">Set up Storage Provisioner in kubernetes</a>
         <ul>
-        
-            <li><a class="toctree-l4" href="#concepts">Concepts</a></li>
-        
-            <li><a class="toctree-l4" href="#deploy-database-with-a-persistent-volume-claim">Deploy Database with a Persistent Volume Claim</a></li>
-        
-            <li><a class="toctree-l4" href="#creating-a-persistent-volume-claim">Creating a Persistent Volume Claim</a></li>
-        
-            <li><a class="toctree-l4" href="#set-up-storage-provisioner-in-kubernetes">Set up Storage Provisioner in kubernetes</a></li>
-        
-            <li><a class="toctree-l4" href="#nano-project-optional-exercise">Nano Project [Optional Exercise]</a></li>
-        
+    <li class="toctree-l3"><a class="reference internal" href="#validate">Validate</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#troubleshooting-nfs-provisioner">Troubleshooting NFS Provisioner</a>
+    </li>
         </ul>
-    
-
-    </ul>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../kubernetes-sample-project/">Lab K109 - Mini Project</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../kubernetes-configuration-management-configmaps-secrets/">Lab K110 - Configurations Management</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../rbac_101/">Lab K111 - RBAC Concepts</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../ingress/">Lab K112 - Application Routing with Ingress Controllers</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../helm/">Lab K113 - HELM and Kustomize</a>
-                </li>
-    </ul>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <span class="caption-text">CKAD Topics</span>
-    <ul class="subnav">
-                <li class="">
-                    
-    <a class="" href="../advanced_pod_design/">Lab K201 - Advanced Pod Design</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../network_policies/">Lab K207 - Network Policies</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../pods-health-probes/">Lab K204 - Observability and Application Troubleshooting</a>
-                </li>
-    </ul>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <span class="caption-text">CKA Topics</span>
-    <ul class="subnav">
-                <li class="">
-                    
-    <a class="" href="../10_kubernetes_autoscaling/">Lab K301 - Auto Scaling Capacity with HPA</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../advanced_pod_scheduling/">Lab K302 - Advanced Pod Scheduling</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../cluster-administration/">Lab K303 - Cluster Administration</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../cluster-troubleshooting/">Lab K304 - Cluster Troubleshooting</a>
-                </li>
-    </ul>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <span class="caption-text">Additional Topics</span>
-    <ul class="subnav">
-                <li class="">
-                    
-    <a class="" href="../configuring_authentication_and_authorization/">Lab K401 - Creating Users, Groups and Authorization</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../13_redis_statefulset/">Lab K402 Statefulsets</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../vote-deployement_strategies/">Lab K403 Building Deployment Strategies</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../12_troubleshooting/">Troubleshooting Tips</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../logging/">Logging</a>
-                </li>
-    </ul>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <span class="caption-text">Exercises</span>
-    <ul class="subnav">
-                <li class="">
-                    
-    <a class="" href="../xer-001-pods/">XER001 - Pods</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../xer-002-rs/">XER002 - ReplicaSets</a>
-                </li>
-    </ul>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <span class="caption-text">Web Quests</span>
-    <ul class="subnav">
-                <li class="">
-                    
-    <a class="" href="../wq001-cni/">KWQ001 - CNI Web Quest</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../wq002-security/">KWQ001 - Kubernetes Security Web Quest</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../wq003-ingress/">KWQ003 - Ingress Web Quest</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../wq004-monitoring/">KWQ004 - Monitoring Web Quest</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../wq005-controllers/">KWQ005 - Controllers Web Quest</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../wq006-persistentvolume/">KWQ006 - Persistent Data Web Quest</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../wq007-maintenance/">KWQ007 - Cluster Maintenance Web Quest</a>
-                </li>
-    </ul>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <span class="caption-text">References</span>
-    <ul class="subnav">
-                <li class="">
-                    
-    <a class="" href="../rbac-resource-group-mapping/">RBAC apiGroups to Resource Mapping</a>
-                </li>
-    </ul>
-	    </li>
-          
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#nano-project-optional-exercise">Nano Project [Optional Exercise]</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#summary">Summary</a>
+    </li>
         </ul>
+    </li>
+    </ul>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../kubernetes-sample-project/">Lab K109 - Mini Project</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../kubernetes-configuration-management-configmaps-secrets/">Lab K110 - Configurations Management</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../rbac_101/">Lab K111 - RBAC Concepts</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../ingress/">Lab K112 - Application Routing with Ingress Controllers</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../helm/">Lab K113 - HELM and Kustomize</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">CKAD Topics</span></p>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../advanced_pod_design/">Lab K201 - Advanced Pod Design</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../network_policies/">Lab K207 - Network Policies</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../pods-health-probes/">Lab K204 - Observability and Application Troubleshooting</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">CKA Topics</span></p>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../10_kubernetes_autoscaling/">Lab K301 - Auto Scaling Capacity with HPA</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../advanced_pod_scheduling/">Lab K302 - Advanced Pod Scheduling</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../cluster-administration/">Lab K303 - Cluster Administration</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../cluster-troubleshooting/">Lab K304 - Cluster Troubleshooting</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">Additional Topics</span></p>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../configuring_authentication_and_authorization/">Lab K401 - Creating Users, Groups and Authorization</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../13_redis_statefulset/">Lab K402 Statefulsets</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../vote-deployement_strategies/">Lab K403 Building Deployment Strategies</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../12_troubleshooting/">Troubleshooting Tips</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../logging/">Logging</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">Exercises</span></p>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../xer-001-pods/">XER001 - Pods</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../xer-002-rs/">XER002 - ReplicaSets</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">Web Quests</span></p>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../wq001-cni/">KWQ001 - CNI Web Quest</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../wq002-security/">KWQ001 - Kubernetes Security Web Quest</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../wq003-ingress/">KWQ003 - Ingress Web Quest</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../wq004-monitoring/">KWQ004 - Monitoring Web Quest</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../wq005-controllers/">KWQ005 - Controllers Web Quest</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../wq006-persistentvolume/">KWQ006 - Persistent Data Web Quest</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../wq007-maintenance/">KWQ007 - Cluster Maintenance Web Quest</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">References</span></p>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../rbac-resource-group-mapping/">RBAC apiGroups to Resource Mapping</a>
+                    </li>
+                </ul>
       </div>
-      &nbsp;
+    </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
@@ -329,8 +217,10 @@
       
     </li>
   </ul>
+  
   <hr/>
 </div>
+
           <div role="main">
             <div class="section">
               
@@ -371,16 +261,13 @@ spec:
      persistentVolumeClaim:
        claimName: db-pvc
 </code></pre>
-
 <p>Apply <em>db-deploy-pcv.yaml</em>  as</p>
 <pre><code>kubectl apply -f db-deploy-pvc.yaml
 </code></pre>
-
 <p>To monitor resources for this lab, open a new terminal and start watching for relevant objecting using the following command. </p>
 <pre><code>
 watch kubectl get pods,pvc,pv,storageclasses 
 </code></pre>
-
 <p>We will call the terminal where you are running the above command as your <strong>Monitoring Screen</strong>. </p>
 <ul>
 <li>Observe and note if the pod for <em>db</em> is launched.</li>
@@ -391,7 +278,6 @@ watch kubectl get pods,pvc,pv,storageclasses
 <p>switch to project directory</p>
 <pre><code>cd k8s-code/projects/instavote/dev/
 </code></pre>
-
 <p>Create the following file with the specs below</p>
 <p><code>file: db-pvc.yaml</code></p>
 <pre><code>kind: PersistentVolumeClaim
@@ -408,7 +294,6 @@ spec:
   storageClassName: nfs
 
 </code></pre>
-
 <p><code>if you are not using a Ubuntu bases setup described in the installation part of this guide, set  StorageClassName to "local-path" instead of "nfs" in the above file.</code></p>
 <p>create the Persistent Volume Claim and validate</p>
 <pre><code>kubectl get pvc
@@ -419,7 +304,6 @@ kubectl apply -f db-pvc.yaml
 kubectl get pvc,pv
 
 </code></pre>
-
 <ul>
 <li>Is persistentVolumeClaim created ?  Why ?</li>
 <li>Is persistentVolume created ?  Why ?</li>
@@ -430,30 +314,25 @@ kubectl get pvc,pv
 <pre><code>kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisioner/master/deploy/local-path-storage.yaml
 
 </code></pre>
-
 <p><code>Only if you are using the ubuntu based setup following installation part of this lab guide, proceed with creating NFS based storageclass, else skip this sub section and jump to validation steps</code></p>
 <p>Change into nfs provisioner installation dir</p>
 <pre><code>cd k8s-code/storage
 </code></pre>
-
 <p>Deploy nfs-client provisioner.</p>
 <pre><code>kubectl apply -f nfs
 
 </code></pre>
-
 <p>This will create all the objects required to setup a nfs provisioner. At this time, you should also see <strong>storageclass</strong> created for nfs on your monitoring screen. It would be launched with  Statefulsets. <a href="https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/">Read the official documentation on Statefulsets</a> to understand how its differnt than deployments.</p>
 <pre><code>kubectl get storageclass
 kubectl get pods
 kubectl logs -f nfs-provisioner-0 -n storage
 
 </code></pre>
-
 <h3 id="validate">Validate</h3>
 <p>Now, observe the output of  the following commands,</p>
 <pre><code>kubectl get pvc,pv
 kubectl get pods
 </code></pre>
-
 <ul>
 <li>Do you see pvc bound to pv ?</li>
 <li>Do you see the pod for db running ?</li>
@@ -469,7 +348,6 @@ I0319 16:00:21.121686       1 controller.go:1052] scheduleOperation[provision-in
 E0319 16:00:21.155945       1 controller.go:751] Unexpected error getting claim reference to claim &quot;instavote/db-pvc&quot;: selfLink was empty, can't make reference
 
 </code></pre>
-
 <p>If you see messages similar to above with error string containing <code>selfLink was empty</code>, you could fix it by updating API Server configurations.  </p>
 <p>To update API server configurations, update the pod spec that launches the API Server. </p>
 <p>On the master node edit the file : <code>/etc/kubernetes/manifests/kube-apiserver.yaml</code></p>
@@ -480,7 +358,6 @@ E0319 16:00:21.155945       1 controller.go:751] Unexpected error getting claim 
     - --allow-privileged=true
     - --feature-gates=RemoveSelfLink=false
 </code></pre>
-
 <p>Once you make this change, save the file, wait for a minute or so and you shall see the volume provisioned. </p>
 <h2 id="nano-project-optional-exercise">Nano Project [Optional Exercise]</h2>
 <p>Similar to postgres which mounts the data at /var/lib/postgresql/data and consumes it to store the database files, Redis creates and stores the file at <strong>/data</strong> path.  Your task is to have a nfs volume of size <strong>200Mi</strong> created and mounted at /data for the redis container.</p>
@@ -516,7 +393,7 @@ E0319 16:00:21.155945       1 controller.go:751] Unexpected error getting claim 
     
   </div>
 
-  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
 </footer>
       
         </div>
@@ -526,22 +403,30 @@ E0319 16:00:21.155945       1 controller.go:751] Unexpected error getting claim 
 
   </div>
 
-  <div class="rst-versions" role="note" style="cursor: pointer">
-    <span class="rst-current-version" data-toggle="rst-current-version">
-      
-          <a href="https://github.com/schoolofdevops/kubernetes-labguide/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
-      
-      
-        <span><a href="../kubernetes-rollouts-rollbacks-deployments/" style="color: #fcfcfc;">&laquo; Previous</a></span>
-      
-      
-        <span style="margin-left: 15px"><a href="../kubernetes-sample-project/" style="color: #fcfcfc">Next &raquo;</a></span>
-      
-    </span>
+  <div class="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide/" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../kubernetes-rollouts-rollbacks-deployments/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../kubernetes-sample-project/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
 </div>
     <script>var base_url = '..';</script>
+    <script src="../js/theme_extra.js" defer></script>
     <script src="../js/theme.js" defer></script>
       <script src="../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
 
 </body>
 </html>
