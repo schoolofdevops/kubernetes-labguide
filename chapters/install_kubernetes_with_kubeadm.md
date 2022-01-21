@@ -14,56 +14,35 @@ The below steps are applicable for the below mentioned OS
 | --- | --- |
 | **Ubuntu** | ** 18.04 / 20.04 ** |
 
-## Base Setup
-`Skip this step if using a pre configured lab environment`
+## Base Setup 
 
-**Skip this step and scroll to Initializing Master if you have setup nodes with vagrant**
-
-
-On all nodes which would be part of this cluster, you need to do the base setup as described in the following steps. To simplify this, you could also   [download and run this script](https://gist.github.com/initcron/40b71211cb693f541ce35fe3fb1adb11)
-
-### Create Kubernetes Repository
-`Skip this step if using a pre configured lab environment`
+Refer to [base setup document](chapters/base_setup) to set up the nodes if you are configuring the nodes from scratch. 
 
 
-We need to create a repository to download Kubernetes.
+## Configuring Docker on ALL Nodes
+
+If you have initialized earlier, begin by undoing it 
 
 ```
-curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+kubeadm reset -f 
 ```
+
+Configure docker to use systems as cgroupfs driver. This is needed for Kubernetes to work properly. 
+
 ```
-cat <<EOF > /etc/apt/sources.list.d/kubernetes.list
-deb http://apt.kubernetes.io/ kubernetes-xenial main
+cat >  /etc/docker/daemon.json << EOF 
+{
+"exec-opts": ["native.cgroupdriver=systemd"]
+}
 EOF
 ```
 
-
-### Installation of the packages
-`Skip this step if using a pre configured lab environment`
-
-We should update the machines before installing so that we can update the repository.
+And restart docker daemon 
 ```
-apt-get update -y
-```
-Installing all the packages with dependencies:
-```
-apt-get install -y docker.io kubelet kubeadm kubectl kubernetes-cni
-```
-```
-rm -rf /var/lib/kubelet/*
-```
-
-### Setup sysctl configs
-`Skip this step if using a pre configured lab environment`
-
-In order for many container networks to work, the following needs to be enabled on each node.
+ systemctl daemon-reload
+ systemctl restart docker
 
 ```
-sysctl net.bridge.bridge-nf-call-iptables=1
-```
-The above steps has to be followed in all the nodes.
-
-`Begin from the following step if using a pre configured lab environment`
 
 
 ## Initializing Master
@@ -115,7 +94,7 @@ You could also put the above command on a watch to observe the nodes getting rea
 watch kubectl get nodes
 ```
 
-## Configure Networking with Weave CNI Plugin
+## Configure Kubernetes Networking
 
 Installing overlay network is necessary for the pods to communicate with each other across the hosts. It is necessary to do this before you try to deploy any applications to your cluster.
 
@@ -137,7 +116,6 @@ To check if nodes are ready
 
 ```
 kubectl get nodes
-kubectl get cs
 
 ```
 
@@ -166,31 +144,6 @@ kubectl get events
 ```
 
 It will take a few minutes to have the cluster up and running with all the services.
-
-
-## Enable Kubernetes Dashboard
-
-After the Pod networks is installled, We can install another add-on service which is Kubernetes Dashboard.
-
-Installing Dashboard:
-```
-kubectl apply -f https://gist.githubusercontent.com/initcron/32ff89394c881414ea7ef7f4d3a1d499/raw/3422fbffadecec8ccd2bc7aacd1ca1c575936649/kube-dashboard.yaml
-
-```
-This will create a pod for the Kubernetes Dashboard.
-
-
-Dashboard would be setup and available on port 31000. To access it go to the browser, and provide the  following URL
-
-`use any of your node's (VM/Server) IP here`
-
-```
-http://NODEIP:31000/#!/node?namespace=default
-```
-
-The Dashboard Looks like:
-
-![Kubernetes Dashboard.\label{fig:captioned_image}](images/Kubernetes-Dashboard.png)
 
 
 ## Set up Visualiser
