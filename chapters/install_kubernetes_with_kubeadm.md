@@ -16,16 +16,12 @@ The below steps are applicable for the below mentioned OS
 
 ## Base Setup 
 
-Refer to [base setup document](chapters/base_setup) to set up the nodes if you are configuring the nodes from scratch. 
+Refer to [base setup document](../base_setup) to set up the nodes if you are configuring the nodes from scratch. 
 
 
 ## Configuring Docker on ALL Nodes
 
-If you have initialized earlier, begin by undoing it 
-
-```
-kubeadm reset -f 
-```
+Note: Run this on ALL the nodes. 
 
 Configure docker to use systems as cgroupfs driver. This is needed for Kubernetes to work properly. 
 
