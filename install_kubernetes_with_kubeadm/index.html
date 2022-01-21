@@ -248,9 +248,7 @@
 <h2 id="base-setup">Base Setup</h2>
 <p>Refer to <a href="../base_setup">base setup document</a> to set up the nodes if you are configuring the nodes from scratch. </p>
 <h2 id="configuring-docker-on-all-nodes">Configuring Docker on ALL Nodes</h2>
-<p>If you have initialized earlier, begin by undoing it </p>
-<pre><code>kubeadm reset -f 
-</code></pre>
+<p>Note: Run this on ALL the nodes. </p>
 <p>Configure docker to use systems as cgroupfs driver. This is needed for Kubernetes to work properly. </p>
 <pre><code>cat &gt;  /etc/docker/daemon.json &lt;&lt; EOF 
 {
