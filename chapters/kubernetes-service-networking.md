@@ -117,7 +117,17 @@ If you refresh the page, you should also notice its sending traffic to diffent p
 
 ## Services Under the Hood
 
+
+
 Lets traverse the route of the **network packet** that comes in on port 30000 on any node in your cluster.
+
+Connect to a node (If creatd using KIND) with, 
+
+
+```
+docker exec -it --privileged kind-worker2 sh
+```
+and then check the IPTables config as, 
 
 ```
 iptables -nvL -t nat  
