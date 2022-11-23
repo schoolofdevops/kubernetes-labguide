@@ -87,11 +87,10 @@ spec:
   resources:
     requests:
       storage: 2Gi
-  storageClassName: nfs
+  storageClassName: standard
 
 ```
 
-`if you are not using a Ubuntu bases setup described in the installation part of this guide, set  StorageClassName to "local-path" instead of "nfs" in the above file.`
 
 create the Persistent Volume Claim and validate
 
@@ -110,39 +109,6 @@ kubectl get pvc,pv
   * Is the persistentVolumeClaim bound with a persistentVolume ?
 
 
-## Set up Storage Provisioner in kubernetes
-
-Launch a local path provisioner using the following command,
-
-```
-kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisioner/master/deploy/local-path-storage.yaml
-
-```
-
-`Only if you are using the ubuntu based setup following installation part of this lab guide, proceed with creating NFS based storageclass, else skip this sub section and jump to validation steps`
-
-Change into nfs provisioner installation dir
-
-```
-cd k8s-code/storage
-```
-
-Deploy nfs-client provisioner.
-
-```
-kubectl apply -f nfs
-
-```
-
-This will create all the objects required to setup a nfs provisioner. At this time, you should also see **storageclass** created for nfs on your monitoring screen. It would be launched with  Statefulsets. [Read the official documentation on Statefulsets](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/) to understand how its differnt than deployments.
-
-
-```
-kubectl get storageclass
-kubectl get pods
-kubectl logs -f nfs-provisioner-0 -n storage
-
-```
 
 ### Validate
 
@@ -159,38 +125,6 @@ kubectl get pods
 Observe the dynamic provisioning, go to the host which is running nfs provisioner and look inside */srv* path to find the provisioned volume.
 
 
-### Troubleshooting NFS Provisioner 
-
-If you do not see the volume been provisioned despite creating storageclass, it may be due to a problem with API server configurations.  
-
-To find out if thats the case, check the logs for **nfs-provisioner** first. 
-
-
-```
-I0319 16:00:21.091140       1 controller.go:1052] scheduleOperation[lock-provision-instavote/db-pvc[06780d6b-a6d0-4701-bd72-faaa507b0e5a]]
-I0319 16:00:21.106978       1 leaderelection.go:154] attempting to acquire leader lease...
-I0319 16:00:21.121501       1 leaderelection.go:176] successfully acquired lease to provision for pvc instavote/db-pvc
-I0319 16:00:21.121686       1 controller.go:1052] scheduleOperation[provision-instavote/db-pvc[06780d6b-a6d0-4701-bd72-faaa507b0e5a]]
-E0319 16:00:21.155945       1 controller.go:751] Unexpected error getting claim reference to claim "instavote/db-pvc": selfLink was empty, can't make reference
-
-``` 
-If you see messages similar to above with error string containing `selfLink was empty`, you could fix it by updating API Server configurations.  
-
-To update API server configurations, update the pod spec that launches the API Server. 
-
-On the master node edit the file : ```/etc/kubernetes/manifests/kube-apiserver.yaml```
-
-and add ```- --feature-gates=RemoveSelfLink=false``` option the the command. An example is as below. 
-
-```
-  - command:
-    - kube-apiserver
-    - --advertise-address=143.198.50.211
-    - --allow-privileged=true
-    - --feature-gates=RemoveSelfLink=false
-```
-
-Once you make this change, save the file, wait for a minute or so and you shall see the volume provisioned. 
 
 ## Nano Project [Optional Exercise]
 
