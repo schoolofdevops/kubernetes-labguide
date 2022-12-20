@@ -183,34 +183,7 @@
               
                 <h1 id="base-setup">Base Setup</h1>
 <p><code>Skip this step if using a pre configured lab environment</code></p>
-<p><strong>Skip this step and scroll to Initializing Master if you have setup nodes with vagrant</strong></p>
-<p>On all nodes which would be part of this cluster, you need to do the base setup as described in the following steps. To simplify this, you could also   <a href="https://gist.github.com/initcron/40b71211cb693f541ce35fe3fb1adb11">download and run this script</a></p>
-<h3 id="create-kubernetes-repository">Create Kubernetes Repository</h3>
-<p><code>Skip this step if using a pre configured lab environment</code></p>
-<p>We need to create a repository to download Kubernetes.</p>
-<pre><code>curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
-</code></pre>
-<pre><code>cat &lt;&lt;EOF &gt; /etc/apt/sources.list.d/kubernetes.list
-deb http://apt.kubernetes.io/ kubernetes-xenial main
-EOF
-</code></pre>
-<h3 id="installation-of-the-packages">Installation of the packages</h3>
-<p><code>Skip this step if using a pre configured lab environment</code></p>
-<p>We should update the machines before installing so that we can update the repository.</p>
-<pre><code>apt-get update -y
-</code></pre>
-<p>Installing all the packages with dependencies:</p>
-<pre><code>apt-get install -y docker.io kubelet kubeadm kubectl kubernetes-cni
-</code></pre>
-<pre><code>rm -rf /var/lib/kubelet/*
-</code></pre>
-<h3 id="setup-sysctl-configs">Setup sysctl configs</h3>
-<p><code>Skip this step if using a pre configured lab environment</code></p>
-<p>In order for many container networks to work, the following needs to be enabled on each node.</p>
-<pre><code>sysctl net.bridge.bridge-nf-call-iptables=1
-</code></pre>
-<p>The above steps has to be followed in all the nodes.</p>
-<p><code>Begin from the following step if using a pre configured lab environment</code></p>
+<p>Pick Ubuntu nodes  which would be part of this cluster.  Then <a href="https://gist.githubusercontent.com/initcron/517bac5c39b04275242349bd78413521/raw/f925131fa215728c0ce8f00c74e2ed317ac49c88/user-data.sh">download and run this script</a> to set up the nodes and prepare those to install kubernetes. </p>
               
             </div>
           </div><footer>
