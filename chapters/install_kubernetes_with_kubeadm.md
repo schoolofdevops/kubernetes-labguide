@@ -12,33 +12,12 @@ The below steps are applicable for the below mentioned OS
 
 | OS | Version |
 | --- | --- |
-| **Ubuntu** | ** 18.04 / 20.04 ** |
+| **Ubuntu** | ** 22.10 ** |
 
 ## Base Setup 
 
 Refer to [base setup document](../base_setup) to set up the nodes if you are configuring the nodes from scratch. 
 
-
-## Configuring Docker on ALL Nodes
-
-Note: Run this on ALL the nodes. 
-
-Configure docker to use systems as cgroupfs driver. This is needed for Kubernetes to work properly. 
-
-```
-cat >  /etc/docker/daemon.json << EOF 
-{
-"exec-opts": ["native.cgroupdriver=systemd"]
-}
-EOF
-```
-
-And restart docker daemon 
-```
- systemctl daemon-reload
- systemctl restart docker
-
-```
 
 
 ## Initializing Master
@@ -90,16 +69,14 @@ You could also put the above command on a watch to observe the nodes getting rea
 watch kubectl get nodes
 ```
 
-## Configure Kubernetes Networking
+## Configure Kubernetes Networking (CNI)
 
 Installing overlay network is necessary for the pods to communicate with each other across the hosts. It is necessary to do this before you try to deploy any applications to your cluster.
 
 There are various overlay networking drivers available for kubernetes. We are going to use **Weave Net**.
 
 ```
-
-export kubever=$(kubectl version | base64 | tr -d '\n')
-kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$kubever"
+kubectl apply -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml
 ```
 
 

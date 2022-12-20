@@ -3,7 +3,7 @@ site_url: http://kubernetes-tutorial.schoolofdevops.com/
 site_author: Gourav Shah
 site_description: Complete Kubernetes Tutorial by Example
 google_analytics: ['UA-36802546-16', 'kubernetes-tutorial.schoolofdevops.com']
-pages:
+nav:
   - Home: "index.md"
   - Just Enough Docker:
      - Lab D101 - Operating Containers: "operating-docker-containers.md"
