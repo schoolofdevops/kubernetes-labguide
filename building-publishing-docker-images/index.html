@@ -193,7 +193,7 @@
 <h3 id="approach-1-building-docker-image-for-voteapp-manually">Approach 1: Building docker image for voteapp manually</h3>
 <p>on the host</p>
 <pre><code>git clone https://github.com/schoolofdevops/vote
-docker container run -idt --name build -p 8000:80 python:2.7-alpine sh
+docker container run -idt --name build -p 8000:80 python:alpine3.17 sh
 cd vote
 docker cp . build:/app
 docker exec -it build sh
@@ -222,7 +222,7 @@ ls
 app.py  requirements.txt  static  templates
 </code></pre>
 <p>Add/create  Dockerfile the the same directory (vote) with the following content,</p>
-<pre><code>FROM python:2.7-alpine
+<pre><code>FROM python:alpine3.17
 
 WORKDIR /app
 
