@@ -193,10 +193,10 @@
 <h3 id="approach-1-building-docker-image-for-voteapp-manually">Approach 1: Building docker image for voteapp manually</h3>
 <p>on the host</p>
 <pre><code>git clone https://github.com/schoolofdevops/vote
-docker container run -idt --name build -p 8000:80 python:alpine3.17 sh
+docker container run -idt --name dev -p 8000:80 python:alpine3.17 sh
 cd vote
-docker cp . build:/app
-docker exec -it build sh
+docker cp . dev:/app
+docker exec -it dev sh
 </code></pre>
 <p>inside the container</p>
 <pre><code>cd /app
@@ -205,9 +205,9 @@ gunicorn app:app -b 0.0.0.0:80
 </code></pre>
 <p>Validate by accessing http://IPADDRESS:8000</p>
 <p>on the host</p>
-<pre><code>docker diff build
+<pre><code>docker diff dev
 
-docker container commit build &lt;docker_id&gt;/vote:v1
+docker container commit dev &lt;docker_id&gt;/vote:v1
 
 docker login
 
