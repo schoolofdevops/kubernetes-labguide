@@ -10,10 +10,10 @@ on the host
 
 ```
 git clone https://github.com/schoolofdevops/vote
-docker container run -idt --name build -p 8000:80 python:2.7-alpine sh
+docker container run -idt --name dev -p 8000:80 python:alpine3.17 sh
 cd vote
-docker cp . build:/app
-docker exec -it build sh
+docker cp . dev:/app
+docker exec -it dev sh
 ```
 
 inside the container
@@ -29,9 +29,9 @@ Validate by accessing http://IPADDRESS:8000
 on the host
 
 ```
-docker diff build
+docker diff dev
 
-docker container commit build <docker_id>/vote:v1
+docker container commit dev <docker_id>/vote:v1
 
 docker login
 
@@ -58,7 +58,7 @@ app.py  requirements.txt  static  templates
 Add/create  Dockerfile the the same directory (vote) with the following content,
 
 ```
-FROM python:2.7-alpine
+FROM python:alpine3.17
 
 WORKDIR /app
 
