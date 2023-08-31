@@ -207,6 +207,8 @@ gunicorn app:app -b 0.0.0.0:80
 
 docker container commit dev docker.io/&lt;username&gt;/vote:v1
 
+[where &lt;username&gt; should be replaced with your registry username ]
+
 docker login
 
 docker image push docker.io/&lt;username&gt;/vote:v1
