@@ -31,11 +31,13 @@ on the host
 ```
 docker diff dev
 
-docker container commit dev <docker_id>/vote:v1
+docker container commit dev docker.io/<username>/vote:v1
+
+[where <username> should be replaced with your registry username ]
 
 docker login
 
-docker image push <docker_id>/vote:v1
+docker image push docker.io/<username>/vote:v1
 
 ```
 
@@ -74,21 +76,21 @@ CMD  gunicorn app:app -b 0.0.0.0:80
 Build image using,
 
 ```
- docker build -t <docker_id>/vote:v2 .
+ docker build -t docker.io/<username>/vote:v2 .
 ```
 
 where,
-  <docker_id> : your docker registry user/namespace. Replace this with the actual user
+  <username> : your docker registry user/namespace. Replace this with the actual user
 
 
 validate
 
 ```
 docker image ls
-docker image history <docker_id>/vote:v2
-docker image history <docker_id>/vote:v1
+docker image history docker.io/<username>/vote:v2
+docker image history docker.io/<username>/vote:v1
 
-docker container run -idt -P <docker_id>/vote:v2
+docker container run -idt -P docker.io/<username>/vote:v2
 docker ps
 ```
 
@@ -98,7 +100,9 @@ Check by connecting to your host:port to validate if vote web application shows 
 Once validated, tag and push
 
 ```
-docker image tag <docker_id>/vote:v2 <docker_id>/vote:latest
+docker image tag docker.io/<username>/vote:v2 docker.io/<username>/vote:latest
 docker login
-docker push <docker_id>/vote
+docker push docker.io/<username>/vote
+docker push docker.io/<username>/vote:v2
+
 ```
