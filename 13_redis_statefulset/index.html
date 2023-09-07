@@ -208,6 +208,9 @@
 <li>Statefulsets  </li>
 <li>initContainers</li>
 </ul>
+<p>With this lab, you would be re deploying the redis service, this time as a statefulset. Before proceeding, if you alerady have it created as deployment earlier, remove it using,</p>
+<pre><code>kubectl delete svc,deploy redis
+</code></pre>
 <h2 id="creating-a-headless-service">Creating a headless service</h2>
 <p>We will use Redis as Statefulsets for our instavote application stack.
 It is similar to Deployment, but Statefulsets requires a <code>Service Name</code>.</p>
