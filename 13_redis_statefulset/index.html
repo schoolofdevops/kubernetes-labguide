@@ -131,7 +131,11 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#nano-project-configuring-persistent-volume-claim-per-instance-of-redis">Nano Project: Configuring persistent volume claim per instance of redis</a>
         <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#reading-list">Reading List</a>
+    <li class="toctree-l3"><a class="reference internal" href="#solution">Solution</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#reading-list">Reading List</a>
+    </li>
+        </ul>
     </li>
         </ul>
     </li>
@@ -346,11 +350,31 @@ connected
 <p>Your task is to update the YAML file for the statefulset  with the following changes,</p>
 <ul>
 <li>use volumeClaimTemplate instead of volumes for volume <strong>redis-data</strong>. This will ensure a persistentVolumeClaim per replica/pod. All other volumes remain unchanged.</li>
-<li>Provide the storageClass as NFS, a provisioner for which is already been configured</li>
-<li>Size of the volume could be 200Mi as its just a key value store used by the instavote app to store the votes.</li>
+<li>Use the default storageClass in the cluster, a provisioner for which should have already been configured. What this means is, do not provide an explicit configuration for the storage class.</li>
+<li>Size of the volume could be 50Mi as its just a key value store used by the instavote app to store the votes.</li>
 <li>accessModes should be ReadWriteOnce as the volumes for redis should not be shared between multiple instances.</li>
 </ul>
 <p>Update the statefulSet, apply and validate that persistentVolumeClaim and persistentVolume are created for each instance/pod of redis application.</p>
+<h3 id="solution">Solution</h3>
+<p>To complete this nano project you need to
+  * Remove redis-data volume which is using emptyDir.
+  * Add the volumeClaimTemplates as part of the StatefulSet spec as,</p>
+<pre><code>volumes:
+- name: conf
+  emptyDir: {}
+- name: config-map
+  configMap:
+    name: redis
+volumeClaimTemplates:
+- metadata:
+  name: redis-data
+spec:
+  accessModes: [ &quot;ReadWriteOnce&quot; ]
+  resources:
+    requests:
+      storage: 50Mi
+</code></pre>
+<p>Complete solution manifest is available at https://gist.github.com/initcron/20fbe6e23ab339a5fb2edf65d429aefd.</p>
 <h5 id="reading-list">Reading List</h5>
 <ul>
 <li><a href="https://redis.io/topics/replication">Redis Replication</a></li>
