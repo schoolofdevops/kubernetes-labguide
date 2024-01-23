@@ -8,7 +8,7 @@
     <title>Lab K402 Statefulsets - Kubernetes Tutorial with CKA/CKAD Prep</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
     
       <script>
         // Current page data
@@ -17,18 +17,19 @@
         var mkdocs_page_url = "/13_redis_statefulset/";
       </script>
     
+    <script src="../js/jquery-3.6.0.min.js" defer></script>
     <!--[if lt IE 9]>
       <script src="../js/html5shiv.min.js"></script>
     <![endif]-->
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
-      <script>hljs.highlightAll();</script> 
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+      <script>hljs.initHighlightingOnLoad();</script> 
       <script>
         (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
         (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
         m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
         })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
-        ga('create', "UA-36802546-16", "kubernetes-tutorial.schoolofdevops.com");
+        ga('create', 'UA-36802546-16', 'kubernetes-tutorial.schoolofdevops.com');
         ga('send', 'pageview');
       </script>
     
@@ -43,7 +44,7 @@
           <a href=".." class="icon icon-home"> Kubernetes Tutorial with CKA/CKAD Prep
         </a><div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
-      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
   </form>
 </div>
       </div>
@@ -131,11 +132,7 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#nano-project-configuring-persistent-volume-claim-per-instance-of-redis">Nano Project: Configuring persistent volume claim per instance of redis</a>
         <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#solution">Solution</a>
-        <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#reading-list">Reading List</a>
-    </li>
-        </ul>
+    <li class="toctree-l3"><a class="reference internal" href="#reading-list">Reading List</a>
     </li>
         </ul>
     </li>
@@ -190,11 +187,12 @@
       <div class="wy-nav-content">
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href=".." class="icon icon-home" aria-label="Docs"></a> &raquo;</li>
+    <li><a href=".." class="icon icon-home" alt="Docs"></a> &raquo;</li>
           <li>Additional Topics &raquo;</li>
-      <li class="breadcrumb-item active">Lab K402 Statefulsets</li>
+      <li>Lab K402 Statefulsets</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/13_redis_statefulset.md" class="icon icon-github"> Edit on GitHub</a>
+        <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/13_redis_statefulset.md"
+          class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -208,9 +206,6 @@
 <li>Statefulsets  </li>
 <li>initContainers</li>
 </ul>
-<p>With this lab, you would be re deploying the redis service, this time as a statefulset. Before proceeding, if you alerady have it created as deployment earlier, remove it using,</p>
-<pre><code>kubectl delete svc,deploy redis
-</code></pre>
 <h2 id="creating-a-headless-service">Creating a headless service</h2>
 <p>We will use Redis as Statefulsets for our instavote application stack.
 It is similar to Deployment, but Statefulsets requires a <code>Service Name</code>.</p>
@@ -353,31 +348,11 @@ connected
 <p>Your task is to update the YAML file for the statefulset  with the following changes,</p>
 <ul>
 <li>use volumeClaimTemplate instead of volumes for volume <strong>redis-data</strong>. This will ensure a persistentVolumeClaim per replica/pod. All other volumes remain unchanged.</li>
-<li>Use the default storageClass in the cluster, a provisioner for which should have already been configured. What this means is, do not provide an explicit configuration for the storage class.</li>
-<li>Size of the volume could be 50Mi as its just a key value store used by the instavote app to store the votes.</li>
+<li>Provide the storageClass as NFS, a provisioner for which is already been configured</li>
+<li>Size of the volume could be 200Mi as its just a key value store used by the instavote app to store the votes.</li>
 <li>accessModes should be ReadWriteOnce as the volumes for redis should not be shared between multiple instances.</li>
 </ul>
 <p>Update the statefulSet, apply and validate that persistentVolumeClaim and persistentVolume are created for each instance/pod of redis application.</p>
-<h3 id="solution">Solution</h3>
-<p>To complete this nano project you need to
-  * Remove redis-data volume which is using emptyDir.
-  * Add the volumeClaimTemplates as part of the StatefulSet spec as,</p>
-<pre><code>volumes:
-- name: conf
-  emptyDir: {}
-- name: config-map
-  configMap:
-    name: redis
-volumeClaimTemplates:
-- metadata:
-  name: redis-data
-spec:
-  accessModes: [ &quot;ReadWriteOnce&quot; ]
-  resources:
-    requests:
-      storage: 50Mi
-</code></pre>
-<p>Complete (solution manifest is available here)[https://gist.github.com/initcron/20fbe6e23ab339a5fb2edf65d429aefd].</p>
 <h5 id="reading-list">Reading List</h5>
 <ul>
 <li><a href="https://redis.io/topics/replication">Redis Replication</a></li>
@@ -430,15 +405,14 @@ spec:
     
   </span>
 </div>
-    <script src="../js/jquery-3.6.0.min.js"></script>
-    <script>var base_url = "..";</script>
-    <script src="../js/theme_extra.js"></script>
-    <script src="../js/theme.js"></script>
-      <script src="../search/main.js"></script>
-    <script>
-        jQuery(function () {
+    <script>var base_url = '..';</script>
+    <script src="../js/theme_extra.js" defer></script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
             SphinxRtdTheme.Navigation.enable(true);
-        });
+        };
     </script>
 
 </body>
