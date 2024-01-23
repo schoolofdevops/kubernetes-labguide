@@ -12,7 +12,7 @@ The Horizontal Pod Autoscaler is implemented as a Kubernetes API resource and a 
 
 #### Deploying Metrics Server
 
-Kubernetes Horizontal Pod Autoscaler along with `kubectl top` command depends on the core monitoring data such as cpu and memory utilization which is scraped and provided by kubelet, which comes with in built cadvisor component.  Earlier, you would have to install a additional component called **heapster** in order to collect this data and feed it to the **hpa** controller. With 1.8 version of Kubernetes, this behavior is changed, and now **metrics-server** would provide this data. Metric server  is being included as a essential component for kubernetes cluster, and being incroporated into kubernetes to be included out of box. It stores the core monitoring information using in-memory data store.
+Kubernetes Horizontal Pod Autoscaler along with `kubectl top` command depends on the core monitoring data such as cpu and memory utilization which is scraped and provided by kubelet, which comes with in built cadvisor component.  Earlier, you would have to install a additional component called **heapster** in order to collect this data and feed it to the **hpa** controller. Starting with 1.8 version of Kubernetes, this behavior is changed, and now **metrics-server** would provide this data. Metric server  is being included as a essential component for kubernetes cluster, and being incroporated into kubernetes to be included out of box. It stores the core monitoring information using in-memory data store.
 
 If you try to pull monitoring information using the following commands
 ```
@@ -34,8 +34,8 @@ Deploy  metric server with the following commands,
 
 ```
 cd ~
-git clone  https://github.com/kubernetes-incubator/metrics-server.git
-kubectl apply -f metrics-server/deploy/kubernetes/
+git clone https://github.com/schoolofdevops/metrics-server.git 
+kubectl apply -k metrics-server/manifests/overlays/release
 ```
 
 Validate
@@ -43,27 +43,16 @@ Validate
 kubectl get deploy,pods -n kube-system --selector='k8s-app=metrics-server'
 ```
 
-Monitoring has been setup.
-
-##### Fixing issues with Metrics deployment
-
-There is a known issue as off Dec 2018 with Metrics Server where is fails to work event after deploying it using above commands. This can be fixed with a patch using steps below.
 
 
-To apply a patch to metrics server,
+You could validate again with 
 
 ```
-wget -c https://gist.githubusercontent.com/initcron/1a2bd25353e1faa22a0ad41ad1c01b62/raw/008e23f9fbf4d7e2cf79df1dd008de2f1db62a10/k8s-metrics-server.patch.yaml
-
-kubectl patch deploy metrics-server -p "$(cat k8s-metrics-server.patch.yaml)" -n kube-system
-```
-
-Now validate with
-
-```
-kubectl top node
 kubectl top pod
+
+kubectl top node
 ```
+
 
 where expected output shoudl be similar to,
 
@@ -75,7 +64,7 @@ vis-01   145m         7%     2215Mi          57%
 vis-13   36m          1%     1001Mi          26%
 vis-14   71m          3%     1047Mi          27%
 ```
-
+If you see a similar output, monitoring is now been setup.
 
 
 ### Create a HPA
@@ -86,19 +75,47 @@ To demonstrate Horizontal Pod Autoscaler we will use a custom docker image based
 
 
 ```
-apiVersion: autoscaling/v1
+apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: vote
 spec:
-  minReplicas: 4
-  maxReplicas: 45
-  targetCPUUtilizationPercentage: 70
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+    - type: ContainerResource
+      containerResource:
+        name: cpu
+        container: app
+        target:
+          type: Utilization
+          averageUtilization: 50
   scaleTargetRef:
     apiVersion: apps/v1
-    kind: Deployment
+    kind: ReplicaSet
     name: vote
+  behavior:
+    scaleDown:
+      policies:
+      - type: Pods
+        value: 2
+        periodSeconds: 120
+      - type: Percent
+        value: 25
+        periodSeconds: 120
+      stabilizationWindowSeconds: 300
+    scaleUp:
+      stabilizationWindowSeconds: 0
+      policies:
+      - type: Percent
+        value: 100
+        periodSeconds: 15
+      - type: Pods
+        value: 2
+        periodSeconds: 15
+      selectPolicy: Max
 ```
+Source: [You could get this code from here.](https://gist.github.com/initcron/fe34915fd222583e3170f4f88fc1054f)
 
 apply
 
@@ -122,8 +139,26 @@ If you have a monitoring system such as grafana, you could also view the graphs 
 
 ![Monitoring Deployments with grafana](images/hpa-01.png)
 
+You could start watching in a dedicated window using the following command 
 
-###  Load Test
+
+
+###  Launch a Load Test
+
+Create a Service to receive the traffic 
+
+```
+cd k8s-code/projects/instavote/dev
+kubectl apply -f vote-svc.yaml
+```
+
+Prepare to monitor the autoscaling by opening a new window connected to your cluster and by launching,
+
+```
+watch 'kubectl get hpa,all ; kubectl describe hpa vote'
+```
+
+Create a Load Test Job as, 
 
 `file: loadtest-job.yaml`
 
@@ -138,24 +173,18 @@ spec:
       containers:
       - name: siege
         image: schoolofdevops/loadtest:v1
-        command: ["siege",  "--concurrent=5", "--benchmark", "--time=6m", "http://vote"]
+        command: ["siege",  "--concurrent=1", "--benchmark", "--time=6m", "http://vote"]
       restartPolicy: Never
   backoffLimit: 4
 ```
 
-And launch the loadtest
+and launch it as 
 
 ```
 kubectl apply -f loadtest-job.yaml
 ```
 
-To monitor while the load test is running ,
-
-```
-watch kubectl top pods
-
-```
-
+This will launch a one off Job which would run for approaximately 6 minutes.  
 
 To get information about the job
 
@@ -206,7 +235,6 @@ You can disable this annoying message by editing
 the .siegerc file in your home directory; change
 the directive 'show-logfile' to false.
 ```
-
 Now check the job status again,
 
 ```
@@ -216,12 +244,12 @@ vote-loadtest   1         1            10m
 
 ```
 
+While it is running, 
+
+
+
   * Keep monitoring for the load on the pod as the job progresses.
-  * Keep a watch from grafana as well to see the resource utilisation for vote deployment.
   * You should see hpa in action as it scales out/in the  vote deployment with the increasing/decreasing load.
-
-
-  ![Monitoring Deployments with grafana](images/hpa-02.png)
 
 
 ##### Summary

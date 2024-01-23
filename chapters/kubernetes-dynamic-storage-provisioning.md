@@ -87,11 +87,11 @@ spec:
   resources:
     requests:
       storage: 2Gi
-  storageClassName: nfs
+  storageClassName: local-path
 
 ```
 
-`if you are not using a Ubuntu bases setup described in the installation part of this guide, set  StorageClassName to "local-path" instead of "nfs" in the above file.`
+`if you using a KIND bases environment, set  StorageClassName to "standard" instead of "local-path" in the above file. In case of KIND environment, no further configuration of Storageclass/Provisioner is needed.`
 
 create the Persistent Volume Claim and validate
 
@@ -119,29 +119,15 @@ kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisione
 
 ```
 
-`Only if you are using the ubuntu based setup following installation part of this lab guide, proceed with creating NFS based storageclass, else skip this sub section and jump to validation steps`
 
-Change into nfs provisioner installation dir
+This will create all the objects required to setup a local-path provisioner. At this time, you should also see **storageclass** created for local-path on your monitoring screen. 
 
-```
-cd k8s-code/storage
-```
-
-Deploy nfs-client provisioner.
-
-```
-kubectl apply -f nfs
-
-```
-
-This will create all the objects required to setup a nfs provisioner. At this time, you should also see **storageclass** created for nfs on your monitoring screen. It would be launched with  Statefulsets. [Read the official documentation on Statefulsets](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/) to understand how its differnt than deployments.
 
 
 ```
 kubectl get storageclass
 kubectl get pods
-kubectl logs -f nfs-provisioner-0 -n storage
-
+kubectl logs -f local-path-provisioner-xxxx -n local-path-storage
 ```
 
 ### Validate
@@ -156,45 +142,11 @@ kubectl get pods
   * Do you see pvc bound to pv ?
   * Do you see the pod for db running ?
 
-Observe the dynamic provisioning, go to the host which is running nfs provisioner and look inside */srv* path to find the provisioned volume.
+Observe the dynamic provisioning in action. 
 
+## Nano Project 
 
-### Troubleshooting NFS Provisioner 
-
-If you do not see the volume been provisioned despite creating storageclass, it may be due to a problem with API server configurations.  
-
-To find out if thats the case, check the logs for **nfs-provisioner** first. 
-
-
-```
-I0319 16:00:21.091140       1 controller.go:1052] scheduleOperation[lock-provision-instavote/db-pvc[06780d6b-a6d0-4701-bd72-faaa507b0e5a]]
-I0319 16:00:21.106978       1 leaderelection.go:154] attempting to acquire leader lease...
-I0319 16:00:21.121501       1 leaderelection.go:176] successfully acquired lease to provision for pvc instavote/db-pvc
-I0319 16:00:21.121686       1 controller.go:1052] scheduleOperation[provision-instavote/db-pvc[06780d6b-a6d0-4701-bd72-faaa507b0e5a]]
-E0319 16:00:21.155945       1 controller.go:751] Unexpected error getting claim reference to claim "instavote/db-pvc": selfLink was empty, can't make reference
-
-``` 
-If you see messages similar to above with error string containing `selfLink was empty`, you could fix it by updating API Server configurations.  
-
-To update API server configurations, update the pod spec that launches the API Server. 
-
-On the master node edit the file : ```/etc/kubernetes/manifests/kube-apiserver.yaml```
-
-and add ```- --feature-gates=RemoveSelfLink=false``` option the the command. An example is as below. 
-
-```
-  - command:
-    - kube-apiserver
-    - --advertise-address=143.198.50.211
-    - --allow-privileged=true
-    - --feature-gates=RemoveSelfLink=false
-```
-
-Once you make this change, save the file, wait for a minute or so and you shall see the volume provisioned. 
-
-## Nano Project [Optional Exercise]
-
-Similar to postgres which mounts the data at /var/lib/postgresql/data and consumes it to store the database files, Redis creates and stores the file at **/data** path.  Your task is to have a nfs volume of size **200Mi** created and mounted at /data for the redis container.
+Similar to postgres which mounts the data at /var/lib/postgresql/data and consumes it to store the database files, Redis creates and stores the file at **/data** path.  Your task is to have a volume of size **20Mi** created and mounted at /data for the redis container.
 
 You could follow these steps to complete this task
 
@@ -208,4 +160,5 @@ You could follow these steps to complete this task
 
 #### Summary
 
-In this lab, you not only setup dynamic provisioning using NFS, but also learnt about statefulsets as well as rbac policies applied to the nfs provisioner.
+In this lab, you learnt to  setup dynamic provisioning  provisioner with Storage Classes, Provisioners and PersistentVolumeClaims.
+
