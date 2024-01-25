@@ -279,6 +279,7 @@ kubectl apply -f db-deploy.yaml -f db-svc.yaml
 <li>image: schoolofdevops/vote-result</li>
 <li>application port: 80</li>
 <li>service type: NodePort</li>
+<li>nodePort : 30100</li>
 </ul>
 </li>
 </ul>
@@ -291,6 +292,7 @@ kubectl apply -f db-deploy.yaml -f db-svc.yaml
 <p>Find out the NodePort for vote and service apps and load those from your browser.</p>
 <p><img alt="Front-End.\label{fig:captioned_image}" src="../images/vote-rc.png" /></p>
 <p>This is how the vote application should look like.</p>
+<p>You could also load the Result page on the <code>30100</code> port of your Node IP/Address as, </p>
 <p><img alt="Result Page.\label{fig:captioned_image}" src="../images/Result.png" /></p>
 <p>Above is how the result app should look like.</p>
 <p>Final validation is, if you submit the vote, you should see the results changing accordingly. You would see this behavior only if all deployments and services are created and configured properly.</p>
