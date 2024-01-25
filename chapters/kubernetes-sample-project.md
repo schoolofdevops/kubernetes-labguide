@@ -62,6 +62,7 @@ You would find the files available in the same directory as above i.e. *k8s-code
     * image: schoolofdevops/vote-result
     * application port: 80
     * service type: NodePort
+    * nodePort : 30100
 
 
 
@@ -81,6 +82,9 @@ Find out the NodePort for vote and service apps and load those from your browser
 ![Front-End.\label{fig:captioned_image}](images/vote-rc.png)
 
 This is how the vote application should look like.
+
+
+You could also load the Result page on the `30100` port of your Node IP/Address as, 
 
 ![Result Page.\label{fig:captioned_image}](images/Result.png)
 
