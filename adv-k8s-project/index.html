@@ -5,14 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/adv-k8s-project/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Mini Project: Deploying Multi Tier Application Stack - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <title>XER003 - Deploy Instavote Stack - Kubernetes Tutorial with CKA/CKAD Prep</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Mini Project: Deploying Multi Tier Application Stack";
+        var mkdocs_page_name = "XER003 - Deploy Instavote Stack";
         var mkdocs_page_input_path = "adv-k8s-project.md";
         var mkdocs_page_url = "/adv-k8s-project/";
       </script>
@@ -129,10 +129,28 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Exercises</span></p>
-              <ul>
+              <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../xer-001-pods/">XER001 - Pods</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../xer-002-rs/">XER002 - ReplicaSets</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">XER003 - Deploy Instavote Stack</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#project-specs">Project Specs</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#phase-i-apply-existing-code">Phase I - Apply existing code</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#phase-ii-create-deployments-and-services-for-remaining-services">Phase II - Create Deployments and Services for Remaining Services</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#to-validate">To Validate:</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#phase-iii-set-up-host-based-traffic-routing-with-ingress">Phase III - Set up host based traffic routing with Ingress</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Web Quests</span></p>
@@ -171,7 +189,8 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a> &raquo;</li>
-      <li class="breadcrumb-item active">Mini Project: Deploying Multi Tier Application Stack</li>
+          <li>Exercises &raquo;</li>
+      <li class="breadcrumb-item active">XER003 - Deploy Instavote Stack</li>
     <li class="wy-breadcrumbs-aside">
           <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/adv-k8s-project.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
@@ -182,7 +201,7 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="mini-project-deploying-multi-tier-application-stack">Mini Project: Deploying Multi Tier Application Stack</h1>
-<p>In this project , you would write definitions for deploying the vote application stack with all components/tiers which include,</p>
+<p>In this project , you would write definitions for deploying the <a href="https://github.com/schoolofdevops/example-voting-app">instavote application</a> stack with all components/tiers which include,</p>
 <ul>
 <li>vote</li>
 <li>redis</li>
@@ -190,12 +209,13 @@
 <li>db</li>
 <li>result</li>
 </ul>
-<h2 id="project-description">Project Description</h2>
+<h2 id="project-specs">Project Specs</h2>
 <ul>
 <li>Apply the deployment and service code for the applications marked as ready</li>
 <li>Complete the code for  deployments and services marked as TODO</li>
 <li>Apply the definitions that you have completed</li>
 <li>Validate the application workflow is operational by loading vote and result applications from the browser</li>
+<li>Set up ingress controller and add ingress rules so that you are able to access the apps using domain names e.g. vote.example.com and result.example.com</li>
 </ul>
 <p>Following table depicts the state of readiness of the above services.</p>
 <table>
@@ -209,8 +229,8 @@
 <tbody>
 <tr>
 <td style="text-align: left;">vote</td>
-<td style="text-align: left;">ready</td>
-<td style="text-align: left;">ready</td>
+<td style="text-align: left;">TODO</td>
+<td style="text-align: left;">TODO</td>
 </tr>
 <tr>
 <td style="text-align: left;">redis</td>
@@ -234,13 +254,17 @@
 </tr>
 </tbody>
 </table>
-<h3 id="apply-existing-code">Apply existing code</h3>
+<h3 id="phase-i-apply-existing-code">Phase I - Apply existing code</h3>
+<p>Create a namespace and switch to it</p>
+<pre><code>kubectl create namespace instavote
+kubectl config set-context --current --namespace=instavote
+kubectl config get-contexts
+</code></pre>
+<p>Apply the existing manifests</p>
 <pre><code>
 cd k8s-code/projects/instavote/dev/
 
-kubectl config set-context --current --namespace=instavote
-
-kubectl apply -f vote-rs.yaml -f vote-svc.yaml
+kubectl apply  -f vote-svc.yaml
 kubectl apply -f redis-deploy.yaml -f redis-svc.yaml
 kubectl apply -f db-deploy.yaml -f db-svc.yaml
 </code></pre>
@@ -249,13 +273,20 @@ kubectl apply -f db-deploy.yaml -f db-svc.yaml
 </code></pre>
 <p>Where you should see,</p>
 <ul>
-<li>replicaset and service for vote app created</li>
-<li>deployments and services for redis and db created</li>
+<li>deplyoment and services for redis and db created</li>
+<li>nodeport service for vote app</li>
 </ul>
 <p>If you see the above objects, proceed with the next task.</p>
-<h3 id="completing-code-for-worker-and-result-apps">Completing Code for worker and result apps</h3>
-<p>You would find the files available in the same directory as above i.e. <em>k8s-code/projects/instavote/dev/</em> with either partial or blank code. Your job is to complete the deployment and service yaml specs and apply those. While writing the specs, you could refer to the following specification.  </p>
+<h3 id="phase-ii-create-deployments-and-services-for-remaining-services">Phase II - Create Deployments and Services for Remaining Services</h3>
+<p>You may find the files available in the same directory as above i.e. <em>k8s-code/projects/instavote/dev/</em> with either partial or blank code. Your job is to complete the deployment and service yaml specs and apply those. While writing the specs, you could refer to the following specification.  </p>
 <ul>
+<li>results<ul>
+<li>image: schoolofdevops/vote:v1</li>
+<li>application port: 80</li>
+<li>service type: NodePort</li>
+<li>nodePort : 30000</li>
+</ul>
+</li>
 <li>worker<ul>
 <li>image: schoolofdevops/worker:latest</li>
 </ul>
@@ -277,13 +308,28 @@ kubectl apply -f db-deploy.yaml -f db-svc.yaml
 <p>Find out the NodePort for vote and service apps and load those from your browser.</p>
 <p><img alt="Front-End.\label{fig:captioned_image}" src="../images/vote-rc.png" /></p>
 <p>This is how the vote application should look like.</p>
-<p>You could also load the Result page on the <code>30100</code> port of your Node IP/Address as, </p>
+<p>You could also load the Result page on the <code>30100</code> port of your Node IP/Address as,</p>
 <p><img alt="Result Page.\label{fig:captioned_image}" src="../images/Result.png" /></p>
 <p>Above is how the result app should look like.</p>
 <p>Final validation is, if you submit the vote, you should see the results changing accordingly. You would see this behavior only if all deployments and services are created and configured properly.</p>
+<h3 id="phase-iii-set-up-host-based-traffic-routing-with-ingress">Phase III - Set up host based traffic routing with Ingress</h3>
+<p>Use the documentation here <a href="https://kind.sigs.k8s.io/docs/user/ingress/#ingress-nginx">Nginx Ingress Controller with KIND</a> to set up ingress controller.</p>
+<p>Launch Nginx Ingress controller as :</p>
+<pre><code>kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
+</code></pre>
+<p>Check the pod for Nginx Ingress, if its running</p>
+<pre><code>kubectl get pods -n ingress-nginx
+</code></pre>
+<p>You may see the pod in pending state. Check why its pending and fix it. Thats part of your project work.</p>
+<p>Once you have the ingress controller working, port <a href="https://kubernetes-tutorial.schoolofdevops.com/ingress/#set-up-named-based-routing-for-vote-app">this ingress rule</a> for <strong>vote</strong> app and also add one for <strong>result</strong> app to make it work with nginx ingress controller that you have.</p>
+<p>Also add the <code>host</code> file configuration as per the same document and validate you are able to use http://vote.example.com/ and http://result.example.com/ to access your services respectively.</p>
               
             </div>
           </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../xer-002-rs/" class="btn btn-neutral float-left" title="XER002 - ReplicaSets"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../wq001-cni/" class="btn btn-neutral float-right" title="KWQ001 - CNI Web Quest">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
 
   <hr/>
 
@@ -310,6 +356,10 @@ kubectl apply -f db-deploy.yaml -f db-svc.yaml
         </span>
     
     
+      <span><a href="../xer-002-rs/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../wq001-cni/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
