@@ -5,14 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/vote-deployement_strategies/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Lab K403 Building Deployment Strategies - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <title>Lab K403 - Building Deployment Strategies - Kubernetes Tutorial with CKA/CKAD Prep</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Lab K403 Building Deployment Strategies";
+        var mkdocs_page_name = "Lab K403 - Building Deployment Strategies";
         var mkdocs_page_input_path = "vote-deployement_strategies.md";
         var mkdocs_page_url = "/vote-deployement_strategies/";
       </script>
@@ -70,11 +70,11 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../kubernetes_quickdive/">Lab K102 - Kubernetes Quickdive</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../create-and-deploy-kubernetes-pods/">Lab K103 - Pods Basics</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../create-and-deploy-kubernetes-pods/">Lab K103 - Pods</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../kubernetes-replicasets-howto/">Lab K104 - Namespaces and ReplicaSets</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../kubernetes-service-networking/">Lab K105 - Services & Networking</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../kubernetes-service-networking/">Lab K105 - Service Networking</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../kubernetes-rollouts-rollbacks-deployments/">Lab K107 - Deployments</a>
                   </li>
@@ -82,11 +82,11 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../kubernetes-sample-project/">Lab K109 - Mini Project</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../kubernetes-configuration-management-configmaps-secrets/">Lab K110 - Configurations Management</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../kubernetes-configuration-management-configmaps-secrets/">Lab K110 - ConfigMaps & Secrets</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../rbac_101/">Lab K111 - RBAC Concepts</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../ingress/">Lab K112 - Application Routing with Ingress Controllers</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../ingress/">Lab K112 - Ingress</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../helm/">Lab K113 - HELM</a>
                   </li>
@@ -97,14 +97,14 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../network_policies/">Lab K207 - Network Policies</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../pods-health-probes/">Lab K204 - Observability and Application Troubleshooting</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../pods-health-probes/">Lab K204 - Health Checks</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../13_redis_statefulset/">Lab K205 - Statefulsets</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Additional CKA Topics</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../10_kubernetes_autoscaling/">Lab K301 - Auto Scaling Capacity with HPA</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../10_kubernetes_autoscaling/">Lab K301 - Auto Scaling HPA</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../advanced_pod_scheduling/">Lab K302 - Advanced Pod Scheduling</a>
                   </li>
@@ -119,7 +119,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../configuring_authentication_and_authorization/">Lab K401 - Creating Users, Groups and Authorization</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K403 Building Deployment Strategies</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K403 - Building Deployment Strategies</a>
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#releases-with-downtime-using-recreate-strategy">Releases with downtime using Recreate Strategy</a>
     </li>
@@ -204,7 +204,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a> &raquo;</li>
           <li>Additional Topics &raquo;</li>
-      <li class="breadcrumb-item active">Lab K403 Building Deployment Strategies</li>
+      <li class="breadcrumb-item active">Lab K403 - Building Deployment Strategies</li>
     <li class="wy-breadcrumbs-aside">
           <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/vote-deployement_strategies.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
