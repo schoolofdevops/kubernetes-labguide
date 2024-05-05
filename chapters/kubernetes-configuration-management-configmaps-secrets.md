@@ -88,7 +88,7 @@ Currently, this can be done by using immutable configMaps.
   * Update deployment spec to use the new version of the configMaps. This will ensure immediate update.
 
 
-## Enabling HTTP Authentication for Traefik  with Secrets
+## Enabling HTTP Authentication for Nginx Ingress with Secrets
 
 In this part of the lab, you will
 
@@ -110,49 +110,58 @@ Lets create  htpasswd spec as Secret
   Then generate the secret as,
 
 ```
-  kubectl create secret generic mysecret --from-file auth
+  kubectl create secret generic basic-auth --from-file auth
 
   kubectl get secret
 
-  kubectl describe secret mysecret
+  kubectl describe secret basic-auth
 ```
 
-  And then add annotations to the ingress object so that it is read by the ingress controller to update configurations.
+  And then add annotations to the ingress object so that it is read by the ingress controller to update configurations. Reference [Nginx Ingress Page](https://kubernetes.github.io/ingress-nginx/examples/auth/basic/) to learn more.
 
 `file: vote-ing.yaml`
 
 ```
-apiVersion: extensions/v1beta1
+---
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: vote
+  name: web
+  namespace: instavote
   annotations:
-    kubernetes.io/ingress.class: traefik
-    ingress.kubernetes.io/auth-type: "basic"
-    ingress.kubernetes.io/auth-secret: "mysecret"
+    nginx.ingress.kubernetes.io/auth-type: basic
+    nginx.ingress.kubernetes.io/auth-secret: basic-auth
+    # message to display with an appropriate context why the authentication is required
+    nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required - Vote App'
 spec:
+  ingressClassName: nginx
   rules:
-    - host: vote.example.com
-      http:
-        paths:
-          - path: /
-            backend:
-              serviceName: vote
-              servicePort: 82
-    - host: results.example.com
-      http:
-        paths:
-          - path: /
-            backend:
-              serviceName: results
-              servicePort: 81
-
+  - host: vote.example.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: vote
+            port:
+              number: 80
+  - host: result.example.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: result
+            port:
+              number: 80
 ```
 
 where,
 
-  *  *ingress.kubernetes.io/auth-type: "basic"* defines authentication type that needs to be added.
-  *  *ingress.kubernetes.io/auth-secret: "mysecret"* refers to the secret created earlier.
+  *  *nginx.ingress.kubernetes.io/auth-type: "basic"* defines authentication type that needs to be added.
+  *  *nginx.ingress.kubernetes.io/auth-secre: "basic-auth"* refers to the secret created earlier.
 
 apply
 
@@ -167,7 +176,7 @@ Observe the annotations field. No sooner than you apply this spec, ingress contr
 ```bash
 
                       +----------+
-       +--update----> | traefik  |
+       +--update----> |   nginx  |
        |              |  configs |
        |              +----------+
   +----+----+--+            ^

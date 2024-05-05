@@ -29,7 +29,7 @@ nav:
      - Lab K204 - Health Checks: "pods-health-probes.md"
      - Lab K205 - Statefulsets: "13_redis_statefulset.md"
   - Additional CKA Topics:
-     - Lab K301 - Auto Scaling HPA : "10_kubernetes_autoscaling.md"
+     - Lab K301 - Auto Scaling with HPA : "10_kubernetes_autoscaling.md"
      - Lab K302 - Advanced Pod Scheduling: "advanced_pod_scheduling.md"
      - Lab K303 - Cluster Administration: "cluster-administration.md"
      - Lab K304 - Cluster Troubleshooting: "cluster-troubleshooting.md"
