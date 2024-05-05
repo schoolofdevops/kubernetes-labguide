@@ -116,6 +116,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>http://kubernetes-tutorial.schoolofdevops.com/kind_create_cluster/</loc>
+         <lastmod>2024-05-05</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/kubernetes-configuration-management-configmaps-secrets/</loc>
          <lastmod>2024-05-05</lastmod>
          <changefreq>daily</changefreq>

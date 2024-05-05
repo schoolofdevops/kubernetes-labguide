@@ -5,14 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/13_redis_statefulset/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Lab K402 Statefulsets - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <title>Lab K205 - Statefulsets - Kubernetes Tutorial with CKA/CKAD Prep</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Lab K402 Statefulsets";
+        var mkdocs_page_name = "Lab K205 - Statefulsets";
         var mkdocs_page_input_path = "13_redis_statefulset.md";
         var mkdocs_page_url = "/13_redis_statefulset/";
       </script>
@@ -53,7 +53,7 @@
                 <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
                 </li>
               </ul>
-              <p class="caption"><span class="caption-text">Just Enough Docker</span></p>
+              <p class="caption"><span class="caption-text">Docker Essentials for Kubernetes</span></p>
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../operating-docker-containers/">Lab D101 - Operating Containers</a>
                   </li>
@@ -64,9 +64,9 @@
                   <li class="toctree-l1"><a class="reference internal" href="../docker-volumes/">Lab D104 - Docker Volumes</a>
                   </li>
               </ul>
-              <p class="caption"><span class="caption-text">Kubernetes CKA/CKAD Fundamentals</span></p>
+              <p class="caption"><span class="caption-text">Kubernetes Essentials for CKA/CKAD</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../install_kubernetes_with_kubeadm/">Lab K101 - Install Kubernetes with Kubeadm</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../kind_create_cluster/">Lab K101 - Install Kubernetes with KIND</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../kubernetes_quickdive/">Lab K102 - Kubernetes Quickdive</a>
                   </li>
@@ -75,8 +75,6 @@
                   <li class="toctree-l1"><a class="reference internal" href="../kubernetes-replicasets-howto/">Lab K104 - Namespaces and ReplicaSets</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../kubernetes-service-networking/">Lab K105 - Services & Networking</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../cni/">Lab K106 - CNI</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../kubernetes-rollouts-rollbacks-deployments/">Lab K107 - Deployments</a>
                   </li>
@@ -90,34 +88,18 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../ingress/">Lab K112 - Application Routing with Ingress Controllers</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../helm/">Lab K113 - HELM and Kustomize</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../helm/">Lab K113 - HELM</a>
                   </li>
               </ul>
-              <p class="caption"><span class="caption-text">CKAD Topics</span></p>
-              <ul>
+              <p class="caption"><span class="caption-text">Additional CKAD Topics</span></p>
+              <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../advanced_pod_design/">Lab K201 - Advanced Pod Design</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../network_policies/">Lab K207 - Network Policies</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../pods-health-probes/">Lab K204 - Observability and Application Troubleshooting</a>
                   </li>
-              </ul>
-              <p class="caption"><span class="caption-text">CKA Topics</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../10_kubernetes_autoscaling/">Lab K301 - Auto Scaling Capacity with HPA</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../advanced_pod_scheduling/">Lab K302 - Advanced Pod Scheduling</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../cluster-administration/">Lab K303 - Cluster Administration</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../cluster-troubleshooting/">Lab K304 - Cluster Troubleshooting</a>
-                  </li>
-              </ul>
-              <p class="caption"><span class="caption-text">Additional Topics</span></p>
-              <ul class="current">
-                  <li class="toctree-l1"><a class="reference internal" href="../configuring_authentication_and_authorization/">Lab K401 - Creating Users, Groups and Authorization</a>
-                  </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K402 Statefulsets</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K205 - Statefulsets</a>
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#creating-a-headless-service">Creating a headless service</a>
     </li>
@@ -137,7 +119,27 @@
     </li>
     </ul>
                   </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Additional CKA Topics</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../10_kubernetes_autoscaling/">Lab K301 - Auto Scaling Capacity with HPA</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../advanced_pod_scheduling/">Lab K302 - Advanced Pod Scheduling</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../cluster-administration/">Lab K303 - Cluster Administration</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../cluster-troubleshooting/">Lab K304 - Cluster Troubleshooting</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Additional Topics</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../install_kubernetes_with_kubeadm/">Lab K400 - Install Kubernetes with Kubeadm</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../configuring_authentication_and_authorization/">Lab K401 - Creating Users, Groups and Authorization</a>
+                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../vote-deployement_strategies/">Lab K403 Building Deployment Strategies</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../cni/">Lab K404 - CNI</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../12_troubleshooting/">Troubleshooting Tips</a>
                   </li>
@@ -187,8 +189,8 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a> &raquo;</li>
-          <li>Additional Topics &raquo;</li>
-      <li class="breadcrumb-item active">Lab K402 Statefulsets</li>
+          <li>Additional CKAD Topics &raquo;</li>
+      <li class="breadcrumb-item active">Lab K205 - Statefulsets</li>
     <li class="wy-breadcrumbs-aside">
           <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/13_redis_statefulset.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
@@ -367,8 +369,8 @@ connected
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../configuring_authentication_and_authorization/" class="btn btn-neutral float-left" title="Lab K401 - Creating Users, Groups and Authorization"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../vote-deployement_strategies/" class="btn btn-neutral float-right" title="Lab K403 Building Deployment Strategies">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../pods-health-probes/" class="btn btn-neutral float-left" title="Lab K204 - Observability and Application Troubleshooting"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../10_kubernetes_autoscaling/" class="btn btn-neutral float-right" title="Lab K301 - Auto Scaling Capacity with HPA">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -396,10 +398,10 @@ connected
         </span>
     
     
-      <span><a href="../configuring_authentication_and_authorization/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../pods-health-probes/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../vote-deployement_strategies/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../10_kubernetes_autoscaling/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
