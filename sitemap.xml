@@ -111,6 +111,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>http://kubernetes-tutorial.schoolofdevops.com/ingress_http_auth/</loc>
+         <lastmod>2024-05-05</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/install_kubernetes_with_kubeadm/</loc>
          <lastmod>2024-05-05</lastmod>
          <changefreq>daily</changefreq>
