@@ -88,7 +88,7 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#note-automatic-updation-of-deployments-on-configmap-updates">Note: Automatic Updation of deployments on ConfigMap  Updates</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#enabling-http-authentication-for-traefik-with-secrets">Enabling HTTP Authentication for Traefik  with Secrets</a>
+    <li class="toctree-l2"><a class="reference internal" href="#enabling-http-authentication-for-nginx-ingress-with-secrets">Enabling HTTP Authentication for Nginx Ingress with Secrets</a>
     </li>
     </ul>
                   </li>
@@ -255,7 +255,7 @@ kubectl  rollout status deploy/vote
 <li>To update, create a new configMaps and do not update the previous one. Treat it as immutable.</li>
 <li>Update deployment spec to use the new version of the configMaps. This will ensure immediate update.</li>
 </ul>
-<h2 id="enabling-http-authentication-for-traefik-with-secrets">Enabling HTTP Authentication for Traefik  with Secrets</h2>
+<h2 id="enabling-http-authentication-for-nginx-ingress-with-secrets">Enabling HTTP Authentication for Nginx Ingress with Secrets</h2>
 <p>In this part of the lab, you will</p>
 <ul>
 <li>Create a secret with an existing file</li>
@@ -268,44 +268,53 @@ kubectl  rollout status deploy/vote
 </code></pre>
 <p>Or use <a href="http://www.htaccesstools.com/htpasswd-generator/">Online htpasswd generator</a> to generate a htpasswd spec. if you use the online generator, copy the contents to a file by name <code>auth</code> in the current directory.</p>
 <p>Then generate the secret as,</p>
-<pre><code>  kubectl create secret generic mysecret --from-file auth
+<pre><code>  kubectl create secret generic basic-auth --from-file auth
 
   kubectl get secret
 
-  kubectl describe secret mysecret
+  kubectl describe secret basic-auth
 </code></pre>
-<p>And then add annotations to the ingress object so that it is read by the ingress controller to update configurations.</p>
+<p>And then add annotations to the ingress object so that it is read by the ingress controller to update configurations. Reference <a href="https://kubernetes.github.io/ingress-nginx/examples/auth/basic/">Nginx Ingress Page</a> to learn more.</p>
 <p><code>file: vote-ing.yaml</code></p>
-<pre><code>apiVersion: extensions/v1beta1
+<pre><code>---
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: vote
+  name: web
+  namespace: instavote
   annotations:
-    kubernetes.io/ingress.class: traefik
-    ingress.kubernetes.io/auth-type: &quot;basic&quot;
-    ingress.kubernetes.io/auth-secret: &quot;mysecret&quot;
+    nginx.ingress.kubernetes.io/auth-type: basic
+    nginx.ingress.kubernetes.io/auth-secret: basic-auth
+    # message to display with an appropriate context why the authentication is required
+    nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required - Vote App'
 spec:
+  ingressClassName: nginx
   rules:
-    - host: vote.example.com
-      http:
-        paths:
-          - path: /
-            backend:
-              serviceName: vote
-              servicePort: 82
-    - host: results.example.com
-      http:
-        paths:
-          - path: /
-            backend:
-              serviceName: results
-              servicePort: 81
-
+  - host: vote.example.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: vote
+            port:
+              number: 80
+  - host: result.example.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: result
+            port:
+              number: 80
 </code></pre>
 <p>where,</p>
 <ul>
-<li><em>ingress.kubernetes.io/auth-type: "basic"</em> defines authentication type that needs to be added.</li>
-<li><em>ingress.kubernetes.io/auth-secret: "mysecret"</em> refers to the secret created earlier.</li>
+<li><em>nginx.ingress.kubernetes.io/auth-type: "basic"</em> defines authentication type that needs to be added.</li>
+<li><em>nginx.ingress.kubernetes.io/auth-secre: "basic-auth"</em> refers to the secret created earlier.</li>
 </ul>
 <p>apply</p>
 <pre><code>kubectl apply -f vote-ing.yaml
@@ -314,7 +323,7 @@ kubectl get ing/vote -o yaml
 <p>Observe the annotations field. No sooner than you apply this spec, ingress controller reads the event and a basic http authentication is set with the secret you added.</p>
 <pre><code class="language-bash">
                       +----------+
-       +--update----&gt; | traefik  |
+       +--update----&gt; |   nginx  |
        |              |  configs |
        |              +----------+
   +----+----+--+            ^
