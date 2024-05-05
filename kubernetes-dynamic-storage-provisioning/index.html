@@ -240,11 +240,11 @@ spec:
 <p>Apply <em>db-deploy-pcv.yaml</em>  as</p>
 <pre><code>kubectl apply -f db-deploy-pvc.yaml
 </code></pre>
-<p>To monitor resources for this lab, open a new terminal and start watching for relevant objecting using the following command. </p>
+<p>To monitor resources for this lab, open a new terminal and start watching for relevant objecting using the following command.</p>
 <pre><code>
-watch kubectl get pods,pvc,pv,storageclasses 
+watch kubectl get pods,pvc,pv,storageclasses
 </code></pre>
-<p>We will call the terminal where you are running the above command as your <strong>Monitoring Screen</strong>. </p>
+<p>We will call the terminal where you are running the above command as your <strong>Monitoring Screen</strong>.</p>
 <ul>
 <li>Observe and note if the pod for <em>db</em> is launched.</li>
 <li>What state is it in ? why?</li>
@@ -266,7 +266,7 @@ spec:
   volumeMode: Filesystem
   resources:
     requests:
-      storage: 2Gi
+      storage: 200Mi
   storageClassName: local-path
 
 </code></pre>
@@ -286,11 +286,12 @@ kubectl get pvc,pv
 <li>Is the persistentVolumeClaim bound with a persistentVolume ?</li>
 </ul>
 <h2 id="set-up-storage-provisioner-in-kubernetes">Set up Storage Provisioner in kubernetes</h2>
+<p><code>Skip this step is you are using KIND based environment.</code></p>
 <p>Launch a local path provisioner using the following command,</p>
 <pre><code>kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisioner/master/deploy/local-path-storage.yaml
 
 </code></pre>
-<p>This will create all the objects required to setup a local-path provisioner. At this time, you should also see <strong>storageclass</strong> created for local-path on your monitoring screen. </p>
+<p>This will create all the objects required to setup a local-path provisioner. At this time, you should also see <strong>storageclass</strong> created for local-path on your monitoring screen.</p>
 <pre><code>kubectl get storageclass
 kubectl get pods
 kubectl logs -f local-path-provisioner-xxxx -n local-path-storage
@@ -304,7 +305,7 @@ kubectl get pods
 <li>Do you see pvc bound to pv ?</li>
 <li>Do you see the pod for db running ?</li>
 </ul>
-<p>Observe the dynamic provisioning in action. </p>
+<p>Observe the dynamic provisioning in action.</p>
 <h2 id="nano-project">Nano Project</h2>
 <p>Similar to postgres which mounts the data at /var/lib/postgresql/data and consumes it to store the database files, Redis creates and stores the file at <strong>/data</strong> path.  Your task is to have a volume of size <strong>20Mi</strong> created and mounted at /data for the redis container.</p>
 <p>You could follow these steps to complete this task</p>
