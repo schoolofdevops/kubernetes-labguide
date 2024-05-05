@@ -50,13 +50,13 @@ Apply *db-deploy-pcv.yaml*  as
 kubectl apply -f db-deploy-pvc.yaml
 ```
 
-To monitor resources for this lab, open a new terminal and start watching for relevant objecting using the following command. 
+To monitor resources for this lab, open a new terminal and start watching for relevant objecting using the following command.
 
 ```
 
-watch kubectl get pods,pvc,pv,storageclasses 
+watch kubectl get pods,pvc,pv,storageclasses
 ```
-We will call the terminal where you are running the above command as your **Monitoring Screen**. 
+We will call the terminal where you are running the above command as your **Monitoring Screen**.
 
   * Observe and note if the pod for *db* is launched.
   * What state is it in ? why?
@@ -86,7 +86,7 @@ spec:
   volumeMode: Filesystem
   resources:
     requests:
-      storage: 2Gi
+      storage: 200Mi
   storageClassName: local-path
 
 ```
@@ -112,6 +112,8 @@ kubectl get pvc,pv
 
 ## Set up Storage Provisioner in kubernetes
 
+`Skip this step is you are using KIND based environment.`
+
 Launch a local path provisioner using the following command,
 
 ```
@@ -120,7 +122,7 @@ kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisione
 ```
 
 
-This will create all the objects required to setup a local-path provisioner. At this time, you should also see **storageclass** created for local-path on your monitoring screen. 
+This will create all the objects required to setup a local-path provisioner. At this time, you should also see **storageclass** created for local-path on your monitoring screen.
 
 
 
@@ -142,9 +144,9 @@ kubectl get pods
   * Do you see pvc bound to pv ?
   * Do you see the pod for db running ?
 
-Observe the dynamic provisioning in action. 
+Observe the dynamic provisioning in action.
 
-## Nano Project 
+## Nano Project
 
 Similar to postgres which mounts the data at /var/lib/postgresql/data and consumes it to store the database files, Redis creates and stores the file at **/data** path.  Your task is to have a volume of size **20Mi** created and mounted at /data for the redis container.
 
@@ -161,4 +163,3 @@ You could follow these steps to complete this task
 #### Summary
 
 In this lab, you learnt to  setup dynamic provisioning  provisioner with Storage Classes, Provisioners and PersistentVolumeClaims.
-
