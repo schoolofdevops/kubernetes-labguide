@@ -89,22 +89,18 @@
                   <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K112 - Ingress</a>
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#pre-requisites">Pre Requisites</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#create-a-ingress-controller">Create a Ingress Controller</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#setting-up-named-based-routing-for-vote-app">Setting up Named Based Routing for Vote App</a>
-        <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#adding-local-dns">Adding Local DNS</a>
+    <li class="toctree-l2"><a class="reference internal" href="#launch-ingress-controller">Launch Ingress Controller</a>
     </li>
-        </ul>
+    <li class="toctree-l2"><a class="reference internal" href="#set-up-named-based-routing-for-vote-app">Set up Named Based Routing for Vote App</a>
     </li>
-        </ul>
+    <li class="toctree-l2"><a class="reference internal" href="#add-local-dns">Add Local DNS</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#adding-another-web-application-with-ingress">Adding another  Web Application with Ingress</a>
+    <li class="toctree-l2"><a class="reference internal" href="#add-another-web-application-with-ingress">Add another  Web Application with Ingress</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#mini-project-configure-ingress-for-result-app">Mini Project : Configure  Ingress  for Result App</a>
         <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#reading">Reading</a>
+    <li class="toctree-l3"><a class="reference internal" href="#reading-resources">Reading Resources</a>
     </li>
         </ul>
     </li>
@@ -211,7 +207,7 @@
 <li>On GCE, ingress controller runs on the master. On all other installations, it needs to be deployed, either as a deployment, or a daemonset. In addition, a service needs to be created for ingress.</li>
 <li>Daemonset will run ingress on each node. Deployment will just create a highly available setup, which can then be exposed on specific nodes using ExternalIPs configuration in the service.</li>
 </ul>
-<h3 id="create-a-ingress-controller">Create a Ingress Controller</h3>
+<h2 id="launch-ingress-controller">Launch Ingress Controller</h2>
 <p>An ingress controller needs to be created in order to serve the ingress requests.  As part of this lab you are going to use <a href="https://traefik.io/">Traefik</a> as the ingress controller. Its a fast and lightweight ingress controller and also comes with great documentation and support.  </p>
 <pre><code class="language-bash">
 
@@ -267,7 +263,7 @@ kubectl get all -n traefik
 </ul>
 <p><code>replace xx.xx.xx.xx with the external IP used earlier</code></p>
 <p><img alt="Traefik" src="../images/traefik01.png" /></p>
-<h3 id="setting-up-named-based-routing-for-vote-app">Setting up Named Based Routing for Vote App</h3>
+<h2 id="set-up-named-based-routing-for-vote-app">Set up Named Based Routing for Vote App</h2>
 <p>We will direct all our request to the ingress controller now, but with differnt hostname e.g. <strong>vote.example.com</strong> or <strong>results.example.com</strong>. And it should direct to the correct service based on the host name.</p>
 <p>In order to achieve this you, as a user would create a <strong>ingress</strong> object with a set of rules,</p>
 <pre><code class="language-bash">
@@ -340,7 +336,7 @@ kubectl apply -f vote-ing.yaml
 <p>respective backend also appear on the right hand side of the screen, mapping to each of the service.</p>
 </li>
 </ul>
-<h4 id="adding-local-dns">Adding Local DNS</h4>
+<h2 id="add-local-dns">Add Local DNS</h2>
 <p>You have created the ingress rules based on hostnames e.g.  <strong>vote.example.com</strong> and <strong>results.example.com</strong>. In order for you to be able to access those, there has to be a dns entry pointing to your nodes, which are running traefik.</p>
 <pre><code class="language-bash">
   vote.example.com     -------+                        +----- vote:81
@@ -369,7 +365,7 @@ kubectl apply -f vote-ing.yaml
 </ul>
 <p>And then access the app urls using http://vote.example.com or http://results.example.com</p>
 <p><img alt="Name Based Routing" src="../images/domain-name.png" /></p>
-<h2 id="adding-another-web-application-with-ingress">Adding another  Web Application with Ingress</h2>
+<h2 id="add-another-web-application-with-ingress">Add another  Web Application with Ingress</h2>
 <pre><code>kubectl create deployment nginx --image=nginx
 kubectl create service clusterip nginx --tcp=80
 </code></pre>
@@ -405,7 +401,7 @@ spec:
 <h2 id="mini-project-configure-ingress-for-result-app">Mini Project : Configure  Ingress  for Result App</h2>
 <p>Now that you have added the ingress rule for the vote app, follow the same method and add one for the result app as well which is running in the same namespace.</p>
 <p>The final validation would be, when you access or http://result.example.com you should see it pointing to the result app.</p>
-<h5 id="reading">Reading</h5>
+<h3 id="reading-resources">Reading Resources</h3>
 <ul>
 <li><a href="https://docs.traefik.io/user-guide/kubernetes/">Trafeik's Guide to Kubernetes Ingress Controller</a></li>
 <li><a href="https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/">Annotations</a></li>
