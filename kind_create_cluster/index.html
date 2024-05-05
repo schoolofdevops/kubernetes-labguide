@@ -266,6 +266,7 @@ docker stop kind-control-plane kind-worker kind-worker2
 <p>asusming your cluster name is <code>k8slab</code> reset it as :</p>
 <pre><code>kind get clusters
 kind delete cluster --name k8slab
+rm -rf  ~/.kube
 kind create cluster --name k8slab --config kind-three-node-cluster.yaml
 </code></pre>
               
