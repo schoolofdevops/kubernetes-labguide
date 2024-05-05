@@ -2,7 +2,7 @@
 
 Configmap is one of the ways to provide configurations to your application.
 
-### Injecting env variables with configmaps
+## Injecting env variables with configmaps
 Create our configmap for vote app
 
 file:  projects/instavote/dev/vote-cm.yaml
@@ -87,6 +87,105 @@ Currently, this can be done by using immutable configMaps.
   * To update, create a new configMaps and do not update the previous one. Treat it as immutable.
   * Update deployment spec to use the new version of the configMaps. This will ensure immediate update.
 
+## Mounting Files with ConfigMap Volume Type
+
+If you want to make  files e.g. configuration files available inside the container, you could add it to the ConfigMap, reference it as a volume in a pod and then finally mount it inside a container.  Lets add a couple of config files for the vote app this way.
+
+Begin modifying the ConfigMap for vote app with the content of the config files as:
+
+```
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vote
+  namespace: instavote
+data:
+  OPTION_A: Visa
+  OPTION_B: Mastercard
+
+  development_config.py: |
+    class DevelopmentConfig:
+      DEBUG = True
+      TESTING = False
+      SECRET_KEY = 'development-key'
+      SQLALCHEMY_DATABASE_URI = 'sqlite:///development.db'
+      SQLALCHEMY_TRACK_MODIFICATIONS = True
+      SQLALCHEMY_ECHO = True
+  production_config.py: |
+    class ProductionConfig:
+      DEBUG = False
+      TESTING = False
+      SECRET_KEY = 'production-secret-key'
+      SQLALCHEMY_DATABASE_URI = 'postgresql://user:password@localhost/production'
+      SQLALCHEMY_TRACK_MODIFICATIONS = False
+      SQLALCHEMY_ECHO = False
+```
+
+where, `development_config.py` and `production_config.py` keys contain the entire configuration file content within this config map.
+
+Apply and validate with,
+```
+kubectl apply -f vote-cm.yaml
+kubectl describe cm vote  
+```
+
+Now, to mount it as a volume, modify `vote-deploy.yaml` and add the  `spec.volumes` and `spec.container.volumeMount` using the code reference below:
+
+
+```
+spec:
+  containers:
+  - image: schoolofdevops/vote:v1
+    name: vote
+...
+...
+    volumeMounts:
+      - name: config
+        mountPath: "/app/config"
+        readOnly: true
+  volumes:
+    - name: config
+      configMap:
+        name: vote
+        items:
+          - key: "development_config.py"
+            path: "development_config.py"
+          - key: "production_config.py"
+            path: "production_config.py"
+        optional: true
+```
+
+now apply the changes as
+
+```
+kubectl apply -f vote-deploy.yaml
+```
+
+To validate exec into one of the pods and list the files
+
+```
+
+kubectl exec -it vote-xxxx-yyyy sh
+cd /app/config
+ls
+cat development_config.py
+```
+
+[sample output]
+```
+/app/config # ls
+development_config.py  production_config.py
+/app/config # cat development_config.py
+class DevelopmentConfig:
+  DEBUG = True
+  TESTING = False
+  SECRET_KEY = 'development-key'
+  SQLALCHEMY_DATABASE_URI = 'sqlite:///development.db'
+  SQLALCHEMY_TRACK_MODIFICATIONS = True
+  SQLALCHEMY_ECHO = True
+```
+
+This validates that the configuration files were created using ConfigMap and made available as a mount path inside the container.
 
 ## Enabling HTTP Authentication for Nginx Ingress with Secrets
 

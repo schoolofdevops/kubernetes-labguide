@@ -27,7 +27,8 @@ nav:
      - Lab K201 - Advanced Pod Design: "advanced_pod_design.md"
      - Lab K207 - Network Policies: "network_policies.md"
      - Lab K204 - Health Checks: "pods-health-probes.md"
-     - Lab K205 - Statefulsets: "13_redis_statefulset.md"
+     - Lab K205 - DaemonsSets & CronJobs: "daemonsets_cronsjobs.md"
+     - Lab K206 - Statefulsets: "13_redis_statefulset.md"
   - Additional CKA Topics:
      - Lab K301 - Auto Scaling with HPA : "10_kubernetes_autoscaling.md"
      - Lab K302 - Advanced Pod Scheduling: "advanced_pod_scheduling.md"
