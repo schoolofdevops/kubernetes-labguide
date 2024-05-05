@@ -221,13 +221,13 @@ kubectl top node
 <p>Even though the error mentions heapster, its replaced with metrics server by default now.</p>
 <p>Deploy  metric server with the following commands,</p>
 <pre><code>cd ~
-git clone https://github.com/schoolofdevops/metrics-server.git 
+git clone https://github.com/schoolofdevops/metrics-server.git
 kubectl apply -k metrics-server/manifests/overlays/release
 </code></pre>
 <p>Validate</p>
 <pre><code>kubectl get deploy,pods -n kube-system --selector='k8s-app=metrics-server'
 </code></pre>
-<p>You could validate again with </p>
+<p>You could validate again with</p>
 <pre><code>kubectl top pod
 
 kubectl top node
@@ -235,10 +235,10 @@ kubectl top node
 <p>where expected output shoudl be similar to,</p>
 <pre><code>kubectl top node
 
-NAME     CPU(cores)   CPU%   MEMORY(bytes)   MEMORY%
-vis-01   145m         7%     2215Mi          57%
-vis-13   36m          1%     1001Mi          26%
-vis-14   71m          3%     1047Mi          27%
+NAME                 CPU(cores)   CPU%   MEMORY(bytes)   MEMORY%
+kind-control-plane   123m         6%     688Mi           17%
+kind-worker          39m          1%     498Mi           12%
+kind-worker2         31m          1%     422Mi           10%
 </code></pre>
 <p>If you see a similar output, monitoring is now been setup.</p>
 <h3 id="create-a-hpa">Create a HPA</h3>
@@ -255,13 +255,13 @@ spec:
     - type: ContainerResource
       containerResource:
         name: cpu
-        container: app
+        container: app  # change this as per actual container name
         target:
           type: Utilization
           averageUtilization: 50
   scaleTargetRef:
     apiVersion: apps/v1
-    kind: ReplicaSet
+    kind: ReplicaSet # change it to Deployment if have created a deployment already
     name: vote
   behavior:
     scaleDown:
@@ -272,9 +272,9 @@ spec:
       - type: Percent
         value: 25
         periodSeconds: 120
-      stabilizationWindowSeconds: 300
+      stabilizationWindowSeconds: 60
     scaleUp:
-      stabilizationWindowSeconds: 0
+      stabilizationWindowSeconds: 45
       policies:
       - type: Percent
         value: 100
@@ -299,40 +299,40 @@ kubectl get pod,deploy
 </code></pre>
 <p>If you have a monitoring system such as grafana, you could also view the graphs for <strong>vote</strong> deployment.</p>
 <p><img alt="Monitoring Deployments with grafana" src="../images/hpa-01.png" /></p>
-<p>You could start watching in a dedicated window using the following command </p>
 <h3 id="launch-a-load-test">Launch a Load Test</h3>
-<p>Create a Service to receive the traffic </p>
+<p>If you do not have the service for <code>vote</code> app to receive the traffic, create one as</p>
 <pre><code>cd k8s-code/projects/instavote/dev
 kubectl apply -f vote-svc.yaml
 </code></pre>
 <p>Prepare to monitor the autoscaling by opening a new window connected to your cluster and by launching,</p>
-<pre><code>watch 'kubectl get hpa,all ; kubectl describe hpa vote'
+<pre><code>watch 'kubectl top pods;kubectl get pods;  kubectl get hpa ; kubectl get deploy'
 </code></pre>
-<p>Create a Load Test Job as, </p>
+<p>Create a Load Test Job as,</p>
 <p><code>file: loadtest-job.yaml</code></p>
 <pre><code>apiVersion: batch/v1
 kind: Job
 metadata:
-  name: loadtest
+  generateName: loadtest
 spec:
   template:
     spec:
       containers:
       - name: siege
         image: schoolofdevops/loadtest:v1
-        command: [&quot;siege&quot;,  &quot;--concurrent=1&quot;, &quot;--benchmark&quot;, &quot;--time=6m&quot;, &quot;http://vote&quot;]
+        command: [&quot;siege&quot;,  &quot;--concurrent=1&quot;, &quot;--benchmark&quot;, &quot;--time=4m&quot;, &quot;http://vote&quot;]
       restartPolicy: Never
   backoffLimit: 4
 </code></pre>
-<p>and launch it as </p>
-<pre><code>kubectl apply -f loadtest-job.yaml
+<p>and launch it as</p>
+<pre><code>kubectl create -f loadtest-job.yaml
 </code></pre>
-<p>This will launch a one off Job which would run for approaximately 6 minutes.  </p>
+<p>This will launch a one off Job which would run for 4 minutes.  </p>
 <p>To get information about the job</p>
 <pre><code>kubectl get jobs
-kubectl describe  job loadtest
+kubectl describe  job loadtest-xxx
 
 </code></pre>
+<p>replace loadtest-xxx with actual job name.</p>
 <p>To check the load test output</p>
 <pre><code>kubectl logs  -f loadtest-xxxx
 </code></pre>
@@ -373,7 +373,7 @@ NAME            DESIRED   SUCCESSFUL   AGE
 vote-loadtest   1         1            10m
 
 </code></pre>
-<p>While it is running, </p>
+<p>While it is running,</p>
 <ul>
 <li>Keep monitoring for the load on the pod as the job progresses.</li>
 <li>You should see hpa in action as it scales out/in the  vote deployment with the increasing/decreasing load.</li>
