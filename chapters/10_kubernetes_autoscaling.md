@@ -34,7 +34,7 @@ Deploy  metric server with the following commands,
 
 ```
 cd ~
-git clone https://github.com/schoolofdevops/metrics-server.git 
+git clone https://github.com/schoolofdevops/metrics-server.git
 kubectl apply -k metrics-server/manifests/overlays/release
 ```
 
@@ -45,7 +45,7 @@ kubectl get deploy,pods -n kube-system --selector='k8s-app=metrics-server'
 
 
 
-You could validate again with 
+You could validate again with
 
 ```
 kubectl top pod
@@ -54,15 +54,15 @@ kubectl top node
 ```
 
 
-where expected output shoudl be similar to,
+where expected output should be similar to,
 
 ```
 kubectl top node
 
-NAME     CPU(cores)   CPU%   MEMORY(bytes)   MEMORY%
-vis-01   145m         7%     2215Mi          57%
-vis-13   36m          1%     1001Mi          26%
-vis-14   71m          3%     1047Mi          27%
+NAME                 CPU(cores)   CPU%   MEMORY(bytes)   MEMORY%
+kind-control-plane   123m         6%     688Mi           17%
+kind-worker          39m          1%     498Mi           12%
+kind-worker2         31m          1%     422Mi           10%
 ```
 If you see a similar output, monitoring is now been setup.
 
@@ -86,13 +86,13 @@ spec:
     - type: ContainerResource
       containerResource:
         name: cpu
-        container: app
+        container: app  # change this as per actual container name
         target:
           type: Utilization
           averageUtilization: 50
   scaleTargetRef:
     apiVersion: apps/v1
-    kind: ReplicaSet
+    kind: ReplicaSet # change it to Deployment if have created a deployment already
     name: vote
   behavior:
     scaleDown:
@@ -103,9 +103,9 @@ spec:
       - type: Percent
         value: 25
         periodSeconds: 120
-      stabilizationWindowSeconds: 300
+      stabilizationWindowSeconds: 60
     scaleUp:
-      stabilizationWindowSeconds: 0
+      stabilizationWindowSeconds: 45
       policies:
       - type: Percent
         value: 100
@@ -139,13 +139,11 @@ If you have a monitoring system such as grafana, you could also view the graphs 
 
 ![Monitoring Deployments with grafana](images/hpa-01.png)
 
-You could start watching in a dedicated window using the following command 
-
 
 
 ###  Launch a Load Test
 
-Create a Service to receive the traffic 
+If you do not have the service for `vote` app to receive the traffic, create one as
 
 ```
 cd k8s-code/projects/instavote/dev
@@ -155,10 +153,11 @@ kubectl apply -f vote-svc.yaml
 Prepare to monitor the autoscaling by opening a new window connected to your cluster and by launching,
 
 ```
-watch 'kubectl get hpa,all ; kubectl describe hpa vote'
+watch 'kubectl top pods;kubectl get pods;  kubectl get hpa ; kubectl get deploy'
 ```
 
-Create a Load Test Job as, 
+
+Create a Load Test Job as,
 
 `file: loadtest-job.yaml`
 
@@ -166,33 +165,34 @@ Create a Load Test Job as,
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: loadtest
+  generateName: loadtest
 spec:
   template:
     spec:
       containers:
       - name: siege
         image: schoolofdevops/loadtest:v1
-        command: ["siege",  "--concurrent=1", "--benchmark", "--time=6m", "http://vote"]
+        command: ["siege",  "--concurrent=1", "--benchmark", "--time=4m", "http://vote"]
       restartPolicy: Never
   backoffLimit: 4
 ```
 
-and launch it as 
+and launch it as
 
 ```
-kubectl apply -f loadtest-job.yaml
+kubectl create -f loadtest-job.yaml
 ```
 
-This will launch a one off Job which would run for approaximately 6 minutes.  
+This will launch a one off Job which would run for 4 minutes.  
 
 To get information about the job
 
 ```
 kubectl get jobs
-kubectl describe  job loadtest
+kubectl describe  job loadtest-xxx
 
 ```
+replace loadtest-xxx with actual job name.
 
 To check the load test output
 
@@ -244,7 +244,7 @@ vote-loadtest   1         1            10m
 
 ```
 
-While it is running, 
+While it is running,
 
 
 
