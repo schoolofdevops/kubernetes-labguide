@@ -5,14 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/helm/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Lab K113 - HELM - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <title>Lab K113 - HELM Package Manager - Kubernetes Tutorial with CKA/CKAD Prep</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Lab K113 - HELM";
+        var mkdocs_page_name = "Lab K113 - HELM Package Manager";
         var mkdocs_page_input_path = "helm.md";
         var mkdocs_page_url = "/helm/";
       </script>
@@ -88,17 +88,17 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../ingress/">Lab K112 - Ingress</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K113 - HELM</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K113 - HELM Package Manager</a>
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#installing-helm-version-3">Installing  Helm (version 3)</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#setup-a-repository-and-install-wordpress">Setup a repository and install Wordpress</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#install-prometheus-with-helm">Install Prometheus with Helm</a>
+    <li class="toctree-l2"><a class="reference internal" href="#deploy-prometheus-stack-with-helm">Deploy Prometheus Stack with HELM</a>
         <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#deploying-grafana-with-helm">Deploying Grafana with HELM</a>
+    <li class="toctree-l3"><a class="reference internal" href="#customising-prometheus-configurations">Customising Prometheus Configurations</a>
     </li>
         </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#uninstalling-the-app-with-helm">Uninstalling the App with HELM</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#summary">Summary</a>
     </li>
@@ -190,7 +190,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a> &raquo;</li>
           <li>Kubernetes Essentials for CKA/CKAD &raquo;</li>
-      <li class="breadcrumb-item active">Lab K113 - HELM</li>
+      <li class="breadcrumb-item active">Lab K113 - HELM Package Manager</li>
     <li class="wy-breadcrumbs-aside">
           <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/helm.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
@@ -211,78 +211,73 @@
 <pre><code>helm --help
 helm version
 </code></pre>
-<h2 id="setup-a-repository-and-install-wordpress">Setup a repository and install Wordpress</h2>
-<pre><code>helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+<h2 id="deploy-prometheus-stack-with-helm">Deploy Prometheus Stack with HELM</h2>
+<p>Read about <a href="https://artifacthub.io/packages/helm/prometheus-community/kube-prometheus-stack">kube-prometheus-stack 33.1.0 · prometheus/prometheus-community</a> chart at artifacthub.io</p>
+<p>Add helm repository using ,</p>
+<pre><code>helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
 
-helm repo list
 </code></pre>
-<p>Try installing wordpress with helm</p>
-<pre><code>helm search repo wordpress
-
-helm install blog  stable/wordpress
-
-kubectl get all -l &quot;release=blog&quot;
-</code></pre>
-<p>You could observe all the components deployed with the helm chart for wordpress. If both wordpress and mariadb pods are running, you should be able to access wordpress by using the nodePort. A Sample page looks like follows,  </p>
-<p><img alt="Wordpress UI" src="../images/wordpress.png" /></p>
-<p>Once you are done testing the wordpress application, to uninstall it, use the following sequence of commands.</p>
-<pre><code>helm list
-helm uninstall blog
-kubectl get all -l &quot;release=blog&quot;
-</code></pre>
-<h2 id="install-prometheus-with-helm">Install Prometheus with Helm</h2>
-<p>You will now setup prometheus and grafana monitoring stacks with helm, with a few customizations.</p>
-<p>Before proceeding, you could review the <a href="https://github.com/helm/charts/tree/master/stable/prometheus">Official Prometheus Helm Chart</a>  from the repository.</p>
-<p>Search and download a chart for prometheus</p>
+<p>Download the  chart as,</p>
 <pre><code>cd ~
-helm search repo prometheus
-helm fetch --untar stable/prometheus
-cd prometheus
-</code></pre>
-<p>To provide custom configurations, copy over the custom values file from <strong>k8s-code</strong> repot.</p>
-<pre><code>cp ../k8s-code/helper/helm/values/prometheus-customvalues.yaml .
-</code></pre>
-<p>Review <strong>prometheus-customvalues.yaml</strong> and then launch prometheus stack as,</p>
-<pre><code>helm install prometheus --values prometheus-customvalues.yaml  . --dry-run
-helm install prometheus --values prometheus-customvalues.yaml  .
+helm fetch --untar prometheus-community/kube-prometheus-stack
 
-helm list
-helm status prometheus
+</code></pre>
+<p>Change into the charts directory</p>
+<pre><code>cd kube-prometheus-stack/
+ls
+</code></pre>
+<p>Deploy prometheus stack as,</p>
+<pre><code>kubectl create ns monitoring
+helm install prom -n monitoring prometheus-community/kube-prometheus-stack
 
-kubectl get all -l &quot;release=prometheus&quot;
 </code></pre>
-<p>You should be able to access prometheus UI by using either the <em>nodePort</em> service or a <em>ingress</em> rule.</p>
-<h4 id="deploying-grafana-with-helm">Deploying Grafana with HELM</h4>
-<p>You could refer to the <a href="https://github.com/helm/charts/tree/master/stable/grafana">Official Grafana Helm Chart repository</a> before proceeding.</p>
-<p>Search and download a chart for prometheus</p>
-<pre><code>cd ~
-helm search repo grafana
-helm fetch --untar stable/grafana
-cd grafana
-</code></pre>
-<p>To provide custom configurations, copy over the custom values file from <strong>k8s-code</strong> repot.</p>
-<pre><code>cp ../k8s-code/helper/helm/values/grafana-customvalues.yaml .
-</code></pre>
-<p>Review <strong>grafana-customvalues.yaml</strong> and then launch grafana as,</p>
-<pre><code>helm install grafana --values grafana-customvalues.yaml  . --dry-run
-helm install grafana --values grafana-customvalues.yaml  .
+<p>Validate</p>
+<pre><code>helm list -A
 
-helm list
-helm status grafana
+kubectl get all -n monitoring
+kubectl get pods,svc -n monitoring
+</code></pre>
+<h3 id="customising-prometheus-configurations">Customising Prometheus Configurations</h3>
+<p>Create a custom values file</p>
+<pre><code>cp values.yaml my.values.yaml
+</code></pre>
+<p>Edit the values file <code>my.values.yaml</code> and set service type to NodePort</p>
+<pre><code>grafana:
+  service:
+    portName: http-web
+    type: NodePort
+    nodePort: 30200
+</code></pre>
+<p>Make sure you are updating the service port only for Grafana. This is around line number 1125 in the file. You may have to add <code>type</code> if it is not present.</p>
+<p>Now apply the changes as,</p>
+<pre><code>helm upgrade prom -n monitoring --values my.values.yaml .
 
-kubectl get all -l &quot;release=grafana&quot;
 </code></pre>
-<p>You should be able to access grafana UI by using either the <em>nodePort</em> service or a <em>ingress</em> rule.</p>
-<p><img alt="Grafana UI" src="../images/grafana.png" /></p>
-<p>credentials for grafana</p>
-<ul>
-<li>user: admin</li>
-<li>pass: password</li>
-</ul>
-<p>You could update it along with other values in <em>grafana-customvalues.yaml</em> or create a separate file to override the values.</p>
-<p>If you update values and would like to apply to existing helm release, use a command simiar to following,</p>
-<pre><code>helm upgrade -f grafana-customvalues.yaml grafana .
+<p>Validate</p>
+<pre><code>helm list -A
+
+kubectl get svc -n monitoring
 </code></pre>
+<p>You should see new revision of monitoring stack deployed, and Grafana service changed to NodePort.</p>
+<p>Note down the node port and access Grafana with</p>
+<p>http://IPADDRESS:30200</p>
+<p><code>remember to replace node name/ip address and node port as actual.</code></p>
+<p>Login using</p>
+<pre><code>User : admin
+Pass: prom-operator
+</code></pre>
+<p>Once logged in, you should be able to browse and view Grafana dashboards from <code>Dashboards</code> menu.</p>
+<p>An example dashboard is as follows,
+<img alt="" src="Screenshot%202022-03-04%20at%206.14.57%20PM.png" /></p>
+<p>You could further explore various Grafana dashboards and configurations.</p>
+<h2 id="uninstalling-the-app-with-helm">Uninstalling the App with HELM</h2>
+<p>Once you are done experiementing and learning, you could uninstall the application stack that you earlier installed with helm easily.</p>
+<p>To uninstall prometheus and grafana stack, begin by listing it</p>
+<pre><code>helm list -A
+helm uninstall -n monitoring prom
+</code></pre>
+<p>This should clean up everything that was deployed with helm earlier.</p>
 <h2 id="summary">Summary</h2>
 <p>In this lab, we not only learnt about HELM, a kubernetes package manager, but  also have setup a sophisticated health monitoring system with prometheus and grafana.</p>
               
