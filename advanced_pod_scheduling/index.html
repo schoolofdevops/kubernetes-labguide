@@ -223,12 +223,11 @@ kubectl get nodes --show-labels
 
 </code></pre>
 <p>e.g.</p>
-<pre><code>kubectl label nodes node1 zone=bbb
-kubectl label nodes node2 zone=bbb
-kubectl label nodes node3 zone=aaa
+<pre><code>kubectl label nodes kind-worker zone=aaa
+kubectl label nodes kind-worker2 zone=bbb
 kubectl get nodes --show-labels
 </code></pre>
-<p>where, replace <strong>node1-3</strong> with the actual nodes in your cluster.</p>
+<p>where, replace <strong>kind-worker</strong> and <strong>kind-worker2</strong> can be the  the actual nodes in your cluster.</p>
 <h2 id="defining-affinity-and-anti-affinity">Defining  affinity and anti-affinity</h2>
 <p>We have discussed about scheduling a pod on a particular node using <strong>NodeSelector</strong>, but using node selector is a hard condition. If the condition is not met, the pod cannot be scheduled. Node/Pod affinity and anti-affinity solves this issue by introducing soft and hard conditions.</p>
 <ul>
@@ -282,7 +281,7 @@ kubectl get nodes --show-labels
                   requiredDuringSchedulingIgnoredDuringExecution:
                     nodeSelectorTerms:
                     - matchExpressions:
-                      - key: node-role.kubernetes.io/master
+                      - key: node-role.kubernetes.io/control-plane
                         operator: DoesNotExist
                   preferredDuringSchedulingIgnoredDuringExecution:
                     - weight: 1
@@ -293,8 +292,10 @@ kubectl get nodes --show-labels
                           values:
                             - bbb
 </code></pre>
-<p>apply</p>
-<pre><code>kubectl apply -f vote-deploy-nodeaffinity.yaml
+<p>clearn up previous deployment and apply this code as</p>
+<pre><code>kubectl delete deploy vote
+
+kubectl apply -f vote-deploy-nodeaffinity.yaml
 
 kubectl get pods -o wide
 </code></pre>
@@ -359,8 +360,11 @@ kubectl get pods -o wide
                 - redis
             topologyKey: &quot;kubernetes.io/hostname&quot;
 </code></pre>
-<p>apply</p>
-<pre><code>kubectl apply -f redis-deploy-podaffinity.yaml
+<p>clean up the previous deployments and apply as</p>
+<pre><code>kubectl delete deploy vote
+kubectl delete deploy,sts redis
+
+kubectl apply -f redis-deploy-podaffinity.yaml
 kubectl apply -f vote-deploy-podaffinity.yaml
 
 
@@ -381,6 +385,11 @@ kubectl get pods -o wide
 <ul>
 <li>Are all redis pods runnning ? Why?</li>
 </ul>
+<p>When you are done experimenting, revert to original configurations</p>
+<pre><code>kubectl delete deploy vote
+kubectl delete deploy redis
+kubectl apply -f vote-deploy.yaml -f redis-deploy.yaml
+</code></pre>
 <h2 id="adding-taints-and-tolerations">Adding Taints and tolerations</h2>
 <ul>
 <li>Affinity is defined for pods</li>
@@ -404,9 +413,9 @@ kubectl get pods -o wide
 
 </code></pre>
 <p>Lets taint a node.</p>
-<pre><code>kubectl taint node node2 dedicated=worker:NoExecute
+<pre><code>kubectl taint node kind-worker2 dedicated=worker:NoExecute
 
-kubectl describe node node2
+kubectl describe node kind-worker2
 </code></pre>
 <p>after tainting the node</p>
 <pre><code>kubectl get pods -o wide
@@ -447,9 +456,9 @@ vote-56bf599b9c-bqsrq     1/1       Running   0          12m       10.233.74.82 
 vote-56bf599b9c-xw7zc     1/1       Running   0          12m       10.233.74.81   node4
 worker-6cc8dbd4f8-6bkfg   1/1       Running   0          1m        10.233.75.15   node2
 </code></pre>
-<p>You should see worker being scheduled on node2</p>
+<p>You should see worker being scheduled on kind-worker2</p>
 <p>To remove the taint created above</p>
-<pre><code>kubectl taint node node2 dedicate:NoExecute-
+<pre><code>kubectl taint node kind-worker2 dedicate:NoExecute-
 </code></pre>
 <h4 id="exercise">Exercise</h4>
 <ul>
