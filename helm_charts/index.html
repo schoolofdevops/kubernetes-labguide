@@ -209,13 +209,14 @@ helm
 </code></pre>
 <h2 id="generating-a-chart-with-one-service">Generating a Chart with One Service</h2>
 <p>Create a namespace and switch to it</p>
-<pre><code>kubectl create namespace dev  
-kubectl config set-context --current --namespace=dev 
-
+<pre><code>kubectl create namespace dev
+kubectl config set-context --current --namespace=dev
+kubectl config get-contexts
 </code></pre>
 <p>Generate a helm chart scaffold and change into the directory created to create a copy of values.yaml</p>
-<pre><code>helm create instavote  
-cd instavote 
+<pre><code>cd ~
+helm create instavote
+cd instavote/
 cp values.yaml values.dev.yaml 
 </code></pre>
 <p>Edit <code>values.dev.yaml</code>  to  update replicaCount, image and tag as</p>
@@ -228,57 +229,61 @@ image: 
   tag: &quot;v5&quot; 
 </code></pre>
 <p>Update service type to Node Port</p>
-<pre><code>service: 
-  type: NodePort 
-  port: 80 
+<pre><code>service:
+  type: NodePort
+  port: 80
+  nodePort: 30300
 </code></pre>
-<p>Install helm chart as,</p>
-<pre><code>helm install instavote --values values.dev.yaml . --dry-run helm install instavote --values values.dev.yaml . 
-helm list 
-kubectl get all  
+<p>Install this chart with helm to deploy the <code>vote</code> service as:</p>
+<pre><code>helm install instavote -n dev --values=values.dev.yaml  . --dry-run
+helm install instavote -n dev --values=values.dev.yaml  .
+</code></pre>
+<p>Validate with</p>
+<pre><code>helm list -A
+kubectl get all
 </code></pre>
 <h2 id="adding-support-for-more-microservices">Adding support for More Microservices</h2>
 <pre><code>
-cd templates/ 
-mkdir vote redis 
-mv *.yaml vote/ 
-cp vote/*.yaml redis/ 
+cd templates/
+mkdir vote redis
+mv *.yaml vote/
+cp vote/*.yaml redis/
 
 </code></pre>
 <p>Edit file: <code>vote/deployment.yaml</code></p>
 <p>Update metadata as</p>
 <p>Replicas count as</p>
 <pre><code>
-spec: 
-  {{- if not .Values.autoscaling.enabled }} 
-  replicas: {{ .Values.vote.replicaCount }} 
-  {{- end }} 
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.vote.replicaCount }}
+  {{- end }}
 </code></pre>
 <h3 id="container-image-as">Container image as</h3>
 <pre><code>
-containers: 
-  - name: {{ .Chart.Name }} 
-    securityContext: 
+containers:
+  - name: {{ .Chart.Name }}
+    securityContext:
     {{- toYaml .Values.securityContext | nindent 12 }}
-    image: &quot;{{ .Values.vote.image.repository }}:{{ .Values.vote.image.tag  | default .Chart.AppVersion }}&quot; 
+    image: &quot;{{ .Values.vote.image.repository }}:{{ .Values.vote.image.tag  | default .Chart.AppVersion }}&quot;
 </code></pre>
 <p>Reference <a href="https://gist.github.com/initcron/215aa8a0579fc28ce38a86fcea182d6e">Helm Chart Jinja2 Template for Vote App</a> for making changes to  deployment file.</p>
 <p>Edit service spec in <code>vote/service.yaml</code> and change it to the following  </p>
-<pre><code>apiVersion: v1 
-kind: Service 
-metadata: 
-  name: {{ include &quot;instavote.fullname&quot; . }} 
-  labels: 
-  {{- include &quot;instavote.labels&quot; . | nindent 4 }} 
+<pre><code>apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include &quot;instavote.fullname&quot; . }}
+  labels:
+  {{- include &quot;instavote.labels&quot; . | nindent 4 }}
 spec:
-  type: {{ .Values.vote.service.type }} 
-  ports: 
-    - port: {{ .Values.vote.service.port }} 
-      targetPort: http 
-      protocol: TCP 
-      name: http 
-   selector: 
-   {{- include &quot;instavote.selectorLabels&quot; . | nindent 4 }} 
+  type: {{ .Values.vote.service.type }}
+  ports:
+    - port: {{ .Values.vote.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+   selector:
+   {{- include &quot;instavote.selectorLabels&quot; . | nindent 4 }}
 
 </code></pre>
 <p>Source : <a href="https://gist.github.com/initcron/e3f6892434afe6ac6aeb3e13881c6a2f">Helm Jinja2 Template for Vote Service</a></p>
@@ -296,10 +301,10 @@ spec:
 <pre><code>wget -c https://gist.githubusercontent.com/initcron/67e104f3a2949f20c2da06e19c854faa/raw/bdfdaaec1d718f78ce04b74fc1c03194d568a8fa/ values.dev.yaml 
 </code></pre>
 <p>And apply</p>
-<pre><code>helm uninstall instavote  
-helm install instavote --values values.dev.yaml .  
-helm list  
-kubectl get all  
+<pre><code>helm uninstall instavote
+helm install instavote --values values.dev.yaml .
+helm list
+kubectl get all
 </code></pre>
 <p>Validate that vote and redis are running with the values that you provided.</p>
 <h2 id="exercise">Exercise</h2>
