@@ -3,18 +3,18 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/pods-health-probes/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/helm_charts/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Lab K204 - Health Checks - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <title>Lab K114 - Writing HELM Charts - Kubernetes Tutorial with CKA/CKAD Prep</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Lab K204 - Health Checks";
-        var mkdocs_page_input_path = "pods-health-probes.md";
-        var mkdocs_page_url = "/pods-health-probes/";
+        var mkdocs_page_name = "Lab K114 - Writing HELM Charts";
+        var mkdocs_page_input_path = "helm_charts.md";
+        var mkdocs_page_url = "/helm_charts/";
       </script>
     
     <!--[if lt IE 9]>
@@ -65,7 +65,7 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Kubernetes Essentials for CKA/CKAD</span></p>
-              <ul>
+              <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../kind_create_cluster/">Lab K101 - Install Kubernetes with KIND</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../kubernetes_quickdive/">Lab K102 - Kubernetes Quickdive</a>
@@ -90,28 +90,28 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../helm/">Lab K113 - HELM Package Manager</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../helm_charts/">Lab K114 - Writing HELM Charts</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K114 - Writing HELM Charts</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#generating-a-chart-with-one-service">Generating a Chart with One Service</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#adding-support-for-more-microservices">Adding support for More Microservices</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#container-image-as">Container image as</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#exercise">Exercise</a>
+    </li>
+    </ul>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Additional CKAD Topics</span></p>
-              <ul class="current">
+              <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../advanced_pod_design/">Lab K201 - Advanced Pod Design</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../network_policies/">Lab K207 - Network Policies</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K204 - Health Checks</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#adding-health-checks">Adding health checks</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#adding-livenessreadineess-probes">Adding Liveness/Readineess  Probes</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#testing-livenessprobe">Testing livenessProbe</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#readiness-probe">Readiness Probe</a>
-    </li>
-        </ul>
-    </li>
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../pods-health-probes/">Lab K204 - Health Checks</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../daemonsets_cronsjobs/">Lab K205 - DaemonsSets & CronJobs</a>
                   </li>
@@ -189,10 +189,10 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a> &raquo;</li>
-          <li>Additional CKAD Topics &raquo;</li>
-      <li class="breadcrumb-item active">Lab K204 - Health Checks</li>
+          <li>Kubernetes Essentials for CKA/CKAD &raquo;</li>
+      <li class="breadcrumb-item active">Lab K114 - Writing HELM Charts</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/pods-health-probes.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/helm_charts.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -200,177 +200,116 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="lab-k204-adding-health-checks-with-probes">Lab K204 - Adding health checks with Probes</h1>
-<h2 id="adding-health-checks">Adding health checks</h2>
-<p>Health checks in Kubernetes work the same way as traditional health checks of applications. They make sure that our application is ready to receive and process user requests. In Kubernetes we have two types of health checks,
-  * Liveness Probe
-  * Readiness Probe
-Probes are simply a <em>diagnostic action</em> performed by the kubelet. There are three types actions a kubelet perfomes on a pod, which are namely,</p>
-<ul>
-<li><code>ExecAction</code>: Executes a command inside the pod. Assumed successful when the command <strong>returns 0</strong> as exit code.</li>
-<li><code>TCPSocketAction</code>: Checks for a state of a particular port on the pod. Considered successful when the state of <strong>the port is open</strong>.</li>
-<li><code>HTTPGetAction</code>: Performs a GET request on pod's IP. Assumed successful when the status code is <strong>greater than 200 and less than 400</strong></li>
-</ul>
-<p>In cases of any failure during the diagnostic action, kubelet will report back to the API server. Let us study about how these health checks work in practice.</p>
-<h3 id="adding-livenessreadineess-probes">Adding Liveness/Readineess  Probes</h3>
-<p>Liveness probe checks the status of the pod(whether it is running or not). If livenessProbe fails, then the pod is subjected to its restart policy. The default state of livenessProbe is <em>Success</em>.</p>
-<p>Readiness probe checks whether your application is ready to serve the requests. When the readiness probe fails, the pod's IP is removed from the end point list of the service. The default state of readinessProbe is <em>Success</em>.</p>
-<p>Let us add liveness/readiness  probes to our <em>vote</em> deployment.</p>
-<p><code>file: vote-deploy-probes.yaml</code></p>
-<pre><code>apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: vote
+                <h1 id="building-your-own-helm-charts">Building your own Helm Charts</h1>
+<p>If you have not installed helm yet, do so by using</p>
+<pre><code>curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 |  bash 
+
+helm
+
+</code></pre>
+<h2 id="generating-a-chart-with-one-service">Generating a Chart with One Service</h2>
+<p>Create a namespace and switch to it</p>
+<pre><code>kubectl create namespace dev  
+kubectl config set-context --current --namespace=dev 
+
+</code></pre>
+<p>Generate a helm chart scaffold and change into the directory created to create a copy of values.yaml</p>
+<pre><code>helm create instavote  
+cd instavote 
+cp values.yaml values.dev.yaml 
+</code></pre>
+<p>Edit <code>values.dev.yaml</code>  to  update replicaCount, image and tag as</p>
+<pre><code>
+replicaCount: 4 
+image: 
+  repository: schoolofdevops/vote 
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion. 
+  tag: &quot;v5&quot; 
+</code></pre>
+<p>Update service type to Node Port</p>
+<pre><code>service: 
+  type: NodePort 
+  port: 80 
+</code></pre>
+<p>Install helm chart as,</p>
+<pre><code>helm install instavote --values values.dev.yaml . --dry-run helm install instavote --values values.dev.yaml . 
+helm list 
+kubectl get all  
+</code></pre>
+<h2 id="adding-support-for-more-microservices">Adding support for More Microservices</h2>
+<pre><code>
+cd templates/ 
+mkdir vote redis 
+mv *.yaml vote/ 
+cp vote/*.yaml redis/ 
+
+</code></pre>
+<p>Edit file: <code>vote/deployment.yaml</code></p>
+<p>Update metadata as</p>
+<p>Replicas count as</p>
+<pre><code>
+spec: 
+  {{- if not .Values.autoscaling.enabled }} 
+  replicas: {{ .Values.vote.replicaCount }} 
+  {{- end }} 
+</code></pre>
+<h3 id="container-image-as">Container image as</h3>
+<pre><code>
+containers: 
+  - name: {{ .Chart.Name }} 
+    securityContext: 
+    {{- toYaml .Values.securityContext | nindent 12 }}
+    image: &quot;{{ .Values.vote.image.repository }}:{{ .Values.vote.image.tag  | default .Chart.AppVersion }}&quot; 
+</code></pre>
+<p>Reference <a href="https://gist.github.com/initcron/215aa8a0579fc28ce38a86fcea182d6e">Helm Chart Jinja2 Template for Vote App</a> for making changes to  deployment file.</p>
+<p>Edit service spec in <code>vote/service.yaml</code> and change it to the following  </p>
+<pre><code>apiVersion: v1 
+kind: Service 
+metadata: 
+  name: {{ include &quot;instavote.fullname&quot; . }} 
+  labels: 
+  {{- include &quot;instavote.labels&quot; . | nindent 4 }} 
 spec:
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 2
-      maxUnavailable: 1
-  revisionHistoryLimit: 4
-  replicas: 12
-  minReadySeconds: 20
-  selector:
-    matchLabels:
-      role: vote
-    matchExpressions:
-      - {key: version, operator: In, values: [v1, v2, v3, v4, v5]}
-  template:
-    metadata:
-      name: vote
-      labels:
-        app: python
-        role: vote
-        version: v1
-    spec:
-      containers:
-        - name: app
-          image: schoolofdevops/vote:v1
-          resources:
-            requests:
-              memory: &quot;64Mi&quot;
-              cpu: &quot;50m&quot;
-            limits:
-              memory: &quot;128Mi&quot;
-              cpu: &quot;250m&quot;
-          livenessProbe:
-            tcpSocket:
-              port: 80
-            initialDelaySeconds: 5
-            periodSeconds: 5
-          readinessProbe:
-            httpGet:
-              path: /
-              port: 80
-            initialDelaySeconds: 5
-            periodSeconds: 3
-</code></pre>
-<p>where,</p>
-<ul>
-<li>livenessProbe used a simple tcp check to test whether application is listening on port 80</li>
-<li>readinessProbe does httpGet to actually fetch a page using get method and tests for the http response code.</li>
-</ul>
-<p>Apply this code using,</p>
-<pre><code>kubectl apply -f vote-deploy-probes.yaml
-kubectl get pods
-kubectl describe svc vote
+  type: {{ .Values.vote.service.type }} 
+  ports: 
+    - port: {{ .Values.vote.service.port }} 
+      targetPort: http 
+      protocol: TCP 
+      name: http 
+   selector: 
+   {{- include &quot;instavote.selectorLabels&quot; . | nindent 4 }} 
 
 </code></pre>
-<h3 id="testing-livenessprobe">Testing livenessProbe</h3>
-<pre><code>kubectl edit deploy vote
+<p>Source : <a href="https://gist.github.com/initcron/e3f6892434afe6ac6aeb3e13881c6a2f">Helm Jinja2 Template for Vote Service</a></p>
+<p>Similarly you would edit <code>redis/deployment.yaml</code> and <code>redis/service.yaml</code>with names  updated to redis.  </p>
+<p>Now update <code>instavote/values.yaml</code> to support multiple services 
+* add <code>vote</code> as top level key 
+* indent all properties so that those become sub properties of key added above i.e.  vote
+* copy over and create blocks for redis</p>
+<p>Use this file as a reference <a href="https://gist.github.com/initcron/51b28ca62b568955516b6ddddcd40f77">values.yaml</a></p>
+<p>Now go ahead and deploy by
+* Creating your own copy of values.yaml
+* Providing values specific to those services</p>
+<p>You could download this file with sample values <a href="https://gist.github.com/initcron/67e104f3a2949f20c2da06e19c854faa">values.dev.yaml</a></p>
+<p>[download the following file only if you have not created your own]</p>
+<pre><code>wget -c https://gist.githubusercontent.com/initcron/67e104f3a2949f20c2da06e19c854faa/raw/bdfdaaec1d718f78ce04b74fc1c03194d568a8fa/ values.dev.yaml 
 </code></pre>
-<pre><code>livenessProbe:
-  failureThreshold: 3
-  initialDelaySeconds: 5
-  periodSeconds: 5
-  successThreshold: 1
-  tcpSocket:
-    port: 8888
-  timeoutSeconds: 1
+<p>And apply</p>
+<pre><code>helm uninstall instavote  
+helm install instavote --values values.dev.yaml .  
+helm list  
+kubectl get all  
 </code></pre>
-<p>Since you are using <em>edit</em> command, as soon as you save the file, deployment is modified.</p>
-<pre><code>kubectl get pods
-kubectl describe pod vote-xxxx
-</code></pre>
-<p>where, vote-xxxx is one of the new pods created.</p>
-<pre><code>Events:
-  Type     Reason     Age                From               Message
-  ----     ------     ----               ----               -------
-  Normal   Scheduled  38s                default-scheduler  Successfully assigned instavote/vote-668579766d-p65xb to k-02
-  Normal   Pulled     18s (x2 over 36s)  kubelet, k-02      Container image &quot;schoolofdevops/vote:v1&quot; already present on machine
-  Normal   Created    18s (x2 over 36s)  kubelet, k-02      Created container
-  Normal   Started    18s (x2 over 36s)  kubelet, k-02      Started container
-  Normal   Killing    18s                kubelet, k-02      Killing container with id docker://app:Container failed liveness probe.. Container will be killed and recreated.
-  Warning  Unhealthy  4s (x5 over 29s)   kubelet, k-02      Liveness probe failed: dial tcp 10.32.0.12:8888: connect: connection refused
-</code></pre>
-<p>What just happened ?</p>
-<ul>
-<li>Since livenessProbe is failing it will keep killing and recreating containers. Thats what you see in the description above.</li>
-<li>When you list pods, you should see it in crashloopbackoff state with number of restarts incrementing with time.</li>
-</ul>
-<p>e.g.</p>
-<pre><code>vote-668579766d-p65xb    0/1     CrashLoopBackOff   7          7m38s   10.32.0.12   k-02        &lt;none&gt;           &lt;none&gt;
-vote-668579766d-sclbr    0/1     CrashLoopBackOff   7          7m38s   10.32.0.10   k-02        &lt;none&gt;           &lt;none&gt;
-vote-668579766d-vrcmj    0/1     CrashLoopBackOff   7          7m38s   10.38.0.8    kube03-01   &lt;none&gt;           &lt;none&gt;
-</code></pre>
-<p>To fix it, revert the livenessProbe configs by editing the deplyment again.</p>
-<h3 id="readiness-probe">Readiness Probe</h3>
-<p>Readiness probe is configured just like liveness probe. But this time we will use <em>httpGet request</em>.</p>
-<pre><code>kubectl edit deploy vote
-
-</code></pre>
-<pre><code>readinessProbe:
-  failureThreshold: 3
-  httpGet:
-    path: /test.html
-    port: 80
-    scheme: HTTP
-  initialDelaySeconds: 5
-  periodSeconds: 3
-  successThreshold: 1
-</code></pre>
-<p>where, readinessProbe.httpGet.path is been changed from <strong>/</strong> to <strong>/test.html</strong> which is a non existant path.  </p>
-<p>check</p>
-<pre><code>kubectl get deploy,rs,pods
-</code></pre>
-<p>[output snippet]</p>
-<pre><code>NAME                          READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.extensions/vote    11/12   3            11          2m12s
-
-
-vote-8cbb7ff89-6xvbc     0/1     Running   0          73s     10.38.0.10   kube03-01   &lt;none&gt;           &lt;none&gt;
-vote-8cbb7ff89-6z5zv     0/1     Running   0          73s     10.38.0.5    kube03-01   &lt;none&gt;           &lt;none&gt;
-vote-8cbb7ff89-hdmxb     0/1     Running   0          73s     10.32.0.12   k-02        &lt;none&gt;           &lt;none&gt;
-</code></pre>
-<pre><code>kubectl describe pod vote-8cbb7ff89-hdmxb
-</code></pre>
-<p>where, vote-8cbb7ff89-hdmxb is one of the pods launched after changing readiness probe.</p>
-<p>[output snippet]</p>
-<pre><code>Events:
-  Type     Reason     Age                  From               Message
-  ----     ------     ----                 ----               -------
-  Normal   Scheduled  109s                 default-scheduler  Successfully assigned instavote/vote-8cbb7ff89-hdmxb to k-02
-  Normal   Pulled     108s                 kubelet, k-02      Container image &quot;schoolofdevops/vote:v1&quot; already present on machine
-  Normal   Created    108s                 kubelet, k-02      Created container
-  Normal   Started    108s                 kubelet, k-02      Started container
-  Warning  Unhealthy  39s (x22 over 102s)  kubelet, k-02      Readiness probe failed: HTTP probe failed with statuscode: 404
-</code></pre>
-<pre><code>kubectl describe svc vote
-</code></pre>
-<p>what happened ?</p>
-<ul>
-<li>Since readinessProbe failed, the new launched batch does not show containers running (0/1)</li>
-<li>Description of the pod shows it being <em>Unhealthy</em> due to failed HTTP probe</li>
-<li>Deployment shows surged pods, with number of ready pods being less than number of desired replicas (e.g. 11/12).</li>
-<li>Service does not send traffic to the pod which are marked as unhealthy/not ready.  </li>
-</ul>
-<p>Reverting the changes to readiness probe should bring it back to working state.</p>
+<p>Validate that vote and redis are running with the values that you provided.</p>
+<h2 id="exercise">Exercise</h2>
+<p>Now that you have deployed vote and redis, go ahead and add the code to deploy  worker, db and result as well.</p>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../network_policies/" class="btn btn-neutral float-left" title="Lab K207 - Network Policies"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../daemonsets_cronsjobs/" class="btn btn-neutral float-right" title="Lab K205 - DaemonsSets & CronJobs">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../helm/" class="btn btn-neutral float-left" title="Lab K113 - HELM Package Manager"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../advanced_pod_design/" class="btn btn-neutral float-right" title="Lab K201 - Advanced Pod Design">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -398,10 +337,10 @@ vote-8cbb7ff89-hdmxb     0/1     Running   0          73s     10.32.0.12   k-02 
         </span>
     
     
-      <span><a href="../network_policies/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../helm/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../daemonsets_cronsjobs/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../advanced_pod_design/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
