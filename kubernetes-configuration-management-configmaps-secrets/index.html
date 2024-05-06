@@ -94,6 +94,8 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#enabling-http-authentication-for-nginx-ingress-with-secrets">Enabling HTTP Authentication for Nginx Ingress with Secrets</a>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#imagepullsecrets-with-private-repository">imagePullSecrets with Private Repository</a>
+    </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../rbac_101/">Lab K111 - RBAC Concepts</a>
@@ -423,6 +425,62 @@ kubectl get ing/vote -o yaml
                       +-------------+
 </code></pre>
 <p><img alt="Name Based Routing" src="../images/domain-name.png" /></p>
+<h2 id="imagepullsecrets-with-private-repository">imagePullSecrets with Private Repository</h2>
+<p>Create a private repository from DockerHub as
+<img alt="" src="nginxpvt.png" /></p>
+<pre><code>docker image pull nginx:alpine
+docker image tag nginx:alpine xxxx/nginxpvt:alpine
+docker login
+docker image push xxxx/nginxpvt:alpine
+</code></pre>
+<p>where replace <code>xxxx</code> with actual dockerhub username.</p>
+<p>Generate a deployment manifest as</p>
+<pre><code>kubectl create deployment nginxpvt --image=xxxx/nginxpvt:alpine --replicas=1 --dry-run=client -o yaml | tee  nginxpvt-deploy.yaml
+</code></pre>
+<p>apply this manifest and list the pods</p>
+<pre><code>kubectl apply -f nginxpvt-deploy.yaml
+kubectl get pods
+</code></pre>
+<p>You will see the pod in error state. e.g.</p>
+<pre><code>NAME                        READY   STATUS         RESTARTS   AGE
+nginxpvt-79f8998f6c-9tvsg   0/1     ErrImagePull   0          4s
+</code></pre>
+<p>and describing the pod will show you that there is issue pulling the image from a private repository</p>
+<pre><code>  Warning  Failed     21s (x2 over 36s)  kubelet            Failed to pull image &quot;initcron/nginxpvt:alpine&quot;: failed to pull and unpack image &quot;docker.io/initcron/nginxpvt:alpine&quot;: failed to resolve reference &quot;docker.io/initcron/nginxpvt:alpine&quot;: pull access denied, repository does not exist or may require authorization: server message: insufficient_scope: authorization failed
+  Warning  Failed     21s (x2 over 36s)  kubelet            Error: ErrImagePull
+</code></pre>
+<p>You could generate a secret with your registry credentials as,</p>
+<pre><code>kubectl create secret docker-registry dhcreds \
+   --docker-server=https://index.docker.io/v1/ \
+   --docker-username=xxxx \
+   --docker-password=yyyy \
+   --docker-email=abc@pqr
+</code></pre>
+<p>where,
+* xxxx : replace with actual registry username
+* yyyy : replace with actual password
+* abc@pqr : your registered email on the registry
+* https://index.docker.io/v1/ : can be changed to your private registry uri</p>
+<pre><code>kubectl describe secret dhcreds
+</code></pre>
+<p>Update <code>nginxpvt-deploy.yaml</code> with the <code>imagePullSecrets</code> as,</p>
+<pre><code>    spec:
+      containers:
+      - image: initcron/nginxpvt:alpine
+        name: nginxpvt
+        resources: {}
+      imagePullSecrets:
+        - name: dhcred
+</code></pre>
+<p>and apply as</p>
+<pre><code>kubectl apply -f nginxpvt-deploy.yaml
+kubectl get pods
+</code></pre>
+<p>This time you shall see the pod running.</p>
+<p>once done, you could clean up with</p>
+<pre><code>kubectl delete deploy nginxpvt
+kubectl delete secret dhcred
+</code></pre>
               
             </div>
           </div><footer>
