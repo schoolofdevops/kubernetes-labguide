@@ -110,7 +110,9 @@
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K302 - Advanced Pod Scheduling</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#labeling-your-nodes">Labeling your nodes</a>
+    <li class="toctree-l2"><a class="reference internal" href="#nodename">nodeName</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#nodeselector">nodeSelector</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#defining-affinity-and-anti-affinity">Defining  affinity and anti-affinity</a>
         <ul>
@@ -214,7 +216,36 @@
 <li>schedulerName</li>
 <li>tolerations</li>
 </ul>
-<h2 id="labeling-your-nodes">Labeling your nodes</h2>
+<h2 id="nodename">nodeName</h2>
+<p>You could bind a pod to a specific node with a name using nodeName spec. Lets take an example where you want to run the deployment for <code>result</code> service on a specific node. Lets look at how you would do it,</p>
+<p>Begin by listing the nodes</p>
+<pre><code>kubectl get nodes
+</code></pre>
+<p>[sample output]</p>
+<pre><code>NAME                 STATUS   ROLES           AGE   VERSION
+kind-control-plane   Ready    control-plane   35h   v1.29.2
+kind-worker          Ready    &lt;none&gt;          35h   v1.29.2
+kind-worker2         Ready    &lt;none&gt;          35h   v1.29.2
+</code></pre>
+<p>Now, bind your pod to one node e.g. <code>kind-worker</code> by modyfying the deployment spec as:</p>
+<p>File : <code>result-deploy.yaml</code></p>
+<pre><code>apiVersion: apps/v1
+kind: Deployment
+....
+.....
+spec:
+  containers:
+  - image: schoolofdevops/vote-result
+    name: vote-result
+  nodeName: kind-worker
+</code></pre>
+<p>apply and validate</p>
+<pre><code>kubectl apply -f result-deploy.yaml
+kubectl get pods -o wide
+</code></pre>
+<h2 id="nodeselector">nodeSelector</h2>
+<p>Using nodeSelector instead of directly specifying nodeName in Kubernetes offers greater flexibility and resilience in scheduling pods. While nodeName forces a pod to schedule on a specific node, effectively bypassing Kubernetes' scheduler, nodeSelector allows for more dynamic placement by specifying a set of criteria that nodes must meet for the pod to be scheduled there. This approach utilizes Kubernetes' intelligent scheduling capabilities, enabling the system to consider multiple suitable nodes that meet the specified labels. This not only improves fault tolerance by avoiding dependencies on a single node but also facilitates more efficient resource utilization across the cluster. Additionally, nodeSelector supports scenarios where the environment might change, such as when nodes are added or removed, or their labels are updated, ensuring that the pods can still be scheduled according to the current state of the cluster.</p>
+<p>To use nodeSelector, begin by labeling your nodes as:</p>
 <pre><code>kubectl get nodes --show-labels
 
 kubectl label nodes &lt;node-name&gt; zone=aaa
@@ -228,8 +259,24 @@ kubectl label nodes kind-worker2 zone=bbb
 kubectl get nodes --show-labels
 </code></pre>
 <p>where, replace <strong>kind-worker</strong> and <strong>kind-worker2</strong> can be the  the actual nodes in your cluster.</p>
+<p>Now update one of the deployments and add the nodeSelector spec to the pod  e.g.</p>
+<p>File : <code>result-deploy.yaml</code></p>
+<pre><code>spec:
+  containers:
+  - image: schoolofdevops/vote-result
+    name: vote-result
+  nodeSelector:
+    zone: bbb
+</code></pre>
+<p><code>Note: ensure you have removed nodeName if present.</code></p>
+<p>apply and validate</p>
+<pre><code>kubectl apply -f result-deploy.yaml
+kubectl get pods -o wide
+</code></pre>
+<p>You shall see the pod being recreated now on the node matching the label selected using nodeSelector.</p>
 <h2 id="defining-affinity-and-anti-affinity">Defining  affinity and anti-affinity</h2>
-<p>We have discussed about scheduling a pod on a particular node using <strong>NodeSelector</strong>, but using node selector is a hard condition. If the condition is not met, the pod cannot be scheduled. Node/Pod affinity and anti-affinity solves this issue by introducing soft and hard conditions.</p>
+<p>We have discussed about scheduling a pod on a particular node using <strong>NodeSelector</strong>. Using affinity and anti-affinity in Kubernetes offers a more sophisticated and granular level of control compared to nodeSelector, enabling not just simple label matching but also complex rules that govern pod placement. Affinity rules allow you to specify preferences that attract pods to certain nodes, either based on the node's properties or other pods that are already running on those nodes. Conversely, anti-affinity rules are used to ensure pods are spread across different nodes or node groups, enhancing high availability and reducing the risk of simultaneous failures. This is particularly useful in large-scale deployments where maintaining workload balance and resilience is crucial. For example, you can ensure that multiple instances of a service run in different racks or availability zones, minimizing potential impact from physical infrastructure failures. These features allow Kubernetes to more effectively manage the distribution and redundancy of workloads, which is vital for maintaining robust, scalable applications.</p>
+<p>More over,  using nodeSelector wolud mean defining a strict condition which must be met. If the condition is not met, the pod cannot be scheduled. Node/Pod affinity and anti-affinity solves this issue by introducing soft and hard conditions which are flexible based on when they are applied. This is controlled using the following properties</p>
 <ul>
 <li>required</li>
 <li>
@@ -240,7 +287,7 @@ kubectl get nodes --show-labels
 </li>
 <li>DuringExecution</li>
 </ul>
-<p>Operators</p>
+<p>and using theese operators</p>
 <ul>
 <li>In</li>
 <li>NotIn</li>
@@ -249,6 +296,7 @@ kubectl get nodes --show-labels
 <li>Gt</li>
 <li>Lt</li>
 </ul>
+<p>Lets take up some examples and understand this.</p>
 <h3 id="adding-node-affinity">Adding Node Affinity</h3>
 <p>Examine  the current pod distribution  </p>
 <pre><code>kubectl get pods -o wide --selector=&quot;role=vote&quot;
