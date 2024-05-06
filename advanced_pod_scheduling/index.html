@@ -123,10 +123,8 @@
         </ul>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#taints-and-tolerations">Taints and Tolerations</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#exercise">Exercise</a>
     </li>
-        </ul>
+    <li class="toctree-l2"><a class="reference internal" href="#exercise">Exercise</a>
     </li>
     </ul>
                   </li>
@@ -508,7 +506,7 @@ worker-6cc8dbd4f8-6bkfg   1/1       Running   0          1m        10.233.75.15 
 <p>To remove the taint created above</p>
 <pre><code>kubectl taint node kind-worker2 dedicated=worker:NoExecute-
 </code></pre>
-<h4 id="exercise">Exercise</h4>
+<h2 id="exercise">Exercise</h2>
 <ul>
 <li>Master node is unschedulable because of a taint. Find the taint on the master node and remove it. See if new pods get scheduled on it after that.</li>
 </ul>
