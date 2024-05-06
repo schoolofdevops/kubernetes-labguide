@@ -114,11 +114,11 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#nodeselector">nodeSelector</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#defining-affinity-and-anti-affinity">Defining  affinity and anti-affinity</a>
+    <li class="toctree-l2"><a class="reference internal" href="#affinity-and-anti-affinity">Affinity and Anti-Affinity</a>
         <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#adding-node-affinity">Adding Node Affinity</a>
+    <li class="toctree-l3"><a class="reference internal" href="#nodeaffinity">nodeAffinity</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#configuring-pod-affinity">Configuring Pod Affinity</a>
+    <li class="toctree-l3"><a class="reference internal" href="#podaffinity-and-podantiaffinity">podAffinity and podAntiAffinity</a>
     </li>
         </ul>
     </li>
@@ -274,7 +274,7 @@ kubectl get nodes --show-labels
 kubectl get pods -o wide
 </code></pre>
 <p>You shall see the pod being recreated now on the node matching the label selected using nodeSelector.</p>
-<h2 id="defining-affinity-and-anti-affinity">Defining  affinity and anti-affinity</h2>
+<h2 id="affinity-and-anti-affinity">Affinity and Anti-Affinity</h2>
 <p>We have discussed about scheduling a pod on a particular node using <strong>NodeSelector</strong>. Using affinity and anti-affinity in Kubernetes offers a more sophisticated and granular level of control compared to nodeSelector, enabling not just simple label matching but also complex rules that govern pod placement. Affinity rules allow you to specify preferences that attract pods to certain nodes, either based on the node's properties or other pods that are already running on those nodes. Conversely, anti-affinity rules are used to ensure pods are spread across different nodes or node groups, enhancing high availability and reducing the risk of simultaneous failures. This is particularly useful in large-scale deployments where maintaining workload balance and resilience is crucial. For example, you can ensure that multiple instances of a service run in different racks or availability zones, minimizing potential impact from physical infrastructure failures. These features allow Kubernetes to more effectively manage the distribution and redundancy of workloads, which is vital for maintaining robust, scalable applications.</p>
 <p>More over,  using nodeSelector wolud mean defining a strict condition which must be met. If the condition is not met, the pod cannot be scheduled. Node/Pod affinity and anti-affinity solves this issue by introducing soft and hard conditions which are flexible based on when they are applied. This is controlled using the following properties</p>
 <ul>
@@ -297,7 +297,7 @@ kubectl get pods -o wide
 <li>Lt</li>
 </ul>
 <p>Lets take up some examples and understand this.</p>
-<h3 id="adding-node-affinity">Adding Node Affinity</h3>
+<h3 id="nodeaffinity">nodeAffinity</h3>
 <p>Examine  the current pod distribution  </p>
 <pre><code>kubectl get pods -o wide --selector=&quot;role=vote&quot;
 
@@ -347,7 +347,7 @@ kubectl apply -f vote-deploy-nodeaffinity.yaml
 
 kubectl get pods -o wide
 </code></pre>
-<h3 id="configuring-pod-affinity">Configuring Pod Affinity</h3>
+<h3 id="podaffinity-and-podantiaffinity">podAffinity and podAntiAffinity</h3>
 <p>Lets define pod affinity criteria as,</p>
 <ul>
 <li>Pods for <strong>vote</strong> and <strong>redis</strong> should be co located as much as possible (preferred)</li>
