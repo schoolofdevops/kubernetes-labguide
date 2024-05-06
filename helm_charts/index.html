@@ -92,11 +92,13 @@
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K114 - Writing HELM Charts</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#generating-a-chart-with-one-service">Generating a Chart with One Service</a>
+    <li class="toctree-l2"><a class="reference internal" href="#part-i-generating-a-chart-with-one-service">Part I - Generating a Chart with One Service</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#adding-support-for-more-microservices">Adding support for More Microservices</a>
+    <li class="toctree-l2"><a class="reference internal" href="#part-ii-adding-support-for-more-microservices">Part II - Adding support for More Microservices</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#exercise">Exercise</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#exercise">Exercise</a>
+        </ul>
     </li>
     </ul>
                   </li>
@@ -203,7 +205,7 @@
 helm
 
 </code></pre>
-<h2 id="generating-a-chart-with-one-service">Generating a Chart with One Service</h2>
+<h2 id="part-i-generating-a-chart-with-one-service">Part I - Generating a Chart with One Service</h2>
 <p>Create a namespace and switch to it</p>
 <pre><code>kubectl create namespace dev
 kubectl config set-context --current --namespace=dev
@@ -238,7 +240,7 @@ helm install instavote -n dev --values=values.dev.yaml  .
 <pre><code>helm list -A
 kubectl get all
 </code></pre>
-<h2 id="adding-support-for-more-microservices">Adding support for More Microservices</h2>
+<h2 id="part-ii-adding-support-for-more-microservices">Part II - Adding support for More Microservices</h2>
 <p>Create copy of the templates so that you could add support for one more service e.g. redis</p>
 <pre><code>
 cd templates/
@@ -315,7 +317,7 @@ helm list -A
 kubectl get all
 </code></pre>
 <p>Validate that vote and redis are running with the values that you provided.</p>
-<h2 id="exercise">Exercise</h2>
+<h3 id="exercise">Exercise</h3>
 <p>Now that you have deployed vote and redis, go ahead and add the code to deploy  worker, db and result as well.</p>
               
             </div>
