@@ -458,7 +458,7 @@ worker-6cc8dbd4f8-6bkfg   1/1       Running   0          1m        10.233.75.15 
 </code></pre>
 <p>You should see worker being scheduled on kind-worker2</p>
 <p>To remove the taint created above</p>
-<pre><code>kubectl taint node kind-worker2 dedicate:NoExecute-
+<pre><code>kubectl taint node kind-worker2 dedicated=worker:NoExecute-
 </code></pre>
 <h4 id="exercise">Exercise</h4>
 <ul>
