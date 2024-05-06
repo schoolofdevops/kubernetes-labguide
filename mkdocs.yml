@@ -23,6 +23,7 @@ nav:
      - Lab K111 - RBAC Concepts : "rbac_101.md"
      - Lab K112 - Ingress: "ingress.md"
      - Lab K113 - HELM Package Manager: "helm.md"
+     - Lab K114 - Writing HELM Charts: "helm_charts.md"
   - Additional CKAD Topics:
      - Lab K201 - Advanced Pod Design: "advanced_pod_design.md"
      - Lab K207 - Network Policies: "network_policies.md"
