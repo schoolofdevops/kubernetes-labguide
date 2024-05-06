@@ -22,7 +22,7 @@ nav:
      - Lab K110 - ConfigMaps & Secrets: "kubernetes-configuration-management-configmaps-secrets.md"
      - Lab K111 - RBAC Concepts : "rbac_101.md"
      - Lab K112 - Ingress: "ingress.md"
-     - Lab K113 - HELM: "helm.md"
+     - Lab K113 - HELM Package Manager: "helm.md"
   - Additional CKAD Topics:
      - Lab K201 - Advanced Pod Design: "advanced_pod_design.md"
      - Lab K207 - Network Policies: "network_policies.md"
