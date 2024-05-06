@@ -291,3 +291,93 @@ Observe the annotations field. No sooner than you apply this spec, ingress contr
 
 
 ![Name Based Routing](../images/domain-name.png)
+
+
+## imagePullSecrets with Private Repository 
+
+Create a private repository from DockerHub as
+![](nginxpvt.png)
+
+```
+docker image pull nginx:alpine
+docker image tag nginx:alpine xxxx/nginxpvt:alpine
+docker login
+docker image push xxxx/nginxpvt:alpine
+```
+
+where replace `xxxx` with actual dockerhub username.
+
+Generate a deployment manifest as
+
+```
+kubectl create deployment nginxpvt --image=xxxx/nginxpvt:alpine --replicas=1 --dry-run=client -o yaml | tee  nginxpvt-deploy.yaml
+```
+
+apply this manifest and list the pods
+
+```
+kubectl apply -f nginxpvt-deploy.yaml
+kubectl get pods
+```
+
+You will see the pod in error state. e.g.
+
+```
+NAME                        READY   STATUS         RESTARTS   AGE
+nginxpvt-79f8998f6c-9tvsg   0/1     ErrImagePull   0          4s
+```
+
+and describing the pod will show you that there is issue pulling the image from a private repository
+
+```
+  Warning  Failed     21s (x2 over 36s)  kubelet            Failed to pull image "initcron/nginxpvt:alpine": failed to pull and unpack image "docker.io/initcron/nginxpvt:alpine": failed to resolve reference "docker.io/initcron/nginxpvt:alpine": pull access denied, repository does not exist or may require authorization: server message: insufficient_scope: authorization failed
+  Warning  Failed     21s (x2 over 36s)  kubelet            Error: ErrImagePull
+```
+
+You could generate a secret with your registry credentials as,
+
+```
+kubectl create secret docker-registry dhcreds \
+   --docker-server=https://index.docker.io/v1/ \
+   --docker-username=xxxx \
+   --docker-password=yyyy \
+   --docker-email=abc@pqr
+```
+
+where,
+* xxxx : replace with actual registry username
+* yyyy : replace with actual password
+* abc@pqr : your registered email on the registry
+* https://index.docker.io/v1/ : can be changed to your private registry uri
+
+```
+kubectl describe secret dhcreds
+```
+
+Update `nginxpvt-deploy.yaml` with the `imagePullSecrets` as,
+
+```
+    spec:
+      containers:
+      - image: initcron/nginxpvt:alpine
+        name: nginxpvt
+        resources: {}
+      imagePullSecrets:
+        - name: dhcred
+```
+
+and apply as
+
+```
+kubectl apply -f nginxpvt-deploy.yaml
+kubectl get pods
+```
+
+This time you shall see the pod running.
+
+once done, you could clean up with
+
+```
+kubectl delete deploy nginxpvt
+kubectl delete secret dhcred
+```
