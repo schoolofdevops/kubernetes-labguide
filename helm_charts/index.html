@@ -252,13 +252,19 @@ cp vote/*.yaml redis/
 </code></pre>
 <p>Edit file: <code>vote/deployment.yaml</code></p>
 <p>Update metadata as</p>
-<p>Replicas count as</p>
+<p>Replicas count from</p>
+<pre><code>{{- if not .Values.autoscaling.enabled }}
+replicas: {{ .Values.replicaCount }}
+{{- end }}
+</code></pre>
+<p>to</p>
 <pre><code>
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.vote.replicaCount }}
   {{- end }}
 </code></pre>
+<p>Note <code>Values.replicaCount</code> being replaced by <code>Values.vote.replicaCount</code>. Thats the theme you will have to follow from here on. </p>
 <h3 id="container-image-as">Container image as</h3>
 <pre><code>
 containers:
