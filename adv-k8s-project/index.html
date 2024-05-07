@@ -234,7 +234,7 @@
 <tr>
 <td style="text-align: left;">vote</td>
 <td style="text-align: left;">TODO</td>
-<td style="text-align: left;">TODO</td>
+<td style="text-align: left;">ready</td>
 </tr>
 <tr>
 <td style="text-align: left;">redis</td>
@@ -284,7 +284,7 @@ kubectl apply -f db-deploy.yaml -f db-svc.yaml
 <h3 id="phase-ii-create-deployments-and-services-for-remaining-services">Phase II - Create Deployments and Services for Remaining Services</h3>
 <p>You may find the files available in the same directory as above i.e. <em>k8s-code/projects/instavote/dev/</em> with either partial or blank code. Your job is to complete the deployment and service yaml specs and apply those. While writing the specs, you could refer to the following specification.  </p>
 <ul>
-<li>results<ul>
+<li>vote<ul>
 <li>image: schoolofdevops/vote:v1</li>
 <li>application port: 80</li>
 <li>service type: NodePort</li>
