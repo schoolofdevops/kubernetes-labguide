@@ -21,7 +21,7 @@ Following table depicts the state of readiness of the above services.
 
 | App     | Deployment     | Service |
 | :------------- | :------------- | :------------- |
-| vote       | TODO       | TODO       |
+| vote       | TODO       | ready       |
 | redis       | ready       | ready       |
 | worker       | TODO       | n/a       |
 | db       | ready       | ready       |
@@ -65,7 +65,7 @@ If you see the above objects, proceed with the next task.
 
 You may find the files available in the same directory as above i.e. *k8s-code/projects/instavote/dev/* with either partial or blank code. Your job is to complete the deployment and service yaml specs and apply those. While writing the specs, you could refer to the following specification.  
 
-  * results
+  * vote
     * image: schoolofdevops/vote:v1
     * application port: 80
     * service type: NodePort
