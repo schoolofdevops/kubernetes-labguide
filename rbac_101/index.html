@@ -85,6 +85,8 @@
                   <li class="toctree-l1"><a class="reference internal" href="../kubernetes-configuration-management-configmaps-secrets/">Lab K110 - ConfigMaps & Secrets</a>
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K111 - RBAC Concepts</a>
+    <ul class="current">
+    </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../ingress/">Lab K112 - Ingress</a>
                   </li>
@@ -188,7 +190,86 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                
+                <p>Clone API Tester app and launch it</p>
+<pre><code>git clone https://github.com/schoolofdevops/k8s-api-tester.git
+cd k8s-api-tester
+
+kubectl apply -f api-tester-deploy.yaml
+</code></pre>
+<p>Now list the pod and check the logs</p>
+<pre><code>
+kubectl get pods
+
+kubectl logs -f api-tester-xxxx
+</code></pre>
+<p>You shall see error messages with access to all api resources e.g. pods, deployments, services, pvs, events denied.</p>
+<p>Lets look at how to configure the RBAC policies to get this app to work.</p>
+<h2 id="adding-rbac-policies">Adding RBAC Policies</h2>
+<p>File <code>api-tester-sa.yaml</code></p>
+<pre><code>apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: api-tester
+  namespace: default
+</code></pre>
+<p>File : <code>api-tester-role.yaml</code></p>
+<pre><code>apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: api-tester
+  namespace: default
+rules:
+- apiGroups: [&quot;&quot;]
+  resources: [&quot;pods&quot;, &quot;Services&quot;]
+  verbs: [&quot;get&quot;, &quot;list&quot;, &quot;watch&quot;]
+- apiGroups: [&quot;apps&quot;, &quot;extensions&quot;]
+  resources: [&quot;deployments&quot;]
+  verbs: [&quot;get&quot;, &quot;list&quot;, &quot;watch&quot;]
+</code></pre>
+<p>File : <code>api-tester-rolebinding.yaml</code></p>
+<pre><code>apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: api-tester
+  namespace: default
+subjects:
+- kind: ServiceAccount
+  name: api-tester
+  namespace: default
+roleRef:
+  kind: Role
+  name: api-tester
+  apiGroup: rbac.authorization.k8s.io
+</code></pre>
+<p>apply</p>
+<pre><code>kubectl apply -f api-tester-sa.yaml -f api-tester-role.yaml -f api-tester-rolebinding.yaml
+</code></pre>
+<p>Now update the deployment spec to refer to Service Account as:</p>
+<p>File : <code>api-tester-deploy.yaml</code></p>
+<pre><code>...
+..
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-tester
+  template:
+    metadata:
+      labels:
+        app: api-tester
+    spec:
+      serviceAccountName: api-tester
+      containers:
+      - name: api-tester
+        image: docker.io/schoolofdevops/api-tester:latest
+
+..
+...
+</code></pre>
+<p>apply</p>
+<pre><code>kubectl apply -f api-tester-deploy.yaml
+</code></pre>
               
             </div>
           </div><footer>
