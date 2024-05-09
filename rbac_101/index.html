@@ -204,7 +204,11 @@ kubectl logs -f api-tester-xxxx
 </code></pre>
 <p>You shall see error messages with access to all api resources e.g. pods, deployments, services, pvs, events denied.</p>
 <p>Lets look at how to configure the RBAC policies to get this app to work.</p>
-<h2 id="adding-rbac-policies">Adding RBAC Policies</h2>
+<h2 id="adding-roles-and-clusterroles">Adding Roles and ClusterRoles</h2>
+<p>Add the following permissions for <code>api-tester</code> app</p>
+<ul>
+<li>It should be able to list pods, deplyoments and services in namespace <code>default</code></li>
+</ul>
 <p>File <code>api-tester-sa.yaml</code></p>
 <pre><code>apiVersion: v1
 kind: ServiceAccount
@@ -269,6 +273,47 @@ spec:
 </code></pre>
 <p>apply</p>
 <pre><code>kubectl apply -f api-tester-deploy.yaml
+</code></pre>
+<h2 id="adding-clusterroles-and-clusterrolebindings">Adding CLusterRoles and ClusterRoleBindings</h2>
+<p>Add the following permissions for <code>api-tester</code> app</p>
+<ul>
+<li>It should be able to list <code>persistentvolumeclaims</code> in all namespaces</li>
+<li>It should have ability to create and delete <code>persistentvolumes</code> in all namespaces</li>
+<li>It should have ability to read and write <code>events</code> cluster wide</li>
+</ul>
+<p>File: <code>api-tester-clusterrole.yaml</code></p>
+<pre><code>apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: api-tester-cluster-role
+rules:
+- apiGroups: [&quot;&quot;]
+  resources: [&quot;persistentvolumeclaims&quot;]
+  verbs: [&quot;get&quot;, &quot;list&quot;, &quot;watch&quot;, &quot;create&quot;, &quot;update&quot;, &quot;patch&quot;, &quot;delete&quot;]
+- apiGroups: [&quot;&quot;]
+  resources: [&quot;persistentvolumes&quot;]
+  verbs: [&quot;get&quot;, &quot;list&quot;, &quot;watch&quot;, &quot;create&quot;, &quot;update&quot;, &quot;patch&quot;, &quot;delete&quot;]
+- apiGroups: [&quot;&quot;]
+  resources: [&quot;events&quot;]
+  verbs: [&quot;get&quot;, &quot;list&quot;, &quot;watch&quot;, &quot;create&quot;, &quot;update&quot;, &quot;patch&quot;, &quot;delete&quot;]
+
+</code></pre>
+<p>File: <code>api-tester-clusterrolebinding.yaml</code></p>
+<pre><code>apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: api-tester-cluster-role-binding
+subjects:
+- kind: ServiceAccount
+  name: api-tester
+  namespace: default
+roleRef:
+  kind: ClusterRole
+  name: api-tester-cluster-role
+  apiGroup: rbac.authorization.k8s.io
+</code></pre>
+<p>apply</p>
+<pre><code>kubectl apply -f api-tester-clusterrole.yaml  -f api-tester-clusterrolebinding.yaml
 </code></pre>
               
             </div>
