@@ -392,6 +392,26 @@ kube-worker          Ready    &lt;none&gt;          47h   v1.29.2   172.18.0.3  
 kube-worker2         Ready    &lt;none&gt;          47h   v1.29.2   172.18.0.4    &lt;none&gt;        Debian GNU/Linux 12 (bookworm)   6.8.0-31-generic   containerd://1.7.13
 </code></pre>
 <p>in the above example, <code>kube-worker</code> is the node where ingress is running which has and ip address of <code>172.18.0.3</code>. Thats what should be used in the load test config.</p>
+<p>Before launching the load test, ensure that the http auth for the ingress is disabled. Remove the annotations block similar to follows  from the ingress configuration for vote if you see it....</p>
+<p>e.g. change the ingress spec from</p>
+<pre><code>apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: vote
+  namespace: instavote
+  annotations:
+    nginx.ingress.kubernetes.io/auth-type: basic
+    nginx.ingress.kubernetes.io/auth-secret: basic-auth
+    # message to display with an appropriate context why the authentication is required
+    nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required - Vote App'
+</code></pre>
+<p>to</p>
+<pre><code>apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: vote
+  namespace: instavote
+</code></pre>
 <p>Finally create an instance of this job as,</p>
 <pre><code>kubectl create -f loadtest-ing-job.yaml
 </code></pre>
