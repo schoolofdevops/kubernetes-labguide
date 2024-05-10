@@ -84,8 +84,6 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../kubernetes-configuration-management-configmaps-secrets/">Lab K110 - ConfigMaps & Secrets</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../rbac_101/">Lab K111 - RBAC Policies</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../ingress/">Lab K112 - Ingress</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../helm/">Lab K113 - HELM Package Manager</a>
@@ -94,24 +92,8 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Additional CKAD Topics</span></p>
-              <ul class="current">
+              <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../advanced_pod_design/">Lab K201 - Advanced Pod Design</a>
-                  </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K207 - Network Policies</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#locking-down-access-to-a-namespace">Locking down access to a namespace</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#enabling-external-traffic-to-outward-facing-applications">Enabling external traffic to outward facing applications</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#enabling-communication-between-pods-in-the-same-namespace">Enabling communication between pods in the same namespace</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#troubleshooting-exercise">Troubleshooting Exercise</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#nano-project">Nano Project</a>
-    </li>
-    </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../pods-health-probes/">Lab K204 - Health Checks</a>
                   </li>
@@ -131,6 +113,27 @@
                   <li class="toctree-l1"><a class="reference internal" href="../cluster-administration/">Lab K304 - Cluster Administration</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../cluster-troubleshooting/">Lab K305 - Cluster Troubleshooting</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Kubernetes Security</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../rbac_101/">Lab K111 - RBAC Policies</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K207 - Network Policies</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#locking-down-access-to-a-namespace">Locking down access to a namespace</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#enabling-external-traffic-to-outward-facing-applications">Enabling external traffic to outward facing applications</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#enabling-communication-between-pods-in-the-same-namespace">Enabling communication between pods in the same namespace</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#troubleshooting-exercise">Troubleshooting Exercise</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#nano-project">Nano Project</a>
+    </li>
+    </ul>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Additional Topics</span></p>
@@ -193,7 +196,7 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a> &raquo;</li>
-          <li>Additional CKAD Topics &raquo;</li>
+          <li>Kubernetes Security &raquo;</li>
       <li class="breadcrumb-item active">Lab K207 - Network Policies</li>
     <li class="wy-breadcrumbs-aside">
           <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/network_policies.md" class="icon icon-github"> Edit on GitHub</a>
@@ -443,8 +446,8 @@ spec:
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../advanced_pod_design/" class="btn btn-neutral float-left" title="Lab K201 - Advanced Pod Design"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../pods-health-probes/" class="btn btn-neutral float-right" title="Lab K204 - Health Checks">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../rbac_101/" class="btn btn-neutral float-left" title="Lab K111 - RBAC Policies"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../install_kubernetes_with_kubeadm/" class="btn btn-neutral float-right" title="Lab K400 - Install Kubernetes with Kubeadm">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -472,10 +475,10 @@ spec:
         </span>
     
     
-      <span><a href="../advanced_pod_design/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../rbac_101/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../pods-health-probes/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../install_kubernetes_with_kubeadm/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
