@@ -230,7 +230,7 @@
 <p>What this does is starts collecting metrics from services from all the namespaces not just the one in which prometheus is deployed. And it reads the annotations from the pods to figure out where to collect the metrics from.  </p>
 <p>Now, login to grafana and import custom dashboard for Nginx Ingress as</p>
 <ul>
-<li>Left menu (hover over +) -&gt; Dashboard </li>
+<li>Left menu (hover over +) -&gt; Dashboard</li>
 <li>Click "Import"</li>
 <li>Enter the copy pasted json from <a href="https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/grafana/dashboards/nginx.json">https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/grafana/dashboards/nginx.json</a></li>
 <li>Click Import JSON</li>
@@ -395,7 +395,6 @@ kube-worker2         Ready    &lt;none&gt;          47h   v1.29.2   172.18.0.4  
 <p>and now watch the scaling</p>
 <pre><code>watch 'kubectl top pods; kubectl get hpa; kubectl get pods'
 </code></pre>
-<h1 id="kubernetes">KUBERNETES</h1>
               
             </div>
           </div><footer>
