@@ -271,7 +271,7 @@ rules:
       name:
         matches: &quot;^nginx_ingress_controller_request_duration_seconds_bucket$&quot;
         as: &quot;nginx_ingress_controller_latency&quot;
-      metricsQuery: 'sum(rate(nginx_ingress_controller_request_duration_seconds_bucket{}[2m])) by (namespace, ingress, le)'
+      metricsQuery: 'sum(rate(nginx_ingress_controller_request_duration_seconds_bucket{}[2m])) by (namespace, ingress, le) / 1000'
 </code></pre>
 <p>install the adapter as,  </p>
 <pre><code>helm upgrade --install  prometheus-adapter prometheus-community/prometheus-adapter -f prometheus-adapter-values.yaml -n monitoring
@@ -378,8 +378,8 @@ kubectl apply -f vote-custom-hpa.yaml
 <pre><code>kubectl get hpa
 </code></pre>
 <p>[sample output]</p>
-<pre><code>NAME          REFERENCE         TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
-vote-custom   Deployment/vote    0/200     2         10        1          11h
+<pre><code>NAME          REFERENCE         TARGETS       MINPODS   MAXPODS   REPLICAS   AGE
+vote-custom   Deployment/vote   0/100, 0/50   2         10        2          10h
 </code></pre>
 <p>now create a new load test config</p>
 <p>File:  <code>loadtest-ing-job.yaml</code></p>
