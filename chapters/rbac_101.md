@@ -1,5 +1,9 @@
 
-Clone API Tester app and launch it
+# Defining RBAC Policies
+
+To understand how to define RBAC Policies, in this lab, you are going to work with the API Tester app, and the add relevant policies to it.
+
+To begin with, clone API Tester app and launch it
 
 ```
 git clone https://github.com/schoolofdevops/k8s-api-tester.git
@@ -111,13 +115,24 @@ apply
 kubectl apply -f api-tester-deploy.yaml
 ```
 
+validate
+
+```
+
+kubectl get pods
+
+kubectl logs -f api-tester-xxxx
+```
+
+at this time it should show you that it has the permissions to list pods, deployments and services in a namespace.
+
+
 ## Adding CLusterRoles and ClusterRoleBindings
 
 Add the following permissions for `api-tester` app
 
   * It should be able to list `persistentvolumeclaims` in all namespaces
   * It should have ability to create and delete `persistentvolumes` in all namespaces
-  * It should have ability to read and write `events` cluster wide
 
 
 File: `api-tester-clusterrole.yaml`
@@ -158,3 +173,13 @@ apply
 ```
 kubectl apply -f api-tester-clusterrole.yaml  -f api-tester-clusterrolebinding.yaml
 ```
+
+validate
+
+```
+kubectl get pods
+
+kubectl logs -f api-tester-xxxx
+```
+
+At this time the logs for the api tester app should show you that it has the authorization to work with PVs and PVCs as well.

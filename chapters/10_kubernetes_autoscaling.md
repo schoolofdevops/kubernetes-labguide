@@ -1,4 +1,4 @@
-# Kubernetes Horizonntal Pod Autoscaling
+# Autoscaling Pods with HPA
 
 With Horizontal Pod Autoscaling, Kubernetes automatically scales the number of pods in a replication controller, deployment or replica set based on observed CPU utilization (or, with alpha support, on some other, application-provided metrics).
 
@@ -86,13 +86,13 @@ spec:
     - type: ContainerResource
       containerResource:
         name: cpu
-        container: app  # change this as per actual container name
+        container: vote  # change this as per actual container name
         target:
           type: Utilization
           averageUtilization: 50
   scaleTargetRef:
     apiVersion: apps/v1
-    kind: ReplicaSet # change it to Deployment if have created a deployment already
+    kind: Deployment # change it to Deployment if have created a deployment already
     name: vote
   behavior:
     scaleDown:
@@ -115,7 +115,6 @@ spec:
         periodSeconds: 15
       selectPolicy: Max
 ```
-Source: [You could get this code from here.](https://gist.github.com/initcron/fe34915fd222583e3170f4f88fc1054f)
 
 apply
 
@@ -127,7 +126,20 @@ Validate
 
 ```
 kubectl get hpa
+```
 
+you should see
+
+[sample output]
+```
+NAME   REFERENCE         TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+vote   Deployment/vote   2%/50%    2         10        2          12m
+```
+
+If you see `unknown/50%` under `TARGETS`, there is a underlying issue that you may need to resolve.  Check if you have defined the resources (rquests, limits) for the containers in the pod.
+
+
+```
 kubectl describe hpa vote
 
 kubectl get pod,deploy
@@ -254,7 +266,7 @@ While it is running,
 
 ##### Summary
 
-In this lab, you have successfull configured and demonstrated dynamic scaling ability of kubernetes using horizontalpodautoscalers. You have also learnt about a new **jobs** controller type for running one off or batch jobs.
+In this lab, you have successful configured and demonstrated dynamic scaling ability of kubernetes using HorizontalPodAutoscaler. You have also learnt about a new **jobs** controller type for running one off or batch jobs.
 
 
 ##### Reading List

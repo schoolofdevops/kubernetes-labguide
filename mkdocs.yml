@@ -20,7 +20,7 @@ nav:
      - Lab K108 - Storage: "kubernetes-dynamic-storage-provisioning.md"
      - Lab K109 - Mini Project: "kubernetes-sample-project.md"
      - Lab K110 - ConfigMaps & Secrets: "kubernetes-configuration-management-configmaps-secrets.md"
-     - Lab K111 - RBAC Concepts : "rbac_101.md"
+     - Lab K111 - RBAC Policies: "rbac_101.md"
      - Lab K112 - Ingress: "ingress.md"
      - Lab K113 - HELM Package Manager: "helm.md"
      - Lab K114 - Writing HELM Charts: "helm_charts.md"
@@ -32,10 +32,10 @@ nav:
      - Lab K206 - Statefulsets: "13_redis_statefulset.md"
   - Additional CKA Topics:
      - Lab K301 - Auto Scaling with HPA : "10_kubernetes_autoscaling.md"
-     - Lab 302 - Autoscaling on Custom Metric: "custom_autoscaling.md" 
-     - Lab K302 - Advanced Pod Scheduling: "advanced_pod_scheduling.md"
-     - Lab K303 - Cluster Administration: "cluster-administration.md"
-     - Lab K304 - Cluster Troubleshooting: "cluster-troubleshooting.md"
+     - Lab K302 - Autoscaling on Custom Metric: "custom_autoscaling.md"
+     - Lab K303 - Advanced Pod Scheduling: "advanced_pod_scheduling.md"
+     - Lab K304 - Cluster Administration: "cluster-administration.md"
+     - Lab K305 - Cluster Troubleshooting: "cluster-troubleshooting.md"
   - Additional Topics:
      - Lab K400 - Install Kubernetes with Kubeadm: "install_kubernetes_with_kubeadm.md"
      - Lab K401 - Creating Users, Groups and Authorization: "configuring_authentication_and_authorization.md"

@@ -140,20 +140,20 @@ If you see this, your adapter configuration integratd with prometheus is set up 
 
 Add autoscaling policies based on the custom metric as
 
-File : `custom-hpa.yaml`
+File : `vote-custom-hpa.yaml`
 ```
 
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: custom
+  name: vote-custom
   namespace: instavote
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
     name: vote
-  minReplicas: 1
+  minReplicas: 2
   maxReplicas: 10
   metrics:
     - type: Object
@@ -193,8 +193,8 @@ spec:
 Apply it as
 
 ```
-
-kubectl apply -f custom-hpa.yaml
+kubectl delete hpa vote
+kubectl apply -f vote-custom-hpa.yaml
 
 ```
 
@@ -207,8 +207,8 @@ kubectl get hpa
 [sample output]
 
 ```
-NAME     REFERENCE         TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
-custom   Deployment/vote   0/200     1         10        1          11h
+NAME          REFERENCE         TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+vote-custom   Deployment/vote    0/200     2         10        1          11h
 ```
 
 
