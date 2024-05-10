@@ -245,14 +245,8 @@
 <p>However, if you see some metric coming in, your setup with Nginx Ingress and Promethus Integration is working !  You may pat your back at this time :)</p>
 <h3 id="setup-prometheus-adapter">Setup Prometheus Adapter</h3>
 <p>Prometheus adapter converts the prometheus metrics and makes it available in kubernetes under  <code>custom.metrics.k8s.io</code>  api which can then read by the HPA and used as a input for autoscaling.</p>
-<p>install the adapter as,  </p>
-<pre><code>helm install prometheus-adapter prometheus-community/prometheus-adapter -f prometheus-adapter-values.yaml -n monitoring
-</code></pre>
-<p>validate its running</p>
-<pre><code>kubectl get pods -n monitoring
-</code></pre>
-<p>Now add configuration for this adapter to pick a specific metric from prometheus and expose it under custom API as,</p>
-<p>FIle : <code>prometheus-adapter-values.yaml</code></p>
+<p>Begin by creating the configuration for this adapter to pick a specific metric from prometheus and expose it under custom API as,</p>
+<p>File : <code>prometheus-adapter-values.yaml</code></p>
 <pre><code>prometheus:
   url: http://prom-kube-prometheus-stack-prometheus  # Ensure this is correctly pointing to your Prometheus
   port: 9090
@@ -260,7 +254,7 @@
 rules:
   default: false
   custom:
-    - seriesQuery: 'nginx_ingress_controller_requests{exported_namespace=&quot;instavote&quot;, ingress=&quot;vote&quot;}'
+    - seriesQuery: 'nginx_ingress_controller_requests'
       resources:
         overrides:
           namespace: {resource: &quot;namespace&quot;}
@@ -268,16 +262,29 @@ rules:
       name:
         matches: &quot;^nginx_ingress_controller_requests$&quot;
         as: &quot;nginx_ingress_controller_requests_per_second&quot;
-      metricsQuery: 'sum(rate(nginx_ingress_controller_requests{exported_namespace=&quot;instavote&quot;, ingress=&quot;vote&quot;, status=~&quot;2..&quot;}[2m])) by (ingress)'
-
+      metricsQuery: 'sum(rate(nginx_ingress_controller_requests{status=~&quot;2..&quot;}[2m])) by (namespace, ingress)'
+    - seriesQuery: 'nginx_ingress_controller_request_duration_seconds_bucket'
+      resources:
+        overrides:
+          namespace: {resource: &quot;namespace&quot;}
+          ingress: {resource: &quot;ingress&quot;}
+      name:
+        matches: &quot;^nginx_ingress_controller_request_duration_seconds_bucket$&quot;
+        as: &quot;nginx_ingress_controller_latency&quot;
+      metricsQuery: 'sum(rate(nginx_ingress_controller_request_duration_seconds_bucket{}[2m])) by (namespace, ingress, le)'
 </code></pre>
-<p>now apply these configurations by upgrading the prometheus adapter</p>
-<pre><code>helm upgrade prometheus-adapter prometheus-community/prometheus-adapter -f prometheus-adapter-values.yaml -n monitoring
+<p>install the adapter as,  </p>
+<pre><code>helm upgrade --install  prometheus-adapter prometheus-community/prometheus-adapter -f prometheus-adapter-values.yaml -n monitoring
+</code></pre>
+<p>validate its running</p>
+<pre><code>kubectl get pods -n monitoring
 </code></pre>
 <p>validate that custom apis are working with</p>
 <pre><code>kubectl get --raw &quot;/apis/custom.metrics.k8s.io&quot; | jq .
 
 kubectl get --raw &quot;/apis/custom.metrics.k8s.io/v1beta1/namespaces/instavote/ingresses/vote/nginx_ingress_controller_requests_per_second&quot; | jq .
+
+kubectl get --raw &quot;/apis/custom.metrics.k8s.io/v1beta1/namespaces/instavote/ingresses/vote/nginx_ingress_controller_latency&quot; | jq .
 </code></pre>
 <p>with the second command, you are expected to see
 [sample output]</p>
@@ -305,8 +312,7 @@ kubectl get --raw &quot;/apis/custom.metrics.k8s.io/v1beta1/namespaces/instavote
 <h2 id="configure-custom-autoscaling-policies">Configure Custom Autoscaling Policies</h2>
 <p>Add autoscaling policies based on the custom metric as</p>
 <p>File : <code>vote-custom-hpa.yaml</code></p>
-<pre><code>
-apiVersion: autoscaling/v2
+<pre><code>apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: vote-custom
@@ -329,7 +335,18 @@ spec:
           name: vote
         target:
           type: Value
-          value: 200  # Target 200 requests per second per replica
+          value: 100  # Target 200 requests per second per replica
+    - type: Object
+      object:
+        metric:
+          name: nginx_ingress_controller_latency
+        describedObject:
+          apiVersion: networking.k8s.io/v1
+          kind: Ingress
+          name: vote
+        target:
+          type: Value
+          value: 50  # Target 50 milliseconds
   behavior:
     scaleDown:
       policies:
@@ -340,6 +357,7 @@ spec:
         value: 25
         periodSeconds: 120
       stabilizationWindowSeconds: 60
+      selectPolicy: Min
     scaleUp:
       stabilizationWindowSeconds: 45
       policies:
