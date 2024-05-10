@@ -208,7 +208,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="kubernetes-horizonntal-pod-autoscaling">Kubernetes Horizonntal Pod Autoscaling</h1>
+                <h1 id="autoscaling-pods-with-hpa">Autoscaling Pods with HPA</h1>
 <p>With Horizontal Pod Autoscaling, Kubernetes automatically scales the number of pods in a replication controller, deployment or replica set based on observed CPU utilization (or, with alpha support, on some other, application-provided metrics).</p>
 <p>The Horizontal Pod Autoscaler is implemented as a Kubernetes API resource and a controller. The resource determines the behavior of the controller. The controller periodically adjusts the number of replicas in a replication controller or deployment to match the observed average CPU utilization to the target specified by user</p>
 <h3 id="prerequisites">Prerequisites</h3>
@@ -265,13 +265,13 @@ spec:
     - type: ContainerResource
       containerResource:
         name: cpu
-        container: app  # change this as per actual container name
+        container: vote  # change this as per actual container name
         target:
           type: Utilization
           averageUtilization: 50
   scaleTargetRef:
     apiVersion: apps/v1
-    kind: ReplicaSet # change it to Deployment if have created a deployment already
+    kind: Deployment # change it to Deployment if have created a deployment already
     name: vote
   behavior:
     scaleDown:
@@ -294,14 +294,19 @@ spec:
         periodSeconds: 15
       selectPolicy: Max
 </code></pre>
-<p>Source: <a href="https://gist.github.com/initcron/fe34915fd222583e3170f4f88fc1054f">You could get this code from here.</a></p>
 <p>apply</p>
 <pre><code>kubectl apply -f vote-hpa.yaml
 </code></pre>
 <p>Validate</p>
 <pre><code>kubectl get hpa
-
-kubectl describe hpa vote
+</code></pre>
+<p>you should see</p>
+<p>[sample output]</p>
+<pre><code>NAME   REFERENCE         TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+vote   Deployment/vote   2%/50%    2         10        2          12m
+</code></pre>
+<p>If you see <code>unknown/50%</code> under <code>TARGETS</code>, there is a underlying issue that you may need to resolve.  Check if you have defined the resources (rquests, limits) for the containers in the pod.</p>
+<pre><code>kubectl describe hpa vote
 
 kubectl get pod,deploy
 
@@ -389,7 +394,7 @@ vote-loadtest   1         1            10m
 <li>You should see hpa in action as it scales out/in the  vote deployment with the increasing/decreasing load.</li>
 </ul>
 <h5 id="summary">Summary</h5>
-<p>In this lab, you have successfull configured and demonstrated dynamic scaling ability of kubernetes using horizontalpodautoscalers. You have also learnt about a new <strong>jobs</strong> controller type for running one off or batch jobs.</p>
+<p>In this lab, you have successful configured and demonstrated dynamic scaling ability of kubernetes using HorizontalPodAutoscaler. You have also learnt about a new <strong>jobs</strong> controller type for running one off or batch jobs.</p>
 <h5 id="reading-list">Reading List</h5>
 <ul>
 <li><a href="https://github.com/kubernetes/community/blob/master/contributors/design-proposals/instrumentation/monitoring_architecture.md">Kubernetes Monitoring Architecture</a></li>
