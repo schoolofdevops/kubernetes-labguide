@@ -301,19 +301,19 @@ kubectl get --raw &quot;/apis/custom.metrics.k8s.io/v1beta1/namespaces/instavote
 <p>If you see this, your adapter configuration integratd with prometheus is set up and ready to be consumed by the hpa.</p>
 <h2 id="configure-custom-autoscaling-policies">Configure Custom Autoscaling Policies</h2>
 <p>Add autoscaling policies based on the custom metric as</p>
-<p>File : <code>custom-hpa.yaml</code></p>
+<p>File : <code>vote-custom-hpa.yaml</code></p>
 <pre><code>
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: custom
+  name: vote-custom
   namespace: instavote
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
     name: vote
-  minReplicas: 1
+  minReplicas: 2
   maxReplicas: 10
   metrics:
     - type: Object
@@ -349,16 +349,16 @@ spec:
       selectPolicy: Max
 </code></pre>
 <p>Apply it as</p>
-<pre><code>
-kubectl apply -f custom-hpa.yaml
+<pre><code>kubectl delete hpa vote
+kubectl apply -f vote-custom-hpa.yaml
 
 </code></pre>
 <p>validate</p>
 <pre><code>kubectl get hpa
 </code></pre>
 <p>[sample output]</p>
-<pre><code>NAME     REFERENCE         TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
-custom   Deployment/vote   0/200     1         10        1          11h
+<pre><code>NAME          REFERENCE         TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+vote-custom   Deployment/vote    0/200     2         10        1          11h
 </code></pre>
 <p>now create a new load test config</p>
 <p>File:  <code>loadtest-ing-job.yaml</code></p>
