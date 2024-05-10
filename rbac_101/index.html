@@ -5,14 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/rbac_101/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Lab K111 - RBAC Concepts - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <title>Lab K111 - RBAC Policies - Kubernetes Tutorial with CKA/CKAD Prep</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Lab K111 - RBAC Concepts";
+        var mkdocs_page_name = "Lab K111 - RBAC Policies";
         var mkdocs_page_input_path = "rbac_101.md";
         var mkdocs_page_url = "/rbac_101/";
       </script>
@@ -84,8 +84,12 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../kubernetes-configuration-management-configmaps-secrets/">Lab K110 - ConfigMaps & Secrets</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K111 - RBAC Concepts</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K111 - RBAC Policies</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#adding-roles-and-clusterroles">Adding Roles and ClusterRoles</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#adding-clusterroles-and-clusterrolebindings">Adding CLusterRoles and ClusterRoleBindings</a>
+    </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../ingress/">Lab K112 - Ingress</a>
@@ -182,7 +186,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a> &raquo;</li>
           <li>Kubernetes Essentials for CKA/CKAD &raquo;</li>
-      <li class="breadcrumb-item active">Lab K111 - RBAC Concepts</li>
+      <li class="breadcrumb-item active">Lab K111 - RBAC Policies</li>
     <li class="wy-breadcrumbs-aside">
           <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/rbac_101.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
@@ -192,7 +196,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <p>Clone API Tester app and launch it</p>
+                <h1 id="defining-rbac-policies">Defining RBAC Policies</h1>
+<p>To understand how to define RBAC Policies, in this lab, you are going to work with the API Tester app, and the add relevant policies to it.</p>
+<p>To begin with, clone API Tester app and launch it</p>
 <pre><code>git clone https://github.com/schoolofdevops/k8s-api-tester.git
 cd k8s-api-tester
 
@@ -276,12 +282,18 @@ spec:
 <p>apply</p>
 <pre><code>kubectl apply -f api-tester-deploy.yaml
 </code></pre>
+<p>validate</p>
+<pre><code>
+kubectl get pods
+
+kubectl logs -f api-tester-xxxx
+</code></pre>
+<p>at this time it should show you that it has the permissions to list pods, deployments and services in a namespace.</p>
 <h2 id="adding-clusterroles-and-clusterrolebindings">Adding CLusterRoles and ClusterRoleBindings</h2>
 <p>Add the following permissions for <code>api-tester</code> app</p>
 <ul>
 <li>It should be able to list <code>persistentvolumeclaims</code> in all namespaces</li>
 <li>It should have ability to create and delete <code>persistentvolumes</code> in all namespaces</li>
-<li>It should have ability to read and write <code>events</code> cluster wide</li>
 </ul>
 <p>File: <code>api-tester-clusterrole.yaml</code></p>
 <pre><code>apiVersion: rbac.authorization.k8s.io/v1
@@ -314,6 +326,12 @@ roleRef:
 <p>apply</p>
 <pre><code>kubectl apply -f api-tester-clusterrole.yaml  -f api-tester-clusterrolebinding.yaml
 </code></pre>
+<p>validate</p>
+<pre><code>kubectl get pods
+
+kubectl logs -f api-tester-xxxx
+</code></pre>
+<p>At this time the logs for the api tester app should show you that it has the authorization to work with PVs and PVCs as well.</p>
               
             </div>
           </div><footer>
