@@ -3,18 +3,18 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/helm_charts/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/custom_autoscaling/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Lab K114 - Writing HELM Charts - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <title>Lab 302 - Autoscaling on Custom Metric - Kubernetes Tutorial with CKA/CKAD Prep</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Lab K114 - Writing HELM Charts";
-        var mkdocs_page_input_path = "helm_charts.md";
-        var mkdocs_page_url = "/helm_charts/";
+        var mkdocs_page_name = "Lab 302 - Autoscaling on Custom Metric";
+        var mkdocs_page_input_path = "custom_autoscaling.md";
+        var mkdocs_page_url = "/custom_autoscaling/";
       </script>
     
     <!--[if lt IE 9]>
@@ -65,7 +65,7 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Kubernetes Essentials for CKA/CKAD</span></p>
-              <ul class="current">
+              <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../kind_create_cluster/">Lab K101 - Install Kubernetes with KIND</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../kubernetes_quickdive/">Lab K102 - Kubernetes Quickdive</a>
@@ -90,17 +90,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../helm/">Lab K113 - HELM Package Manager</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K114 - Writing HELM Charts</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#part-i-generating-a-chart-with-one-service">Part I - Generating a Chart with One Service</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#part-ii-adding-support-for-more-microservices">Part II - Adding support for More Microservices</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#exercise">Exercise</a>
-    </li>
-        </ul>
-    </li>
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../helm_charts/">Lab K114 - Writing HELM Charts</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Additional CKAD Topics</span></p>
@@ -117,10 +107,20 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Additional CKA Topics</span></p>
-              <ul>
+              <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../10_kubernetes_autoscaling/">Lab K301 - Auto Scaling with HPA</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../custom_autoscaling/">Lab 302 - Autoscaling on Custom Metric</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab 302 - Autoscaling on Custom Metric</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#setup-nginx-ingress-with-metrics">Setup Nginx Ingress with Metrics</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#configure-prometheus-to-monitor-nginx-ingress">Configure Prometheus to monitor Nginx Ingress</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#setup-prometheus-adapter">Setup Prometheus Adapter</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#configure-custom-autoscaling-policies">Configure Custom Autoscaling Policies</a>
+    </li>
+    </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../advanced_pod_scheduling/">Lab K302 - Advanced Pod Scheduling</a>
                   </li>
@@ -189,10 +189,10 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a> &raquo;</li>
-          <li>Kubernetes Essentials for CKA/CKAD &raquo;</li>
-      <li class="breadcrumb-item active">Lab K114 - Writing HELM Charts</li>
+          <li>Additional CKA Topics &raquo;</li>
+      <li class="breadcrumb-item active">Lab 302 - Autoscaling on Custom Metric</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/helm_charts.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/custom_autoscaling.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -200,133 +200,206 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="building-your-own-helm-charts">Building your own Helm Charts</h1>
-<p>If you have not installed helm yet, do so by using</p>
-<pre><code>curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 |  bash 
+                <h1 id="auto-scaling-on-custom-metric">Auto Scaling on Custom Metric</h1>
+<p>For this lab, you must have configured Prometheus and Grafana using help already. Refer to <a href="https://kubernetes-tutorial.schoolofdevops.com/helm/">Lab K113 - HELM Package Manager - Kubernetes Tutorial with CKA/CKAD Prep</a> to set it up.</p>
+<h3 id="setup-nginx-ingress-with-metrics">Setup Nginx Ingress with Metrics</h3>
+<p>Delete existing nginx ingress controller setup with KIND  </p>
+<pre><code>kubectl delete -f  https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
+</code></pre>
+<p>Re deploy nginx ingress controller with helm, this time enabling the exposing the metrics which can then be scraped/collected by prometheus.</p>
+<pre><code>helm upgrade --install ingress-nginx ingress-nginx \
+  --repo https://kubernetes.github.io/ingress-nginx \
+  --namespace ingress-nginx --create-namespace \
+  --set controller.metrics.enabled=true \
+  --set controller.metrics.serviceMonitor.enabled=true --set \ controller.metrics.serviceMonitor.additionalLabels.release=&quot;prometheus&quot; \
+  --set controller.hostPort.enabled=true \
+  --set controller.hostPort.ports.http=80 \
+  --set controller.hostPort.ports.https=443 \
+  --set-string controller.nodeSelector.&quot;kubernetes\.io/os&quot;=linux \
+  --set-string controller.nodeSelector.ingress-ready=&quot;true&quot;
 
-helm
+</code></pre>
+<h3 id="configure-prometheus-to-monitor-nginx-ingress">Configure Prometheus to monitor Nginx Ingress</h3>
+<p>Update the existing Prometheus installation to support scrpaing services in all namespaces</p>
+<p>assuming you deployed prometheus stack from <code>kube-prometheus-stack</code> path, switch to</p>
+<pre><code>cd ~/kube-prometheus-stack/
+</code></pre>
+<p>and upgrade</p>
+<pre><code>helm upgrade prom -n monitoring --values my.values.yaml . --set prometheus.prometheusSpec.podMonitorSelectorNilUsesHelmValues=false --set prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues=false
+</code></pre>
+<p>What this does is starts collecting metrics from services from all the namespaces not just the one in which prometheus is deployed. And it reads the annotations from the pods to figure out where to collect the metrics from.  </p>
+<p>Now, login to grafana and import custom dashboard for Nginx Ingress as
+* Left menu (hover over +) -&gt; Dashboard
+* Click "Import"
+* Enter the copy pasted json from <a href="https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/grafana/dashboards/nginx.json">https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/grafana/dashboards/nginx.json</a>
+* Click Import JSON
+* Select the Prometheus data source
+* Click "Import"</p>
+<p>It may look similar to this, with possibly less data initially
+<img alt="" src="images/grafana-01.png" /></p>
+<p>However, if you see some metric coming in, your setup with Nginx Ingress and Promethus Integration is working !  You may pat your back at this time :)</p>
+<h3 id="setup-prometheus-adapter">Setup Prometheus Adapter</h3>
+<p>Prometheus adapter converts the prometheus metrics and makes it available in kubernetes under  <code>custom.metrics.k8s.io</code>  api which can then read by the HPA and used as a input for autoscaling.</p>
+<p>install the adapter as,  </p>
+<pre><code>helm install prometheus-adapter prometheus-community/prometheus-adapter -f prometheus-adapter-values.yaml -n monitoring
+</code></pre>
+<p>validate its running</p>
+<pre><code>kubectl get pods -n monitoring
+</code></pre>
+<p>Now add configuration for this adapter to pick a specific metric from prometheus and expose it under custom API as,</p>
+<p>FIle : <code>prometheus-adapter-values.yaml</code></p>
+<pre><code>prometheus:
+  url: http://prom-kube-prometheus-stack-prometheus  # Ensure this is correctly pointing to your Prometheus
+  port: 9090
+
+rules:
+  default: false
+  custom:
+    - seriesQuery: 'nginx_ingress_controller_requests{exported_namespace=&quot;instavote&quot;, ingress=&quot;vote&quot;}'
+      resources:
+        overrides:
+          namespace: {resource: &quot;namespace&quot;}
+          ingress: {resource: &quot;ingress&quot;}
+      name:
+        matches: &quot;^nginx_ingress_controller_requests$&quot;
+        as: &quot;nginx_ingress_controller_requests_per_second&quot;
+      metricsQuery: 'sum(rate(nginx_ingress_controller_requests{exported_namespace=&quot;instavote&quot;, ingress=&quot;vote&quot;, status=~&quot;2..&quot;}[2m])) by (ingress)'
 
 </code></pre>
-<h2 id="part-i-generating-a-chart-with-one-service">Part I - Generating a Chart with One Service</h2>
-<p>Create a namespace and switch to it</p>
-<pre><code>kubectl create namespace dev
-kubectl config set-context --current --namespace=dev
-kubectl config get-contexts
+<p>now apply these configurations by upgrading the prometheus adapter</p>
+<pre><code>helm upgrade prometheus-adapter prometheus-community/prometheus-adapter -f prometheus-adapter-values.yaml -n monitoring
 </code></pre>
-<p>Generate a helm chart scaffold and change into the directory created to create a copy of values.yaml</p>
-<pre><code>cd ~
-helm create instavote
-cd instavote/
-cp values.yaml values.dev.yaml 
+<p>validate that custom apis are working with</p>
+<pre><code>kubectl get --raw &quot;/apis/custom.metrics.k8s.io&quot; | jq .
+
+kubectl get --raw &quot;/apis/custom.metrics.k8s.io/v1beta1/namespaces/instavote/ingresses/vote/nginx_ingress_controller_requests_per_second&quot; | jq .
 </code></pre>
-<p>Edit <code>values.dev.yaml</code>  to  update replicaCount, image and tag as</p>
+<p>with the second command, you are expected to see
+[sample output]</p>
+<pre><code>{
+  &quot;kind&quot;: &quot;MetricValueList&quot;,
+  &quot;apiVersion&quot;: &quot;custom.metrics.k8s.io/v1beta1&quot;,
+  &quot;metadata&quot;: {},
+  &quot;items&quot;: [
+    {
+      &quot;describedObject&quot;: {
+        &quot;kind&quot;: &quot;Ingress&quot;,
+        &quot;namespace&quot;: &quot;instavote&quot;,
+        &quot;name&quot;: &quot;vote&quot;,
+        &quot;apiVersion&quot;: &quot;networking.k8s.io/v1&quot;
+      },
+      &quot;metricName&quot;: &quot;nginx_ingress_controller_requests_per_second&quot;,
+      &quot;timestamp&quot;: &quot;2024-05-10T02:41:54Z&quot;,
+      &quot;value&quot;: &quot;0&quot;,
+      &quot;selector&quot;: null
+    }
+  ]
+}
+</code></pre>
+<p>If you see this, your adapter configuration integratd with prometheus is set up and ready to be consumed by the hpa.</p>
+<h2 id="configure-custom-autoscaling-policies">Configure Custom Autoscaling Policies</h2>
+<p>Add autoscaling policies based on the custom metric as</p>
+<p>File : <code>custom-hpa.yaml</code></p>
 <pre><code>
-replicaCount: 4 
-image: 
-  repository: schoolofdevops/vote 
-  pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion. 
-  tag: &quot;v5&quot; 
-</code></pre>
-<p>Update service type to Node Port</p>
-<pre><code>service:
-  type: NodePort
-  port: 80
-  nodePort: 30300
-</code></pre>
-<p>Install this chart with helm to deploy the <code>vote</code> service as:</p>
-<pre><code>helm install instavote -n dev --values=values.dev.yaml  . --dry-run
-helm install instavote -n dev --values=values.dev.yaml  .
-</code></pre>
-<p>Validate with</p>
-<pre><code>helm list -A
-kubectl get all
-</code></pre>
-<h2 id="part-ii-adding-support-for-more-microservices">Part II - Adding support for More Microservices</h2>
-<p>Create copy of the templates so that you could add support for one more service e.g. redis</p>
-<pre><code>
-cd templates/
-mkdir vote redis
-mv deployment.yaml  hpa.yaml  ingress.yaml  service.yaml vote/
-cp vote/*.yaml redis/
-</code></pre>
-<p>You will start editing the templates so that template variables  such as  <code>Values.replicaCount</code> will be replaced with  <code>Values.vote.replicaCount</code>. Thats the theme you will have to follow from here on.</p>
-<p>e.g. this is the exisinng code</p>
-<pre><code>{{- if not .Values.autoscaling.enabled }}
-replicas: {{ .Values.replicaCount }}
-{{- end }}
-</code></pre>
-<p>which should be changes to</p>
-<pre><code>
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: custom
+  namespace: instavote
 spec:
-  {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.vote.replicaCount }}
-  {{- end }}
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: vote
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+    - type: Object
+      object:
+        metric:
+          name: nginx_ingress_controller_requests_per_second
+        describedObject:
+          apiVersion: networking.k8s.io/v1
+          kind: Ingress
+          name: vote
+        target:
+          type: Value
+          value: 200  # Target 200 requests per second per replica
+  behavior:
+    scaleDown:
+      policies:
+      - type: Pods
+        value: 2
+        periodSeconds: 120
+      - type: Percent
+        value: 25
+        periodSeconds: 120
+      stabilizationWindowSeconds: 60
+    scaleUp:
+      stabilizationWindowSeconds: 45
+      policies:
+      - type: Percent
+        value: 100
+        periodSeconds: 15
+      - type: Pods
+        value: 2
+        periodSeconds: 15
+      selectPolicy: Max
 </code></pre>
-<p>To make it easier, you could use text replacement feature of sed</p>
-<pre><code>cd templates/vote/
-sed -i 's/Values./Values.vote./g' deployment.yaml
-sed -i 's/Values./Values.vote./g' service.yaml
+<p>Apply it as</p>
+<pre><code>
+kubectl apply -f custom-hpa.yaml
+
 </code></pre>
-<p>and then</p>
-<pre><code>cd templates/redis/
-sed -i 's/Values./Values.redis./g' deployment.yaml
-sed -i 's/Values./Values.redis./g' service.yaml
+<p>validate</p>
+<pre><code>kubectl get hpa
 </code></pre>
-<p>Also change the name in the metadata field for the following files  </p>
-<pre><code>templates/vote/deployment.yaml
-templates/vote/service.yaml
+<p>[sample output]</p>
+<pre><code>NAME     REFERENCE         TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+custom   Deployment/vote   0/200     1         10        1          11h
 </code></pre>
-<p>from</p>
-<pre><code>metadata:
-  name: {{ include &quot;instavote.fullname&quot; . }}
+<p>now create a new load test config</p>
+<p>File:  <code>loadtest-ing-job.yaml</code></p>
+<pre><code>apiVersion: batch/v1
+kind: Job
+metadata:
+  generateName: loadtest-ing
+spec:
+  template:
+    spec:
+      containers:
+      - name: siege
+        image: schoolofdevops/loadtest:v1
+        command: [&quot;siege&quot;, &quot;--concurrent=2&quot;, &quot;--benchmark&quot;, &quot;--time=4m&quot;, &quot;http://vote.staging.example.com&quot;]
+      restartPolicy: Never
+      hostAliases:
+      - ip: &quot;ww.xx.yy.zz&quot;
+        hostnames:
+        - &quot;vote.example.com&quot;
+  backoffLimit: 4
 </code></pre>
-<p>to</p>
-<pre><code>metadata:
-  name: vote
+<p>where, replace <code>ww.xx.yy.zz</code> with the INTERNAL-IP address of the node which runs ingress which you can find using</p>
+<pre><code>kubectl get nodes -o wide
 </code></pre>
-<p>And similarly in the following files</p>
-<pre><code>templates/redis/deployment.yaml
-templates/redis/service.yaml
+<pre><code>NAME                 STATUS   ROLES           AGE   VERSION   INTERNAL-IP   EXTERNAL-IP   OS-IMAGE                         KERNEL-VERSION     CONTAINER-RUNTIME
+kube-control-plane   Ready    control-plane   47h   v1.29.2   172.18.0.2    &lt;none&gt;        Debian GNU/Linux 12 (bookworm)   6.8.0-31-generic   containerd://1.7.13
+kube-worker          Ready    &lt;none&gt;          47h   v1.29.2   172.18.0.3    &lt;none&gt;        Debian GNU/Linux 12 (bookworm)   6.8.0-31-generic   containerd://1.7.13
+kube-worker2         Ready    &lt;none&gt;          47h   v1.29.2   172.18.0.4    &lt;none&gt;        Debian GNU/Linux 12 (bookworm)   6.8.0-31-generic   containerd://1.7.13
 </code></pre>
-<p>from</p>
-<pre><code>metadata:
-  name: {{ include &quot;instavote.fullname&quot; . }}
+<p>in the above example, <code>kube-worker</code> is the node where ingress is running which has and ip address of <code>172.18.0.3</code>. Thats what should be used in the load test config.</p>
+<p>Finally create an instance of this job as,</p>
+<pre><code>kubectl create -f loadtest-ing-job.yaml
 </code></pre>
-<p>to</p>
-<pre><code>metadata:
-  name: redis
+<p>and now watch the scaling</p>
+<pre><code>watch 'kubectl top pods; kubectl get hpa; kubectl get pods'
 </code></pre>
-<p>Now update <code>instavote/values.yaml</code> to support multiple services </p>
-<ul>
-<li>add <code>vote</code> as top level key </li>
-<li>indent all properties so that those become sub properties of key added above i.e.  vote</li>
-<li>copy over and create blocks for redis</li>
-</ul>
-<p>Use this file as a reference <a href="https://gist.github.com/initcron/51b28ca62b568955516b6ddddcd40f77">values.yaml</a></p>
-<p>Now go ahead and deploy by  </p>
-<ul>
-<li>Creating your own copy of values.yaml</li>
-<li>Providing values specific to those services</li>
-</ul>
-<p>You could download this file with sample values <a href="https://gist.github.com/initcron/67e104f3a2949f20c2da06e19c854faa">values.dev.yaml</a> using the following command :</p>
-<pre><code>wget -c https://gist.githubusercontent.com/initcron/67e104f3a2949f20c2da06e19c854faa/raw/90c7b0c330f133efae43ea71efb1beba314ea451/values.dev.yaml
-</code></pre>
-<p>And apply</p>
-<pre><code>helm uninstall instavote
-helm install instavote -n dev --values=values.dev.yaml  .
-helm list -A
-kubectl get all
-</code></pre>
-<p>Validate that vote and redis are running with the values that you provided.</p>
-<h3 id="exercise">Exercise</h3>
-<p>Now that you have deployed vote and redis, go ahead and add the code to deploy  worker, db and result as well.</p>
+<h1 id="kubernetes">KUBERNETES</h1>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../helm/" class="btn btn-neutral float-left" title="Lab K113 - HELM Package Manager"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../advanced_pod_design/" class="btn btn-neutral float-right" title="Lab K201 - Advanced Pod Design">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../10_kubernetes_autoscaling/" class="btn btn-neutral float-left" title="Lab K301 - Auto Scaling with HPA"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../advanced_pod_scheduling/" class="btn btn-neutral float-right" title="Lab K302 - Advanced Pod Scheduling">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -354,10 +427,10 @@ kubectl get all
         </span>
     
     
-      <span><a href="../helm/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../10_kubernetes_autoscaling/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../advanced_pod_design/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../advanced_pod_scheduling/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
