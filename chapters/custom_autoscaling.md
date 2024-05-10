@@ -62,20 +62,11 @@ However, if you see some metric coming in, your setup with Nginx Ingress and Pro
 
 Prometheus adapter converts the prometheus metrics and makes it available in kubernetes under  `custom.metrics.k8s.io`  api which can then read by the HPA and used as a input for autoscaling.
 
-install the adapter as,  
 
-```
-helm install prometheus-adapter prometheus-community/prometheus-adapter -f prometheus-adapter-values.yaml -n monitoring
-```
 
-validate its running
-```
-kubectl get pods -n monitoring
-```
+Begin by creating the configuration for this adapter to pick a specific metric from prometheus and expose it under custom API as,
 
-Now add configuration for this adapter to pick a specific metric from prometheus and expose it under custom API as,
-
-FIle : `prometheus-adapter-values.yaml`
+File : `prometheus-adapter-values.yaml`
 
 ```
 prometheus:
@@ -85,7 +76,7 @@ prometheus:
 rules:
   default: false
   custom:
-    - seriesQuery: 'nginx_ingress_controller_requests{exported_namespace="instavote", ingress="vote"}'
+    - seriesQuery: 'nginx_ingress_controller_requests'
       resources:
         overrides:
           namespace: {resource: "namespace"}
@@ -93,14 +84,29 @@ rules:
       name:
         matches: "^nginx_ingress_controller_requests$"
         as: "nginx_ingress_controller_requests_per_second"
-      metricsQuery: 'sum(rate(nginx_ingress_controller_requests{exported_namespace="instavote", ingress="vote", status=~"2.."}[2m])) by (ingress)'
-
+      metricsQuery: 'sum(rate(nginx_ingress_controller_requests{status=~"2.."}[2m])) by (namespace, ingress)'
+    - seriesQuery: 'nginx_ingress_controller_request_duration_seconds_bucket'
+      resources:
+        overrides:
+          namespace: {resource: "namespace"}
+          ingress: {resource: "ingress"}
+      name:
+        matches: "^nginx_ingress_controller_request_duration_seconds_bucket$"
+        as: "nginx_ingress_controller_latency"
+      metricsQuery: 'sum(rate(nginx_ingress_controller_request_duration_seconds_bucket{}[2m])) by (namespace, ingress, le)'
 ```
 
-now apply these configurations by upgrading the prometheus adapter
+
+install the adapter as,  
 
 ```
-helm upgrade prometheus-adapter prometheus-community/prometheus-adapter -f prometheus-adapter-values.yaml -n monitoring
+helm upgrade --install  prometheus-adapter prometheus-community/prometheus-adapter -f prometheus-adapter-values.yaml -n monitoring
+```
+
+
+validate its running
+```
+kubectl get pods -n monitoring
 ```
 
 validate that custom apis are working with
@@ -109,6 +115,8 @@ validate that custom apis are working with
 kubectl get --raw "/apis/custom.metrics.k8s.io" | jq .
 
 kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/instavote/ingresses/vote/nginx_ingress_controller_requests_per_second" | jq .
+
+kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1/namespaces/instavote/ingresses/vote/nginx_ingress_controller_latency" | jq .
 ```
 
 with the second command, you are expected to see
@@ -142,7 +150,6 @@ Add autoscaling policies based on the custom metric as
 
 File : `vote-custom-hpa.yaml`
 ```
-
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
@@ -166,7 +173,18 @@ spec:
           name: vote
         target:
           type: Value
-          value: 200  # Target 200 requests per second per replica
+          value: 100  # Target 200 requests per second per replica
+    - type: Object
+      object:
+        metric:
+          name: nginx_ingress_controller_latency
+        describedObject:
+          apiVersion: networking.k8s.io/v1
+          kind: Ingress
+          name: vote
+        target:
+          type: Value
+          value: 50  # Target 50 milliseconds
   behavior:
     scaleDown:
       policies:
@@ -177,6 +195,7 @@ spec:
         value: 25
         periodSeconds: 120
       stabilizationWindowSeconds: 60
+      selectPolicy: Min
     scaleUp:
       stabilizationWindowSeconds: 45
       policies:
@@ -207,8 +226,8 @@ kubectl get hpa
 [sample output]
 
 ```
-NAME          REFERENCE         TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
-vote-custom   Deployment/vote    0/200     2         10        1          11h
+NAME          REFERENCE         TARGETS       MINPODS   MAXPODS   REPLICAS   AGE
+vote-custom   Deployment/vote   0/100, 0/50   2         10        2          10h
 ```
 
 
@@ -249,6 +268,33 @@ kube-worker2         Ready    <none>          47h   v1.29.2   172.18.0.4    <non
 ```
 
 in the above example, `kube-worker` is the node where ingress is running which has and ip address of `172.18.0.3`. Thats what should be used in the load test config.
+
+
+Before launching the load test, ensure that the http auth for the ingress is disabled. Remove the annotations block similar to follows  from the ingress configuration for vote if you see it....
+
+e.g. change the ingress spec from
+```
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: vote
+  namespace: instavote
+  annotations:
+    nginx.ingress.kubernetes.io/auth-type: basic
+    nginx.ingress.kubernetes.io/auth-secret: basic-auth
+    # message to display with an appropriate context why the authentication is required
+    nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required - Vote App'
+```
+
+to
+
+```
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: vote
+  namespace: instavote
+```
 
 Finally create an instance of this job as,
 
