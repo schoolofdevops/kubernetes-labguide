@@ -123,15 +123,19 @@
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#recreate-kind-cluster-with-calico">Recreate KIND Cluster with Calico</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#writing-network-policies">Writing Network Policies</a>
+    <li class="toctree-l2"><a class="reference internal" href="#recreating-the-application-deployment">Recreating the Application Deployment</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#locking-down-access-to-a-namespace">Locking down access to a namespace</a>
+    <li class="toctree-l2"><a class="reference internal" href="#locking-down-access-with-a-networkpolicy">Locking down access with a NetworkPolicy</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#enabling-external-traffic-to-outward-facing-applications">Enabling external traffic to outward facing applications</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#enabling-communication-between-pods-in-the-same-namespace">Enabling communication between pods in the same namespace</a>
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#troubleshooting-exercise">Troubleshooting Exercise</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#solution">Solution</a>
+    </li>
+        </ul>
     </li>
         </ul>
     </li>
@@ -253,24 +257,38 @@ kubectl get pods -A
 </code></pre>
 <p>At this time, nodes should be up and running.  That</p>
 <p>You may proceed to create any deployments, services needed at this time.</p>
-<h2 id="writing-network-policies">Writing Network Policies</h2>
-<p>While setting up the network policy, you may need to refer to the namespace created earlier. In order to being abel to referred to, namespace should have a label. Lets  update the namespace with a label.</p>
-<p><code>file: instavote-ns.yaml</code></p>
-<pre><code>kind: Namespace
-apiVersion: v1
-metadata:
-  name: instavote
-  labels:
-    project: instavote
-
+<h2 id="recreating-the-application-deployment">Recreating the Application Deployment</h2>
+<pre><code>kubectl create namespace instavote
+kubectl config set-context --current --namespace=instavote
 </code></pre>
-<p>apply</p>
-<pre><code>kubectl get namespace --show-labels
-kubectl apply -f instavote-ns.yaml
-kubectl get namespace --show-labels
-
+<p>validate you are switched to <code>instavote</code> namespace as</p>
+<pre><code>kubectl config get-contexts
 </code></pre>
-<h2 id="locking-down-access-to-a-namespace">Locking down access to a namespace</h2>
+<p>assuming you have access to all the code to create <code>instavote</code> stack, apply it using command similar to follows</p>
+<pre><code>kubectl apply -f vote-svc.yaml -f vote-deploy.yaml  \
+  -f redis-svc.yaml -f redis-deploy.yaml \
+  -f db-svc.yaml -f db-deploy.yaml  \
+  -f worker-deploy.yaml -f results-svc.yaml \
+  -f results-deploy.yaml
+</code></pre>
+<p>validate you have 5 deployments and 4 services as</p>
+<pre><code>kubectl get deploy,svc
+</code></pre>
+<p>[sample output]</p>
+<pre><code>NAME                     READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/db       1/1     1            1           45m
+deployment.apps/redis    1/1     1            1           45m
+deployment.apps/result   1/1     1            1           45m
+deployment.apps/vote     1/1     1            1           45m
+deployment.apps/worker   1/1     1            1           45m
+
+NAME             TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+service/db       ClusterIP   10.96.180.62    &lt;none&gt;        5432/TCP       45m
+service/redis    ClusterIP   10.96.197.185   &lt;none&gt;        6379/TCP       45m
+service/result   NodePort    10.96.61.34     &lt;none&gt;        80:30100/TCP   45m
+service/vote     NodePort    10.96.242.67    &lt;none&gt;        80:30000/TCP   45m
+</code></pre>
+<h2 id="locking-down-access-with-a-networkpolicy">Locking down access with a NetworkPolicy</h2>
 <p>Now, define a restrictive network policy which would,</p>
 <ul>
 <li>Block all incoming connections</li>
@@ -454,6 +472,33 @@ spec:
 </ul>
 <h3 id="troubleshooting-exercise">Troubleshooting Exercise</h3>
 <p>Applying the above policy has no effect on the communication between <strong>vote</strong> and <strong>redis</strong>  applications. You could validate this by loading the vote app and submit a vote. It should not work. There is a problem in the network policy file above. Analyse the policies, compare them against the kubernetes api reference document, understand how its being applied and see if you could fix this problem.  Your task is to ensure that <strong>vote</strong> and <strong>redis</strong> apps are communicating with one another.  </p>
+<h4 id="solution">Solution</h4>
+<p>The reason why communication between <code>vote</code> and <code>redis</code> is broken is because of the name resoulution (DNS Based Service Discovery) is broken. This is because the network policies that you have set up do not allow the services in <code>instavote</code> namespace to communicate to even the DNS server in the cluster running in <code>kube-system</code> namespace.</p>
+<p>You could allow this by adding one more policiy. You could add it to the same file <code>instavote-netpol.yaml</code>  </p>
+<p>e.g.</p>
+<pre><code>---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: dns-access
+  namespace: instavote
+spec:
+  podSelector: {}  # Applies to all pods in the namespace
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+      ports:
+        - protocol: UDP
+          port: 53
+</code></pre>
+<p>now apply and validate</p>
+<pre><code>kubectl apply -f instavote-netpol.yaml
+</code></pre>
+<p>Now you should see <code>vote</code> app connecting with <code>redis</code>.</p>
 <h2 id="nano-project">Nano Project</h2>
 <p>The above network policies are a good start. However you could even further restrict access by creating a granular network policy for each application.  </p>
 <p>Create network policies with following specs,</p>
