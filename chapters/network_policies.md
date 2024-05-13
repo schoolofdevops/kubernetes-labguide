@@ -1,34 +1,128 @@
-# Setting up a firewall with Network Policies
+# Enforcing Network Policies
+
+If you are using KIND based environment, you would have to recreate the cluster to support network policies as the `kind-net` does not support this feature. Use the following instructions to recreate the cluster with `calico` and then proceed to create the network policies.
 
 
-While setting up the network policy, you may need to refer to the namespace created earlier. In order to being abel to referred to, namespace should have a label. Lets  update the namespace with a label.
+## Recreate KIND Cluster with Calico
 
-`file: instavote-ns.yaml`
+For Network Policies to work, you need to have a CNI Plugin which supports it. `kind-net` which is installed as  a defulay CNI with KIND, does not support it.  You could recreate the cluster with `calico` as a CNI plugin by following the instructions here.
 
-```
-kind: Namespace
-apiVersion: v1
-metadata:
-  name: instavote
-  labels:
-    project: instavote
+
+Delete existing cluster created with KIND as,
 
 ```
-
-apply
-
-```
-kubectl get namespace --show-labels
-kubectl apply -f instavote-ns.yaml
-kubectl get namespace --show-labels
-
+kind get clusters
+kind delete cluster --name k8slab
 ```
 
-## Locking down access to a namespace
+assuming `k8slab` is the name of the cluster. Change it with the actual name.
+
+File : `k8s-code/helper/kind/kind-three-node-cluster.yaml`
+
+disable the default network as
+
+```
+# three node (two workers) cluster config
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+networking:
+  disableDefaultCNI: true
+  podSubnet: 192.168.31.0/16
+```
+
+launch the cluster again as
+
+```
+cd k8s-code/helper/kind
+kind create cluster  --config kind-three-node-cluster.yaml
+```
+
+validate
+```
+kubectl get nodes
+```
+
+the nodes would be in NotReady stat at this time because of no CNI (Network) Plugin.
+
+Set up calico as
+
+```
+kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.27.3/manifests/tigera-operator.yaml
+
+kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.27.3/manifests/custom-resources.yaml
+```
+
+wait for calico pods to be ready  
+
+```
+watch kubectl get pods -l k8s-app=calico-node -A
+
+```
+
+once the pods for calico are setup, exit from this watch command (use ^c) and  validate the node status again as:
+
+```
+kubectl get nodes
+kubectl get pods -A
+
+```
+
+At this time, nodes should be up and running.  That
+
+You may proceed to create any deployments, services needed at this time.
+
+
+
+## Recreating the Application Deployment
+
+```
+kubectl create namespace instavote
+kubectl config set-context --current --namespace=instavote
+```
+
+validate you are switched to `instavote` namespace as
+
+```
+kubectl config get-contexts
+```
+
+assuming you have access to all the code to create `instavote` stack, apply it using command similar to follows
+
+```
+kubectl apply -f vote-svc.yaml -f vote-deploy.yaml  \
+  -f redis-svc.yaml -f redis-deploy.yaml \
+  -f db-svc.yaml -f db-deploy.yaml  \
+  -f worker-deploy.yaml -f results-svc.yaml \
+  -f results-deploy.yaml
+```
+
+validate you have 5 deployments and 4 services as
+
+```
+kubectl get deploy,svc
+```
+
+[sample output]
+```
+NAME                     READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/db       1/1     1            1           45m
+deployment.apps/redis    1/1     1            1           45m
+deployment.apps/result   1/1     1            1           45m
+deployment.apps/vote     1/1     1            1           45m
+deployment.apps/worker   1/1     1            1           45m
+
+NAME             TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+service/db       ClusterIP   10.96.180.62    <none>        5432/TCP       45m
+service/redis    ClusterIP   10.96.197.185   <none>        6379/TCP       45m
+service/result   NodePort    10.96.61.34     <none>        80:30100/TCP   45m
+service/vote     NodePort    10.96.242.67    <none>        80:30000/TCP   45m
+```
+
+## Locking down access with a NetworkPolicy
 
 Now, define a restrictive network policy which would,
 
-  * Block all incoming connections 
+  * Block all incoming connections
   * Block all outgoing connections
 
 ```bash
@@ -217,14 +311,10 @@ spec:
   - Egress
   ingress:
   - from:
-    - namespaceSelector:
-        matchLabels:
-          project: instavote
+    - podSelector: {}  # Allows all pods within the same namespace
   egress:
   - to:
-    - namespaceSelector:
-        matchLabels:
-          project: instavote
+    - podSelector: {}  # Allows all pods within the same namespace
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -252,6 +342,42 @@ where,
 
 Applying the above policy has no effect on the communication between **vote** and **redis**  applications. You could validate this by loading the vote app and submit a vote. It should not work. There is a problem in the network policy file above. Analyse the policies, compare them against the kubernetes api reference document, understand how its being applied and see if you could fix this problem.  Your task is to ensure that **vote** and **redis** apps are communicating with one another.  
 
+#### Solution  
+
+The reason why communication between `vote` and `redis` is broken is because of the name resoulution (DNS Based Service Discovery) is broken. This is because the network policies that you have set up do not allow the services in `instavote` namespace to communicate to even the DNS server in the cluster running in `kube-system` namespace.
+
+You could allow this by adding one more policiy. You could add it to the same file `instavote-netpol.yaml`  
+
+e.g.
+
+```
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: dns-access
+  namespace: instavote
+spec:
+  podSelector: {}  # Applies to all pods in the namespace
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+      ports:
+        - protocol: UDP
+          port: 53
+```
+
+now apply and validate
+
+```
+kubectl apply -f instavote-netpol.yaml
+```
+
+Now you should see `vote` app connecting with `redis`.
 
 ## Nano Project
 

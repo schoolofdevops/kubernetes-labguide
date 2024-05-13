@@ -93,7 +93,7 @@ rules:
       name:
         matches: "^nginx_ingress_controller_request_duration_seconds_bucket$"
         as: "nginx_ingress_controller_latency"
-      metricsQuery: 'sum(rate(nginx_ingress_controller_request_duration_seconds_bucket{}[2m])) by (namespace, ingress, le)'
+      metricsQuery: 'sum(rate(nginx_ingress_controller_request_duration_seconds_bucket{}[2m])) by (namespace, ingress, le) / 1000'
 ```
 
 
