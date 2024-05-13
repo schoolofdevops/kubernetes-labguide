@@ -121,6 +121,10 @@
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K207 - Network Policies</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#recreate-kind-cluster-with-calico">Recreate KIND Cluster with Calico</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#writing-network-policies">Writing Network Policies</a>
+    </li>
     <li class="toctree-l2"><a class="reference internal" href="#locking-down-access-to-a-namespace">Locking down access to a namespace</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#enabling-external-traffic-to-outward-facing-applications">Enabling external traffic to outward facing applications</a>
@@ -208,6 +212,48 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="setting-up-a-firewall-with-network-policies">Setting up a firewall with Network Policies</h1>
+<p>If you are using KIND based environment, you would have to recreate the cluster to support network policies as the <code>kind-net</code> does not support this feature. Use the following instructions to recreate the cluster with <code>calico</code> and then proceed to create the network policies.</p>
+<h2 id="recreate-kind-cluster-with-calico">Recreate KIND Cluster with Calico</h2>
+<p>For Network Policies to work, you need to have a CNI Plugin which supports it. <code>kind-net</code> which is installed as  a defulay CNI with KIND, does not support it.  You could recreate the cluster with <code>calico</code> as a CNI plugin by following the instructions here.</p>
+<p>Delete existing cluster created with KIND as,</p>
+<pre><code>kind get clusters
+kind delete cluster --name k8slab
+</code></pre>
+<p>assuming <code>k8slab</code> is the name of the cluster. Change it with the actual name.</p>
+<p>File : <code>k8s-code/helper/kind/kind-three-node-cluster.yaml</code></p>
+<p>disable the default network as</p>
+<pre><code># three node (two workers) cluster config
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+networking:
+  disableDefaultCNI: true
+  podSubnet: 192.168.31.0/16
+</code></pre>
+<p>launch the cluster again as</p>
+<pre><code>cd k8s-code/helper/kind
+kind create cluster  --config kind-three-node-cluster.yaml
+</code></pre>
+<p>validate</p>
+<pre><code>kubectl get nodes
+</code></pre>
+<p>the nodes would be in NotReady stat at this time because of no CNI (Network) Plugin.</p>
+<p>Set up calico as</p>
+<pre><code>kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.27.3/manifests/tigera-operator.yaml
+
+kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.27.3/manifests/custom-resources.yaml
+</code></pre>
+<p>wait for calico pods to be ready  </p>
+<pre><code>watch kubectl get pods -l k8s-app=calico-node -A
+
+</code></pre>
+<p>once the pods for calico are setup, exit from this watch command (use ^c) and  validate the node status again as:</p>
+<pre><code>kubectl get nodes
+kubectl get pods -A
+
+</code></pre>
+<p>At this time, nodes should be up and running.  That</p>
+<p>You may proceed to create any deployments, services needed at this time.</p>
+<h2 id="writing-network-policies">Writing Network Policies</h2>
 <p>While setting up the network policy, you may need to refer to the namespace created earlier. In order to being abel to referred to, namespace should have a label. Lets  update the namespace with a label.</p>
 <p><code>file: instavote-ns.yaml</code></p>
 <pre><code>kind: Namespace
@@ -227,7 +273,7 @@ kubectl get namespace --show-labels
 <h2 id="locking-down-access-to-a-namespace">Locking down access to a namespace</h2>
 <p>Now, define a restrictive network policy which would,</p>
 <ul>
-<li>Block all incoming connections </li>
+<li>Block all incoming connections</li>
 <li>Block all outgoing connections</li>
 </ul>
 <pre><code class="language-bash">
@@ -381,14 +427,10 @@ spec:
   - Egress
   ingress:
   - from:
-    - namespaceSelector:
-        matchLabels:
-          project: instavote
+    - podSelector: {}  # Allows all pods within the same namespace
   egress:
   - to:
-    - namespaceSelector:
-        matchLabels:
-          project: instavote
+    - podSelector: {}  # Allows all pods within the same namespace
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
