@@ -215,7 +215,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="setting-up-a-firewall-with-network-policies">Setting up a firewall with Network Policies</h1>
+                <h1 id="enforcing-network-policies">Enforcing Network Policies</h1>
 <p>If you are using KIND based environment, you would have to recreate the cluster to support network policies as the <code>kind-net</code> does not support this feature. Use the following instructions to recreate the cluster with <code>calico</code> and then proceed to create the network policies.</p>
 <h2 id="recreate-kind-cluster-with-calico">Recreate KIND Cluster with Calico</h2>
 <p>For Network Policies to work, you need to have a CNI Plugin which supports it. <code>kind-net</code> which is installed as  a defulay CNI with KIND, does not support it.  You could recreate the cluster with <code>calico</code> as a CNI plugin by following the instructions here.</p>
