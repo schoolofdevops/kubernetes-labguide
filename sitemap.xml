@@ -126,6 +126,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>http://kubernetes-tutorial.schoolofdevops.com/helm_charts_publish/</loc>
+         <lastmod>2024-05-14</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/ingress/</loc>
          <lastmod>2024-05-14</lastmod>
          <changefreq>daily</changefreq>
