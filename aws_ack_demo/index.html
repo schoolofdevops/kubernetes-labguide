@@ -3,18 +3,18 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/rbac_101/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/aws_ack_demo/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Lab K111 - RBAC Policies - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <title>AWS Controller for Kubernetes (ACK ) Demo - Kubernetes Tutorial with CKA/CKAD Prep</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Lab K111 - RBAC Policies";
-        var mkdocs_page_input_path = "rbac_101.md";
-        var mkdocs_page_url = "/rbac_101/";
+        var mkdocs_page_name = "AWS Controller for Kubernetes (ACK ) Demo";
+        var mkdocs_page_input_path = "aws_ack_demo.md";
+        var mkdocs_page_url = "/aws_ack_demo/";
       </script>
     
     <!--[if lt IE 9]>
@@ -118,14 +118,8 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Kubernetes Security</span></p>
-              <ul class="current">
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K111 - RBAC Policies</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#adding-roles-and-clusterroles">Adding Roles and ClusterRoles</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#adding-clusterroles-and-clusterrolebindings">Adding CLusterRoles and ClusterRoleBindings</a>
-    </li>
-    </ul>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../rbac_101/">Lab K111 - RBAC Policies</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../network_policies/">Lab K207 - Network Policies</a>
                   </li>
@@ -195,10 +189,9 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a> &raquo;</li>
-          <li>Kubernetes Security &raquo;</li>
-      <li class="breadcrumb-item active">Lab K111 - RBAC Policies</li>
+      <li class="breadcrumb-item active">AWS Controller for Kubernetes (ACK ) Demo</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/rbac_101.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/aws_ack_demo.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -206,149 +199,81 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="defining-rbac-policies">Defining RBAC Policies</h1>
-<p>To understand how to define RBAC Policies, in this lab, you are going to work with the API Tester app, and the add relevant policies to it.</p>
-<p>To begin with, clone API Tester app and launch it</p>
-<pre><code>git clone https://github.com/schoolofdevops/k8s-api-tester.git
-cd k8s-api-tester
+                <h1 id="aws-controller-for-kubernetes-ack-demo">AWS Controller for Kubernetes (ACK ) Demo</h1>
+<p>From AWS Console, <br />
+<em> create user with FullS3Access.
+* Note down the Access/Secret keys.<br />
+</em> Add these credentials as kubernetes secret in a new namespace as</p>
+<pre><code>kubectl create namespace ack-system
+kubectl create secret generic aws-creds --from-literal=key=XXXX --from-literal=secret=YYYY --namespace ack-system
+</code></pre>
+<h2 id="setup-s3-controller-for-ack">Setup S3 Controller for ACK</h2>
+<p>You could find the ACK Conrtrollers from <a href="https://gallery.ecr.aws/aws-controllers-k8s?page=1">ECR Public Gallery</a>
+Example is S# Cotroller :  https://gallery.ecr.aws/aws-controllers-k8s/s3-controller</p>
+<p>Code for this is available at https://github.com/aws-controllers-k8s/s3-controlle</p>
+<p>Clone the git repo which contains the helm chart for the controller as</p>
+<pre><code>git clone https://github.com/aws-controllers-k8s/s3-controller
 
-kubectl apply -f api-tester-deploy.yaml
 </code></pre>
-<p>Now list the pod and check the logs</p>
-<pre><code>
-kubectl get pods
+<p>Add the configuration</p>
+<pre><code>cd s3-controller/helm/
+</code></pre>
+<p>edit <code>values.yaml</code> and approx at line 62 add the following config</p>
+<pre><code>  extraEnvVars:
+    - name: AWS_ACCESS_KEY_ID
+      valueFrom:
+        secretKeyRef:
+          name: aws-creds
+          key: key
+    - name: AWS_SECRET_ACCESS_KEY
+      valueFrom:
+        secretKeyRef:
+          name: aws-creds
+          key: secret
+</code></pre>
+<p>also at line 98 add the region as</p>
+<pre><code>aws:
+  # If specified, use the AWS region for AWS API calls
+  region: &quot;us-east-1&quot;
+</code></pre>
+<p>install helm chart as</p>
+<pre><code>helm install -n ack-system ack-s3 .
+</code></pre>
+<p>and validate</p>
+<pre><code>kubectl get all -n ack-system
+</code></pre>
+<h2 id="create-s3-bucket-from-kubernetes">Create S3 Bucket from Kubernetes</h2>
+<p>List the CRDs installed by the controller</p>
+<pre><code>kubectl get crds | grep s3
 
-kubectl logs -f api-tester-xxxx
-</code></pre>
-<p>You shall see error messages with access to all api resources e.g. pods, deployments, services, pvs, events denied.</p>
-<p>Lets look at how to configure the RBAC policies to get this app to work.</p>
-<h2 id="adding-roles-and-clusterroles">Adding Roles and ClusterRoles</h2>
-<p>Add the following permissions for <code>api-tester</code> app</p>
-<ul>
-<li>It should be able to list pods, deplyoments and services in namespace <code>default</code></li>
-</ul>
-<p>File <code>api-tester-sa.yaml</code></p>
-<pre><code>apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: api-tester
-  namespace: default
-</code></pre>
-<p>File : <code>api-tester-role.yaml</code></p>
-<pre><code>apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  name: api-tester
-  namespace: default
-rules:
-- apiGroups: [&quot;&quot;]
-  resources: [&quot;pods&quot;, &quot;Services&quot;]
-  verbs: [&quot;get&quot;, &quot;list&quot;, &quot;watch&quot;]
-- apiGroups: [&quot;apps&quot;, &quot;extensions&quot;]
-  resources: [&quot;deployments&quot;]
-  verbs: [&quot;get&quot;, &quot;list&quot;, &quot;watch&quot;]
-</code></pre>
-<p>File : <code>api-tester-rolebinding.yaml</code></p>
-<pre><code>apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: api-tester
-  namespace: default
-subjects:
-- kind: ServiceAccount
-  name: api-tester
-  namespace: default
-roleRef:
-  kind: Role
-  name: api-tester
-  apiGroup: rbac.authorization.k8s.io
-</code></pre>
-<p>apply</p>
-<pre><code>kubectl apply -f api-tester-sa.yaml -f api-tester-role.yaml -f api-tester-rolebinding.yaml
-</code></pre>
-<p>Now update the deployment spec to refer to Service Account as:</p>
-<p>File : <code>api-tester-deploy.yaml</code></p>
-<pre><code>...
-..
+kubectl get buckets
 
+kubectl explain buckets
+</code></pre>
+<p>Write  a Custom Resource to create a bucket with as</p>
+<pre><code>apiVersion: s3.services.k8s.aws/v1alpha1
+kind: Bucket
+metadata:
+  name: my-ack-s3-bucket
 spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: api-tester
-  template:
-    metadata:
-      labels:
-        app: api-tester
-    spec:
-      serviceAccountName: api-tester
-      containers:
-      - name: api-tester
-        image: docker.io/schoolofdevops/api-tester:latest
-
-..
-...
+  name: my-ack-s3-bucket-xxxxxx  # S3 bucket names need to be globally unique
 </code></pre>
-<p>apply</p>
-<pre><code>kubectl apply -f api-tester-deploy.yaml
+<p>where replace <code>xxxxxx</code> with some unique number</p>
+<p>and apply</p>
+<pre><code>kubectl apply -f my-bucket.yaml
 </code></pre>
-<p>validate</p>
-<pre><code>
-kubectl get pods
-
-kubectl logs -f api-tester-xxxx
+<p>and like a magic, you shall see a s3 bucket created on AWS.</p>
+<p>you could also explore</p>
+<pre><code>kubectl get buckets
+kubectl describe bucket my-ack-s3-bucket
 </code></pre>
-<p>at this time it should show you that it has the permissions to list pods, deployments and services in a namespace.</p>
-<h2 id="adding-clusterroles-and-clusterrolebindings">Adding CLusterRoles and ClusterRoleBindings</h2>
-<p>Add the following permissions for <code>api-tester</code> app</p>
-<ul>
-<li>It should be able to list <code>persistentvolumeclaims</code> in all namespaces</li>
-<li>It should have ability to create and delete <code>persistentvolumes</code> in all namespaces</li>
-</ul>
-<p>File: <code>api-tester-clusterrole.yaml</code></p>
-<pre><code>apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  name: api-tester-cluster-role
-rules:
-- apiGroups: [&quot;&quot;]
-  resources: [&quot;persistentvolumeclaims&quot;]
-  verbs: [&quot;get&quot;, &quot;list&quot;, &quot;watch&quot;, &quot;create&quot;, &quot;update&quot;, &quot;patch&quot;, &quot;delete&quot;]
-- apiGroups: [&quot;&quot;]
-  resources: [&quot;persistentvolumes&quot;]
-  verbs: [&quot;get&quot;, &quot;list&quot;, &quot;watch&quot;, &quot;create&quot;, &quot;update&quot;, &quot;patch&quot;, &quot;delete&quot;]
-
+<p>and finally</p>
+<pre><code>kubectl delete bucket my-ack-s3-bucket
 </code></pre>
-<p>File: <code>api-tester-clusterrolebinding.yaml</code></p>
-<pre><code>apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: api-tester-cluster-role-binding
-subjects:
-- kind: ServiceAccount
-  name: api-tester
-  namespace: default
-roleRef:
-  kind: ClusterRole
-  name: api-tester-cluster-role
-  apiGroup: rbac.authorization.k8s.io
-</code></pre>
-<p>apply</p>
-<pre><code>kubectl apply -f api-tester-clusterrole.yaml  -f api-tester-clusterrolebinding.yaml
-</code></pre>
-<p>validate</p>
-<pre><code>kubectl get pods
-
-kubectl logs -f api-tester-xxxx
-</code></pre>
-<p>At this time the logs for the api tester app should show you that it has the authorization to work with PVs and PVCs as well.</p>
+<p>to see it gone from AWS as well …. poof !</p>
               
             </div>
           </div><footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../cluster-troubleshooting/" class="btn btn-neutral float-left" title="Lab K305 - Cluster Troubleshooting"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../network_policies/" class="btn btn-neutral float-right" title="Lab K207 - Network Policies">Next <span class="icon icon-circle-arrow-right"></span></a>
-    </div>
 
   <hr/>
 
@@ -375,10 +300,6 @@ kubectl logs -f api-tester-xxxx
         </span>
     
     
-      <span><a href="../cluster-troubleshooting/" style="color: #fcfcfc">&laquo; Previous</a></span>
-    
-    
-      <span><a href="../network_policies/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
