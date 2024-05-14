@@ -211,6 +211,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>http://kubernetes-tutorial.schoolofdevops.com/operator/</loc>
+         <lastmod>2024-05-14</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/pod-adv-specs/</loc>
          <lastmod>2024-05-14</lastmod>
          <changefreq>daily</changefreq>

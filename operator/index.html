@@ -3,18 +3,18 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/wq003-ingress/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/operator/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>KWQ003 - Ingress Web Quest - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <title>Lab K404 - Kubernetes Operators - Kubernetes Tutorial with CKA/CKAD Prep</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "KWQ003 - Ingress Web Quest";
-        var mkdocs_page_input_path = "wq003-ingress.md";
-        var mkdocs_page_url = "/wq003-ingress/";
+        var mkdocs_page_name = "Lab K404 - Kubernetes Operators";
+        var mkdocs_page_input_path = "operator.md";
+        var mkdocs_page_url = "/operator/";
       </script>
     
     <!--[if lt IE 9]>
@@ -125,7 +125,7 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Additional Topics</span></p>
-              <ul>
+              <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../install_kubernetes_with_kubeadm/">Lab K400 - Install Kubernetes with Kubeadm</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../configuring_authentication_and_authorization/">Lab K401 - Creating Users, Groups and Authorization</a>
@@ -134,7 +134,11 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../cni/">Lab K404 - CNI</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../operator/">Lab K404 - Kubernetes Operators</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K404 - Kubernetes Operators</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#cleaning-up">Cleaning Up</a>
+    </li>
+    </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../12_troubleshooting/">Troubleshooting Tips</a>
                   </li>
@@ -156,20 +160,12 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Web Quests</span></p>
-              <ul class="current">
+              <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../wq001-cni/">KWQ001 - CNI Web Quest</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../wq002-security/">KWQ001 - Kubernetes Security Web Quest</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">KWQ003 - Ingress Web Quest</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#task">Task</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#process">Process</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#resources">Resources</a>
-    </li>
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../wq003-ingress/">KWQ003 - Ingress Web Quest</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../wq004-monitoring/">KWQ004 - Monitoring Web Quest</a>
                   </li>
@@ -199,10 +195,10 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a> &raquo;</li>
-          <li>Web Quests &raquo;</li>
-      <li class="breadcrumb-item active">KWQ003 - Ingress Web Quest</li>
+          <li>Additional Topics &raquo;</li>
+      <li class="breadcrumb-item active">Lab K404 - Kubernetes Operators</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/wq003-ingress.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/operator.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -210,37 +206,53 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="kwq003-ingress-web-quest">KWQ003 - Ingress Web Quest</h1>
-<p>Ingress controllers adds layer7 load balancing, reverse proxy and intelligent http routing capabilities to kubernetes cluster. The purpose of this Web Quest is to compare the ingress controllers available, and make recommendations based on the merit that you find in those.</p>
-<h3 id="task">Task</h3>
-<p>Your task is to work in your group, research on ingress controllers, and try to find answers to the following questions. You will present on the topic briefly.</p>
-<p><strong>Questions</strong>:</p>
-<ul>
-<li>If you have to choose between <strong>LoadBalancer</strong> as a service type and a <strong>Ingress Controller</strong> which one would you choose? Why?</li>
-<li>List down some of the most popular ingress controllers ? How do they compare, what are the key differences ?   </li>
-<li>How do you make ingress controllers pick up configurations when a new service/deployment is created.  </li>
-<li>Which ingress controller would you use ? Why?</li>
-</ul>
-<h3 id="process">Process</h3>
-<p>Following is the process you could loosely follow,</p>
-<ul>
-<li>Start researching on web and reading individually about the topic. Reference the links and articles in the resources  section while you do so.</li>
-<li>Reflect on how it could apply to your work environment. Speak with with the relevant teams in your organisation if needed gain insights into current implementation, what are the issues being faced. Think about  how you could you apply the knowledge you have researched on.</li>
-<li>Have a group discussion with  within  your group, exchange what you have learnt as well as your experience with the topic in your prior/existing  projects.  You may come up with the notes and common points you would like to present.</li>
-<li>Prepare a short 5/10 minutes presentation to explain the topic and answer the questions given in the <strong>task</strong> section above.</li>
-</ul>
-<h3 id="resources">Resources</h3>
-<ul>
-<li>Article: <a href="https://kubedex.com/ingress/">Ingress comparison by kubedex.com</a></li>
-<li>eBook: <a href="https://info.giantswarm.io/guide-to-managing-ingress-controllers">Managing Ingress Controllers on Kubernetes - a Guide by Giant Swarm</a></li>
-<li>Doc: <a href="https://docs.traefik.io/">Traefik Ingress Controller</a></li>
-</ul>
+                <h1 id="redis-operator">Redis Operator</h1>
+<p>Examine the code at <a href="https://github.com/schoolofdevops/redis-operator">schoolofdevops/redis-operator: Kubernetes Operator to Setup Redis Cluster</a></p>
+<p>Clone the repo</p>
+<pre><code>git clone https://github.com/schoolofdevops/redis-operator.git
+cd redis-operator
+</code></pre>
+<p>Apply the opertor code</p>
+<pre><code>kubectl apply -f redis-crd.yaml -f redis_operator-rbac.yaml -f redis_operator-deploy.yaml
+
+
+kubectl get all
+</code></pre>
+<p>now create an instance of redis cluster</p>
+<p>File : <code>my-redis.yaml</code></p>
+<pre><code>apiVersion: database.example.com/v1
+kind: Redis
+metadata:
+  name: my-redis
+  namespace: default
+spec:
+  slaveSize: 2  # Specifies the number of slave nodes
+  image: &quot;redis:6.2.6&quot;  # Redis Docker image version
+  storageClassName: &quot;standard&quot;  # Specify the Kubernetes storage class for PVCs
+  volumeSize: &quot;200Mi&quot;  # Each Redis node will use a PVC of this size
+  backupEnabled: true  # Enables the backup functionality
+  backupSchedule: &quot;0 */6 * * *&quot;  # Backup schedule, every 6 hours
+</code></pre>
+<p>apply</p>
+<pre><code>kubectl apply -f my-redis.yaml
+</code></pre>
+<p>examine the objects created</p>
+<pre><code>kubectl get all
+
+kubectl delete -f redis-crd.yaml -f redis_operator-rbac.yaml -f redis_operator-deploy.yaml
+</code></pre>
+<h4 id="cleaning-up">Cleaning Up</h4>
+<p>Once done, to clean up,</p>
+<pre><code>kubectl delete -f my-redis.yaml
+
+
+</code></pre>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../wq002-security/" class="btn btn-neutral float-left" title="KWQ001 - Kubernetes Security Web Quest"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../wq004-monitoring/" class="btn btn-neutral float-right" title="KWQ004 - Monitoring Web Quest">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../cni/" class="btn btn-neutral float-left" title="Lab K404 - CNI"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../12_troubleshooting/" class="btn btn-neutral float-right" title="Troubleshooting Tips">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -268,10 +280,10 @@
         </span>
     
     
-      <span><a href="../wq002-security/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../cni/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../wq004-monitoring/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../12_troubleshooting/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
