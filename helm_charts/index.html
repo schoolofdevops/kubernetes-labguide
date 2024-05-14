@@ -93,6 +93,8 @@
     <li class="toctree-l2"><a class="reference internal" href="#part-i-generating-a-chart-with-one-service">Part I - Generating a Chart with One Service</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#part-ii-adding-support-for-more-microservices">Part II - Adding support for More Microservices</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#overriding-values">Overriding Values</a>
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#exercise">Exercise</a>
     </li>
@@ -322,6 +324,55 @@ helm list -A
 kubectl get all
 </code></pre>
 <p>Validate that vote and redis are running with the values that you provided.</p>
+<h2 id="overriding-values">Overriding Values</h2>
+<p>Lets learn how to override values from the command line. To do so, lets add one property</p>
+<p>File : <code>templates/vote/deployment.yaml</code></p>
+<pre><code>containers:
+  - name: vote
+    env:
+      - name: OPTION_A
+        value: {{ .Values.vote.options.A }}
+      - name: OPTION_B
+        value: {{ .Values.vote.options.B }}
+</code></pre>
+<p>This will read from values file and set those as environmnt variables. Lets set the default values.</p>
+<p>File:  <code>values.dev.yaml</code></p>
+<pre><code>vote:
+  replicaCount: 2
+
+  options:
+    A: MacOS
+    B: Windows
+
+</code></pre>
+<p>now upgrade the release as</p>
+<pre><code>helm upgrade  instavote -n dev --values=values.dev.yaml  .
+</code></pre>
+<p>Check the application to see the default values being visible.</p>
+<p>You could override the values from the command line as</p>
+<pre><code>helm upgrade instavote --values values.dev.yaml --set vote.options.A=Green --set vote.options.B=Yellow .
+</code></pre>
+<p>check the web app now</p>
+<p>try one more time</p>
+<pre><code>helm upgrade instavote --values values.dev.yaml --set vote.options.A=Orange --set vote.options.B=Blue .
+</code></pre>
+<p>you should see the values change every time.</p>
+<p>Check the release now</p>
+<pre><code>helm list -A
+
+</code></pre>
+<p>[sample output]</p>
+<pre><code>NAME        NAMESPACE   REVISION    UPDATED                                 STATUS      CHART           APP VERSION
+instavote   dev            7        2024-05-14 03:31:34.717912894 +0000 UTC deployed    instavote-0.1.0 1.16.0
+</code></pre>
+<p>try rolling back a version</p>
+<p>e.g.</p>
+<pre><code>helm rollback instavote
+</code></pre>
+<p>you could also go back to a specific version using the revision number as  </p>
+<pre><code>helm rollback instavote xx
+</code></pre>
+<p>where replace <code>xx</code> with the revision number you wish to roll back to. </p>
 <h3 id="exercise">Exercise</h3>
 <p>Now that you have deployed vote and redis, go ahead and add the code to deploy  worker, db and result as well.</p>
               
