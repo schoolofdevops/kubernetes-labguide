@@ -209,10 +209,12 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="aws-controller-for-kubernetes-ack-demo">AWS Controller for Kubernetes (ACK ) Demo</h1>
-<p>From AWS Console, <br />
-<em> create user with FullS3Access.
-* Note down the Access/Secret keys.<br />
-</em> Add these credentials as kubernetes secret in a new namespace as</p>
+<p>From AWS Console,</p>
+<ul>
+<li>create user with FullS3Access.  </li>
+<li>Note down the Access/Secret keys.    </li>
+<li>Add these credentials as kubernetes secret in a new namespace as  </li>
+</ul>
 <pre><code>kubectl create namespace ack-system
 kubectl create secret generic aws-creds --from-literal=key=XXXX --from-literal=secret=YYYY --namespace ack-system
 </code></pre>
