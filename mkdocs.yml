@@ -44,12 +44,13 @@ nav:
      - Lab K404 - CNI: "cni.md"
      - Troubleshooting Tips: "12_troubleshooting.md"
      - Logging: "logging.md"
-  - EKS:
+  - AWS EKS:
      - Lab K501 - EKS Preparatory Setup: "eks_prep.md"
      - Lab K502 - EKS Setup: "eks_setup.md"
      - Lab K503 - Deploy Apps on EKS: "eks_deploy_apps.md"
      - Lab K504 - Ingress with ALB: "eks_ingress_alb.md"
-     - Lab K504 - Persistent Storage: "eks_storage.md"
+     - Lab K505 - Persistent Storage with EBS: "eks_storage.md"
+     - Lab K506 - EKS Cluster Autoscaler: "eks_cluster_autoscaler.md"
   - Exercises:
      - XER001 - Pods: "xer-001-pods.md"
      - XER002 - ReplicaSets: "xer-002-rs.md"

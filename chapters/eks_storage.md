@@ -1,4 +1,4 @@
-# Lab 05 - Persistent Storage with EKS
+# Lab 05 - Persistent Storage with EBS
 
 
 In this lab you are going to re deploy the database, this time with persistent storage, using EBS volumes offered by AWS.  Following diagram depicts this dynamic provisining workflow: 
@@ -88,6 +88,7 @@ From EKS Console,
 * Select Amazon EBS CSI Drive and go Next 
 
 ![](images/eks/03/08.png)
+
 * Select `AmazonEKS_EBS_CSI_DriverRole` created above. 
 * Next 
 
