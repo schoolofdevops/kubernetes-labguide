@@ -49,6 +49,28 @@ service:
   nodePort: 30300
 ```
 
+Also update the `service.yaml` template with the additional property for `nodePort` defined as ,
+
+File : `service.yaml`
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: vote
+  labels:
+    {{- include "instavote.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+      nodePort: {{ .Values.service.nodePort }}
+  selector:
+    {{- include "instavote.selectorLabels" . | nindent 4 }}
+```
+
 Install this chart with helm to deploy the `vote` service as:
 
 ```
@@ -188,6 +210,91 @@ kubectl get all
 
 
 Validate that vote and redis are running with the values that you provided.
+
+## Part III : Overriding Values, Rollbacks
+
+Lets learn how to override values from the command line. To do so, lets add one property
+
+File : `templates/vote/deployment.yaml`
+
+```
+containers:
+  - name: vote
+    env:
+      - name: OPTION_A
+        value: {{ .Values.vote.options.A }}
+      - name: OPTION_B
+        value: {{ .Values.vote.options.B }}
+```
+
+This will read from values file and set those as environmnt variables. Lets set the default values.
+
+
+
+File:  `values.dev.yaml`
+```
+vote:
+  replicaCount: 2
+
+  options:
+    A: MacOS
+    B: Windows
+
+```
+
+now upgrade the release as
+
+```
+helm upgrade  instavote -n dev --values=values.dev.yaml  .
+```
+
+Check the application to see the default values being visible.
+
+You could override the values from the command line as
+
+```
+helm upgrade instavote --values values.dev.yaml --set vote.options.A=Green --set vote.options.B=Yellow .
+```
+
+check the web app now
+
+try one more time
+
+```
+helm upgrade instavote --values values.dev.yaml --set vote.options.A=Orange --set vote.options.B=Blue .
+```
+
+you should see the values change every time.
+
+Check the release now
+
+```
+helm list -A
+
+```
+
+[sample output]
+```
+NAME     	NAMESPACE 	REVISION	UPDATED                                	STATUS  	CHART          	APP VERSION
+instavote 	dev      	   7       	2024-05-14 03:31:34.717912894 +0000 UTC	deployed	instavote-0.1.0	1.16.0
+```
+
+try rolling back a version
+
+e.g.
+
+```
+helm rollback instavote
+```
+you could also go back to a specific version using the revision number as  
+
+```
+helm rollback instavote xx
+```
+
+where replace `xx` with the revision number you wish to roll back to.
+
+
 
 ###  Exercise
 Now that you have deployed vote and redis, go ahead and add the code to deploy  worker, db and result as well.

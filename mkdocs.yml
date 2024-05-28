@@ -23,6 +23,7 @@ nav:
      - Lab K112 - Ingress: "ingress.md"
      - Lab K113 - HELM Package Manager: "helm.md"
      - Lab K114 - Writing HELM Charts: "helm_charts.md"
+     - Lab K115 - Publishing HELM Charts: "helm_charts_publish.md"
   - Additional CKAD Topics:
      - Lab K201 - Advanced Pod Design: "advanced_pod_design.md"
      - Lab K204 - Health Checks: "pods-health-probes.md"
@@ -36,14 +37,17 @@ nav:
      - Lab K305 - Cluster Troubleshooting: "cluster-troubleshooting.md"
   - Kubernetes Security:
      - Lab K111 - RBAC Policies: "rbac_101.md"
-     - Lab K207 - Network Policies: "network_policies.md"    
+     - Lab K207 - Network Policies: "network_policies.md"
   - Additional Topics:
      - Lab K400 - Install Kubernetes with Kubeadm: "install_kubernetes_with_kubeadm.md"
      - Lab K401 - Creating Users, Groups and Authorization: "configuring_authentication_and_authorization.md"
      - Lab K403 - Building Deployment Strategies: "vote-deployement_strategies.md"
      - Lab K404 - CNI: "cni.md"
+     - Lab K404 - Kubernetes Operators: "operator.md"
      - Troubleshooting Tips: "12_troubleshooting.md"
      - Logging: "logging.md"
+  - AWS and Kubernetes:
+     - Lab K501 - AWS Controller for Kubernetes: "aws_ack_demo.md"
   - Exercises:
      - XER001 - Pods: "xer-001-pods.md"
      - XER002 - ReplicaSets: "xer-002-rs.md"
