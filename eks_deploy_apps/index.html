@@ -3,18 +3,18 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/12_troubleshooting/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/eks_deploy_apps/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Troubleshooting Tips - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <title>Lab K500 - Deploy Apps on EKS - Kubernetes Tutorial with CKA/CKAD Prep</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Troubleshooting Tips";
-        var mkdocs_page_input_path = "12_troubleshooting.md";
-        var mkdocs_page_url = "/12_troubleshooting/";
+        var mkdocs_page_name = "Lab K500 - Deploy Apps on EKS";
+        var mkdocs_page_input_path = "eks_deploy_apps.md";
+        var mkdocs_page_url = "/eks_deploy_apps/";
       </script>
     
     <!--[if lt IE 9]>
@@ -123,7 +123,7 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Additional Topics</span></p>
-              <ul class="current">
+              <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../install_kubernetes_with_kubeadm/">Lab K400 - Install Kubernetes with Kubeadm</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../configuring_authentication_and_authorization/">Lab K401 - Creating Users, Groups and Authorization</a>
@@ -132,40 +132,34 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../cni/">Lab K404 - CNI</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Troubleshooting Tips</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#troubleshooting-the-control-plane">Troubleshooting the control plane</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#listing-the-nodes-in-a-cluster">Listing the nodes in a cluster</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#list-the-control-plane-pods">List the control plane pods</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#log-files">Log files</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#master">Master</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#worker-nodes">Worker Nodes</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#troubleshooting-the-application">Troubleshooting the application</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#getting-detailed-status-of-an-object-pods-deployments">Getting detailed status of an object (pods, deployments)</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#checking-the-status-of-deployment">Checking the status of Deployment</a>
-    </li>
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../12_troubleshooting/">Troubleshooting Tips</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../logging/">Logging</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">EKS</span></p>
-              <ul>
+              <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../eks_prep/">Lab K500 - EKS Preparatory Setup</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../eks_setup/">Lab K501 - EKS Setup</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../eks_deploy_apps/">Lab K500 - Deploy Apps on EKS</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Lab K500 - Deploy Apps on EKS</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#project-specs">Project Specs</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#phase-i-apply-existing-code">Phase I - Apply existing code</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#phase-ii-create-deployments-and-services-for-remaining-services">Phase II - Create Deployments and Services for Remaining Services</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#to-validate">To Validate:</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#phase-iii-set-up-host-based-traffic-routing-with-ingress">Phase III - Set up host based traffic routing with Ingress</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Exercises</span></p>
@@ -213,10 +207,10 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
-          <li class="breadcrumb-item">Additional Topics</li>
-      <li class="breadcrumb-item active">Troubleshooting Tips</li>
+          <li class="breadcrumb-item">EKS</li>
+      <li class="breadcrumb-item active">Lab K500 - Deploy Apps on EKS</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/12_troubleshooting.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/eks_deploy_apps.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -224,125 +218,130 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="troubleshooting-the-kubernetes-cluster">Troubleshooting the Kubernetes cluster</h1>
-<p>In this chapter we will learn about how to trouble shoot our Kubernetes cluster at <em>control plane</em> level and at <em>application level</em>.</p>
-<h3 id="troubleshooting-the-control-plane">Troubleshooting the control plane</h3>
-<h3 id="listing-the-nodes-in-a-cluster">Listing the nodes in a cluster</h3>
-<p>First thing to check if your cluster is working fine or not is to list the nodes associated with your cluster.</p>
-<pre><code>kubectl get nodes
+                <h1 id="lab-03-deploy-apps-on-eks">Lab 03 - Deploy Apps on EKS</h1>
+<p>In this project , you would write definitions for deploying the <a href="https://github.com/schoolofdevops/example-voting-app">instavote application</a> stack with all components/tiers which include,</p>
+<ul>
+<li>vote</li>
+<li>redis</li>
+<li>worker</li>
+<li>db</li>
+<li>result</li>
+</ul>
+<p>⠀</p>
+<h2 id="project-specs">Project Specs</h2>
+<ul>
+<li>Apply the deployment and service code for the applications marked as ready</li>
+<li>Complete the code for deployments and services marked as TODO</li>
+<li>Apply the definitions that you have completed</li>
+<li>Validate the application workflow is operational by loading vote and result applications from the browser</li>
+<li>Set up ingress controller and add ingress rules so that you are able to access the apps using domain names e.g. vote.example.com and result.example.com</li>
+</ul>
+<p>⠀
+Following table depicts the state of readiness of the above services.</p>
+<table>
+<thead>
+<tr>
+<th>App</th>
+<th>Deployment</th>
+<th>Service</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>vote</td>
+<td>TODO</td>
+<td>ready</td>
+</tr>
+<tr>
+<td>redis</td>
+<td>ready</td>
+<td>ready</td>
+</tr>
+<tr>
+<td>worker</td>
+<td>TODO</td>
+<td>n/a</td>
+</tr>
+<tr>
+<td>db</td>
+<td>ready</td>
+<td>ready</td>
+</tr>
+<tr>
+<td>result</td>
+<td>TODO</td>
+<td>TODO</td>
+</tr>
+</tbody>
+</table>
+<h3 id="phase-i-apply-existing-code">Phase I - Apply existing code</h3>
+<p>Create a namespace and switch to it</p>
+<pre><code>kubectl create namespace instavote
+kubectl config set-context --current --namespace=instavote
+kubectl config get-contexts
 </code></pre>
-<p>Make sure that all nodes are in <code>Ready</code> state.</p>
-<h3 id="list-the-control-plane-pods">List the control plane pods</h3>
-<p>If your nodes are up and running, next thing to check is the status of Kubernetes components.
-Run,</p>
-<pre><code>kubectl get pods -n kube-system
-</code></pre>
-<p>If any of the pod is <em>restarting or crashing</em>, look in to the issue.
-This can be done by getting the pod's description.
-For example, in my cluster <em>kube-dns</em> is crashing. In order to fix this first check the deployment for errors.</p>
-<pre><code>kubectl describe deployment -n kube-system kube-dns
-</code></pre>
-<h3 id="log-files">Log files</h3>
-<h4 id="master">Master</h4>
-<p>If your deployment is good, the next thing to look for is log files.
-The locations of log files are given below...</p>
-<pre><code>/var/log/kube-apiserver.log - For API Server logs
-/var/log/kube-scheduler.log - For Scheduler logs
-/var/log/kube-controller-manager.log - For Replication Controller logs
-</code></pre>
-<p>If your Kubernetes components are running as pods, then you can get their logs by following the steps given below,
-Keep in mind that the <em>actual pod's name may differ</em> from cluster to cluster...</p>
-<pre><code>kubectl logs -n kube-system -f kube-apiserver-node1
-kubectl logs -n kube-system -f kube-scheduler-node1
-kubectl logs -n kube-system -f kube-controller-manager-node1
-</code></pre>
-<h4 id="worker-nodes">Worker Nodes</h4>
-<p>In your worker, you will need to check for errors in kubelet's log...</p>
-<pre><code>sudo journalctl -u  kubelet
-</code></pre>
-<h3 id="troubleshooting-the-application">Troubleshooting the application</h3>
-<p>Sometimes your application(pod) may fail to start because of various reasons. Let's see how to troubleshoot.</p>
-<h3 id="getting-detailed-status-of-an-object-pods-deployments">Getting detailed status of an object (pods, deployments)</h3>
-<p><strong>object.status</strong> shows a detailed information about whats the status of an object ( e.g. pod) and why its in that condition. This can be very useful to identify the issues.</p>
-<p>Example</p>
-<pre><code>kubectl get pod vote -o yaml
+<p>Apply the existing manifests</p>
+<pre><code>cd k8s-code/projects/instavote/dev/
 
+kubectl apply  -f vote-svc.yaml
+kubectl apply -f redis-deploy.yaml -f redis-svc.yaml
+kubectl apply -f db-deploy.yaml -f db-svc.yaml
 </code></pre>
-<p>example output snippet when a wrong image was used to create a pod. </p>
-<pre><code>status:
-...
-containerStatuses:
-....
-state:
-  waiting:
-    message: 'rpc error: code = Unknown desc = Error response from daemon: manifest
-      for schoolofdevops/vote:latst not found'
-    reason: ErrImagePull
-hostIP: 139.59.232.248
+<p>validate</p>
+<pre><code>kubectl get all
 </code></pre>
-<h3 id="checking-the-status-of-deployment">Checking the status of Deployment</h3>
-<p>For this example I have a sample deployment called nginx.</p>
-<p><code>FILE: nginx-deployment.yml</code></p>
-<pre><code>apiVersion: apps/v1beta1
-kind: Deployment
-metadata:
-  name: nginx
-  labels:
-    app: nginx
-spec:
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        app: nginx
-    spec:
-      containers:
-        - name: nginx
-          image: ngnix:latest
-          ports:
-            - containerPort: 80
+<p>Where you should see,</p>
+<ul>
+<li>deplyoment and services for redis and db created</li>
+<li>nodeport service for vote app</li>
+</ul>
+<p>⠀
+If you see the above objects, proceed with the next task.</p>
+<h3 id="phase-ii-create-deployments-and-services-for-remaining-services">Phase II - Create Deployments and Services for Remaining Services</h3>
+<p>You may find the files available in the same directory as above i.e. <em>k8s-code/projects/instavote/dev/</em> with either partial or blank code. Your job is to complete the deployment and service yaml specs and apply those. While writing the specs, you could refer to the following specification.</p>
+<ul>
+<li>vote</li>
+<li>image: schoolofdevops/vote:v1</li>
+<li>application port: 80</li>
+<li>service type: NodePort</li>
+<li>nodePort : 30000</li>
+<li>worker</li>
+<li>image: schoolofdevops/worker:latest</li>
+<li>results</li>
+<li>image: schoolofdevops/vote-result</li>
+<li>application port: 80</li>
+<li>service type: NodePort</li>
+<li>nodePort : 30100</li>
+</ul>
+<p>⠀</p>
+<h4 id="to-validate">To Validate:</h4>
+<pre><code>kubectl get all
 </code></pre>
-<p>List the deployment to check for the <em>availability of pods</em></p>
-<pre><code>kubectl get deployment nginx
-
-NAME          DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
-nginx         1         1         1            0           20h
+<p>The above command should show, * five deployments and four services created * services for vote and result app should have been exposed with NodePort</p>
+<p>Find out the NodePort for vote and service apps and load those from your browser.</p>
+<p><img alt="" src="../images/eks/03/01.png" /></p>
+<p>This is how the vote application should look like.</p>
+<p>You could also load the Result page on the <code>30100</code> port of your Node IP/Address as,</p>
+<p><img alt="" src="../images/eks/03/02.png" /></p>
+<p>Above is how the result app should look like.</p>
+<p>Final validation is, if you submit the vote, you should see the results changing accordingly. You would see this behavior only if all deployments and services are created and configured properly.</p>
+<h3 id="phase-iii-set-up-host-based-traffic-routing-with-ingress">Phase III - Set up host based traffic routing with Ingress</h3>
+<p>Use the documentation here <a href="https://kind.sigs.k8s.io/docs/user/ingress/#ingress-nginx">Nginx Ingress Controller with KIND</a> to set up ingress controller.</p>
+<p>Launch Nginx Ingress controller as :</p>
+<pre><code>kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
 </code></pre>
-<p>It is clear that my pod is unavailable. Lets dig further.</p>
-<p>Check the <em>events</em> of your deployment.</p>
-<pre><code>kubectl describe deployment nginx
+<p>Check the pod for Nginx Ingress, if its running</p>
+<pre><code>kubectl get pods -n ingress-nginx
 </code></pre>
-<p>List the pods to check for any <em>registry related error</em></p>
-<pre><code>kubectl get pods
-
-NAME                           READY     STATUS             RESTARTS   AGE
-nginx-57c88d7bb8-c6kpc         0/1       ImagePullBackOff   0          7m
-</code></pre>
-<p>As we can see, we are not able to pull the image(<em>ImagePullBackOff</em>). Let's investigate further.</p>
-<pre><code>kubectl describe pod nginx-57c88d7bb8-c6kpc
-</code></pre>
-<p>Check the events of the pod's description.</p>
-<pre><code>Events:
-  Type     Reason                 Age               From                                               Message
-  ----     ------                 ----              ----                                               -------
-  Normal   Scheduled              9m                default-scheduler                                  Successfully assigned nginx-57c88d7bb8-c6kpc to ip-11-0-1-111.us-west-2.compute.internal
-  Normal   SuccessfulMountVolume  9m                kubelet, ip-11-0-1-111.us-west-2.compute.internal  MountVolume.SetUp succeeded for volume &quot;default-token-8cwn4&quot;
-  Normal   Pulling                8m (x4 over 9m)   kubelet, ip-11-0-1-111.us-west-2.compute.internal  pulling image &quot;ngnix&quot;
-  Warning  Failed                 8m (x4 over 9m)   kubelet, ip-11-0-1-111.us-west-2.compute.internal  Failed to pull image &quot;ngnix&quot;: rpc error: code = Unknown desc = Error response from daemon: repository ngnix not found: does not exist or no pull access
-  Normal   BackOff                7m (x6 over 9m)   kubelet, ip-11-0-1-111.us-west-2.compute.internal  Back-off pulling image &quot;ngnix&quot;
-  Warning  FailedSync             4m (x24 over 9m)  kubelet, ip-11-0-1-111.us-west-2.compute.internal  Error syncing pod
-</code></pre>
-<p>Bingo! The name of the image is <code>ngnix</code> instead of <code>nginx</code>. So <em>fix the typo in your deployment file and redo the deployment</em>.</p>
-<p>Sometimes, your application(pod) may fail to start because of some configuration issues. For those errors, we can follow the logs of the pod.</p>
-<pre><code>kubectl logs -f nginx-57c88d7bb8-c6kpc
-</code></pre>
-<p>If you have any errors it will get populated in your logs.</p>
+<p>You may see the pod in pending state. Check why its pending and fix it. Thats part of your project work.</p>
+<p>Once you have the ingress controller working, port <a href="https://kubernetes-tutorial.schoolofdevops.com/ingress/#set-up-named-based-routing-for-vote-app">this ingress rule</a> for <strong>vote</strong> app and also add one for <strong>result</strong> app to make it work with nginx ingress controller that you have.</p>
+<p>Also add the <code>host</code> file configuration as per the same document and validate you are able to use http://vote.example.com/ and http://result.example.com/ to access your services respectively.</p>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../cni/" class="btn btn-neutral float-left" title="Lab K404 - CNI"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../logging/" class="btn btn-neutral float-right" title="Logging">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../eks_setup/" class="btn btn-neutral float-left" title="Lab K501 - EKS Setup"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../xer-001-pods/" class="btn btn-neutral float-right" title="XER001 - Pods">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -370,10 +369,10 @@ nginx-57c88d7bb8-c6kpc         0/1       ImagePullBackOff   0          7m
         </span>
     
     
-      <span><a href="../cni/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../eks_setup/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../logging/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../xer-001-pods/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
