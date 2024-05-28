@@ -3,18 +3,18 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/docker-networking/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/eks_vpa/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Lab D103 - Docker Networking - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <title>Lab K507 - Verticle Pod Autoscaler - Kubernetes Tutorial with CKA/CKAD Prep</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Lab D103 - Docker Networking";
-        var mkdocs_page_input_path = "docker-networking.md";
-        var mkdocs_page_url = "/docker-networking/";
+        var mkdocs_page_name = "Lab K507 - Verticle Pod Autoscaler";
+        var mkdocs_page_input_path = "eks_vpa.md";
+        var mkdocs_page_url = "/eks_vpa/";
       </script>
     
     <!--[if lt IE 9]>
@@ -54,26 +54,12 @@
                 </li>
               </ul>
               <p class="caption"><span class="caption-text">Docker Essentials for Kubernetes</span></p>
-              <ul class="current">
+              <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../operating-docker-containers/">Lab D101 - Operating Containers</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../building-publishing-docker-images/">Lab D102 - Building and Publishing Docker Images</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Lab D103 - Docker Networking</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#host-networking">Host Networking</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#launching-containers-in-different-bridges">Launching containers in different bridges</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#using-none-network-driver">Using None Network Driver</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#using-host-network-driver">Using Host Network Driver</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#observe-docker-bridge-routing-and-port-mapping">Observe docker bridge, routing and port mapping</a>
-    </li>
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../docker-networking/">Lab D103 - Docker Networking</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../docker-volumes/">Lab D104 - Docker Volumes</a>
                   </li>
@@ -152,7 +138,7 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">AWS EKS</span></p>
-              <ul>
+              <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../eks_prep/">Lab K501 - EKS Preparatory Setup</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../eks_setup/">Lab K502 - EKS Setup</a>
@@ -165,7 +151,9 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../eks_cluster_autoscaler/">Lab K506 - EKS Cluster Autoscaler</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../eks_vpa/">Lab K507 - Verticle Pod Autoscaler</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Lab K507 - Verticle Pod Autoscaler</a>
+    <ul class="current">
+    </ul>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Exercises</span></p>
@@ -213,10 +201,10 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
-          <li class="breadcrumb-item">Docker Essentials for Kubernetes</li>
-      <li class="breadcrumb-item active">Lab D103 - Docker Networking</li>
+          <li class="breadcrumb-item">AWS EKS</li>
+      <li class="breadcrumb-item active">Lab K507 - Verticle Pod Autoscaler</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/docker-networking.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/eks_vpa.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -224,147 +212,105 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="lab-docker-networking">Lab: Docker Networking</h1>
-<h3 id="host-networking">Host Networking</h3>
-<ul>
-<li>bridge</li>
-<li>host</li>
-<li>peer</li>
-<li>none</li>
-</ul>
-<p>Examine the existing network</p>
-<pre><code>docker network ls
-
-NETWORK ID          NAME                DRIVER              SCOPE
-b3d405dd37e4        bridge              bridge              local
-7527c821537c        host                host                local
-773bea4ca095        none                null                local
-</code></pre>
-<p>Creating new network</p>
-<pre><code>docker network create -d bridge mynet
-</code></pre>
-<p>validate</p>
-<pre><code>docker network ls
-NETWORK ID          NAME                DRIVER              SCOPE
-b3d405dd37e4        bridge              bridge              local
-7527c821537c        host                host                local
-4e0d9b1a39f8        mynet               bridge              local
-773bea4ca095        none                null                local
-</code></pre>
-<pre><code>docker network inspect mynet
-
-
-[
-   {
-       &quot;Name&quot;: &quot;mynet&quot;,
-       &quot;Id&quot;: &quot;4e0d9b1a39f859af4811986534c91527146bc9d2ce178e5de02473c0f8ce62d5&quot;,
-       &quot;Created&quot;: &quot;2018-05-03T04:44:19.187296148Z&quot;,
-       &quot;Scope&quot;: &quot;local&quot;,
-       &quot;Driver&quot;: &quot;bridge&quot;,
-       &quot;EnableIPv6&quot;: false,
-       &quot;IPAM&quot;: {
-           &quot;Driver&quot;: &quot;default&quot;,
-           &quot;Options&quot;: {},
-           &quot;Config&quot;: [
-               {
-                   &quot;Subnet&quot;: &quot;172.18.0.0/16&quot;,
-                   &quot;Gateway&quot;: &quot;172.18.0.1&quot;
-               }
-           ]
-       },
-       &quot;Internal&quot;: false,
-       &quot;Attachable&quot;: false,
-       &quot;Ingress&quot;: false,
-       &quot;ConfigFrom&quot;: {
-           &quot;Network&quot;: &quot;&quot;
-       },
-       &quot;ConfigOnly&quot;: false,
-       &quot;Containers&quot;: {},
-       &quot;Options&quot;: {},
-       &quot;Labels&quot;: {}
-   }
-]
-</code></pre>
-<h4 id="launching-containers-in-different-bridges">Launching containers in different bridges</h4>
-<p>Launch two containers <strong>nt01</strong> and <strong>nt02</strong> in <strong>default</strong> bridge network</p>
-<pre><code>docker container run -idt --name nt01 alpine sh
-docker container run -idt --name nt02 alpine sh
-</code></pre>
-<p>Launch two containers <strong>nt03</strong> and <strong>nt04</strong> in <strong>mynet</strong> bridge network</p>
-<pre><code>docker container run -idt --name nt03 --net mynet alpine sh
-docker container run -idt --name nt04 --net mynet alpine sh
-</code></pre>
-<p>Now, lets examine if they can interconnect,</p>
-<pre><code>
-docker exec nt01 ifconfig eth0
-docker exec nt02 ifconfig eth0
-docker exec nt03 ifconfig eth0
-docker exec nt04 ifconfig eth0
+                <h1 id="lab-07-verticle-pod-autoscaler">Lab 07 - Verticle Pod Autoscaler</h1>
+<p>Before you begin, ensure OpenSSL is installed and is up to date on your system. </p>
+<p>Clone the <a href="https://github.com/kubernetes/autoscaler">kubernetes/autoscaler</a> GitHub repository and switch to path where VPA manifests are, </p>
+<pre><code>git clone https://github.com/kubernetes/autoscaler.git
+cd autoscaler/vertical-pod-autoscaler/ 
 
 </code></pre>
-<p>This is what I see</p>
-<p>nt01 :  172.17.0.18</p>
-<p>nt02 :  172.17.0.19</p>
-<p>nt03 :  172.18.0.2</p>
-<p>nt04 :  172.18.0.3</p>
-<p>Create a table with the ips on your host.  Once you do that,</p>
-<p>Try to,</p>
-<ul>
-<li>ping from <strong>nt01</strong> to <strong>nt02</strong>  </li>
-<li>ping from <strong>nt01</strong> to <strong>nt03</strong>  </li>
-<li>ping from <strong>nt03</strong> to <strong>nt04</strong>  </li>
-<li>ping from <strong>nt03</strong> to <strong>nt02</strong>  </li>
-</ul>
-<p>e.g.</p>
-<p>[replace ip addresses as per your setup]</p>
-<pre><code>docker exec nt01  ping 172.17.0.19
-
-docker exec nt01  ping 172.18.0.2
-
-docker exec nt03  ping 172.17.0.19
-
-docker exec nt03  ping 172.18.0.2
-
+<p>deploy VPA as </p>
+<pre><code>./hack/vpa-up.sh
+</code></pre>
+<p>Create a VPA Policy </p>
+<p>File: <code>vote-vpa.yaml</code></p>
+<pre><code>---
+apiVersion: &quot;autoscaling.k8s.io/v1&quot;
+kind: VerticalPodAutoscaler
+metadata:
+  name: vote
+spec:
+  # recommenders field can be unset when using the default recommender.
+  # When using an alternative recommender, the alternative recommender's name
+  # can be specified as the following in a list.
+  # recommenders:
+  #   - name: 'alternative'
+  targetRef:
+    apiVersion: &quot;apps/v1&quot;
+    kind: Deployment
+    name: vote
+  resourcePolicy:
+    containerPolicies:
+      - containerName: '*'
+        minAllowed:
+          cpu: 50m
+          memory: 64Mi
+        maxAllowed:
+          cpu: 500
+          memory: 512Mi
+        controlledResources: [&quot;cpu&quot;, &quot;memory&quot;]
+</code></pre>
+<p>apply </p>
+<pre><code>kubectl apply -f vote-vpa.yaml
+</code></pre>
+<p>watch </p>
+<pre><code>kubectl get vpa vote --watch
 
 </code></pre>
-<p>Clearly, these two are two differnt subnets/networks even though running on the same host. <strong>nt01</strong> and <strong>nt02</strong> can connect with each other, whereas <strong>nt03</strong>  and <strong>nt04</strong> can connect. But connection between containers attached to two different subnets is not possible.</p>
-<h4 id="using-none-network-driver">Using None Network Driver</h4>
-<pre><code>docker container run -idt --name nt05 --net none alpine sh
-
-docker exec -it nt05 sh
-
-ifconfig
+<p>[sample output]</p>
+<pre><code>NAME   MODE   CPU   MEM   PROVIDED   AGE
+vote   Auto                          5s
+vote   Auto   50m   262144k   True       30s
 </code></pre>
-<h4 id="using-host-network-driver">Using Host Network Driver</h4>
-<pre><code>docker container run -idt --name nt05 --net host  alpine sh
-
-docker exec -it nt05 sh
-
-ifconfig
+<p>Create a Load Test Job if not already present as,</p>
+<p><code>file: loadtest-job.yaml</code></p>
+<pre><code>apiVersion: batch/v1
+kind: Job
+metadata:
+  generateName: loadtest
+spec:
+  template:
+    spec:
+      containers:
+      - name: siege
+        image: schoolofdevops/loadtest:v1
+        command: [&quot;siege&quot;,  &quot;--concurrent=1&quot;, &quot;--benchmark&quot;, &quot;--time=4m&quot;, &quot;http://vote&quot;]
+      restartPolicy: Never
+  backoffLimit: 4
 </code></pre>
-<h3 id="observe-docker-bridge-routing-and-port-mapping">Observe docker bridge, routing and port mapping</h3>
-<p>Exercise: Read about <a href="https://github.com/nicolaka/netshoot"><strong>netshoot</strong> utility here</a></p>
-<p>Launch netshoot and connect to the host network</p>
-<pre><code>
-docker run -it --net host --privileged  nicolaka/netshoot
-
+<p>and launch it as</p>
+<pre><code>kubectl create -f loadtest-job.yaml
 </code></pre>
-<p>Examine port mapping,</p>
-<pre><code>iptables -nvL -t nat
+<p>This will launch a one off Job which would run for 4 minutes.</p>
+<p>keep watching the following in differnt windows </p>
+<p>terminal  1 </p>
+<pre><code>kubectl get vpa vote --watch
 </code></pre>
-<p>Traverse host port to container ip and port.</p>
-<p>Observe docker bridge and routing with the following command,</p>
-<pre><code>brctl show
-
-ip route show
-
+<p>terminal 2</p>
+<pre><code>kubectl get hpa vote --watch
+</code></pre>
+<p>you should see, both hpa and vpa doing complimentary jobs where, 
+* HPA is launching new pods to ensure more requests are being served 
+* VPA is updating the <code>requests</code> spec based on actual metrics </p>
+<p>You could check the modified request spec by VPA by describing the one of the pods runnnig vote app </p>
+<pre><code>kubectl describe pod vote-xxxx-yyyy
+</code></pre>
+<pre><code>   Restart Count:  0
+    Limits:
+      cpu:     1235m
+      memory:  500Mi
+    Requests:
+      cpu:        247m
+      memory:     262144k
+    Environment:  &lt;none&gt;
+    Mounts:
 </code></pre>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../building-publishing-docker-images/" class="btn btn-neutral float-left" title="Lab D102 - Building and Publishing Docker Images"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../docker-volumes/" class="btn btn-neutral float-right" title="Lab D104 - Docker Volumes">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../eks_cluster_autoscaler/" class="btn btn-neutral float-left" title="Lab K506 - EKS Cluster Autoscaler"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../xer-001-pods/" class="btn btn-neutral float-right" title="XER001 - Pods">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -392,10 +338,10 @@ ip route show
         </span>
     
     
-      <span><a href="../building-publishing-docker-images/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../eks_cluster_autoscaler/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../docker-volumes/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../xer-001-pods/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
