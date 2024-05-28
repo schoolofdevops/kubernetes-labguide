@@ -300,18 +300,24 @@ If you see the above objects, proceed with the next task.</p>
 <h3 id="phase-ii-create-deployments-and-services-for-remaining-services">Phase II - Create Deployments and Services for Remaining Services</h3>
 <p>You may find the files available in the same directory as above i.e. <em>k8s-code/projects/instavote/dev/</em> with either partial or blank code. Your job is to complete the deployment and service yaml specs and apply those. While writing the specs, you could refer to the following specification.</p>
 <ul>
-<li>vote</li>
-<li>image: schoolofdevops/vote:v1</li>
-<li>application port: 80</li>
-<li>service type: NodePort</li>
-<li>nodePort : 30000</li>
-<li>worker</li>
-<li>image: schoolofdevops/worker:latest</li>
-<li>results</li>
-<li>image: schoolofdevops/vote-result</li>
-<li>application port: 80</li>
-<li>service type: NodePort</li>
-<li>nodePort : 30100</li>
+<li>vote  <ul>
+<li>image: schoolofdevops/vote:v1  </li>
+<li>application port: 80  </li>
+<li>service type: NodePort  </li>
+<li>nodePort : 30000  </li>
+</ul>
+</li>
+<li>worker  <ul>
+<li>image: schoolofdevops/worker:latest  </li>
+</ul>
+</li>
+<li>results  <ul>
+<li>image: schoolofdevops/vote-result  </li>
+<li>application port: 80  </li>
+<li>service type: NodePort  </li>
+<li>nodePort : 30100  </li>
+</ul>
+</li>
 </ul>
 <p>⠀</p>
 <h4 id="to-validate">To Validate:</h4>
