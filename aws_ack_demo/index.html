@@ -3,18 +3,18 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/kubespray-prereqs/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/aws_ack_demo/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Provisioning HA Lab Cluster  with Vagrant - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <title>Lab K405 - AWS Controller for Kubernetes - Kubernetes Tutorial with CKA/CKAD Prep</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Provisioning HA Lab Cluster  with Vagrant";
-        var mkdocs_page_input_path = "kubespray-prereqs.md";
-        var mkdocs_page_url = "/kubespray-prereqs/";
+        var mkdocs_page_name = "Lab K405 - AWS Controller for Kubernetes";
+        var mkdocs_page_input_path = "aws_ack_demo.md";
+        var mkdocs_page_url = "/aws_ack_demo/";
       </script>
     
     <!--[if lt IE 9]>
@@ -142,8 +142,14 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">AWS and Kubernetes</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../aws_ack_demo/">Lab K405 - AWS Controller for Kubernetes</a>
+              <ul class="current">
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K405 - AWS Controller for Kubernetes</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#setup-s3-controller-for-ack">Setup S3 Controller for ACK</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#create-s3-bucket-from-kubernetes">Create S3 Bucket from Kubernetes</a>
+    </li>
+    </ul>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">AWS EKS</span></p>
@@ -206,9 +212,10 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a> &raquo;</li>
-      <li class="breadcrumb-item active">Provisioning HA Lab Cluster  with Vagrant</li>
+          <li>AWS and Kubernetes &raquo;</li>
+      <li class="breadcrumb-item active">Lab K405 - AWS Controller for Kubernetes</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/kubespray-prereqs.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/aws_ack_demo.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -216,51 +223,87 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="provisioning-ha-lab-cluster-with-vagrant">Provisioning HA Lab Cluster  with Vagrant</h1>
-<h2 id="vagrant-setup">Vagrant Setup:</h2>
-<p>This tutorial assumes you have Vagrant+VirtualBox setup. While Vagrant is used for basic infrastructure requirements, the lessons learned in this tutorial can be applied to other platforms. Start from <a href="#Settin-Up-Kubernetes-Using-Kubespray">Set up Kubernetes Using Kubespray</a>(or) Refer to this <a href="https://github.com/schoolofdevops/ultimate-kubernetes-bootcamp/blob/master/chapters/cluster_setup_kubespray.md">Document</a>, if you have VMs running elsewhere</p>
-<h3 id="software-requirements-on-host-machine">Software Requirements on Host Machine:</h3>
+                <h1 id="aws-controller-for-kubernetes-ack-demo">AWS Controller for Kubernetes (ACK ) Demo</h1>
+<p>From AWS Console,</p>
 <ul>
-<li>Virtual Box (latest)</li>
-<li>Vagrant (latest)</li>
-<li>Git Bash (Only for Windows)</li>
-<li>Conemu (Only for Windows)</li>
+<li>create user with FullS3Access.  </li>
+<li>Note down the Access/Secret keys.    </li>
+<li>Add these credentials as kubernetes secret in a new namespace as  </li>
 </ul>
-<h3 id="set-up-learning-environment">Set up Learning Environment:</h3>
-<p>Setup the repo</p>
-<pre><code>git clone https://github.com/schoolofdevops/kubespray-1
+<pre><code>kubectl create namespace ack-system
+kubectl create secret generic aws-creds --from-literal=key=XXXX --from-literal=secret=YYYY --namespace ack-system
+</code></pre>
+<h2 id="setup-s3-controller-for-ack">Setup S3 Controller for ACK</h2>
+<p>You could find the ACK Conrtrollers from <a href="https://gallery.ecr.aws/aws-controllers-k8s?page=1">ECR Public Gallery</a>
+Example is S# Cotroller :  https://gallery.ecr.aws/aws-controllers-k8s/s3-controller</p>
+<p>Code for this is available at https://github.com/aws-controllers-k8s/s3-controlle</p>
+<p>Clone the git repo which contains the helm chart for the controller as</p>
+<pre><code>git clone https://github.com/aws-controllers-k8s/s3-controller
 
 </code></pre>
-<p>Bring up the VMs</p>
-<pre><code>cd kubespray-1
+<p>Add the configuration</p>
+<pre><code>cd s3-controller/helm/
+</code></pre>
+<p>edit <code>values.yaml</code> and approx at line 62 add the following config</p>
+<pre><code>  extraEnvVars:
+    - name: AWS_ACCESS_KEY_ID
+      valueFrom:
+        secretKeyRef:
+          name: aws-creds
+          key: key
+    - name: AWS_SECRET_ACCESS_KEY
+      valueFrom:
+        secretKeyRef:
+          name: aws-creds
+          key: secret
+</code></pre>
+<p>also at line 98 add the region as</p>
+<pre><code>aws:
+  # If specified, use the AWS region for AWS API calls
+  region: &quot;us-east-1&quot;
+</code></pre>
+<p>install helm chart as</p>
+<pre><code>helm install -n ack-system ack-s3 .
+</code></pre>
+<p>and validate</p>
+<pre><code>kubectl get all -n ack-system
+</code></pre>
+<h2 id="create-s3-bucket-from-kubernetes">Create S3 Bucket from Kubernetes</h2>
+<p>List the CRDs installed by the controller</p>
+<pre><code>kubectl get crds | grep s3
 
-vagrant up
+kubectl get buckets
 
-vagrant status
+kubectl explain buckets
 </code></pre>
-<p>Login to nodes</p>
-<p>Open four different terminals to login to 4 nodes created with above command</p>
-<p><strong>Terminal 1</strong></p>
-<pre><code>vagrant ssh k8s-01
-sudo su
-
+<p>Write  a Custom Resource to create a bucket with as</p>
+<pre><code>apiVersion: s3.services.k8s.aws/v1alpha1
+kind: Bucket
+metadata:
+  name: my-ack-s3-bucket
+spec:
+  name: my-ack-s3-bucket-xxxxxx  # S3 bucket names need to be globally unique
 </code></pre>
-<p><strong>Terminal 2</strong></p>
-<pre><code>vagrant ssh k8s-02
-sudo su
+<p>where replace <code>xxxxxx</code> with some unique number</p>
+<p>and apply</p>
+<pre><code>kubectl apply -f my-bucket.yaml
 </code></pre>
-<p><strong>Terminal 3</strong></p>
-<pre><code>vagrant ssh k8s-03
-sudo su
+<p>and like a magic, you shall see a s3 bucket created on AWS.</p>
+<p>you could also explore</p>
+<pre><code>kubectl get buckets
+kubectl describe bucket my-ack-s3-bucket
 </code></pre>
-<p><strong>Terminal 4</strong></p>
-<pre><code>vagrant ssh k8s-04
-sudo su
+<p>and finally</p>
+<pre><code>kubectl delete bucket my-ack-s3-bucket
 </code></pre>
-<p>Once the environment is setup, follow <a href="https://schoolofdevops.github.io/ultimate-kubernetes-bootcamp/cluster_setup_kubespray/"><strong>Production Grade Setup with Kubespray</strong></a></p>
+<p>to see it gone from AWS as well …. poof !</p>
               
             </div>
           </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../logging/" class="btn btn-neutral float-left" title="Logging"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../eks_prep/" class="btn btn-neutral float-right" title="Lab K501 - EKS Preparatory Setup">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
 
   <hr/>
 
@@ -287,6 +330,10 @@ sudo su
         </span>
     
     
+      <span><a href="../logging/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../eks_prep/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

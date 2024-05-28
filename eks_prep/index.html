@@ -90,6 +90,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../helm_charts/">Lab K114 - Writing HELM Charts</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../helm_charts_publish/">Lab K115 - Publishing HELM Charts</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">Additional CKAD Topics</span></p>
               <ul>
@@ -132,14 +134,21 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../cni/">Lab K404 - CNI</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../operator/">Lab K404 - Kubernetes Operators</a>
+                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../12_troubleshooting/">Troubleshooting Tips</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../logging/">Logging</a>
                   </li>
               </ul>
+              <p class="caption"><span class="caption-text">AWS and Kubernetes</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../aws_ack_demo/">Lab K405 - AWS Controller for Kubernetes</a>
+                  </li>
+              </ul>
               <p class="caption"><span class="caption-text">AWS EKS</span></p>
               <ul class="current">
-                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Lab K501 - EKS Preparatory Setup</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K501 - EKS Preparatory Setup</a>
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#installing-pre-requisite-tools">Installing Pre-requisite Tools</a>
         <ul>
@@ -180,8 +189,6 @@
                   <li class="toctree-l1"><a class="reference internal" href="../eks_storage/">Lab K505 - Persistent Storage with EBS</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../eks_cluster_autoscaler/">Lab K506 - EKS Cluster Autoscaler</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../eks_vpa/">Lab K507 - Verticle Pod Autoscaler</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Exercises</span></p>
@@ -228,8 +235,8 @@
       <div class="wy-nav-content">
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
-          <li class="breadcrumb-item">AWS EKS</li>
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a> &raquo;</li>
+          <li>AWS EKS &raquo;</li>
       <li class="breadcrumb-item active">Lab K501 - EKS Preparatory Setup</li>
     <li class="wy-breadcrumbs-aside">
           <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/eks_prep.md" class="icon icon-github"> Edit on GitHub</a>
@@ -429,7 +436,7 @@ ls -al  ~/.ssh/eks-spore.pem
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../logging/" class="btn btn-neutral float-left" title="Logging"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../aws_ack_demo/" class="btn btn-neutral float-left" title="Lab K405 - AWS Controller for Kubernetes"><span class="icon icon-circle-arrow-left"></span> Previous</a>
         <a href="../eks_setup/" class="btn btn-neutral float-right" title="Lab K502 - EKS Setup">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
@@ -458,7 +465,7 @@ ls -al  ~/.ssh/eks-spore.pem
         </span>
     
     
-      <span><a href="../logging/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../aws_ack_demo/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
       <span><a href="../eks_setup/" style="color: #fcfcfc">Next &raquo;</a></span>

@@ -3,18 +3,18 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/eks_vpa/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/operator/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Lab K507 - Verticle Pod Autoscaler - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <title>Lab K404 - Kubernetes Operators - Kubernetes Tutorial with CKA/CKAD Prep</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Lab K507 - Verticle Pod Autoscaler";
-        var mkdocs_page_input_path = "eks_vpa.md";
-        var mkdocs_page_url = "/eks_vpa/";
+        var mkdocs_page_name = "Lab K404 - Kubernetes Operators";
+        var mkdocs_page_input_path = "operator.md";
+        var mkdocs_page_url = "/operator/";
       </script>
     
     <!--[if lt IE 9]>
@@ -90,6 +90,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../helm_charts/">Lab K114 - Writing HELM Charts</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../helm_charts_publish/">Lab K115 - Publishing HELM Charts</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">Additional CKAD Topics</span></p>
               <ul>
@@ -123,7 +125,7 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Additional Topics</span></p>
-              <ul>
+              <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../install_kubernetes_with_kubeadm/">Lab K400 - Install Kubernetes with Kubeadm</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../configuring_authentication_and_authorization/">Lab K401 - Creating Users, Groups and Authorization</a>
@@ -132,13 +134,24 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../cni/">Lab K404 - CNI</a>
                   </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K404 - Kubernetes Operators</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#cleaning-up">Cleaning Up</a>
+    </li>
+    </ul>
+                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../12_troubleshooting/">Troubleshooting Tips</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../logging/">Logging</a>
                   </li>
               </ul>
+              <p class="caption"><span class="caption-text">AWS and Kubernetes</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../aws_ack_demo/">Lab K405 - AWS Controller for Kubernetes</a>
+                  </li>
+              </ul>
               <p class="caption"><span class="caption-text">AWS EKS</span></p>
-              <ul class="current">
+              <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../eks_prep/">Lab K501 - EKS Preparatory Setup</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../eks_setup/">Lab K502 - EKS Setup</a>
@@ -150,10 +163,6 @@
                   <li class="toctree-l1"><a class="reference internal" href="../eks_storage/">Lab K505 - Persistent Storage with EBS</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../eks_cluster_autoscaler/">Lab K506 - EKS Cluster Autoscaler</a>
-                  </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Lab K507 - Verticle Pod Autoscaler</a>
-    <ul class="current">
-    </ul>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Exercises</span></p>
@@ -200,11 +209,11 @@
       <div class="wy-nav-content">
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
-          <li class="breadcrumb-item">AWS EKS</li>
-      <li class="breadcrumb-item active">Lab K507 - Verticle Pod Autoscaler</li>
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a> &raquo;</li>
+          <li>Additional Topics &raquo;</li>
+      <li class="breadcrumb-item active">Lab K404 - Kubernetes Operators</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/eks_vpa.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/operator.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -212,105 +221,53 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="lab-07-verticle-pod-autoscaler">Lab 07 - Verticle Pod Autoscaler</h1>
-<p>Before you begin, ensure OpenSSL is installed and is up to date on your system. </p>
-<p>Clone the <a href="https://github.com/kubernetes/autoscaler">kubernetes/autoscaler</a> GitHub repository and switch to path where VPA manifests are, </p>
-<pre><code>git clone https://github.com/kubernetes/autoscaler.git
-cd autoscaler/vertical-pod-autoscaler/ 
+                <h1 id="redis-operator">Redis Operator</h1>
+<p>Examine the code at <a href="https://github.com/schoolofdevops/redis-operator">schoolofdevops/redis-operator: Kubernetes Operator to Setup Redis Cluster</a></p>
+<p>Clone the repo</p>
+<pre><code>git clone https://github.com/schoolofdevops/redis-operator.git
+cd redis-operator
+</code></pre>
+<p>Apply the opertor code</p>
+<pre><code>kubectl apply -f redis-crd.yaml -f redis_operator-rbac.yaml -f redis_operator-deploy.yaml
 
-</code></pre>
-<p>deploy VPA as </p>
-<pre><code>./hack/vpa-up.sh
-</code></pre>
-<p>Create a VPA Policy </p>
-<p>File: <code>vote-vpa.yaml</code></p>
-<pre><code>---
-apiVersion: &quot;autoscaling.k8s.io/v1&quot;
-kind: VerticalPodAutoscaler
-metadata:
-  name: vote
-spec:
-  # recommenders field can be unset when using the default recommender.
-  # When using an alternative recommender, the alternative recommender's name
-  # can be specified as the following in a list.
-  # recommenders:
-  #   - name: 'alternative'
-  targetRef:
-    apiVersion: &quot;apps/v1&quot;
-    kind: Deployment
-    name: vote
-  resourcePolicy:
-    containerPolicies:
-      - containerName: '*'
-        minAllowed:
-          cpu: 50m
-          memory: 64Mi
-        maxAllowed:
-          cpu: 500
-          memory: 512Mi
-        controlledResources: [&quot;cpu&quot;, &quot;memory&quot;]
-</code></pre>
-<p>apply </p>
-<pre><code>kubectl apply -f vote-vpa.yaml
-</code></pre>
-<p>watch </p>
-<pre><code>kubectl get vpa vote --watch
 
+kubectl get all
 </code></pre>
-<p>[sample output]</p>
-<pre><code>NAME   MODE   CPU   MEM   PROVIDED   AGE
-vote   Auto                          5s
-vote   Auto   50m   262144k   True       30s
-</code></pre>
-<p>Create a Load Test Job if not already present as,</p>
-<p><code>file: loadtest-job.yaml</code></p>
-<pre><code>apiVersion: batch/v1
-kind: Job
+<p>now create an instance of redis cluster</p>
+<p>File : <code>my-redis.yaml</code></p>
+<pre><code>apiVersion: database.example.com/v1
+kind: Redis
 metadata:
-  generateName: loadtest
+  name: my-redis
+  namespace: default
 spec:
-  template:
-    spec:
-      containers:
-      - name: siege
-        image: schoolofdevops/loadtest:v1
-        command: [&quot;siege&quot;,  &quot;--concurrent=1&quot;, &quot;--benchmark&quot;, &quot;--time=4m&quot;, &quot;http://vote&quot;]
-      restartPolicy: Never
-  backoffLimit: 4
+  slaveSize: 2  # Specifies the number of slave nodes
+  image: &quot;redis:6.2.6&quot;  # Redis Docker image version
+  storageClassName: &quot;standard&quot;  # Specify the Kubernetes storage class for PVCs
+  volumeSize: &quot;200Mi&quot;  # Each Redis node will use a PVC of this size
+  backupEnabled: true  # Enables the backup functionality
+  backupSchedule: &quot;0 */6 * * *&quot;  # Backup schedule, every 6 hours
 </code></pre>
-<p>and launch it as</p>
-<pre><code>kubectl create -f loadtest-job.yaml
+<p>apply</p>
+<pre><code>kubectl apply -f my-redis.yaml
 </code></pre>
-<p>This will launch a one off Job which would run for 4 minutes.</p>
-<p>keep watching the following in differnt windows </p>
-<p>terminal  1 </p>
-<pre><code>kubectl get vpa vote --watch
+<p>examine the objects created</p>
+<pre><code>kubectl get all
+
+kubectl delete -f redis-crd.yaml -f redis_operator-rbac.yaml -f redis_operator-deploy.yaml
 </code></pre>
-<p>terminal 2</p>
-<pre><code>kubectl get hpa vote --watch
-</code></pre>
-<p>you should see, both hpa and vpa doing complimentary jobs where, 
-* HPA is launching new pods to ensure more requests are being served 
-* VPA is updating the <code>requests</code> spec based on actual metrics </p>
-<p>You could check the modified request spec by VPA by describing the one of the pods runnnig vote app </p>
-<pre><code>kubectl describe pod vote-xxxx-yyyy
-</code></pre>
-<pre><code>   Restart Count:  0
-    Limits:
-      cpu:     1235m
-      memory:  500Mi
-    Requests:
-      cpu:        247m
-      memory:     262144k
-    Environment:  &lt;none&gt;
-    Mounts:
+<h4 id="cleaning-up">Cleaning Up</h4>
+<p>Once done, to clean up,</p>
+<pre><code>kubectl delete -f my-redis.yaml
+
+
 </code></pre>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../eks_cluster_autoscaler/" class="btn btn-neutral float-left" title="Lab K506 - EKS Cluster Autoscaler"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../xer-001-pods/" class="btn btn-neutral float-right" title="XER001 - Pods">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../cni/" class="btn btn-neutral float-left" title="Lab K404 - CNI"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../12_troubleshooting/" class="btn btn-neutral float-right" title="Troubleshooting Tips">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -338,10 +295,10 @@ spec:
         </span>
     
     
-      <span><a href="../eks_cluster_autoscaler/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../cni/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../xer-001-pods/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../12_troubleshooting/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

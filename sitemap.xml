@@ -51,6 +51,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>http://kubernetes-tutorial.schoolofdevops.com/aws_ack_demo/</loc>
+         <lastmod>2024-05-28</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/base_setup/</loc>
          <lastmod>2024-05-28</lastmod>
          <changefreq>daily</changefreq>
@@ -141,11 +146,6 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>http://kubernetes-tutorial.schoolofdevops.com/eks_vpa/</loc>
-         <lastmod>2024-05-28</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/elk_monitoring/</loc>
          <lastmod>2024-05-28</lastmod>
          <changefreq>daily</changefreq>
@@ -157,6 +157,11 @@
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/helm_charts/</loc>
+         <lastmod>2024-05-28</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>http://kubernetes-tutorial.schoolofdevops.com/helm_charts_publish/</loc>
          <lastmod>2024-05-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
@@ -232,6 +237,11 @@
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/operating-docker-containers/</loc>
+         <lastmod>2024-05-28</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>http://kubernetes-tutorial.schoolofdevops.com/operator/</loc>
          <lastmod>2024-05-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
