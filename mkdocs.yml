@@ -44,6 +44,8 @@ nav:
      - Lab K404 - CNI: "cni.md"
      - Troubleshooting Tips: "12_troubleshooting.md"
      - Logging: "logging.md"
+  - EKS:
+     - Lab K500 - EKS Preparatory Setup: "eks_prep.md"
   - Exercises:
      - XER001 - Pods: "xer-001-pods.md"
      - XER002 - ReplicaSets: "xer-002-rs.md"
