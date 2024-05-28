@@ -10,7 +10,7 @@ This lab is about getting ready to setup a EKS Cluster on AWS. Before you begin,
 * IAM   
 * VPC   
 * EKS   
-* S3  
+* S3   
 * EC2   
 
 ## Installing Pre-requisite Tools 
