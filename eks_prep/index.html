@@ -3,18 +3,18 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/aws_ack_demo/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/eks_prep/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Lab K501 - AWS Controller for Kubernetes - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <title>Lab K500 - EKS Preparatory Setup - Kubernetes Tutorial with CKA/CKAD Prep</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Lab K501 - AWS Controller for Kubernetes";
-        var mkdocs_page_input_path = "aws_ack_demo.md";
-        var mkdocs_page_url = "/aws_ack_demo/";
+        var mkdocs_page_name = "Lab K500 - EKS Preparatory Setup";
+        var mkdocs_page_input_path = "eks_prep.md";
+        var mkdocs_page_url = "/eks_prep/";
       </script>
     
     <!--[if lt IE 9]>
@@ -90,8 +90,6 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../helm_charts/">Lab K114 - Writing HELM Charts</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../helm_charts_publish/">Lab K115 - Publishing HELM Charts</a>
-                  </li>
               </ul>
               <p class="caption"><span class="caption-text">Additional CKAD Topics</span></p>
               <ul>
@@ -134,20 +132,42 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../cni/">Lab K404 - CNI</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../operator/">Lab K404 - Kubernetes Operators</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../12_troubleshooting/">Troubleshooting Tips</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../logging/">Logging</a>
                   </li>
               </ul>
-              <p class="caption"><span class="caption-text">AWS and Kubernetes</span></p>
+              <p class="caption"><span class="caption-text">EKS</span></p>
               <ul class="current">
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K501 - AWS Controller for Kubernetes</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Lab K500 - EKS Preparatory Setup</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#setup-s3-controller-for-ack">Setup S3 Controller for ACK</a>
+    <li class="toctree-l2"><a class="reference internal" href="#installing-pre-requisite-tools">Installing Pre-requisite Tools</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#install-eksctl">Install eksctl</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#create-s3-bucket-from-kubernetes">Create S3 Bucket from Kubernetes</a>
+    <li class="toctree-l3"><a class="reference internal" href="#install-kubectl">Install kubectl</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#verify-installation">Verify Installation</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#install-aws-cli">Install aws CLI</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#install-helm">Install Helm</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#configuring-eks-admin-user">Configuring EKS Admin User</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#required-iam-permissions">Required IAM Permissions</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#steps-to-attach-the-policy">Steps to Attach the Policy</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#configure-aws-cli-with-eks-admin-user">Configure AWS CLI with EKS Admin User</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#create-ssh-key-pair">Create SSH key Pair</a>
+    </li>
+        </ul>
     </li>
     </ul>
                   </li>
@@ -196,11 +216,11 @@
       <div class="wy-nav-content">
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href=".." class="icon icon-home" aria-label="Docs"></a> &raquo;</li>
-          <li>AWS and Kubernetes &raquo;</li>
-      <li class="breadcrumb-item active">Lab K501 - AWS Controller for Kubernetes</li>
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">EKS</li>
+      <li class="breadcrumb-item active">Lab K500 - EKS Preparatory Setup</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/aws_ack_demo.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/eks_prep.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -208,80 +228,191 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="aws-controller-for-kubernetes-ack-demo">AWS Controller for Kubernetes (ACK ) Demo</h1>
-<p>From AWS Console,</p>
+                <h1 id="lab-01-eks-preparatory-setup">Lab 01 - EKS Preparatory Setup</h1>
+<p>Author: Gourav Shah 
+Publisher:  School of Devops
+Version : 22.05.2024.01</p>
+<hr />
+<p>This lab is about getting ready to setup a EKS Cluster on AWS. Before you begin, make sure you have a operational AWS Account with access to create IAM Users and access to all relevant services including 
+* IAM 
+* VPC 
+* EKS 
+* S3
+* EC2 </p>
+<h2 id="installing-pre-requisite-tools">Installing Pre-requisite Tools</h2>
+<h3 id="install-eksctl">Install eksctl</h3>
+<p>If you haven't installed <code>eksctl</code> yet, you can do so by following these instructions:</p>
+<p><strong>macOS/Linux:</strong></p>
+<pre><code>curl --silent --location &quot;https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz&quot; | tar xz -C /tmp
+
+sudo mv /tmp/eksctl /usr/local/bin
+</code></pre>
+<p><strong>Windows:</strong> Download the latest <code>eksctl</code> binary from the <a href="https://github.com/weaveworks/eksctl/releases">releases page</a> and add it to your system path.</p>
+<p>Refer to the official documentation here <a href="https://eksctl.io/installation/">Installation</a> to get the exact and up to date instructions to install eksctl as well as auto shell completions. </p>
+<h3 id="install-kubectl">Install <code>kubectl</code></h3>
+<p><strong>macOS/Linux:</strong></p>
+<pre><code>curl -LO &quot;https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/$(uname -s | tr '[:upper:]' '[:lower:]')/amd64/kubectl&quot;
+chmod +x kubectl
+sudo mv kubectl /usr/local/bin
+</code></pre>
+<p><strong>Windows:</strong></p>
+<ol>
+<li>Download the latest release of <code>kubectl</code> from the <a href="">official Kubernetes releases page</a>.</li>
+<li>Rename the downloaded file to <code>kubectl.exe</code>.</li>
+<li>Move the file to a directory included in your system's <code>PATH</code>.</li>
+</ol>
+<p>⠀
+You can also install <code>kubectl</code> on Windows using <code>chocolatey</code> or <code>scoop</code>:</p>
+<p><strong>Using Chocolatey:</strong></p>
+<pre><code>choco install kubernetes-cli
+</code></pre>
+<p><strong>Using Scoop:</strong></p>
+<pre><code>scoop install kubectl
+</code></pre>
+<h4 id="verify-installation">Verify Installation</h4>
+<p>After installing <code>kubectl</code>, verify the installation by checking the version:</p>
+<pre><code>kubectl version --client
+</code></pre>
+<p>This command should display the client version of <code>kubectl</code>, indicating that it has been installed successfully.</p>
+<h3 id="install-aws-cli">Install <code>aws</code> CLI</h3>
+<p>Refer to the official documentation to install <code>aws</code> CLI  with os specific instructions from <a href="https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html">Install or update to the latest version of the AWS CLI - AWS Command Line Interface</a></p>
+<h3 id="install-helm">Install Helm</h3>
+<p>To install helm version 3 on Linux or MacOS, you can follow following instructions.</p>
+<pre><code>curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+</code></pre>
+<p>You could further refer to <a href="https://helm.sh/docs/intro/install/">Official HELM Install Instructions</a> for alternative options.</p>
+<p>Verify the installtion is successful,</p>
+<pre><code>helm --help
+helm version
+</code></pre>
+<h2 id="configuring-eks-admin-user">Configuring EKS Admin User</h2>
+<p>When configuring the AWS CLI to create and manage an EKS cluster using <code>eksctl</code>, the IAM user (or role) whose credentials you are using needs to have sufficient permissions to perform all the necessary actions. This includes permissions to create and manage EKS clusters, EC2 instances, VPCs, IAM roles, and other related resources. Here’s a list of the permissions required:</p>
+<h3 id="required-iam-permissions">Required IAM Permissions</h3>
+<ol>
+<li><strong>Amazon EKS Full Access</strong></li>
+<li><strong>Amazon EC2 Full Access</strong></li>
+<li><strong>AWS CloudFormation Full Access</strong></li>
+<li><strong>IAM Permissions to Create Roles and Policies</strong></li>
+<li><strong>Amazon S3 Full Access</strong> (if you need to use S3 for storing logs or other purposes)</li>
+<li>Systems Manager (SSM) - Optional if you use Parameter Store</li>
+<li>AWS Key Management Service (KMS) - Optional if you encrypt Secrets using KMS</li>
+</ol>
+<p>Here’s a detailed policy document that grants the necessary permissions. You can create a custom IAM policy with these permissions and attach it to the IAM user or role.</p>
+<p>Refer to <a href="https://eksctl.io/installation/">Installation</a> documentation to understand the authorization required for the user which will run <code>eksctl</code> </p>
+<p><code>JSON Policy (use it in next step)</code></p>
+<pre><code>{
+    &quot;Version&quot;: &quot;2012-10-17&quot;,
+    &quot;Statement&quot;: [
+        {
+            &quot;Effect&quot;: &quot;Allow&quot;,
+            &quot;Action&quot;: [
+                &quot;eks:*&quot;,
+                &quot;ec2:*&quot;,
+                &quot;cloudformation:*&quot;,
+                &quot;iam:*&quot;,
+                &quot;ecr:*&quot;,
+                &quot;autoscaling:*&quot;,
+                &quot;cloudwatch:*&quot;,
+                &quot;elasticloadbalancing:*&quot;,
+                &quot;s3:*&quot;,
+                &quot;ssm:GetParameter&quot;,
+                &quot;ssm:DescribeParameters&quot;,
+                &quot;kms:ListAliases&quot;,
+                &quot;kms:DescribeKey&quot;,
+                &quot;kms:CreateGrant&quot;,
+                &quot;kms:RetireGrant&quot;,
+                &quot;kms:RevokeGrant&quot;,
+                &quot;sts:AssumeRole&quot;
+            ],
+            &quot;Resource&quot;: &quot;*&quot;
+        }
+    ]
+}
+
+</code></pre>
+<h3 id="steps-to-attach-the-policy">Steps to Attach the Policy</h3>
+<ol>
+<li>
+<p><strong>Create a Custom Policy:</strong></p>
+</li>
+<li>
+<p>Go to the IAM console in AWS.</p>
+</li>
+<li>Click on <strong>Policies</strong> in the left-hand menu.</li>
+<li>Click on <strong>Create policy</strong>.<img alt="" src="../images/eks/01/01.png" /></li>
+<li>Select the <strong>JSON</strong> tab.</li>
+<li>Copy and paste the above JSON policy document.<img alt="" src="../images/eks/01/02.png" /></li>
+<li>Click on <strong>Next</strong> button to <strong>Review policy</strong>.</li>
+<li>Name the policy (e.g., <code>EKSFullAccessPolicy</code>) and provide a description.<img alt="" src="../images/eks/01/03.png" /></li>
+<li>
+<p>Click on <strong>Create policy</strong>.</p>
+</li>
+<li>
+<p><strong>Attach the Policy to a User:</strong></p>
+</li>
+<li>
+<p>Go to <strong>Users</strong> in the IAM console.</p>
+</li>
+<li>Create a new user <code>eks-admin</code>  who will be creating the EKS cluster. Do not select <strong>Provide user access to the AWS Management Console.</strong> Select <strong>Next</strong>.</li>
+<li>Select  <strong>Attach policies directly</strong> and search for <strong>EKSFullAccessPolicy</strong> as created above. Select <strong>Next</strong>. <img alt="" src="../images/eks/01/04.png" /></li>
+<li>
+<p>Select the policy and click on <strong>Next: Review</strong>, then click on <strong>Create user</strong>.</p>
+</li>
+<li>
+<p><strong>Create Access Keys for eks-admin User:</strong></p>
+</li>
+<li>
+<p>Go to <strong>Users</strong> in the IAM console.</p>
+</li>
+<li>Select<code>eks-admin</code>  user </li>
+<li>From <strong>Security credentials</strong> select <strong>Create access key</strong> <img alt="" src="../images/eks/01/05.png" /></li>
+<li>Select use case as <strong>Command Line Interface (CLI)</strong> , provide confirmation and select <strong>Next</strong>. </li>
+<li>Add a description value as something e.g. <code>AWS CLI Utility</code> and proceed to <strong>Create access key</strong>. </li>
+<li>Note the Access Key and Secret key which you will use in the next step to configure with AWS CLI. </li>
+</ol>
+<h3 id="configure-aws-cli-with-eks-admin-user">Configure AWS CLI with EKS Admin User</h3>
+<p>Once you have created the user, proceed to create Security Credentials and generate the AWS Access Key + AWS Secret Key pair.  </p>
+<p>Then make sure your AWS CLI is configured with the necessary permissions to create EKS clusters. You can configure it using:</p>
+<pre><code>aws configure
+</code></pre>
+<p>You'll need your AWS Access Key ID, Secret Access Key, region, and output format. The available output formats are:</p>
+<ol>
+<li><strong>json</strong>: The default output format. Provides the output in JSON format.</li>
+<li><strong>text</strong>: Provides the output in plain text format. This format is useful for simple parsing and readability.</li>
+<li><strong>table</strong>: Provides the output in a readable table format. This format is useful for human readability but less suitable for parsing.</li>
+<li><strong>yaml</strong>: Provides the output in YAML format. This is useful for configurations and other uses where YAML is preferred.</li>
+<li><strong>yaml-stream</strong>: Provides the output in a streaming YAML format, where each document is separated by <code>---</code>. This format is useful for continuous data processing.</li>
+</ol>
+<p>Select region as <code>ap-southeast-1</code> to be consistent with the labs created as part of this course. </p>
+<p>[sample output]</p>
+<pre><code>➜  ~ aws configure
+AWS Access Key ID [****************QSJX]: XXXX
+AWS Secret Access Key [****************P01d]: YYYY
+Default region name [ap-southeast-1]: ap-southeast-1
+Default output format [None]: table
+
+
+➜  ~ cat ~/.aws/config
+[default]
+region = ap-southeast-1
+output = table
+</code></pre>
+<h3 id="create-ssh-key-pair">Create SSH key Pair</h3>
+<p>To create a SSH key pair that you would use to log into the nodes created with EKS,
+* Switch to EC2 Service from AWS Console, and make sure you have selected the same region you are going to launch EKS cluster inside e.g. Singapore 
+* Select <strong>Key Pairs</strong> from left side menu header <strong>Network &amp; Security</strong>. 
+* Create a key pair of type <strong>RSA</strong> and download a <strong>.pem</strong> or <strong>.ppk</strong> file based on how and from where  you are going to connect. </p>
+<p><img alt="" src="../images/eks/01/06.png" /></p>
 <ul>
-<li>create user with FullS3Access.  </li>
-<li>Note down the Access/Secret keys.    </li>
-<li>Add these credentials as kubernetes secret in a new namespace as  </li>
+<li>Move the downloaded private key to a safe location and change its permissions. 
+e.g. </li>
 </ul>
-<pre><code>kubectl create namespace ack-system
-kubectl create secret generic aws-creds --from-literal=key=XXXX --from-literal=secret=YYYY --namespace ack-system
+<pre><code>mv ~/Downloads/eks-spore.pem ~/.ssh
+ls -al  ~/.ssh/eks-spore.pem
+chmod 600 ~/.ssh/eks-spore.pem
+ls -al  ~/.ssh/eks-spore.pem
 </code></pre>
-<h2 id="setup-s3-controller-for-ack">Setup S3 Controller for ACK</h2>
-<p>You could find the ACK Conrtrollers from <a href="https://gallery.ecr.aws/aws-controllers-k8s?page=1">ECR Public Gallery</a>
-Example is S# Cotroller :  https://gallery.ecr.aws/aws-controllers-k8s/s3-controller</p>
-<p>Code for this is available at https://github.com/aws-controllers-k8s/s3-controlle</p>
-<p>Clone the git repo which contains the helm chart for the controller as</p>
-<pre><code>git clone https://github.com/aws-controllers-k8s/s3-controller
-
-</code></pre>
-<p>Add the configuration</p>
-<pre><code>cd s3-controller/helm/
-</code></pre>
-<p>edit <code>values.yaml</code> and approx at line 62 add the following config</p>
-<pre><code>  extraEnvVars:
-    - name: AWS_ACCESS_KEY_ID
-      valueFrom:
-        secretKeyRef:
-          name: aws-creds
-          key: key
-    - name: AWS_SECRET_ACCESS_KEY
-      valueFrom:
-        secretKeyRef:
-          name: aws-creds
-          key: secret
-</code></pre>
-<p>also at line 98 add the region as</p>
-<pre><code>aws:
-  # If specified, use the AWS region for AWS API calls
-  region: &quot;us-east-1&quot;
-</code></pre>
-<p>install helm chart as</p>
-<pre><code>helm install -n ack-system ack-s3 .
-</code></pre>
-<p>and validate</p>
-<pre><code>kubectl get all -n ack-system
-</code></pre>
-<h2 id="create-s3-bucket-from-kubernetes">Create S3 Bucket from Kubernetes</h2>
-<p>List the CRDs installed by the controller</p>
-<pre><code>kubectl get crds | grep s3
-
-kubectl get buckets
-
-kubectl explain buckets
-</code></pre>
-<p>Write  a Custom Resource to create a bucket with as</p>
-<pre><code>apiVersion: s3.services.k8s.aws/v1alpha1
-kind: Bucket
-metadata:
-  name: my-ack-s3-bucket
-spec:
-  name: my-ack-s3-bucket-xxxxxx  # S3 bucket names need to be globally unique
-</code></pre>
-<p>where replace <code>xxxxxx</code> with some unique number</p>
-<p>and apply</p>
-<pre><code>kubectl apply -f my-bucket.yaml
-</code></pre>
-<p>and like a magic, you shall see a s3 bucket created on AWS.</p>
-<p>you could also explore</p>
-<pre><code>kubectl get buckets
-kubectl describe bucket my-ack-s3-bucket
-</code></pre>
-<p>and finally</p>
-<pre><code>kubectl delete bucket my-ack-s3-bucket
-</code></pre>
-<p>to see it gone from AWS as well …. poof !</p>
+<p>Now that the preparatory setup is done, you could proceed to create a EKS Cluster. </p>
               
             </div>
           </div><footer>

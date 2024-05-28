@@ -88,21 +88,17 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../helm/">Lab K113 - HELM Package Manager</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K114 - Writing HELM Charts</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Lab K114 - Writing HELM Charts</a>
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#part-i-generating-a-chart-with-one-service">Part I - Generating a Chart with One Service</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#part-ii-adding-support-for-more-microservices">Part II - Adding support for More Microservices</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#part-iii-overriding-values-rollbacks">Part III : Overriding Values, Rollbacks</a>
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#exercise">Exercise</a>
     </li>
         </ul>
     </li>
     </ul>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../helm_charts_publish/">Lab K115 - Publishing HELM Charts</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Additional CKAD Topics</span></p>
@@ -146,16 +142,14 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../cni/">Lab K404 - CNI</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../operator/">Lab K404 - Kubernetes Operators</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../12_troubleshooting/">Troubleshooting Tips</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../logging/">Logging</a>
                   </li>
               </ul>
-              <p class="caption"><span class="caption-text">AWS and Kubernetes</span></p>
+              <p class="caption"><span class="caption-text">EKS</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../aws_ack_demo/">Lab K501 - AWS Controller for Kubernetes</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_prep/">Lab K500 - EKS Preparatory Setup</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Exercises</span></p>
@@ -202,8 +196,8 @@
       <div class="wy-nav-content">
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href=".." class="icon icon-home" aria-label="Docs"></a> &raquo;</li>
-          <li>Kubernetes Essentials for CKA/CKAD &raquo;</li>
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Kubernetes Essentials for CKA/CKAD</li>
       <li class="breadcrumb-item active">Lab K114 - Writing HELM Charts</li>
     <li class="wy-breadcrumbs-aside">
           <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/helm_charts.md" class="icon icon-github"> Edit on GitHub</a>
@@ -247,25 +241,6 @@ image: 
   type: NodePort
   port: 80
   nodePort: 30300
-</code></pre>
-<p>Also update the <code>service.yaml</code> template with the additional property for <code>nodePort</code> defined as ,</p>
-<p>File : <code>service.yaml</code></p>
-<pre><code>apiVersion: v1
-kind: Service
-metadata:
-  name: vote
-  labels:
-    {{- include &quot;instavote.labels&quot; . | nindent 4 }}
-spec:
-  type: {{ .Values.service.type }}
-  ports:
-    - port: {{ .Values.service.port }}
-      targetPort: http
-      protocol: TCP
-      name: http
-      nodePort: {{ .Values.service.nodePort }}
-  selector:
-    {{- include &quot;instavote.selectorLabels&quot; . | nindent 4 }}
 </code></pre>
 <p>Install this chart with helm to deploy the <code>vote</code> service as:</p>
 <pre><code>helm install instavote -n dev --values=values.dev.yaml  . --dry-run
@@ -352,55 +327,6 @@ helm list -A
 kubectl get all
 </code></pre>
 <p>Validate that vote and redis are running with the values that you provided.</p>
-<h2 id="part-iii-overriding-values-rollbacks">Part III : Overriding Values, Rollbacks</h2>
-<p>Lets learn how to override values from the command line. To do so, lets add one property</p>
-<p>File : <code>templates/vote/deployment.yaml</code></p>
-<pre><code>containers:
-  - name: vote
-    env:
-      - name: OPTION_A
-        value: {{ .Values.vote.options.A }}
-      - name: OPTION_B
-        value: {{ .Values.vote.options.B }}
-</code></pre>
-<p>This will read from values file and set those as environmnt variables. Lets set the default values.</p>
-<p>File:  <code>values.dev.yaml</code></p>
-<pre><code>vote:
-  replicaCount: 2
-
-  options:
-    A: MacOS
-    B: Windows
-
-</code></pre>
-<p>now upgrade the release as</p>
-<pre><code>helm upgrade  instavote -n dev --values=values.dev.yaml  .
-</code></pre>
-<p>Check the application to see the default values being visible.</p>
-<p>You could override the values from the command line as</p>
-<pre><code>helm upgrade instavote --values values.dev.yaml --set vote.options.A=Green --set vote.options.B=Yellow .
-</code></pre>
-<p>check the web app now</p>
-<p>try one more time</p>
-<pre><code>helm upgrade instavote --values values.dev.yaml --set vote.options.A=Orange --set vote.options.B=Blue .
-</code></pre>
-<p>you should see the values change every time.</p>
-<p>Check the release now</p>
-<pre><code>helm list -A
-
-</code></pre>
-<p>[sample output]</p>
-<pre><code>NAME        NAMESPACE   REVISION    UPDATED                                 STATUS      CHART           APP VERSION
-instavote   dev            7        2024-05-14 03:31:34.717912894 +0000 UTC deployed    instavote-0.1.0 1.16.0
-</code></pre>
-<p>try rolling back a version</p>
-<p>e.g.</p>
-<pre><code>helm rollback instavote
-</code></pre>
-<p>you could also go back to a specific version using the revision number as  </p>
-<pre><code>helm rollback instavote xx
-</code></pre>
-<p>where replace <code>xx</code> with the revision number you wish to roll back to.</p>
 <h3 id="exercise">Exercise</h3>
 <p>Now that you have deployed vote and redis, go ahead and add the code to deploy  worker, db and result as well.</p>
               
@@ -408,7 +334,7 @@ instavote   dev            7        2024-05-14 03:31:34.717912894 +0000 UTC depl
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
         <a href="../helm/" class="btn btn-neutral float-left" title="Lab K113 - HELM Package Manager"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../helm_charts_publish/" class="btn btn-neutral float-right" title="Lab K115 - Publishing HELM Charts">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../advanced_pod_design/" class="btn btn-neutral float-right" title="Lab K201 - Advanced Pod Design">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -439,7 +365,7 @@ instavote   dev            7        2024-05-14 03:31:34.717912894 +0000 UTC depl
       <span><a href="../helm/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../helm_charts_publish/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../advanced_pod_design/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
