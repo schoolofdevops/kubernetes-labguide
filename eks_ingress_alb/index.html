@@ -3,18 +3,18 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/eks_deploy_apps/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/eks_ingress_alb/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Lab K500 - Deploy Apps on EKS - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <title>Lab K501 - Ingress with ALB - Kubernetes Tutorial with CKA/CKAD Prep</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Lab K500 - Deploy Apps on EKS";
-        var mkdocs_page_input_path = "eks_deploy_apps.md";
-        var mkdocs_page_url = "/eks_deploy_apps/";
+        var mkdocs_page_name = "Lab K501 - Ingress with ALB";
+        var mkdocs_page_input_path = "eks_ingress_alb.md";
+        var mkdocs_page_url = "/eks_ingress_alb/";
       </script>
     
     <!--[if lt IE 9]>
@@ -143,25 +143,25 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../eks_setup/">Lab K501 - EKS Setup</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Lab K500 - Deploy Apps on EKS</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_deploy_apps/">Lab K500 - Deploy Apps on EKS</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Lab K501 - Ingress with ALB</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#project-specs">Project Specs</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#phase-i-apply-existing-code">Phase I - Apply existing code</a>
+    <li class="toctree-l2"><a class="reference internal" href="#pre-requisites">Pre Requisites</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#phase-ii-create-deployments-and-services-for-remaining-services">Phase II - Create Deployments and Services for Remaining Services</a>
+    <li class="toctree-l2"><a class="reference internal" href="#install-aws-load-balancer-controller-lbc">Install AWS Load Balancer Controller (LBC)</a>
         <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#to-validate">To Validate:</a>
+    <li class="toctree-l3"><a class="reference internal" href="#install-aws-load-balancer-controller-using-helm-v3">Install AWS Load Balancer Controller using Helm V3</a>
     </li>
         </ul>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#phase-iii-set-up-host-based-traffic-routing-with-ingress">Phase III - Set up host based traffic routing with Ingress</a>
+    <li class="toctree-l2"><a class="reference internal" href="#create-ingress-rules">Create Ingress Rules</a>
     </li>
-        </ul>
+    <li class="toctree-l2"><a class="reference internal" href="#add-local-dns">Add Local DNS</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#reference">Reference</a>
     </li>
     </ul>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../eks_ingress_alb/">Lab K501 - Ingress with ALB</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Exercises</span></p>
@@ -210,9 +210,9 @@
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
           <li class="breadcrumb-item">EKS</li>
-      <li class="breadcrumb-item active">Lab K500 - Deploy Apps on EKS</li>
+      <li class="breadcrumb-item active">Lab K501 - Ingress with ALB</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/eks_deploy_apps.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/eks_ingress_alb.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -220,136 +220,188 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="lab-03-deploy-apps-on-eks">Lab 03 - Deploy Apps on EKS</h1>
-<p>In this project , you would write definitions for deploying the <a href="https://github.com/schoolofdevops/example-voting-app">instavote application</a> stack with all components/tiers which include,</p>
+                <h1 id="lab-04-ingress-with-alb">Lab 04 - Ingress with ALB</h1>
+<p>In this lab you are going to learn how to route traffic to your applications running inside EKS using Application Load Balancer offered by AWS. </p>
+<h2 id="pre-requisites">Pre Requisites</h2>
 <ul>
-<li>vote</li>
-<li>redis</li>
-<li>worker</li>
-<li>db</li>
-<li>result</li>
+<li>[ ] EKS Cluster </li>
+<li>[ ] Two Subnets in two AZs  </li>
+<li>[ ] Public/Private Subnets should have relevant tags (Already done if created with Cloudformation Template)</li>
 </ul>
-<p>⠀</p>
-<h2 id="project-specs">Project Specs</h2>
+<h2 id="install-aws-load-balancer-controller-lbc">Install AWS Load Balancer Controller (LBC)</h2>
+<p>The Load Balancer Controller (LBC) is a Kubernetes controller that manages Elastic Load Balancers (ELBs) for a Kubernetes cluster. It automatically provisions and configures AWS Application Load Balancers (ALBs) or Network Load Balancers (NLBs) to expose Kubernetes services to external traffic, ensuring scalability, high availability, and secure ingress traffic management. The LBC monitors Kubernetes Ingress resources and dynamically adjusts the configuration of the load balancers to reflect changes in the cluster, thereby simplifying the deployment of applications that require external access and integrating seamlessly with AWS networking and security features.</p>
+<p>Here is a diagram that explains how the Load Balancer Controller (LBC) works by listening to Ingress rules and controlling Application Load Balancers (ALBs):</p>
+<pre><code>+---------------------+               +-----------------------+
+| Kubernetes Cluster  |               |        AWS            |
+|                     |               |                       |
+|                     |               |                       |
+|  +--------------+   |               |   +---------------+   |
+|  |              |   |               |   |               |   |
+|  |   Ingress    |   |               |   |     ALB       |   |
+|  |   Resource   |   |               |   | (Application  |   |
+|  +------+-------+   |               |   | Load Balancer)|   |
+|         |           |               |   +-------+-------+   |
+|         |           |               |            |          |
+|  +------+-------+   |               |            |          |
+|  |              |   |  Listens to   |            |          |
+|  |   LBC (Load  +-------------------------------&gt;|          |
+|  |  Balancer    |   |   Ingress     |   Controls |          |
+|  |  Controller) |   |    Rules      |   ALBs     |          |
+|  +------+-------+   |               |            |          |
+|         |           |               |            |          |
+|         |           |               |            |          |
+|  +------+-------+   |               |   +-------+-------+   |
+|  |              |   |               |   |               |   |
+|  |  Services/   +----------------------&gt;| Target Groups |   |
+|  |  Pods        |   |               |   |               |   |
+|  |              |   |               |   +---------------+   |
++---------------------+               +-----------------------+
+</code></pre>
 <ul>
-<li>Apply the deployment and service code for the applications marked as ready</li>
-<li>Complete the code for deployments and services marked as TODO</li>
-<li>Apply the definitions that you have completed</li>
-<li>Validate the application workflow is operational by loading vote and result applications from the browser</li>
-<li>Set up ingress controller and add ingress rules so that you are able to access the apps using domain names e.g. vote.example.com and result.example.com</li>
+<li><strong>Kubernetes Cluster</strong>: Represents your Kubernetes environment where applications are deployed.</li>
+<li><strong>Ingress Resource</strong>: Defines rules for how inbound traffic should be routed to services within the cluster.</li>
+<li><strong>Load Balancer Controller (LBC)</strong>: Watches for changes in Ingress resources and automatically manages ALBs in AWS.</li>
+<li><strong>AWS</strong>: Represents the AWS cloud where the Application Load Balancer (ALB) and Target Groups are hosted.</li>
+<li><strong>ALB (Application Load Balancer)</strong>: A type of load balancer that LBC configures to route external traffic based on the Ingress rules.</li>
+<li><strong>Services/Pods</strong>: The backend endpoints within the Kubernetes cluster that the ALB routes traffic to, organized in target groups.</li>
 </ul>
 <p>⠀
-Following table depicts the state of readiness of the above services.</p>
-<table>
-<thead>
-<tr>
-<th>App</th>
-<th>Deployment</th>
-<th>Service</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>vote</td>
-<td>TODO</td>
-<td>ready</td>
-</tr>
-<tr>
-<td>redis</td>
-<td>ready</td>
-<td>ready</td>
-</tr>
-<tr>
-<td>worker</td>
-<td>TODO</td>
-<td>n/a</td>
-</tr>
-<tr>
-<td>db</td>
-<td>ready</td>
-<td>ready</td>
-</tr>
-<tr>
-<td>result</td>
-<td>TODO</td>
-<td>TODO</td>
-</tr>
-</tbody>
-</table>
-<h3 id="phase-i-apply-existing-code">Phase I - Apply existing code</h3>
-<p>Create a namespace and switch to it</p>
-<pre><code>kubectl create namespace instavote
-kubectl config set-context --current --namespace=instavote
-kubectl config get-contexts
+The LBC listens to the Ingress resources in the Kubernetes cluster and dynamically updates the ALB configuration in AWS to match the defined routing rules, ensuring seamless traffic management.</p>
+<p>Download IAM Policy </p>
+<pre><code>curl -O https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.7.2/docs/install/iam_policy.json
 </code></pre>
-<p>Apply the existing manifests</p>
-<pre><code>cd k8s-code/projects/instavote/dev/
+<p>Create IAM Policy </p>
+<pre><code>aws iam create-policy \
+    --policy-name AWSLoadBalancerControllerIAMPolicy \
+    --policy-document file://iam_policy.json
+</code></pre>
+<p>Note the ARN which you will use in the next command. </p>
+<p><strong>Create IAM Role using</strong> eksctl</p>
+<p>Replace eks-cluster-01 with the name of your cluster, 111122223333 with your account ID, and then run the command. If your cluster is in the AWS GovCloud (US-East) or AWS GovCloud (US-West) AWS Regions, then replace arn:aws: with arn:aws-us-gov:. </p>
+<pre><code>eksctl create iamserviceaccount \
+  --cluster=eks-cluster-01 \
+  --namespace=kube-system \
+  --name=aws-load-balancer-controller \
+  --role-name AmazonEKSLoadBalancerControllerRole \
+  --attach-policy-arn=arn:aws:iam::111122223333:policy/AWSLoadBalancerControllerIAMPolicy \
+  --approve 
+</code></pre>
+<p>validate </p>
+<pre><code>eksctl get iamserviceaccount --cluster eks-cluster-01
+</code></pre>
+<h6 id="install-aws-load-balancer-controller-using-helm-v3">Install AWS Load Balancer Controller using <a href="https://helm.sh/">Helm V3</a></h6>
+<p>Add and update  <code>eks-charts</code> Helm chart repository. AWS maintains <a href="https://github.com/aws/eks-charts">this repository</a> on GitHub.</p>
+<pre><code>helm repo add eks https://aws.github.io/eks-charts
+helm repo update eks
 
-kubectl apply  -f vote-svc.yaml
-kubectl apply -f redis-deploy.yaml -f redis-svc.yaml
-kubectl apply -f db-deploy.yaml -f db-svc.yaml
 </code></pre>
-<p>validate</p>
-<pre><code>kubectl get all
+<p>Install the AWS Load Balancer Controller.</p>
+<p>Replace <code>eks-cluster-01</code> with the name of your cluster. In the following command, <code>aws-load-balancer-controller</code> is the Kubernetes service account that you created in a previous step.</p>
+<pre><code>helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
+  -n kube-system \
+  --set clusterName=eks-cluster-01 \
+  --set serviceAccount.create=false \
+  --set replicaCount=1 \
+  --set serviceAccount.name=aws-load-balancer-controller
+
 </code></pre>
-<p>Where you should see,</p>
+<p>validate </p>
+<pre><code>helm list -A
+
+kubectl get deployment,pods -n kube-system -l &quot;app.kubernetes.io/instance=aws-load-balancer-controller&quot;
+</code></pre>
+<h2 id="create-ingress-rules">Create Ingress Rules</h2>
+<p>Create ingress rules to route traffic to the existing vote and result apps.  </p>
+<p>File : <code>vote-ing.yaml</code></p>
+<pre><code>apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: instavote
+  name: vote
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+spec:
+  ingressClassName: alb
+  rules:
+    - host: vote.example.com
+      http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: vote
+              port:
+                number: 80
+    - host: result.example.com
+      http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: result
+              port:
+                number: 80
+</code></pre>
+<pre><code>kubectl apply -f vote-ing.yaml 
+</code></pre>
+<pre><code>kubectl get ing 
+</code></pre>
+<p>You could further get the details of the ALB using AWS CLI as </p>
+<pre><code>aws elbv2 describe-load-balancers --query 'LoadBalancers[?contains(LoadBalancerName, `k8s-instavot-vote`) == `true`]'
+</code></pre>
+<p>At this time, you shall see a Application Load Balancer(ALB) created with the rules autoamtically added to route traffic to vote and result apps. <img alt="" src="../images/eks/03/03.png" />
+<img alt="" src="../images/eks/03/04.png" /></p>
+<h2 id="add-local-dns">Add Local DNS</h2>
+<p>You have created the ingress rules based on hostnames e.g. <strong>vote.example.com</strong> and <strong>result.example.com</strong>. In order for you to be able to access those, there has to be a dns entry pointing to your ALB. </p>
+<pre><code>   vote.example.com    -------+                        +----- vote:80
+                              |     +-------------+    |
+                              |     |   ingress   |    |
+                              +===&gt; |   node:80   | ===+
+                              |     +-------------+    |
+                              |                        |
+  results.example.com  -------+                        +----- result:80
+</code></pre>
+<p>To achieve this you need to either,</p>
 <ul>
-<li>deplyoment and services for redis and db created</li>
-<li>nodeport service for vote app</li>
+<li>Find out the IP Address that your ALB is pointing to </li>
+<li>Create a DNS entry, provided you own the domain and have access to the dns management console.</li>
+<li>Create a local <strong>hosts</strong> file entry. On unix systems its in <code>/etc/hosts</code> file. On windows its at <code>C:\Windows\System32\drivers\etc\hosts</code>. You need admin access to edit this file.</li>
 </ul>
 <p>⠀
-If you see the above objects, proceed with the next task.</p>
-<h3 id="phase-ii-create-deployments-and-services-for-remaining-services">Phase II - Create Deployments and Services for Remaining Services</h3>
-<p>You may find the files available in the same directory as above i.e. <em>k8s-code/projects/instavote/dev/</em> with either partial or blank code. Your job is to complete the deployment and service yaml specs and apply those. While writing the specs, you could refer to the following specification.</p>
+For example, on a linux or osx, you could edit it as,</p>
+<pre><code>sudo vim /etc/hosts
+</code></pre>
+<p>And add an entry such as ,</p>
+<pre><code>xxx.xxx.xxx.xxx vote.example.com results.example.com  kube-ops-view.example.org
+</code></pre>
+<p>where,</p>
 <ul>
-<li>vote  <ul>
-<li>image: schoolofdevops/vote:v1  </li>
-<li>application port: 80  </li>
-<li>service type: NodePort  </li>
-<li>nodePort : 30000  </li>
+<li>xxx.xxx.xxx.xxx is one of the  actual IP addresss of ALB.</li>
 </ul>
-</li>
-<li>worker  <ul>
-<li>image: schoolofdevops/worker:latest  </li>
-</ul>
-</li>
-<li>results  <ul>
-<li>image: schoolofdevops/vote-result  </li>
-<li>application port: 80  </li>
-<li>service type: NodePort  </li>
-<li>nodePort : 30100  </li>
-</ul>
-</li>
-</ul>
-<p>⠀</p>
-<h4 id="to-validate">To Validate:</h4>
-<pre><code>kubectl get all
+<p>You could find the IP address by using the following command </p>
+<pre><code>nslookup k8s-instavot-vote-e764f4b4a3-2050376139.ap-southeast-1.elb.amazonaws.com
 </code></pre>
-<p>The above command should show, * five deployments and four services created * services for vote and result app should have been exposed with NodePort</p>
-<p>Find out the NodePort for vote and service apps and load those from your browser.</p>
-<p><img alt="" src="../images/eks/03/01.png" /></p>
-<p>This is how the vote application should look like.</p>
-<p>You could also load the Result page on the <code>30100</code> port of your Node IP/Address as,</p>
-<p><img alt="" src="../images/eks/03/02.png" /></p>
-<p>Above is how the result app should look like.</p>
-<p>Final validation is, if you submit the vote, you should see the results changing accordingly. You would see this behavior only if all deployments and services are created and configured properly.</p>
-<h3 id="phase-iii-set-up-host-based-traffic-routing-with-ingress">Phase III - Set up host based traffic routing with Ingress</h3>
-<p>Use the documentation here <a href="https://kind.sigs.k8s.io/docs/user/ingress/#ingress-nginx">Nginx Ingress Controller with KIND</a> to set up ingress controller.</p>
-<p>Launch Nginx Ingress controller as :</p>
-<pre><code>kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
-</code></pre>
-<p>Check the pod for Nginx Ingress, if its running</p>
-<pre><code>kubectl get pods -n ingress-nginx
-</code></pre>
-<p>You may see the pod in pending state. Check why its pending and fix it. Thats part of your project work.</p>
-<p>Once you have the ingress controller working, port <a href="https://kubernetes-tutorial.schoolofdevops.com/ingress/#set-up-named-based-routing-for-vote-app">this ingress rule</a> for <strong>vote</strong> app and also add one for <strong>result</strong> app to make it work with nginx ingress controller that you have.</p>
-<p>Also add the <code>host</code> file configuration as per the same document and validate you are able to use http://vote.example.com/ and http://result.example.com/ to access your services respectively.</p>
+<p>where DNS name is copied from ALB’s DNS name
+<img alt="" src="../images/eks/03/05.png" /></p>
+<p>And then access the app urls using http://vote.example.com or http://result.example.com</p>
+<p><img alt="" src="../images/eks/03/06.png" /></p>
+<h2 id="reference">Reference</h2>
+<ul>
+<li>AWS Load Balancer Controller : <a href="https://docs.aws.amazon.com/eks/latest/userguide/aws-load-balancer-controller.html">What is the AWS Load Balancer Controller?</a></li>
+<li>Application load balancing on Amazon EKS <a href="https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html">Application load balancing on Amazon EKS</a></li>
+<li>Install ALB Ingress Controller using HELM  : <a href="https://docs.aws.amazon.com/eks/latest/userguide/lbc-helm.html">Install the AWS Load Balancer Controller using Helm</a></li>
+<li>Load balancers in Instance Mode vs IP Mode: <a href="https://www.eksworkshop.com/docs/fundamentals/exposing/loadbalancer/ip-mode">IP mode</a></li>
+<li>Grouping Ingress Rules onto one ALB: <a href="https://www.eksworkshop.com/docs/fundamentals/exposing/ingress/multiple-ingress">Multiple Ingress pattern</a></li>
+</ul>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../eks_setup/" class="btn btn-neutral float-left" title="Lab K501 - EKS Setup"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../eks_ingress_alb/" class="btn btn-neutral float-right" title="Lab K501 - Ingress with ALB">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../eks_deploy_apps/" class="btn btn-neutral float-left" title="Lab K500 - Deploy Apps on EKS"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../xer-001-pods/" class="btn btn-neutral float-right" title="XER001 - Pods">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -377,10 +429,10 @@ If you see the above objects, proceed with the next task.</p>
         </span>
     
     
-      <span><a href="../eks_setup/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../eks_deploy_apps/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../eks_ingress_alb/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../xer-001-pods/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
