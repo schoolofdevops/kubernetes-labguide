@@ -3,18 +3,18 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/docker-volumes/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/eks_cluster_autoscaler/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Lab D104 - Docker Volumes - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <title>Lab K506 - EKS Cluster Autoscaler - Kubernetes Tutorial with CKA/CKAD Prep</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Lab D104 - Docker Volumes";
-        var mkdocs_page_input_path = "docker-volumes.md";
-        var mkdocs_page_url = "/docker-volumes/";
+        var mkdocs_page_name = "Lab K506 - EKS Cluster Autoscaler";
+        var mkdocs_page_input_path = "eks_cluster_autoscaler.md";
+        var mkdocs_page_url = "/eks_cluster_autoscaler/";
       </script>
     
     <!--[if lt IE 9]>
@@ -54,18 +54,14 @@
                 </li>
               </ul>
               <p class="caption"><span class="caption-text">Docker Essentials for Kubernetes</span></p>
-              <ul class="current">
+              <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../operating-docker-containers/">Lab D101 - Operating Containers</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../building-publishing-docker-images/">Lab D102 - Building and Publishing Docker Images</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../docker-networking/">Lab D103 - Docker Networking</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Lab D104 - Docker Volumes</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#types-of-volumes">Types of volumes</a>
-    </li>
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../docker-volumes/">Lab D104 - Docker Volumes</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Kubernetes Essentials for CKA/CKAD</span></p>
@@ -142,7 +138,7 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">EKS</span></p>
-              <ul>
+              <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../eks_prep/">Lab K501 - EKS Preparatory Setup</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../eks_setup/">Lab K502 - EKS Setup</a>
@@ -153,7 +149,19 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../eks_storage/">Lab K505 - Persistent Storage with EBS</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../eks_cluster_autoscaler/">Lab K506 - EKS Cluster Autoscaler</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Lab K506 - EKS Cluster Autoscaler</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#scale-down-the-nodegroup">Scale Down the NodeGroup</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#set-up-cluster-autoscaler">Set up Cluster Autoscaler</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#create-iam-policy-for-cluster-autoscaler">Create IAM Policy for Cluster Autoscaler</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#cluster-auotscaler-in-action">Cluster Auotscaler in Action</a>
+    </li>
+    </ul>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Exercises</span></p>
@@ -201,10 +209,10 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
-          <li class="breadcrumb-item">Docker Essentials for Kubernetes</li>
-      <li class="breadcrumb-item active">Lab D104 - Docker Volumes</li>
+          <li class="breadcrumb-item">EKS</li>
+      <li class="breadcrumb-item active">Lab K506 - EKS Cluster Autoscaler</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/docker-volumes.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/eks_cluster_autoscaler.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -212,38 +220,150 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="lab-persistent-volumes-with-docker">Lab: Persistent Volumes with Docker</h1>
-<h3 id="types-of-volumes">Types of volumes</h3>
+                <h1 id="lab-06-scaling-eks-nodes">Lab 06 - Scaling EKS Nodes</h1>
+<p>When cluster nodes are exhausted of capacity, and when you have more pods to schedule, you would also want the underlying nodes to scale. This can be achieved in two differnt ways as follows </p>
 <ul>
-<li>automatic volumes</li>
-<li>named volumes</li>
-<li>volume binding</li>
+<li>Using Cluster Autoscale </li>
+<li>With Karpenter </li>
 </ul>
-<p>Automatic Volumes</p>
-<pre><code>docker container run  -idt --name vt01 -v /var/lib/mysql  alpine sh
-docker inspect vt01 | grep -i mounts -A 10
+<p>In this lab, you will set up Cluster Autoscaler to scale the node groups. </p>
+<h3 id="scale-down-the-nodegroup">Scale Down the NodeGroup</h3>
+<p>Before starting to scale, you may want to scale down your node group to minimum, so that you could quickly  see the autoscaler in action </p>
+<pre><code>eksctl scale nodegroup --cluster eks-cluster-01 ng-2-workers --nodes 1
 </code></pre>
-<p>Named volumes</p>
-<pre><code>docker container run  -idt --name vt02 -v db-data:/var/lib/mysql  alpine sh
-docker inspect vt02 | grep -i mounts -A 10
+<p>validate </p>
+<pre><code>eksctl get nodegroups -c eks-cluster-01
+
+kubectl get nodes
 </code></pre>
-<p>Volume binding</p>
-<pre><code>mkdir /root/sysfoo
-docker container run  -idt --name vt03 -v /root/sysfoo:/var/lib/mysql  alpine sh
-docker inspect vt03 | grep -i mounts -A 10
+<p>wait for a few minutes for the addiontal nodes to be drained and removed, leaving only one node in the node group. </p>
+<p>Also make sure all the pods are rescheduled and are running </p>
+<pre><code>kubectl get pods -A 
 </code></pre>
-<p>Sharing files between host and the container</p>
-<pre><code>ls /root/sysfoo/
-touch /root/sysfoo/file1
-docker exec -it vt03 sh
-ls sysfoo/
+<h2 id="set-up-cluster-autoscaler">Set up Cluster Autoscaler</h2>
+<h3 id="create-iam-policy-for-cluster-autoscaler">Create IAM Policy for Cluster Autoscaler</h3>
+<ul>
+<li>From IAM -&gt; Policies -&gt; Create Policy. Select JSON tab and add the following policy </li>
+</ul>
+<pre><code>{
+  &quot;Version&quot;: &quot;2012-10-17&quot;,
+  &quot;Statement&quot;: [
+    {
+      &quot;Effect&quot;: &quot;Allow&quot;,
+      &quot;Action&quot;: [
+        &quot;autoscaling:DescribeAutoScalingGroups&quot;,
+        &quot;autoscaling:DescribeAutoScalingInstances&quot;,
+        &quot;autoscaling:DescribeLaunchConfigurations&quot;,
+        &quot;autoscaling:DescribeTags&quot;,
+        &quot;autoscaling:SetDesiredCapacity&quot;,
+        &quot;autoscaling:TerminateInstanceInAutoScalingGroup&quot;,
+        &quot;ec2:DescribeLaunchTemplateVersions&quot;
+      ],
+      &quot;Resource&quot;: &quot;*&quot;
+    }
+  ]
+}
+
 </code></pre>
+<p><img alt="" src="../images/eks/03/12.png" /></p>
+<ul>
+<li>Proceed to Next, add the policy name eg. <code>ClusterAutoscaler</code>  along with a description. </li>
+</ul>
+<p><img alt="" src="../images/eks/03/13.png" />
+* Proceed to create the policy. 
+* From IAM -&gt; Roles , search for node which select the role associated with the nodegroup </p>
+<p><img alt="" src="../images/eks/03/14.png" /></p>
+<ul>
+<li>
+<p>From Permissions -&gt; Add Permissions -&gt; Attach policies 
+<img alt="" src="../images/eks/03/15.png" /></p>
+</li>
+<li>
+<p>Select the policies created above e.g. <code>ClusterAutoscaler</code> and Add permissions. 
+<img alt="" src="../images/eks/03/16.png" /></p>
+</li>
+</ul>
+<p>Now  Install Cluster Autoscaler as </p>
+<pre><code>kubectl apply -f https://raw.githubusercontent.com/kubernetes/autoscaler/master/cluster-autoscaler/cloudprovider/aws/examples/cluster-autoscaler-autodiscover.yaml
+</code></pre>
+<pre><code>kubectl patch deployment cluster-autoscaler -n kube-system \
+--type='json' -p='[{&quot;op&quot;: &quot;replace&quot;, &quot;path&quot;: &quot;/spec/template/spec/containers/0/command/6&quot;, &quot;value&quot;: &quot;--node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/eks-cluster-01&quot;}]'
+
+</code></pre>
+<p>where, replace <code>eks-cluster-01</code> with  actual cluster name.  Also ensure that this pod can not be evicted with </p>
+<pre><code>kubectl -n kube-system annotate deployment.apps/cluster-autoscaler \
+cluster-autoscaler.kubernetes.io/safe-to-evict=&quot;false&quot;
+</code></pre>
+<p>validate with  </p>
+<pre><code>kubectl get pods -n kube-system -l &quot;app=cluster-autoscaler&quot;
+
+kubectl describe pods -n kube-system -l &quot;app=cluster-autoscaler&quot;
+</code></pre>
+<p>Now start watching the cluster autoscaler logs in one dedicated window so that you can see the autoscaling in action </p>
+<pre><code>kubectl logs -f  -n kube-system -l &quot;app=cluster-autoscaler&quot;
+</code></pre>
+<h2 id="cluster-auotscaler-in-action">Cluster Auotscaler in Action</h2>
+<p>Ensure that the deployment spec for <code>vote</code> app has resources defined </p>
+<p>e.g. <code>vote-deploy.yaml</code></p>
+<pre><code>    spec:
+      containers:
+      - image: 665496447754.dkr.ecr.ap-southeast-1.amazonaws.com/demo:v1
+        name: vote
+        resources:
+          requests:
+            cpu: &quot;50m&quot;
+            memory: &quot;64Mi&quot;
+          limits:
+            cpu: &quot;250m&quot;
+            memory: &quot;128Mi&quot;
+</code></pre>
+<p>without resources being defined properly, the scheduler and the autoscaler will not work optimally. </p>
+<p>Now, start scaling up in steps </p>
+<pre><code> kubectl scale deploy vote --replicas=7
+</code></pre>
+<p><img alt="" src="../images/eks/03/17.png" /></p>
+<pre><code>kubectl scale deploy vote --replicas=15
+</code></pre>
+<p><img alt="" src="../images/eks/03/18.png" /></p>
+<p>If you are watching the cluster autoscaler logs, you may see lines such as this: </p>
+<p>[sample autoscaler log]</p>
+<pre><code>I0523 11:37:09.853039       1 klogx.go:87] Pod instavote/vote-6b7c9f85c5-2fnws is unschedulable
+I0523 11:37:09.853045       1 klogx.go:87] Pod instavote/vote-6b7c9f85c5-2b4cs is unschedulable
+I0523 11:37:09.853097       1 scale_up.go:194] Upcoming 0 nodes
+I0523 11:37:09.853458       1 waste.go:55] Expanding Node Group eks-ng-1-workers-eec7d297-f093-b47e-bb83-2cd15d8505fd would waste 95.00% CPU, 93.35% Memory, 94.17% Blended
+I0523 11:37:09.853476       1 scale_up.go:282] Best option to resize: eks-ng-1-workers-eec7d297-f093-b47e-bb83-2cd15d8505fd
+I0523 11:37:09.853487       1 scale_up.go:286] Estimated 1 nodes needed in eks-ng-1-workers-eec7d297-f093-b47e-bb83-2cd15d8505fd
+I0523 11:37:09.853511       1 scale_up.go:405] Final scale-up plan: [{eks-ng-1-workers-eec7d297-f093-b47e-bb83-2cd15d8505fd 2-&gt;3 (max: 5)}]
+I0523 11:37:09.853531       1 scale_up.go:608] Scale-up: setting group eks-ng-1-workers-eec7d297-f093-b47e-bb83-2cd15d8505fd size to 3
+I0523 11:37:09.853560       1 auto_scaling_groups.go:248] Setting asg eks-ng-1-workers-eec7d297-f093-b47e-bb83-2cd15d8505fd size to 3
+I0523 11:37:09.854328       1 event_sink_logging_wrapper.go:48] Event(v1.ObjectReference{Kind:&quot;ConfigMap&quot;, Namespace:&quot;kube-system&quot;, Name:&quot;cluster-autoscaler-status&quot;, UID:&quot;a52ab2f7-d7c4-4c82-bbed-058e1069e2b8&quot;, APIVersion:&quot;v1&quot;, ResourceVersion:&quot;273910&quot;, FieldPath:&quot;&quot;}): type: 'Normal' reason: 'ScaledUpGroup' Scale-up: setting group eks-ng-1-workers-eec7d297-f093-b47e-bb83-2cd15d8505fd size to 3 instead of 2 (max: 5)
+
+</code></pre>
+<p>this indicated the scaling activity. </p>
+<p>From EC2 =&gt; Auto Scaler Groups =&gt; Group Name =&gt; Activity, you could observe the node autoscaling as : 
+<img alt="" src="../images/eks/03/19.png" /></p>
+<p>After a few minutes, scale down to 2 </p>
+<pre><code>kubectl scale deploy vote --replicas=2
+</code></pre>
+<p>In a few minutes time, you should start seeing cluster autoscaler trying to optimize and scale down the nodes  </p>
+<pre><code>
+I0523 11:45:32.175261       1 eligibility.go:102] Scale-down calculation: ignoring 1 nodes unremovable in the last 5m0s
+I0523 11:45:32.175281       1 cluster.go:153] ip-192-168-127-100.ap-southeast-1.compute.internal for removal
+I0523 11:45:32.175374       1 hinting_simulator.go:77] Pod instavote/vote-6b7c9f85c5-2fnws can be moved to ip-192-168-208-12.ap-southeast-1.compute.internal
+I0523 11:45:32.175390       1 cluster.go:176] node ip-192-168-127-100.ap-southeast-1.compute.internal may be removed
+I0523 11:45:32.175399       1 nodes.go:84] ip-192-168-127-100.ap-southeast-1.compute.internal is unneeded since 2024-05-23 11:43:21.695771883 +0000 UTC m=+769.391776888 duration 2m10.478714846s
+I0523 11:45:32.175434       1 static_autoscaler.go:589] Scale down status: lastScaleUpTime=2024-05-23 11:37:09.852038741 +0000 UTC m=+397.548043742 lastScaleDownDeleteTime=2024-05-23 10:30:38.231213092 +0000 UTC m=-3594.072781890 lastScaleDownFailTime=2024-05-23 10:30:38.231213092 +0000 UTC m=-3594.072781890 scaleDownForbidden=false scaleDownInCooldown=true
+I0523 11:47:12.590771       1 delete.go:103] Successfully added DeletionCandidateTaint on node ip-192-168-127-100.ap-southeast-1.compute.internal
+
+</code></pre>
+<p><img alt="" src="../images/eks/03/20.png" /></p>
+<p>You could also corraborate from the EC2 Autoscaling Group to see the cluster nodes are scaling down. </p>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../docker-networking/" class="btn btn-neutral float-left" title="Lab D103 - Docker Networking"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../kind_create_cluster/" class="btn btn-neutral float-right" title="Lab K101 - Install Kubernetes with KIND">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../eks_storage/" class="btn btn-neutral float-left" title="Lab K505 - Persistent Storage with EBS"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../xer-001-pods/" class="btn btn-neutral float-right" title="XER001 - Pods">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -271,10 +391,10 @@ ls sysfoo/
         </span>
     
     
-      <span><a href="../docker-networking/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../eks_storage/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../kind_create_cluster/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../xer-001-pods/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

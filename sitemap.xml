@@ -111,6 +111,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>http://kubernetes-tutorial.schoolofdevops.com/eks_cluster_autoscaler/</loc>
+         <lastmod>2024-05-28</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/eks_deploy_apps/</loc>
          <lastmod>2024-05-28</lastmod>
          <changefreq>daily</changefreq>
