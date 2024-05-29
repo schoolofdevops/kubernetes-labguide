@@ -1,4 +1,4 @@
-# Lab 03 - Deploy Apps on EKS 
+# Lab 03 - Deploy Apps on EKS
 
 
 
@@ -10,14 +10,16 @@ In this project , you would write definitions for deploying the [instavote appli
 * db
 * result
 
-⠀
+
+
 ## Project Specs
 
+* Clone the code with `git clone https://github.com/initcron/k8s-code.git` and switch to `k8s-code/projects/instavote/dev` path.
 * Apply the deployment and service code for the applications marked as ready
 * Complete the code for deployments and services marked as TODO
 * Apply the definitions that you have completed
 * Validate the application workflow is operational by loading vote and result applications from the browser
-* Set up ingress controller and add ingress rules so that you are able to access the apps using domain names e.g. vote.example.com and result.example.com
+
 
 ⠀
 Following table depicts the state of readiness of the above services.
@@ -71,6 +73,7 @@ You may find the files available in the same directory as above i.e. *k8s-code/p
   * vote  
     * image: schoolofdevops/vote:v1  
     * application port: 80  
+    * replicas: 2
     * service type: NodePort  
     * nodePort : 30000  
   * worker  
@@ -78,6 +81,7 @@ You may find the files available in the same directory as above i.e. *k8s-code/p
   * results  
     * image: schoolofdevops/vote-result  
     * application port: 80  
+    * replicas: 1
     * service type: NodePort  
     * nodePort : 30100  
 
@@ -88,7 +92,7 @@ You may find the files available in the same directory as above i.e. *k8s-code/p
 kubectl get all
 ```
 
-The above command should show, * five deployments and four services created * services for vote and result app should have been exposed with NodePort
+The above command should show, *five deployments and four services created* services for vote and result app should have been exposed with NodePort
 
 Find out the NodePort for vote and service apps and load those from your browser.
 
@@ -104,25 +108,71 @@ Above is how the result app should look like.
 
 Final validation is, if you submit the vote, you should see the results changing accordingly. You would see this behavior only if all deployments and services are created and configured properly.
 
-### Phase III - Set up host based traffic routing with Ingress
+### Phase III - Creating a New Node Group
 
-Use the documentation here [Nginx Ingress Controller with KIND](https://kind.sigs.k8s.io/docs/user/ingress/#ingress-nginx) to set up ingress controller.
+You may notice that your pods are not running or stuck in containerCreating stage. This could be due to the insufficient capacity due to the `t2.micro` instance types.  You could mitigate this by migrating to a new Node Group.
 
-Launch Nginx Ingress controller as :
-
-```
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
-```
-
-Check the pod for Nginx Ingress, if its running
+This could be done by adding a new node group e.g.
 
 ```
-kubectl get pods -n ingress-nginx
+
+....
+
+
+managedNodeGroups:
+  - name: ng-1-workers
+    labels: { role: workers }
+    instanceType: t3.small
+    desiredCapacity: 1
+    minSize: 1
+    maxSize: 5
+    maxPodsPerNode: 17
+    ssh:
+      allow: true
+      publicKeyName: eks-spore
+    tags:
+      k8s.io/cluster-autoscaler/enabled: "true"
+      k8s.io/cluster-autoscaler/eks-cluster-01: "owned"
+    updateConfig:
+      maxUnavailable: 1
+
+  - name: ng-2-workers
+    labels: { role: workers }
+    instanceType: t3.medium
+    desiredCapacity: 2
+    minSize: 1
+    maxSize: 4
+    maxPodsPerNode: 17
+    ssh:
+      allow: true
+      publicKeyName: eks-spore
+    tags:
+      k8s.io/cluster-autoscaler/enabled: "true"
+      k8s.io/cluster-autoscaler/eks-cluster-01: "owned"
+    updateConfig:
+      maxUnavailable: 1
+
 ```
 
-You may see the pod in pending state. Check why its pending and fix it. Thats part of your project work.
+Notice the `ng-2-workers` node group definition above. It will create a new set of nodes using `t3.medium` instance type.  
 
-Once you have the ingress controller working, port [this ingress rule](https://kubernetes-tutorial.schoolofdevops.com/ingress/#set-up-named-based-routing-for-vote-app) for **vote** app and also add one for **result** app to make it work with nginx ingress controller that you have.
 
-Also add the `host` file configuration as per the same document and validate you are able to use http://vote.example.com/ and http://result.example.com/ to access your services respectively.
+To launch the new node group:  
 
+```
+eksctl create nodegroup -f cluster.yaml --include=ng-2-workers
+```
+
+and to delete the previous one:
+
+```
+eksctl delete nodegroup -f cluster.yaml --include=ng-1-workers
+```
+
+This should help you migrate the workloads to the new node group and help it run with sufficient resources.
+
+You could also scale it up with
+
+```
+eksctl scale nodegroup --cluster eks-cluster-01 ng-2-workers --nodes 2
+```
