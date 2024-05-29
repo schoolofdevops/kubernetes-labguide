@@ -51,6 +51,7 @@ nav:
      - Lab K504 - Ingress with ALB: "eks_ingress_alb.md"
      - Lab K505 - Persistent Storage with EBS: "eks_storage.md"
      - Lab K506 - EKS Cluster Autoscaler: "eks_cluster_autoscaler.md"
+     - Lab K507 - Verticle Pod Autoscaler: "eks_vpa.md"
   - Exercises:
      - XER001 - Pods: "xer-001-pods.md"
      - XER002 - ReplicaSets: "xer-002-rs.md"
