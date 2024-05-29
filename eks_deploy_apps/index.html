@@ -152,7 +152,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../eks_setup/">Lab K502 - EKS Setup</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Lab K503 - Deploy Apps on EKS</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K503 - Deploy Apps on EKS</a>
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#project-specs">Project Specs</a>
         <ul>
@@ -164,7 +164,7 @@
     </li>
         </ul>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#phase-iii-set-up-host-based-traffic-routing-with-ingress">Phase III - Set up host based traffic routing with Ingress</a>
+    <li class="toctree-l3"><a class="reference internal" href="#phase-iii-creating-a-new-node-group">Phase III - Creating a New Node Group</a>
     </li>
         </ul>
     </li>
@@ -223,8 +223,8 @@
       <div class="wy-nav-content">
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
-          <li class="breadcrumb-item">AWS EKS</li>
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a> &raquo;</li>
+          <li>AWS EKS &raquo;</li>
       <li class="breadcrumb-item active">Lab K503 - Deploy Apps on EKS</li>
     <li class="wy-breadcrumbs-aside">
           <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/eks_deploy_apps.md" class="icon icon-github"> Edit on GitHub</a>
@@ -244,14 +244,13 @@
 <li>db</li>
 <li>result</li>
 </ul>
-<p>⠀</p>
 <h2 id="project-specs">Project Specs</h2>
 <ul>
+<li>Clone the code with <code>git clone https://github.com/initcron/k8s-code.git</code> and switch to <code>k8s-code/projects/instavote/dev</code> path.</li>
 <li>Apply the deployment and service code for the applications marked as ready</li>
 <li>Complete the code for deployments and services marked as TODO</li>
 <li>Apply the definitions that you have completed</li>
 <li>Validate the application workflow is operational by loading vote and result applications from the browser</li>
-<li>Set up ingress controller and add ingress rules so that you are able to access the apps using domain names e.g. vote.example.com and result.example.com</li>
 </ul>
 <p>⠀
 Following table depicts the state of readiness of the above services.</p>
@@ -320,6 +319,7 @@ If you see the above objects, proceed with the next task.</p>
 <li>vote  <ul>
 <li>image: schoolofdevops/vote:v1  </li>
 <li>application port: 80  </li>
+<li>replicas: 2</li>
 <li>service type: NodePort  </li>
 <li>nodePort : 30000  </li>
 </ul>
@@ -331,6 +331,7 @@ If you see the above objects, proceed with the next task.</p>
 <li>results  <ul>
 <li>image: schoolofdevops/vote-result  </li>
 <li>application port: 80  </li>
+<li>replicas: 1</li>
 <li>service type: NodePort  </li>
 <li>nodePort : 30100  </li>
 </ul>
@@ -340,7 +341,7 @@ If you see the above objects, proceed with the next task.</p>
 <h4 id="to-validate">To Validate:</h4>
 <pre><code>kubectl get all
 </code></pre>
-<p>The above command should show, * five deployments and four services created * services for vote and result app should have been exposed with NodePort</p>
+<p>The above command should show, <em>five deployments and four services created</em> services for vote and result app should have been exposed with NodePort</p>
 <p>Find out the NodePort for vote and service apps and load those from your browser.</p>
 <p><img alt="" src="../images/eks/03/01.png" /></p>
 <p>This is how the vote application should look like.</p>
@@ -348,17 +349,58 @@ If you see the above objects, proceed with the next task.</p>
 <p><img alt="" src="../images/eks/03/02.png" /></p>
 <p>Above is how the result app should look like.</p>
 <p>Final validation is, if you submit the vote, you should see the results changing accordingly. You would see this behavior only if all deployments and services are created and configured properly.</p>
-<h3 id="phase-iii-set-up-host-based-traffic-routing-with-ingress">Phase III - Set up host based traffic routing with Ingress</h3>
-<p>Use the documentation here <a href="https://kind.sigs.k8s.io/docs/user/ingress/#ingress-nginx">Nginx Ingress Controller with KIND</a> to set up ingress controller.</p>
-<p>Launch Nginx Ingress controller as :</p>
-<pre><code>kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
+<h3 id="phase-iii-creating-a-new-node-group">Phase III - Creating a New Node Group</h3>
+<p>You may notice that your pods are not running or stuck in containerCreating stage. This could be due to the insufficient capacity due to the <code>t2.micro</code> instance types.  You could mitigate this by migrating to a new Node Group.</p>
+<p>This could be done by adding a new node group e.g.</p>
+<pre><code>
+....
+
+
+managedNodeGroups:
+  - name: ng-1-workers
+    labels: { role: workers }
+    instanceType: t3.small
+    desiredCapacity: 1
+    minSize: 1
+    maxSize: 5
+    maxPodsPerNode: 17
+    ssh:
+      allow: true
+      publicKeyName: eks-spore
+    tags:
+      k8s.io/cluster-autoscaler/enabled: &quot;true&quot;
+      k8s.io/cluster-autoscaler/eks-cluster-01: &quot;owned&quot;
+    updateConfig:
+      maxUnavailable: 1
+
+  - name: ng-2-workers
+    labels: { role: workers }
+    instanceType: t3.medium
+    desiredCapacity: 2
+    minSize: 1
+    maxSize: 4
+    maxPodsPerNode: 17
+    ssh:
+      allow: true
+      publicKeyName: eks-spore
+    tags:
+      k8s.io/cluster-autoscaler/enabled: &quot;true&quot;
+      k8s.io/cluster-autoscaler/eks-cluster-01: &quot;owned&quot;
+    updateConfig:
+      maxUnavailable: 1
+
 </code></pre>
-<p>Check the pod for Nginx Ingress, if its running</p>
-<pre><code>kubectl get pods -n ingress-nginx
+<p>Notice the <code>ng-2-workers</code> node group definition above. It will create a new set of nodes using <code>t3.medium</code> instance type.  </p>
+<p>To launch the new node group:  </p>
+<pre><code>eksctl create nodegroup -f cluster.yaml --include=ng-2-workers
 </code></pre>
-<p>You may see the pod in pending state. Check why its pending and fix it. Thats part of your project work.</p>
-<p>Once you have the ingress controller working, port <a href="https://kubernetes-tutorial.schoolofdevops.com/ingress/#set-up-named-based-routing-for-vote-app">this ingress rule</a> for <strong>vote</strong> app and also add one for <strong>result</strong> app to make it work with nginx ingress controller that you have.</p>
-<p>Also add the <code>host</code> file configuration as per the same document and validate you are able to use http://vote.example.com/ and http://result.example.com/ to access your services respectively.</p>
+<p>and to delete the previous one:</p>
+<pre><code>eksctl delete nodegroup -f cluster.yaml --include=ng-1-workers
+</code></pre>
+<p>This should help you migrate the workloads to the new node group and help it run with sufficient resources.</p>
+<p>You could also scale it up with</p>
+<pre><code>eksctl scale nodegroup --cluster eks-cluster-01 ng-2-workers --nodes 2
+</code></pre>
               
             </div>
           </div><footer>
