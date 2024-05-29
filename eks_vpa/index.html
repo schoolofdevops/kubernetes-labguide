@@ -3,18 +3,18 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/rbac_101/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/eks_vpa/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Lab K111 - RBAC Policies - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <title>Lab K507 - Verticle Pod Autoscaler - Kubernetes Tutorial with CKA/CKAD Prep</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Lab K111 - RBAC Policies";
-        var mkdocs_page_input_path = "rbac_101.md";
-        var mkdocs_page_url = "/rbac_101/";
+        var mkdocs_page_name = "Lab K507 - Verticle Pod Autoscaler";
+        var mkdocs_page_input_path = "eks_vpa.md";
+        var mkdocs_page_url = "/eks_vpa/";
       </script>
     
     <!--[if lt IE 9]>
@@ -118,14 +118,8 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Kubernetes Security</span></p>
-              <ul class="current">
-                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Lab K111 - RBAC Policies</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#adding-roles-and-clusterroles">Adding Roles and ClusterRoles</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#adding-clusterroles-and-clusterrolebindings">Adding CLusterRoles and ClusterRoleBindings</a>
-    </li>
-    </ul>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../rbac_101/">Lab K111 - RBAC Policies</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../network_policies/">Lab K207 - Network Policies</a>
                   </li>
@@ -153,7 +147,7 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">AWS EKS</span></p>
-              <ul>
+              <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../eks_prep/">Lab K501 - EKS Preparatory Setup</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../eks_setup/">Lab K502 - EKS Setup</a>
@@ -166,7 +160,9 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../eks_cluster_autoscaler/">Lab K506 - EKS Cluster Autoscaler</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../eks_vpa/">Lab K507 - Verticle Pod Autoscaler</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Lab K507 - Verticle Pod Autoscaler</a>
+    <ul class="current">
+    </ul>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Exercises</span></p>
@@ -214,10 +210,10 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
-          <li class="breadcrumb-item">Kubernetes Security</li>
-      <li class="breadcrumb-item active">Lab K111 - RBAC Policies</li>
+          <li class="breadcrumb-item">AWS EKS</li>
+      <li class="breadcrumb-item active">Lab K507 - Verticle Pod Autoscaler</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/rbac_101.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/eks_vpa.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -225,148 +221,105 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="defining-rbac-policies">Defining RBAC Policies</h1>
-<p>To understand how to define RBAC Policies, in this lab, you are going to work with the API Tester app, and the add relevant policies to it.</p>
-<p>To begin with, clone API Tester app and launch it</p>
-<pre><code>git clone https://github.com/schoolofdevops/k8s-api-tester.git
-cd k8s-api-tester
+                <h1 id="lab-07-verticle-pod-autoscaler">Lab 07 - Verticle Pod Autoscaler</h1>
+<p>Before you begin, ensure OpenSSL is installed and is up to date on your system. </p>
+<p>Clone the <a href="https://github.com/kubernetes/autoscaler">kubernetes/autoscaler</a> GitHub repository and switch to path where VPA manifests are, </p>
+<pre><code>git clone https://github.com/kubernetes/autoscaler.git
+cd autoscaler/vertical-pod-autoscaler/ 
 
-kubectl apply -f api-tester-deploy.yaml
 </code></pre>
-<p>Now list the pod and check the logs</p>
-<pre><code>
-kubectl get pods
-
-kubectl logs -f api-tester-xxxx
+<p>deploy VPA as </p>
+<pre><code>./hack/vpa-up.sh
 </code></pre>
-<p>You shall see error messages with access to all api resources e.g. pods, deployments, services, pvs, events denied.</p>
-<p>Lets look at how to configure the RBAC policies to get this app to work.</p>
-<h2 id="adding-roles-and-clusterroles">Adding Roles and ClusterRoles</h2>
-<p>Add the following permissions for <code>api-tester</code> app</p>
-<ul>
-<li>It should be able to list pods, deplyoments and services in namespace <code>default</code></li>
-</ul>
-<p>File <code>api-tester-sa.yaml</code></p>
-<pre><code>apiVersion: v1
-kind: ServiceAccount
+<p>Create a VPA Policy </p>
+<p>File: <code>vote-vpa.yaml</code></p>
+<pre><code>---
+apiVersion: &quot;autoscaling.k8s.io/v1&quot;
+kind: VerticalPodAutoscaler
 metadata:
-  name: api-tester
-  namespace: default
-</code></pre>
-<p>File : <code>api-tester-role.yaml</code></p>
-<pre><code>apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  name: api-tester
-  namespace: default
-rules:
-- apiGroups: [&quot;&quot;]
-  resources: [&quot;pods&quot;, &quot;Services&quot;]
-  verbs: [&quot;get&quot;, &quot;list&quot;, &quot;watch&quot;]
-- apiGroups: [&quot;apps&quot;, &quot;extensions&quot;]
-  resources: [&quot;deployments&quot;]
-  verbs: [&quot;get&quot;, &quot;list&quot;, &quot;watch&quot;]
-</code></pre>
-<p>File : <code>api-tester-rolebinding.yaml</code></p>
-<pre><code>apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: api-tester
-  namespace: default
-subjects:
-- kind: ServiceAccount
-  name: api-tester
-  namespace: default
-roleRef:
-  kind: Role
-  name: api-tester
-  apiGroup: rbac.authorization.k8s.io
-</code></pre>
-<p>apply</p>
-<pre><code>kubectl apply -f api-tester-sa.yaml -f api-tester-role.yaml -f api-tester-rolebinding.yaml
-</code></pre>
-<p>Now update the deployment spec to refer to Service Account as:</p>
-<p>File : <code>api-tester-deploy.yaml</code></p>
-<pre><code>...
-..
-
+  name: vote
 spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: api-tester
+  # recommenders field can be unset when using the default recommender.
+  # When using an alternative recommender, the alternative recommender's name
+  # can be specified as the following in a list.
+  # recommenders:
+  #   - name: 'alternative'
+  targetRef:
+    apiVersion: &quot;apps/v1&quot;
+    kind: Deployment
+    name: vote
+  resourcePolicy:
+    containerPolicies:
+      - containerName: '*'
+        minAllowed:
+          cpu: 50m
+          memory: 64Mi
+        maxAllowed:
+          cpu: 500
+          memory: 512Mi
+        controlledResources: [&quot;cpu&quot;, &quot;memory&quot;]
+</code></pre>
+<p>apply </p>
+<pre><code>kubectl apply -f vote-vpa.yaml
+</code></pre>
+<p>watch </p>
+<pre><code>kubectl get vpa vote --watch
+
+</code></pre>
+<p>[sample output]</p>
+<pre><code>NAME   MODE   CPU   MEM   PROVIDED   AGE
+vote   Auto                          5s
+vote   Auto   50m   262144k   True       30s
+</code></pre>
+<p>Create a Load Test Job if not already present as,</p>
+<p><code>file: loadtest-job.yaml</code></p>
+<pre><code>apiVersion: batch/v1
+kind: Job
+metadata:
+  generateName: loadtest
+spec:
   template:
-    metadata:
-      labels:
-        app: api-tester
     spec:
-      serviceAccountName: api-tester
       containers:
-      - name: api-tester
-        image: docker.io/schoolofdevops/api-tester:latest
-
-..
-...
+      - name: siege
+        image: schoolofdevops/loadtest:v1
+        command: [&quot;siege&quot;,  &quot;--concurrent=1&quot;, &quot;--benchmark&quot;, &quot;--time=4m&quot;, &quot;http://vote&quot;]
+      restartPolicy: Never
+  backoffLimit: 4
 </code></pre>
-<p>apply</p>
-<pre><code>kubectl apply -f api-tester-deploy.yaml
+<p>and launch it as</p>
+<pre><code>kubectl create -f loadtest-job.yaml
 </code></pre>
-<p>validate</p>
-<pre><code>
-kubectl get pods
-
-kubectl logs -f api-tester-xxxx
+<p>This will launch a one off Job which would run for 4 minutes.</p>
+<p>keep watching the following in differnt windows </p>
+<p>terminal  1 </p>
+<pre><code>kubectl get vpa vote --watch
 </code></pre>
-<p>at this time it should show you that it has the permissions to list pods, deployments and services in a namespace.</p>
-<h2 id="adding-clusterroles-and-clusterrolebindings">Adding CLusterRoles and ClusterRoleBindings</h2>
-<p>Add the following permissions for <code>api-tester</code> app</p>
-<ul>
-<li>It should be able to list <code>persistentvolumeclaims</code> in all namespaces</li>
-<li>It should have ability to create and delete <code>persistentvolumes</code> in all namespaces</li>
-</ul>
-<p>File: <code>api-tester-clusterrole.yaml</code></p>
-<pre><code>apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  name: api-tester-cluster-role
-rules:
-- apiGroups: [&quot;&quot;]
-  resources: [&quot;persistentvolumeclaims&quot;]
-  verbs: [&quot;get&quot;, &quot;list&quot;, &quot;watch&quot;, &quot;create&quot;, &quot;update&quot;, &quot;patch&quot;, &quot;delete&quot;]
-- apiGroups: [&quot;&quot;]
-  resources: [&quot;persistentvolumes&quot;]
-  verbs: [&quot;get&quot;, &quot;list&quot;, &quot;watch&quot;, &quot;create&quot;, &quot;update&quot;, &quot;patch&quot;, &quot;delete&quot;]
-
+<p>terminal 2</p>
+<pre><code>kubectl get hpa vote --watch
 </code></pre>
-<p>File: <code>api-tester-clusterrolebinding.yaml</code></p>
-<pre><code>apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: api-tester-cluster-role-binding
-subjects:
-- kind: ServiceAccount
-  name: api-tester
-  namespace: default
-roleRef:
-  kind: ClusterRole
-  name: api-tester-cluster-role
-  apiGroup: rbac.authorization.k8s.io
+<p>you should see, both hpa and vpa doing complimentary jobs where, 
+* HPA is launching new pods to ensure more requests are being served 
+* VPA is updating the <code>requests</code> spec based on actual metrics </p>
+<p>You could check the modified request spec by VPA by describing the one of the pods runnnig vote app </p>
+<pre><code>kubectl describe pod vote-xxxx-yyyy
 </code></pre>
-<p>apply</p>
-<pre><code>kubectl apply -f api-tester-clusterrole.yaml  -f api-tester-clusterrolebinding.yaml
+<pre><code>   Restart Count:  0
+    Limits:
+      cpu:     1235m
+      memory:  500Mi
+    Requests:
+      cpu:        247m
+      memory:     262144k
+    Environment:  &lt;none&gt;
+    Mounts:
 </code></pre>
-<p>validate</p>
-<pre><code>kubectl get pods
-
-kubectl logs -f api-tester-xxxx
-</code></pre>
-<p>At this time the logs for the api tester app should show you that it has the authorization to work with PVs and PVCs as well.</p>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../cluster-troubleshooting/" class="btn btn-neutral float-left" title="Lab K305 - Cluster Troubleshooting"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../network_policies/" class="btn btn-neutral float-right" title="Lab K207 - Network Policies">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../eks_cluster_autoscaler/" class="btn btn-neutral float-left" title="Lab K506 - EKS Cluster Autoscaler"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../xer-001-pods/" class="btn btn-neutral float-right" title="XER001 - Pods">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -394,10 +347,10 @@ kubectl logs -f api-tester-xxxx
         </span>
     
     
-      <span><a href="../cluster-troubleshooting/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../eks_cluster_autoscaler/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../network_policies/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../xer-001-pods/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
