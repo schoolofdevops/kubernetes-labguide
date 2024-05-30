@@ -138,7 +138,7 @@ managedNodeGroups:
 
   - name: ng-2-workers
     labels: { role: workers }
-    instanceType: t3.medium
+    instanceType: t3.small
     desiredCapacity: 2
     minSize: 1
     maxSize: 4
