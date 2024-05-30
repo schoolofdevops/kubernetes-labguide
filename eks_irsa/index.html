@@ -367,9 +367,8 @@ spec:
 <p>Apply the deployment using <code>kubectl</code>:</p>
 <pre><code>kubectl apply -f s3checker-all.yaml
 </code></pre>
-<p>Verify that the pods are running and the service is created:</p>
-<pre><code>kubectl get pods
-kubectl get svc
+<p>validate</p>
+<pre><code>kubectl get pods,svc -n default
 </code></pre>
 <p>Access the application using the external IP of any Node and <code>30500</code> port.</p>
 <h3 id="configure-irsa">Configure IRSA</h3>
@@ -398,15 +397,19 @@ kubectl get svc
 <p>Note the ARN of the created policy.</p>
 <h4 id="create-an-iam-role-for-the-service-account">Create an IAM Role for the Service Account</h4>
 <p>Use <code>eksctl</code> to create an IAM role and associate it with a Kubernetes service account:</p>
-<pre><code>eksctl utils associate-iam-oidc-provider --region &lt;region&gt; --cluster &lt;cluster-name&gt; --approve
+<pre><code>eksctl utils associate-iam-oidc-provider --region ap-southeast-1 --cluster eks-cluster-01
 
 eksctl create iamserviceaccount \
   --name s3-access-sa \
   --namespace default \
-  --cluster &lt;cluster-name&gt; \
+  --cluster eks-cluster-01 \
   --attach-policy-arn arn:aws:iam::&lt;account-id&gt;:policy/S3AccessPolicy \
   --approve \
   --override-existing-serviceaccounts
+</code></pre>
+<p>validate</p>
+<pre><code>eksctl get iamserviceaccount --cluster eks-cluster-01
+kubectl get sa -n default
 </code></pre>
 <p><strong>Update Your Application Deployment to Use the Service Account</strong></p>
 <p>File: <code>s3checker-all.yaml</code></p>
