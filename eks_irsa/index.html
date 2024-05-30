@@ -3,18 +3,18 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/eks_deploy_apps/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/eks_irsa/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Lab K503 - Deploy Apps on EKS - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <title>Lab K506 - IRSA - Kubernetes Tutorial with CKA/CKAD Prep</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Lab K503 - Deploy Apps on EKS";
-        var mkdocs_page_input_path = "eks_deploy_apps.md";
-        var mkdocs_page_url = "/eks_deploy_apps/";
+        var mkdocs_page_name = "Lab K506 - IRSA";
+        var mkdocs_page_input_path = "eks_irsa.md";
+        var mkdocs_page_url = "/eks_irsa/";
       </script>
     
     <!--[if lt IE 9]>
@@ -152,29 +152,21 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../eks_setup/">Lab K502 - EKS Setup</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K503 - Deploy Apps on EKS</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#project-specs">Project Specs</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#phase-i-apply-existing-code">Phase I - Apply existing code</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#phase-ii-create-deployments-and-services-for-remaining-services">Phase II - Create Deployments and Services for Remaining Services</a>
-        <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#to-validate">To Validate:</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#phase-iii-creating-a-new-node-group">Phase III - Creating a New Node Group</a>
-    </li>
-        </ul>
-    </li>
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_deploy_apps/">Lab K503 - Deploy Apps on EKS</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../eks_ingress_alb/">Lab K504 - Ingress with ALB</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../eks_storage/">Lab K505 - Persistent Storage with EBS</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../eks_irsa/">Lab K506 - IRSA</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K506 - IRSA</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#why-use-irsa">Why Use IRSA?</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#prerequisites">Prerequisites</a>
+    </li>
+    </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../eks_cluster_autoscaler/">Lab K507 - EKS Cluster Autoscaler</a>
                   </li>
@@ -227,9 +219,9 @@
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a> &raquo;</li>
           <li>AWS EKS &raquo;</li>
-      <li class="breadcrumb-item active">Lab K503 - Deploy Apps on EKS</li>
+      <li class="breadcrumb-item active">Lab K506 - IRSA</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/eks_deploy_apps.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/eks_irsa.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -237,178 +229,223 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="lab-03-deploy-apps-on-eks">Lab 03 - Deploy Apps on EKS</h1>
-<p>In this project , you would write definitions for deploying the <a href="https://github.com/schoolofdevops/example-voting-app">instavote application</a> stack with all components/tiers which include,</p>
-<ul>
-<li>vote</li>
-<li>redis</li>
-<li>worker</li>
-<li>db</li>
-<li>result</li>
-</ul>
-<h2 id="project-specs">Project Specs</h2>
-<ul>
-<li>Clone the code with <code>git clone https://github.com/initcron/k8s-code.git</code> and switch to <code>k8s-code/projects/instavote/dev</code> path.</li>
-<li>Apply the deployment and service code for the applications marked as ready</li>
-<li>Complete the code for deployments and services marked as TODO</li>
-<li>Apply the definitions that you have completed</li>
-<li>Validate the application workflow is operational by loading vote and result applications from the browser</li>
-</ul>
+                <h2 id="iam-roles-for-service-accounts">IAM Roles for Service Accounts</h2>
+<h3 id="overview">Overview</h3>
+<p>In this lab, you'll learn how to deploy a Flask application on Amazon EKS using IAM Roles for Service Accounts (IRSA) to securely manage permissions for accessing AWS resources like S3. The Flask application (<code>schoolofdevops/s3checker:latest</code>) will check access to an S3 bucket and create a file in it to verify permissions.</p>
+<h3 id="why-use-irsa">Why Use IRSA?</h3>
+<p>IAM Roles for Service Accounts (IRSA) provides a way to securely assign AWS IAM roles to Kubernetes pods running on Amazon EKS. This allows your application to assume IAM roles and access AWS resources without needing to manage AWS credentials directly. This improves security by leveraging temporary credentials managed by AWS and reduces the risk of exposing sensitive information.</p>
+<pre><code>+---------------------+
+|     AWS IAM         |
+|  +----------------+ |
+|  | IAM Role       | |
+|  | (S3AccessRole) | |
+|  +-------+--------+ |
+|          |          |
+|          |          |
++----------|----------+
+           |
+           | Assumes role
+           v
++---------------------+
+| Amazon EKS Cluster  |
+|  +----------------+ |
+|  | Service Account| |
+|  | (s3-access-sa)  | |
+|  +-------+--------+ |
+|          |          |
+|          |          |
++----------|----------+
+           |
+           | Bound to
+           v
++----------------------------+
+| EKS Pod                    |
+| +------------------------+ |
+| | Flask App Container    | |
+| | (schoolofdevops/       | |
+| | s3checker:latest)      | |
+| +---------+--------------+ |
+|           |                |
+|           |                |
++-----------|----------------+
+            |
+            | Uses IRSA
+            v
++----------------------------+
+| AWS S3 Bucket              |
+| (your-s3-bucket-name)      |
+|                            |
+| - ListBucket               |
+| - PutObject                |
+| - GetObject                |
++----------------------------+
+
+</code></pre>
+<ol>
+<li><strong>AWS IAM Role Creation</strong>:</li>
+<li>
+<p>An IAM role (<code>S3AccessRole</code>) is created with a policy that allows access to the S3 bucket (<code>your-s3-bucket-name</code>).</p>
+</li>
+<li>
+<p><strong>IAM Role Association with EKS Service Account</strong>:</p>
+</li>
+<li>
+<p>The IAM role is associated with a Kubernetes service account (<code>s3-access-sa</code>) in the EKS cluster. This is done using <code>eksctl</code> which sets up the necessary trust relationship.</p>
+</li>
+<li>
+<p><strong>EKS Pod Deployment</strong>:</p>
+</li>
+<li>
+<p>A Kubernetes pod running the Flask application (<code>schoolofdevops/s3checker:latest</code>) is deployed in the EKS cluster. This pod uses the service account (<code>s3-access-sa</code>) which is annotated with the IAM role.</p>
+</li>
+<li>
+<p><strong>IRSA Mechanism</strong>:</p>
+</li>
+<li>
+<p>The pod assumes the IAM role (<code>S3AccessRole</code>) through the service account (<code>s3-access-sa</code>). This is facilitated by the IRSA mechanism, which uses Kubernetes service account tokens and AWS STS (Security Token Service) to issue temporary credentials to the pod.</p>
+</li>
+<li>
+<p><strong>Access S3 Bucket</strong>:</p>
+</li>
+<li>The Flask application running inside the pod uses the temporary credentials obtained via IRSA to access the S3 bucket (<code>your-s3-bucket-name</code>). The application can list, put, and get objects in the bucket as per the IAM policy.</li>
+</ol>
 <p>⠀
-Following table depicts the state of readiness of the above services.</p>
-<table>
-<thead>
-<tr>
-<th>App</th>
-<th>Deployment</th>
-<th>Service</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>vote</td>
-<td>TODO</td>
-<td>ready</td>
-</tr>
-<tr>
-<td>redis</td>
-<td>ready</td>
-<td>ready</td>
-</tr>
-<tr>
-<td>worker</td>
-<td>TODO</td>
-<td>n/a</td>
-</tr>
-<tr>
-<td>db</td>
-<td>ready</td>
-<td>ready</td>
-</tr>
-<tr>
-<td>result</td>
-<td>TODO</td>
-<td>TODO</td>
-</tr>
-</tbody>
-</table>
-<h3 id="phase-i-apply-existing-code">Phase I - Apply existing code</h3>
-<p>Create a namespace and switch to it</p>
-<pre><code>kubectl create namespace instavote
-kubectl config set-context --current --namespace=instavote
-kubectl config get-contexts
-</code></pre>
-<p>Apply the existing manifests</p>
-<pre><code>cd k8s-code/projects/instavote/dev/
-
-kubectl apply  -f vote-svc.yaml
-kubectl apply -f redis-deploy.yaml -f redis-svc.yaml
-kubectl apply -f db-deploy.yaml -f db-svc.yaml
-</code></pre>
-<p>validate</p>
-<pre><code>kubectl get all
-</code></pre>
-<p>Where you should see,</p>
+By using IRSA, the application running in the EKS pod can securely access AWS resources without embedding long-term AWS credentials in the application code or environment variables. Instead, it leverages temporary credentials that are managed and rotated by AWS.</p>
+<h3 id="prerequisites">Prerequisites</h3>
 <ul>
-<li>deplyoment and services for redis and db created</li>
-<li>nodeport service for vote app</li>
+<li>An AWS account</li>
+<li>An EKS cluster set up and running</li>
+<li>AWS CLI installed and configured</li>
+<li><code>kubectl</code> installed and configured to access your EKS cluster</li>
+<li><code>eksctl</code> installed for easy EKS management</li>
 </ul>
+<h2 id="deploy-s3-checker-service">Deploy S3 Checker Service</h2>
+<p>Create a S3 bucket in the same region, to test this service with. Note down the name of the bucket.</p>
+<p>Create a Kubernetes deployment + service YAML file</p>
+<p>File: <code>s3checker-all.yaml</code></p>
+<pre><code>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: s3checker
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: s3checker
+  template:
+    metadata:
+      labels:
+        app: s3checker
+    spec:
+      containers:
+      - name: s3checker
+        image: schoolofdevops/s3checker:latest
+        ports:
+        - containerPort: 5000
+        env:
+        - name: BUCKET_NAME
+          value: xxxxxxxx
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: s3checker
+  namespace: default
+spec:
+  type: NodePort
+  selector:
+    app: s3checker
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5000
+      nodePort: 30500
+</code></pre>
+<p>where,
+* replace <code>xxxxxxxx</code> with bucket name.</p>
+<p>Apply the deployment using <code>kubectl</code>:</p>
+<pre><code>kubectl apply -f s3checker-all.yaml
+</code></pre>
+<p>Verify that the pods are running and the service is created:</p>
+<pre><code>kubectl get pods
+kubectl get svc
+</code></pre>
+<p>Access the application using the external IP of any Node and <code>30500</code> port.</p>
+<h3 id="configure-irsa">Configure IRSA</h3>
+<p>Create an IAM policy that grants the necessary permissions to access your S3 bucket.</p>
+<pre><code>{
+    &quot;Version&quot;: &quot;2012-10-17&quot;,
+    &quot;Statement&quot;: [
+        {
+            &quot;Effect&quot;: &quot;Allow&quot;,
+            &quot;Action&quot;: [
+                &quot;s3:ListBucket&quot;,
+                &quot;s3:PutObject&quot;,
+                &quot;s3:GetObject&quot;
+            ],
+            &quot;Resource&quot;: [
+                &quot;arn:aws:s3:::your-s3-bucket-name&quot;,
+                &quot;arn:aws:s3:::your-s3-bucket-name/*&quot;
+            ]
+        }
+    ]
+}
+</code></pre>
+<p>Save this policy as <code>s3-access-policy.json</code> and create the policy using the AWS CLI:</p>
+<pre><code>aws iam create-policy --policy-name S3AccessPolicy --policy-document file://s3-access-policy.json
+</code></pre>
+<p>Note the ARN of the created policy.</p>
+<h4 id="create-an-iam-role-for-the-service-account">Create an IAM Role for the Service Account</h4>
+<p>Use <code>eksctl</code> to create an IAM role and associate it with a Kubernetes service account:</p>
+<pre><code>eksctl utils associate-iam-oidc-provider --region &lt;region&gt; --cluster &lt;cluster-name&gt; --approve
+
+eksctl create iamserviceaccount \
+  --name s3-access-sa \
+  --namespace default \
+  --cluster &lt;cluster-name&gt; \
+  --attach-policy-arn arn:aws:iam::&lt;account-id&gt;:policy/S3AccessPolicy \
+  --approve \
+  --override-existing-serviceaccounts
+</code></pre>
+<p><strong>Update Your Application Deployment to Use the Service Account</strong></p>
+<p>File: <code>s3checker-all.yaml</code></p>
+<pre><code>.....
+  template:
+    metadata:
+      labels:
+        app: s3checker
+    spec:
+      serviceAccountName: s3-access-sa
+      containers:
+      - name: s3checker
+</code></pre>
+<p>Apply the deployment using <code>kubectl</code>:</p>
+<pre><code>kubectl apply -f s3checker-all.yaml
+</code></pre>
+<p>Now check the application to see if its able to connect to s3 bucket and check the s3 bucket if the application has created a file.</p>
+<h3 id="clean-up">Clean up</h3>
+<ul>
+<li>Empty the s3 bucket and delete it.</li>
+<li>Delete deployment as</li>
+</ul>
+<pre><code>kubectl delete -f s3checker-all.yaml
+</code></pre>
+<h3 id="summary">Summary</h3>
+<p>In this tutorial, you learned how to:</p>
+<ol>
+<li>Create an IAM policy and role for accessing S3.</li>
+<li>Associate an IAM role with a Kubernetes service account using IRSA.</li>
+<li>Deploy a Flask application on EKS using the configured service account.</li>
+</ol>
 <p>⠀
-If you see the above objects, proceed with the next task.</p>
-<h3 id="phase-ii-create-deployments-and-services-for-remaining-services">Phase II - Create Deployments and Services for Remaining Services</h3>
-<p>You may find the files available in the same directory as above i.e. <em>k8s-code/projects/instavote/dev/</em> with either partial or blank code. Your job is to complete the deployment and service yaml specs and apply those. While writing the specs, you could refer to the following specification.</p>
-<ul>
-<li>vote  <ul>
-<li>image: schoolofdevops/vote:v1  </li>
-<li>application port: 80  </li>
-<li>replicas: 2</li>
-<li>service type: NodePort  </li>
-<li>nodePort : 30000  </li>
-</ul>
-</li>
-<li>worker  <ul>
-<li>image: schoolofdevops/worker:latest  </li>
-</ul>
-</li>
-<li>results  <ul>
-<li>image: schoolofdevops/vote-result  </li>
-<li>application port: 80  </li>
-<li>replicas: 1</li>
-<li>service type: NodePort  </li>
-<li>nodePort : 30100  </li>
-</ul>
-</li>
-</ul>
-<p>⠀</p>
-<h4 id="to-validate">To Validate:</h4>
-<pre><code>kubectl get all
-</code></pre>
-<p>The above command should show, <em>five deployments and four services created</em> services for vote and result app should have been exposed with NodePort</p>
-<p>Find out the NodePort for vote and service apps and load those from your browser.</p>
-<p><img alt="" src="../images/eks/03/01.png" /></p>
-<p>This is how the vote application should look like.</p>
-<p>You could also load the Result page on the <code>30100</code> port of your Node IP/Address as,</p>
-<p><img alt="" src="../images/eks/03/02.png" /></p>
-<p>Above is how the result app should look like.</p>
-<p>Final validation is, if you submit the vote, you should see the results changing accordingly. You would see this behavior only if all deployments and services are created and configured properly.</p>
-<h3 id="phase-iii-creating-a-new-node-group">Phase III - Creating a New Node Group</h3>
-<p>You may notice that your pods are not running or stuck in containerCreating stage. This could be due to the insufficient capacity due to the <code>t2.micro</code> instance types.  You could mitigate this by migrating to a new Node Group.</p>
-<p>This could be done by adding a new node group e.g.</p>
-<pre><code>
-....
-
-
-managedNodeGroups:
-  - name: ng-1-workers
-    labels: { role: workers }
-    instanceType: t3.small
-    desiredCapacity: 1
-    minSize: 1
-    maxSize: 5
-    maxPodsPerNode: 17
-    ssh:
-      allow: true
-      publicKeyName: eks-spore
-    tags:
-      k8s.io/cluster-autoscaler/enabled: &quot;true&quot;
-      k8s.io/cluster-autoscaler/eks-cluster-01: &quot;owned&quot;
-    updateConfig:
-      maxUnavailable: 1
-
-  - name: ng-2-workers
-    labels: { role: workers }
-    instanceType: t3.small
-    desiredCapacity: 2
-    minSize: 1
-    maxSize: 4
-    maxPodsPerNode: 17
-    ssh:
-      allow: true
-      publicKeyName: eks-spore
-    tags:
-      k8s.io/cluster-autoscaler/enabled: &quot;true&quot;
-      k8s.io/cluster-autoscaler/eks-cluster-01: &quot;owned&quot;
-    updateConfig:
-      maxUnavailable: 1
-
-</code></pre>
-<p>Notice the <code>ng-2-workers</code> node group definition above. It will create a new set of nodes using <code>t3.medium</code> instance type.  </p>
-<p>To launch the new node group:  </p>
-<pre><code>eksctl create nodegroup -f cluster.yaml --include=ng-2-workers
-</code></pre>
-<p>and to delete the previous one:</p>
-<pre><code>eksctl delete nodegroup -f cluster.yaml --include=ng-1-workers
-</code></pre>
-<p>This should help you migrate the workloads to the new node group and help it run with sufficient resources.</p>
-<p>You could also scale it up with</p>
-<pre><code>eksctl scale nodegroup --cluster eks-cluster-01 ng-2-workers --nodes 2
-</code></pre>
+By following these steps, you have securely deployed a Flask application on EKS with the necessary permissions to access AWS resources using IRSA. This method enhances security by managing permissions through IAM roles instead of static credentials.</p>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../eks_setup/" class="btn btn-neutral float-left" title="Lab K502 - EKS Setup"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../eks_ingress_alb/" class="btn btn-neutral float-right" title="Lab K504 - Ingress with ALB">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../eks_storage/" class="btn btn-neutral float-left" title="Lab K505 - Persistent Storage with EBS"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../eks_cluster_autoscaler/" class="btn btn-neutral float-right" title="Lab K507 - EKS Cluster Autoscaler">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -436,10 +473,10 @@ managedNodeGroups:
         </span>
     
     
-      <span><a href="../eks_setup/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../eks_storage/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../eks_ingress_alb/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../eks_cluster_autoscaler/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
