@@ -320,8 +320,14 @@ By using IRSA, the application running in the EKS pod can securely access AWS re
 <li><code>eksctl</code> installed for easy EKS management</li>
 </ul>
 <h2 id="deploy-s3-checker-service">Deploy S3 Checker Service</h2>
+<ul>
+<li>
 <p>Create a S3 bucket in the same region, to test this service with. Note down the name of the bucket.</p>
+</li>
+<li>
 <p>Create a Kubernetes deployment + service YAML file</p>
+</li>
+</ul>
 <p>File: <code>s3checker-all.yaml</code></p>
 <pre><code>apiVersion: apps/v1
 kind: Deployment
@@ -391,6 +397,7 @@ spec:
     ]
 }
 </code></pre>
+<p>where, replace <code>your-s3-bucket-name</code> with the name of the bucket you created earlier.</p>
 <p>Save this policy as <code>s3-access-policy.json</code> and create the policy using the AWS CLI:</p>
 <pre><code>aws iam create-policy --policy-name S3AccessPolicy --policy-document file://s3-access-policy.json
 </code></pre>
