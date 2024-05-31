@@ -58,6 +58,7 @@ nav:
      - Lab K507 - EKS Cluster Autoscaler: "eks_cluster_autoscaler.md"
      - Lab K509 - Verticle Pod Autoscaler: "eks_vpa.md"
      - Lab K510 - EKS Monitoring: "eks_monitoring.md"
+     - Lab K511 - EKS Costs: "eks_costs.md"
   - Exercises:
      - XER001 - Pods: "xer-001-pods.md"
      - XER002 - ReplicaSets: "xer-002-rs.md"
