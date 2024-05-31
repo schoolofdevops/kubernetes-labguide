@@ -106,6 +106,37 @@ An example dashboard is as follows,
 
 You could further explore various Grafana dashboards and configurations.
 
+
+## Import EKS Dashboard
+
+You could import [EKS Specific Dashboard](https://grafana.com/grafana/dashboards/17119-kubernetes-eks-cluster-prometheus/) onto grafana using the following instructions.
+
+
+  * From Dashboards -> New -> Import   
+  * Provide Dashboard ID as `17119` , select Load
+  * Select Prometheus Data Source instance
+  * Import
+
+Once imported,
+
+  * go to Dashboard Settings -> Variables
+  * select `node`
+  * on configuration page,Query options  -> Query select Metric as `kube_pod_info`
+  ![](images/eks/03/21.png)
+  * Ensure Label is set to `node`
+  * Save Dashboard
+
+When you switch back to the dashboard you should see cluster health
+
+![](images/eks/03/22.png)
+
+
+You could try installing additional dashboards e.g.
+
+  * Node Exporter: [](https://grafana.com/grafana/dashboards/1860-node-exporter-full/)  
+  * Cluster Autoscaler: [](https://grafana.com/grafana/dashboards/3831-autoscaler/)    
+  * Node Exporter for Prometheus: [](https://grafana.com/grafana/dashboards/15172-node-exporter-for-prometheus-dashboard-based-on-11074/)  
+
 ## Uninstalling the App with HELM
 Once you are done experiementing and learning, you could uninstall the application stack that you earlier installed with helm easily.
 
