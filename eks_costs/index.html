@@ -3,18 +3,18 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/xer-001-pods/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/eks_costs/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>XER001 - Pods - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <title>Lab K511 - EKS Costs - Kubernetes Tutorial with CKA/CKAD Prep</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "XER001 - Pods";
-        var mkdocs_page_input_path = "xer-001-pods.md";
-        var mkdocs_page_url = "/xer-001-pods/";
+        var mkdocs_page_name = "Lab K511 - EKS Costs";
+        var mkdocs_page_input_path = "eks_costs.md";
+        var mkdocs_page_url = "/eks_costs/";
       </script>
     
     <!--[if lt IE 9]>
@@ -147,7 +147,7 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">AWS EKS</span></p>
-              <ul>
+              <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../eks_prep/">Lab K501 - EKS Preparatory Setup</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../eks_setup/">Lab K502 - EKS Setup</a>
@@ -166,36 +166,14 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../eks_monitoring/">Lab K510 - EKS Monitoring</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../eks_costs/">Lab K511 - EKS Costs</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K511 - EKS Costs</a>
+    <ul class="current">
+    </ul>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Exercises</span></p>
-              <ul class="current">
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">XER001 - Pods</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#1">1</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#2">2</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#3">3</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#4">4</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#5">5</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#6">6</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#7">7</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#8">8</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#9">9</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#10">10</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#11">11</a>
-    </li>
-    </ul>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../xer-001-pods/">XER001 - Pods</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../xer-002-rs/">XER002 - ReplicaSets</a>
                   </li>
@@ -238,10 +216,10 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a> &raquo;</li>
-          <li>Exercises &raquo;</li>
-      <li class="breadcrumb-item active">XER001 - Pods</li>
+          <li>AWS EKS &raquo;</li>
+      <li class="breadcrumb-item active">Lab K511 - EKS Costs</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/xer-001-pods.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/eks_costs.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -249,173 +227,46 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="xer001-pods">XER001 - Pods</h1>
-<h2 id="1">1</h2>
-<p>Create a Pod manifest which uses "ghost" image and open port 2368.</p>
-<pre><code>apiVersion: v1
-kind: Pod
-metadata:
-  name: ghost
-spec:
-  containers:
-  - image: xxx
-    name: ghost
-    ports:
-    - containerPort: xxx
-      hostPort: xxx
+                <h1 id="costs-monitoring-with-kubecost">Costs Monitoring with Kubecost</h1>
+<p>Visit <a href="https://aws.amazon.com/marketplace/pp/prodview-asiz4x22pm2n2?sr=0-1&amp;ref_=beagle&amp;applicationId=AWSMPContessa">Kubecost</a> from AWS Marketplace.  </p>
+<p>Select <code>Continue to Subscribe</code><br />
+<img alt="" src="../images/eks/03/23.png" />  </p>
+<p>It will take a few minutes to process your request
+    <img alt="" src="../images/eks/03/24.png" />  </p>
+<p>Once its configured, continue to Configure the software and Launch it on EKS Console.</p>
+<ul>
+<li>Fulfillment Options : Amazon EKS Add-on</li>
+<li>Kubecost - Amazon EKS Cost Monitoring - EKS Add On</li>
+<li>Software Version - Keep Auto Selected</li>
+</ul>
+<p><img alt="" src="../images/eks/03/25.png" />  </p>
+<p>Once its configured, head over to <strong>EKS CLuster</strong> , go to Add-ons -&gt; Get more add-ons.</p>
+<p>Search for <code>kubecost</code></p>
+<p><img alt="" src="../images/eks/03/26.png" />  </p>
+<p>Select the add-on, click on next and have it be installed.</p>
+<p>After its installed, validate with</p>
+<pre><code>kubectl get all -n kubecost
 </code></pre>
-<p>Get the name of the Node in which the Pod is scheduled by running,</p>
-<pre><code>kubectl describe pod &lt;POD_NAME&gt;
-
-[output]
-Name:           &lt;POD_NAME&gt;
-Namespace:      default
-Node:           &lt;NODE_NAME&gt;/&lt;NODE_IP&gt;
-Start Time:     Wed, xx May 201x 15:59:29 +0530
+<p>set the service type to NodePort as</p>
+<pre><code>kubectl patch svc cost-analyzer -n kubecost --type='json' -p '[{&quot;op&quot;:&quot;replace&quot;,&quot;path&quot;:&quot;/spec/type&quot;,&quot;value&quot;:&quot;NodePort&quot;}]'
 </code></pre>
-<p>Try to access the application on the host's port 2368.</p>
-<pre><code>curl &lt;NODE_IP&gt;:2368
+<p>validate</p>
+<pre><code>kubectl get svc -n kubecost
 </code></pre>
-<p><code>Reference</code>: <a href="https://hub.docker.com/_/ghost/">Ghost Docker image</a></p>
-<h2 id="2">2</h2>
-<p>Create a Pod with ubuntu:trusty image and a command to echo “YOUR_NAME” which overrides the default CMD/ENTRYPOINT of the image.
-<code>Reference</code>: <a href="https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/">Define command argument in a Pod</a></p>
-<h2 id="3">3</h2>
-<p>Apply the following Pod manifest and read the error. Fix it by editing it.</p>
-<pre><code>apiVersion: v1apps/beta1
-kind: Pod
-metadata:
-  name: mogambo-frontend
-  label:
-    role: frontend
-spec:
-  containers:
-    - name: frontend
-      image: schoolofdevops/frontend:orange
-      ports:
-        - containerName: web
-          Port: 8079
-          protocol: TCP
+<p>[sample output]</p>
+<pre><code>NAME                              TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                         AGE
+cost-analyzer                     NodePort    10.100.149.159   &lt;none&gt;        9003:32367/TCP,9090:32751/TCP   93m
 </code></pre>
-<p><code>Reference</code>: <a href="https://stackoverflow.com/questions/37302776/kubectl-get-pods-kubectl-get-pods-status-imagepullbackoff">Debugging a unscheduled Pod</a></p>
-<h2 id="4">4</h2>
-<p>A Pod with the following pod always crashes with CrashLoopBackOff error. How would you fix it?</p>
-<pre><code>      image: schoolofdevops/nginx:break
-      ports: 80
-</code></pre>
-<p><code>Reference</code>: <a href="https://sysdig.com/blog/debug-kubernetes-crashloopbackoff/">Debugging a crashed Pod</a></p>
-<h2 id="5">5</h2>
-<p>You are running a Pod with hostPort option. Your Pod status stays “pending”. What could be the issue for the Pod not being scheduled?
-<code>Reference</code>: <a href="https://kubernetes.io/docs/tasks/debug-application-cluster/debug-application/#my-pod-stays-waiting">Debugging a unscheduled Pod</a></p>
-<h2 id="6">6</h2>
-<p>The given manifest for multi-container pod is not working as intended. It does not sync the content between containers like expected. What could be the issue? Find the issue just by reading the manifest.</p>
-<pre><code>apiVersion: v1
-kind: Pod
-metadata:
-  name: web
-  labels:
-    tier: front
-    app: nginx
-    role: ui
-spec:
-  containers:
-    - name: nginx
-      image: nginx:stable-alpine
-      ports:
-        - containerPort: 80
-          protocol: TCP
-      volumeMounts:
-        - name: data
-          mountPath: /var/www/html-sample-app
-
-    - name: sync
-      image: schoolofdevops/sync:v2
-      volumeMounts:
-        - name: datanew
-          mountPath: /var/www/app
-
-  volumes:
-    - name: data
-      emptyDir: {}
-</code></pre>
-<h2 id="7">7</h2>
-<p>For the above given manifest, the following command is not working. What could be the issue?</p>
-<pre><code>kubeclt exec -it web -sh -c synch
-</code></pre>
-<h2 id="8">8</h2>
-<p>Try to apply the following manifest. If fails, try to debug.</p>
-<pre><code>apiVersion: v1
-kind: Pod
-metadata:
-  name: web
-  labels:
-    app:
-    role: role
-spec:
-  containers:
-    - name: web
-      image: robotshop/rs-web:latest
-      ports:
-        - containerPort: 8080
-          protocol: TCP
-</code></pre>
-<h2 id="9">9</h2>
-<p>Fix the following manifest. Don't apply it. Just fix it by reading.</p>
-<pre><code>apiVersion: v1
-kind: pod
-metadata:
-  name: web
-labels:
-  role: role
-spec:
-  containers:
-    - name: web
-      image: robotshop/rs-web:latest
-      ports:
-        - containerport: 8080
-          protocol: TCP
-</code></pre>
-<h2 id="10">10</h2>
-<p>Mount <code>/var/www/html</code> from Pod using the follwing manifest. Fill the missing fields.</p>
-<pre><code>apiVersion: v1
-kind: Pod
-metadata:
-  name: web
-  labels:
-    role: role
-spec:
-  containers:
-    - name: web
-      image: robotshop/rs-web:latest
-      ports:
-        - containerPort: 8080
-          protocol: TCP
-  volumes:
-    - name: roboshop-storage
-      emptyDir: {}
-</code></pre>
-<h2 id="11">11</h2>
-<p>Write a Pod manifest with the image nginx which has a volume that mounts /etc/nginx/ directory. Use "hostPath" volume type.</p>
-<pre><code>apiVersion: v1
-kind: Pod
-metadata:
-  name: nginx
-spec:
-  containers:
-  - image: nginx
-    name: nginx
-    ports:
-    - containerPort: 80
-    volumeMounts:
-      xxx
-</code></pre>
-<p><code>Reference</code>: <a href="https://kubernetes.io/docs/concepts/storage/volumes/">Volumes</a></p>
+<p>pick up the port mapped with 9090 e.g. <code>32751</code> in above case and use that to access kubecost UI.</p>
+<p>e.g.</p>
+<p><img alt="" src="../images/eks/03/27.png" />  </p>
+<p>From here on you should be explore kubecost insights.</p>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../eks_costs/" class="btn btn-neutral float-left" title="Lab K511 - EKS Costs"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../xer-002-rs/" class="btn btn-neutral float-right" title="XER002 - ReplicaSets">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../eks_monitoring/" class="btn btn-neutral float-left" title="Lab K510 - EKS Monitoring"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../xer-001-pods/" class="btn btn-neutral float-right" title="XER001 - Pods">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -443,10 +294,10 @@ spec:
         </span>
     
     
-      <span><a href="../eks_costs/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../eks_monitoring/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../xer-002-rs/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../xer-001-pods/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

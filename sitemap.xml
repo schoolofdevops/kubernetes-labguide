@@ -121,6 +121,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>http://kubernetes-tutorial.schoolofdevops.com/eks_costs/</loc>
+         <lastmod>2024-05-31</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/eks_deploy_apps/</loc>
          <lastmod>2024-05-31</lastmod>
          <changefreq>daily</changefreq>
