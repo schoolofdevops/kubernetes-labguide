@@ -3,18 +3,18 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/kubernetes-dynamic-storage-provisioning/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/eks_monitoring/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Lab K108 - Storage - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <title>Lab K510 - EKS Monitoring - Kubernetes Tutorial with CKA/CKAD Prep</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Lab K108 - Storage";
-        var mkdocs_page_input_path = "kubernetes-dynamic-storage-provisioning.md";
-        var mkdocs_page_url = "/kubernetes-dynamic-storage-provisioning/";
+        var mkdocs_page_name = "Lab K510 - EKS Monitoring";
+        var mkdocs_page_input_path = "eks_monitoring.md";
+        var mkdocs_page_url = "/eks_monitoring/";
       </script>
     
     <!--[if lt IE 9]>
@@ -65,7 +65,7 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Kubernetes Essentials for CKA/CKAD</span></p>
-              <ul class="current">
+              <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../kind_create_cluster/">Lab K101 - Install Kubernetes with KIND</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../kubernetes_quickdive/">Lab K102 - Kubernetes Quickdive</a>
@@ -78,27 +78,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../kubernetes-rollouts-rollbacks-deployments/">Lab K107 - Deployments</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K108 - Storage</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#concepts">Concepts</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#deploy-database-with-a-persistent-volume-claim">Deploy Database with a Persistent Volume Claim</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#creating-a-persistent-volume-claim">Creating a Persistent Volume Claim</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#set-up-storage-provisioner-in-kubernetes">Set up Storage Provisioner in kubernetes</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#validate">Validate</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#nano-project">Nano Project</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#summary">Summary</a>
-    </li>
-        </ul>
-    </li>
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../kubernetes-dynamic-storage-provisioning/">Lab K108 - Storage</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../kubernetes-sample-project/">Lab K109 - Mini Project</a>
                   </li>
@@ -167,7 +147,7 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">AWS EKS</span></p>
-              <ul>
+              <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../eks_prep/">Lab K501 - EKS Preparatory Setup</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../eks_setup/">Lab K502 - EKS Setup</a>
@@ -184,7 +164,23 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../eks_vpa/">Lab K509 - Verticle Pod Autoscaler</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../eks_monitoring/">Lab K510 - EKS Monitoring</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K510 - EKS Monitoring</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#installing-helm-version-3">Installing  Helm (version 3)</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#deploy-prometheus-stack-with-helm">Deploy Prometheus Stack with HELM</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#customising-prometheus-configurations">Customising Prometheus Configurations</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#import-eks-dashboard">Import EKS Dashboard</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#uninstalling-the-app-with-helm">Uninstalling the App with HELM</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#summary">Summary</a>
+    </li>
+    </ul>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Exercises</span></p>
@@ -232,10 +228,10 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a> &raquo;</li>
-          <li>Kubernetes Essentials for CKA/CKAD &raquo;</li>
-      <li class="breadcrumb-item active">Lab K108 - Storage</li>
+          <li>AWS EKS &raquo;</li>
+      <li class="breadcrumb-item active">Lab K510 - EKS Monitoring</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/kubernetes-dynamic-storage-provisioning.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/eks_monitoring.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -243,128 +239,108 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="dynamic-storage-provisioning">Dynamic Storage Provisioning</h1>
-<p>This tutorial explains how kubernetes storage works and the complete workflow for the dynamic provisioning. The topics include</p>
-<ul>
-<li>Storage Classes</li>
-<li>PersistentVolumeClaim</li>
-<li>persistentVolume</li>
-<li>Provisioner</li>
-</ul>
-<p>Pre Reading :</p>
-<ul>
-<li><a href="https://youtu.be/hqE5c5pyfrk?t=461">Kubernetes Storage Concepts</a></li>
-<li><a href="https://kubernetes.io/docs/concepts/storage/storage-classes/">Storage Classes</a></li>
-</ul>
-<h2 id="concepts">Concepts</h2>
-<p><img alt="kubernetes Storage Concepts" src="../images/storage_mindmap.png" /></p>
-<h2 id="deploy-database-with-a-persistent-volume-claim">Deploy Database with a Persistent Volume Claim</h2>
-<p>Lets begin by redeploying the db deployment, this time by configuring it to refer to the persistentVolumeClaim</p>
-<p><code>file: db-deploy-pvc.yaml</code></p>
-<pre><code>...
-spec:
-   containers:
-   - image: postgres:9.4
-     imagePullPolicy: Always
-     name: db
-     ports:
-     - containerPort: 5432
-       protocol: TCP
-     #mount db-vol to postgres data path
-     volumeMounts:
-     - name: db-vol
-       mountPath: /var/lib/postgresql/data
-   #create a volume with pvc
-   volumes:
-   - name: db-vol
-     persistentVolumeClaim:
-       claimName: db-pvc
-</code></pre>
-<p>Apply <em>db-deploy-pcv.yaml</em>  as</p>
-<pre><code>kubectl apply -f db-deploy-pvc.yaml
-</code></pre>
-<p>To monitor resources for this lab, open a new terminal and start watching for relevant objecting using the following command.</p>
-<pre><code>
-watch kubectl get pods,pvc,pv,storageclasses
-</code></pre>
-<p>We will call the terminal where you are running the above command as your <strong>Monitoring Screen</strong>.</p>
-<ul>
-<li>Observe and note if the pod for <em>db</em> is launched.</li>
-<li>What state is it in ? why?</li>
-<li>Has the persistentVolumeClaim been bound to a persistentVolume ? Why?</li>
-</ul>
-<h2 id="creating-a-persistent-volume-claim">Creating a Persistent Volume Claim</h2>
-<p>switch to project directory</p>
-<pre><code>cd k8s-code/projects/instavote/dev/
-</code></pre>
-<p>Create the following file with the specs below</p>
-<p><code>file: db-pvc.yaml</code></p>
-<pre><code>kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: db-pvc
-spec:
-  accessModes:
-    - ReadWriteOnce
-  volumeMode: Filesystem
-  resources:
-    requests:
-      storage: 200Mi
-  storageClassName: local-path
+                <h1 id="lab-k205-monitoring-setup-with-helm">Lab K205 - Monitoring setup with HELM</h1>
+<p>In this lab, you are going to install and configure helm, and in turns, use it to configure a monitoring system for kubernetes using prometheus and grafana stack.</p>
+<h2 id="installing-helm-version-3">Installing  Helm (version 3)</h2>
+<p>To install helm version 3 on Linux or MacOS, you can follow following instructions.</p>
+<pre><code>curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 
 </code></pre>
-<p><code>if you using a KIND bases environment, set  StorageClassName to "standard" instead of "local-path" in the above file. In case of KIND environment, no further configuration of Storageclass/Provisioner is needed.</code></p>
-<p>create the Persistent Volume Claim and validate</p>
-<pre><code>kubectl get pvc
-
-
-kubectl apply -f db-pvc.yaml
-
-kubectl get pvc,pv
+<p>You could further refer to <a href="https://helm.sh/docs/intro/install/">Official HELM Install Instructions</a> for alternative options.</p>
+<p>Verify the installtion is successful,</p>
+<pre><code>helm --help
+helm version
+</code></pre>
+<h2 id="deploy-prometheus-stack-with-helm">Deploy Prometheus Stack with HELM</h2>
+<p>Read about <a href="https://artifacthub.io/packages/helm/prometheus-community/kube-prometheus-stack">kube-prometheus-stack 33.1.0 · prometheus/prometheus-community</a> chart at artifacthub.io</p>
+<p>Add helm repository using ,</p>
+<pre><code>helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
 
 </code></pre>
+<p>Download the  chart as,</p>
+<pre><code>cd ~
+helm fetch --untar prometheus-community/kube-prometheus-stack
+
+</code></pre>
+<p>Change into the charts directory</p>
+<pre><code>cd kube-prometheus-stack/
+ls
+</code></pre>
+<p>Deploy prometheus stack as,</p>
+<pre><code>kubectl create ns monitoring
+helm install prom -n monitoring prometheus-community/kube-prometheus-stack
+
+</code></pre>
+<p>Validate</p>
+<pre><code>helm list -A
+
+kubectl get all -n monitoring
+kubectl get pods,svc -n monitoring
+</code></pre>
+<h4 id="customising-prometheus-configurations">Customising Prometheus Configurations</h4>
+<p>To update the Grafana service to use NodePort configurations, upgrade the helm release by setting up  customized properties as,</p>
+<pre><code>helm upgrade prom -n monitoring prometheus-community/kube-prometheus-stack \
+  --set grafana.service.type=NodePort \
+  --set grafana.service.nodePort=30200
+</code></pre>
+<p>Validate</p>
+<pre><code>helm list -A
+
+kubectl get svc -n monitoring
+</code></pre>
+<p>You should see new revision of monitoring stack deployed, and Grafana service changed to NodePort.</p>
+<p>Note down the node port and access Grafana with</p>
+<p>http://IPADDRESS:30200</p>
+<p><code>remember to replace node name/ip address and node port as actual.</code></p>
+<p>Login using</p>
+<pre><code>User : admin
+Pass: prom-operator
+</code></pre>
+<p>Once logged in, you should be able to browse and view Grafana dashboards from <code>Dashboards</code> menu.</p>
+<p>An example dashboard is as follows,
+<img alt="" src="Screenshot%202022-03-04%20at%206.14.57%20PM.png" /></p>
+<p>You could further explore various Grafana dashboards and configurations.</p>
+<h2 id="import-eks-dashboard">Import EKS Dashboard</h2>
+<p>You could import <a href="https://grafana.com/grafana/dashboards/17119-kubernetes-eks-cluster-prometheus/">EKS Specific Dashboard</a> onto grafana using the following instructions.</p>
 <ul>
-<li>Is persistentVolumeClaim created ?  Why ?</li>
-<li>Is persistentVolume created ?  Why ?</li>
-<li>Is the persistentVolumeClaim bound with a persistentVolume ?</li>
+<li>From Dashboards -&gt; New -&gt; Import   </li>
+<li>Provide Dashboard ID as <code>17119</code> , select Load</li>
+<li>Select Prometheus Data Source instance</li>
+<li>Import</li>
 </ul>
-<h2 id="set-up-storage-provisioner-in-kubernetes">Set up Storage Provisioner in kubernetes</h2>
-<p><code>Skip this step is you are using KIND based environment.</code></p>
-<p>Launch a local path provisioner using the following command,</p>
-<pre><code>kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisioner/master/deploy/local-path-storage.yaml
-
-</code></pre>
-<p>This will create all the objects required to setup a local-path provisioner. At this time, you should also see <strong>storageclass</strong> created for local-path on your monitoring screen.</p>
-<pre><code>kubectl get storageclass
-kubectl get pods
-kubectl logs -f local-path-provisioner-xxxx -n local-path-storage
-</code></pre>
-<h3 id="validate">Validate</h3>
-<p>Now, observe the output of  the following commands,</p>
-<pre><code>kubectl get pvc,pv
-kubectl get pods
-</code></pre>
+<p>Once imported,</p>
 <ul>
-<li>Do you see pvc bound to pv ?</li>
-<li>Do you see the pod for db running ?</li>
+<li>go to Dashboard Settings -&gt; Variables</li>
+<li>select <code>node</code></li>
+<li>on configuration page,Query options  -&gt; Query select Metric as <code>kube_pod_info</code>
+  <img alt="" src="../images/eks/03/21.png" /></li>
+<li>Ensure Label is set to <code>node</code></li>
+<li>Save Dashboard</li>
 </ul>
-<p>Observe the dynamic provisioning in action.</p>
-<h2 id="nano-project">Nano Project</h2>
-<p>Similar to postgres which mounts the data at /var/lib/postgresql/data and consumes it to store the database files, Redis creates and stores the file at <strong>/data</strong> path.  Your task is to have a volume of size <strong>20Mi</strong> created and mounted at /data for the redis container.</p>
-<p>You could follow these steps to complete this task</p>
+<p>When you switch back to the dashboard you should see cluster health</p>
+<p><img alt="" src="../images/eks/03/22.png" /></p>
+<p>You could try installing additional dashboards e.g.</p>
 <ul>
-<li>create a pvc by name <strong>redis</strong></li>
-<li>create a volume in the pod spec with type persistentVolumeClaim. Call is <strong>redis-data</strong></li>
-<li>add volumeMounts to the container spec (part of the same deployment file) running redis and have it mount <strong>redis-data</strong> volume created in the pod spec above.</li>
+<li>Node Exporter: <a href="https://grafana.com/grafana/dashboards/1860-node-exporter-full/"></a>  </li>
+<li>Cluster Autoscaler: <a href="https://grafana.com/grafana/dashboards/3831-autoscaler/"></a>    </li>
+<li>Node Exporter for Prometheus: <a href="https://grafana.com/grafana/dashboards/15172-node-exporter-for-prometheus-dashboard-based-on-11074/"></a>  </li>
 </ul>
-<h4 id="summary">Summary</h4>
-<p>In this lab, you learnt to  setup dynamic provisioning  provisioner with Storage Classes, Provisioners and PersistentVolumeClaims.</p>
+<h2 id="uninstalling-the-app-with-helm">Uninstalling the App with HELM</h2>
+<p>Once you are done experiementing and learning, you could uninstall the application stack that you earlier installed with helm easily.</p>
+<p>To uninstall prometheus and grafana stack, begin by listing it</p>
+<pre><code>helm list -A
+helm uninstall -n monitoring prom
+</code></pre>
+<p>This should clean up everything that was deployed with helm earlier.</p>
+<h2 id="summary">Summary</h2>
+<p>In this lab, we not only learnt about HELM, a kubernetes package manager, but  also have setup a sophisticated health monitoring system with prometheus and grafana.</p>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../kubernetes-rollouts-rollbacks-deployments/" class="btn btn-neutral float-left" title="Lab K107 - Deployments"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../kubernetes-sample-project/" class="btn btn-neutral float-right" title="Lab K109 - Mini Project">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../eks_vpa/" class="btn btn-neutral float-left" title="Lab K509 - Verticle Pod Autoscaler"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../xer-001-pods/" class="btn btn-neutral float-right" title="XER001 - Pods">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -392,10 +368,10 @@ kubectl get pods
         </span>
     
     
-      <span><a href="../kubernetes-rollouts-rollbacks-deployments/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../eks_vpa/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../kubernetes-sample-project/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../xer-001-pods/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

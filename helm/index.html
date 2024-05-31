@@ -178,6 +178,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../eks_vpa/">Lab K509 - Verticle Pod Autoscaler</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_monitoring/">Lab K510 - EKS Monitoring</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">Exercises</span></p>
               <ul>
@@ -242,7 +244,7 @@
 <pre><code>curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 
 </code></pre>
-<p>You could further refer to <a href="https://helm.sh/docs/intro/install/">Official HELM Install Instructions</a> for alternative options. </p>
+<p>You could further refer to <a href="https://helm.sh/docs/intro/install/">Official HELM Install Instructions</a> for alternative options.</p>
 <p>Verify the installtion is successful,</p>
 <pre><code>helm --help
 helm version
@@ -274,21 +276,11 @@ helm install prom -n monitoring prometheus-community/kube-prometheus-stack
 kubectl get all -n monitoring
 kubectl get pods,svc -n monitoring
 </code></pre>
-<h3 id="customising-prometheus-configurations">Customising Prometheus Configurations</h3>
-<p>Create a custom values file</p>
-<pre><code>cp values.yaml my.values.yaml
-</code></pre>
-<p>Edit the values file <code>my.values.yaml</code> and set service type to NodePort</p>
-<pre><code>grafana:
-  service:
-    portName: http-web
-    type: NodePort
-    nodePort: 30200
-</code></pre>
-<p>Make sure you are updating the service port only for Grafana. This is around line number 1125 in the file. You may have to add <code>type</code> if it is not present.</p>
-<p>Now apply the changes as,</p>
-<pre><code>helm upgrade prom -n monitoring --values my.values.yaml .
-
+<h4 id="customising-prometheus-configurations">Customising Prometheus Configurations</h4>
+<p>To update the Grafana service to use NodePort configurations, upgrade the helm release by setting up  customized properties as,</p>
+<pre><code>helm upgrade prom -n monitoring prometheus-community/kube-prometheus-stack \
+  --set grafana.service.type=NodePort \
+  --set grafana.service.nodePort=30200
 </code></pre>
 <p>Validate</p>
 <pre><code>helm list -A
