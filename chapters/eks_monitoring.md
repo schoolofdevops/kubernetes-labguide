@@ -133,9 +133,9 @@ When you switch back to the dashboard you should see cluster health
 
 You could try installing additional dashboards e.g.
 
-  * Node Exporter: [](https://grafana.com/grafana/dashboards/1860-node-exporter-full/)  
-  * Cluster Autoscaler: [](https://grafana.com/grafana/dashboards/3831-autoscaler/)    
-  * Node Exporter for Prometheus: [](https://grafana.com/grafana/dashboards/15172-node-exporter-for-prometheus-dashboard-based-on-11074/)  
+  * [Node Exporter](https://grafana.com/grafana/dashboards/1860-node-exporter-full/)  
+  * [Cluster Autoscaler](https://grafana.com/grafana/dashboards/3831-autoscaler/)    
+  * [Node Exporter for Prometheus](https://grafana.com/grafana/dashboards/15172-node-exporter-for-prometheus-dashboard-based-on-11074/)  
 
 ## Uninstalling the App with HELM
 Once you are done experiementing and learning, you could uninstall the application stack that you earlier installed with helm easily.
