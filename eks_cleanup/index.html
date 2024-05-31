@@ -3,18 +3,18 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/kubernetes-dynamic-storage-provisioning/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/eks_cleanup/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Lab K108 - Storage - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <title>Lab K599 - EKS Cleanup - Kubernetes Tutorial with CKA/CKAD Prep</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Lab K108 - Storage";
-        var mkdocs_page_input_path = "kubernetes-dynamic-storage-provisioning.md";
-        var mkdocs_page_url = "/kubernetes-dynamic-storage-provisioning/";
+        var mkdocs_page_name = "Lab K599 - EKS Cleanup";
+        var mkdocs_page_input_path = "eks_cleanup.md";
+        var mkdocs_page_url = "/eks_cleanup/";
       </script>
     
     <!--[if lt IE 9]>
@@ -65,7 +65,7 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Kubernetes Essentials for CKA/CKAD</span></p>
-              <ul class="current">
+              <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../kind_create_cluster/">Lab K101 - Install Kubernetes with KIND</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../kubernetes_quickdive/">Lab K102 - Kubernetes Quickdive</a>
@@ -78,27 +78,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../kubernetes-rollouts-rollbacks-deployments/">Lab K107 - Deployments</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K108 - Storage</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#concepts">Concepts</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#deploy-database-with-a-persistent-volume-claim">Deploy Database with a Persistent Volume Claim</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#creating-a-persistent-volume-claim">Creating a Persistent Volume Claim</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#set-up-storage-provisioner-in-kubernetes">Set up Storage Provisioner in kubernetes</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#validate">Validate</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#nano-project">Nano Project</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#summary">Summary</a>
-    </li>
-        </ul>
-    </li>
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../kubernetes-dynamic-storage-provisioning/">Lab K108 - Storage</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../kubernetes-sample-project/">Lab K109 - Mini Project</a>
                   </li>
@@ -167,7 +147,7 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">AWS EKS</span></p>
-              <ul>
+              <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../eks_prep/">Lab K501 - EKS Preparatory Setup</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../eks_setup/">Lab K502 - EKS Setup</a>
@@ -188,7 +168,19 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../eks_costs/">Lab K511 - EKS Costs</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../eks_cleanup/">Lab K599 - EKS Cleanup</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K599 - EKS Cleanup</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#1-delete-eks-cluster">1. Delete EKS Cluster</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#delete-cloudformation-stacks">Delete Cloudformation Stacks</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#delete-s3-bucket">Delete S3 Bucket</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#delete-ec2-volumes">Delete EC2 Volumes</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#delete-load-balancers-target-groups">Delete Load Balancers + Target Groups</a>
+    </li>
+    </ul>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Exercises</span></p>
@@ -236,10 +228,10 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a> &raquo;</li>
-          <li>Kubernetes Essentials for CKA/CKAD &raquo;</li>
-      <li class="breadcrumb-item active">Lab K108 - Storage</li>
+          <li>AWS EKS &raquo;</li>
+      <li class="breadcrumb-item active">Lab K599 - EKS Cleanup</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/kubernetes-dynamic-storage-provisioning.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/eks_cleanup.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -247,128 +239,21 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="dynamic-storage-provisioning">Dynamic Storage Provisioning</h1>
-<p>This tutorial explains how kubernetes storage works and the complete workflow for the dynamic provisioning. The topics include</p>
-<ul>
-<li>Storage Classes</li>
-<li>PersistentVolumeClaim</li>
-<li>persistentVolume</li>
-<li>Provisioner</li>
-</ul>
-<p>Pre Reading :</p>
-<ul>
-<li><a href="https://youtu.be/hqE5c5pyfrk?t=461">Kubernetes Storage Concepts</a></li>
-<li><a href="https://kubernetes.io/docs/concepts/storage/storage-classes/">Storage Classes</a></li>
-</ul>
-<h2 id="concepts">Concepts</h2>
-<p><img alt="kubernetes Storage Concepts" src="../images/storage_mindmap.png" /></p>
-<h2 id="deploy-database-with-a-persistent-volume-claim">Deploy Database with a Persistent Volume Claim</h2>
-<p>Lets begin by redeploying the db deployment, this time by configuring it to refer to the persistentVolumeClaim</p>
-<p><code>file: db-deploy-pvc.yaml</code></p>
-<pre><code>...
-spec:
-   containers:
-   - image: postgres:9.4
-     imagePullPolicy: Always
-     name: db
-     ports:
-     - containerPort: 5432
-       protocol: TCP
-     #mount db-vol to postgres data path
-     volumeMounts:
-     - name: db-vol
-       mountPath: /var/lib/postgresql/data
-   #create a volume with pvc
-   volumes:
-   - name: db-vol
-     persistentVolumeClaim:
-       claimName: db-pvc
+                <h1 id="cleanup-checklist">Cleanup Checklist</h1>
+<h3 id="1-delete-eks-cluster">1. Delete EKS Cluster</h3>
+<pre><code>eksctl delete cluster --force -f cluster.yaml
 </code></pre>
-<p>Apply <em>db-deploy-pcv.yaml</em>  as</p>
-<pre><code>kubectl apply -f db-deploy-pvc.yaml
-</code></pre>
-<p>To monitor resources for this lab, open a new terminal and start watching for relevant objecting using the following command.</p>
-<pre><code>
-watch kubectl get pods,pvc,pv,storageclasses
-</code></pre>
-<p>We will call the terminal where you are running the above command as your <strong>Monitoring Screen</strong>.</p>
-<ul>
-<li>Observe and note if the pod for <em>db</em> is launched.</li>
-<li>What state is it in ? why?</li>
-<li>Has the persistentVolumeClaim been bound to a persistentVolume ? Why?</li>
-</ul>
-<h2 id="creating-a-persistent-volume-claim">Creating a Persistent Volume Claim</h2>
-<p>switch to project directory</p>
-<pre><code>cd k8s-code/projects/instavote/dev/
-</code></pre>
-<p>Create the following file with the specs below</p>
-<p><code>file: db-pvc.yaml</code></p>
-<pre><code>kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: db-pvc
-spec:
-  accessModes:
-    - ReadWriteOnce
-  volumeMode: Filesystem
-  resources:
-    requests:
-      storage: 200Mi
-  storageClassName: local-path
-
-</code></pre>
-<p><code>if you using a KIND bases environment, set  StorageClassName to "standard" instead of "local-path" in the above file. In case of KIND environment, no further configuration of Storageclass/Provisioner is needed.</code></p>
-<p>create the Persistent Volume Claim and validate</p>
-<pre><code>kubectl get pvc
-
-
-kubectl apply -f db-pvc.yaml
-
-kubectl get pvc,pv
-
-</code></pre>
-<ul>
-<li>Is persistentVolumeClaim created ?  Why ?</li>
-<li>Is persistentVolume created ?  Why ?</li>
-<li>Is the persistentVolumeClaim bound with a persistentVolume ?</li>
-</ul>
-<h2 id="set-up-storage-provisioner-in-kubernetes">Set up Storage Provisioner in kubernetes</h2>
-<p><code>Skip this step is you are using KIND based environment.</code></p>
-<p>Launch a local path provisioner using the following command,</p>
-<pre><code>kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisioner/master/deploy/local-path-storage.yaml
-
-</code></pre>
-<p>This will create all the objects required to setup a local-path provisioner. At this time, you should also see <strong>storageclass</strong> created for local-path on your monitoring screen.</p>
-<pre><code>kubectl get storageclass
-kubectl get pods
-kubectl logs -f local-path-provisioner-xxxx -n local-path-storage
-</code></pre>
-<h3 id="validate">Validate</h3>
-<p>Now, observe the output of  the following commands,</p>
-<pre><code>kubectl get pvc,pv
-kubectl get pods
-</code></pre>
-<ul>
-<li>Do you see pvc bound to pv ?</li>
-<li>Do you see the pod for db running ?</li>
-</ul>
-<p>Observe the dynamic provisioning in action.</p>
-<h2 id="nano-project">Nano Project</h2>
-<p>Similar to postgres which mounts the data at /var/lib/postgresql/data and consumes it to store the database files, Redis creates and stores the file at <strong>/data</strong> path.  Your task is to have a volume of size <strong>20Mi</strong> created and mounted at /data for the redis container.</p>
-<p>You could follow these steps to complete this task</p>
-<ul>
-<li>create a pvc by name <strong>redis</strong></li>
-<li>create a volume in the pod spec with type persistentVolumeClaim. Call is <strong>redis-data</strong></li>
-<li>add volumeMounts to the container spec (part of the same deployment file) running redis and have it mount <strong>redis-data</strong> volume created in the pod spec above.</li>
-</ul>
-<h4 id="summary">Summary</h4>
-<p>In this lab, you learnt to  setup dynamic provisioning  provisioner with Storage Classes, Provisioners and PersistentVolumeClaims.</p>
+<h3 id="delete-cloudformation-stacks">Delete Cloudformation Stacks</h3>
+<p>Check for reaming Cloudformation Stacks if any and delete those.</p>
+<h3 id="delete-s3-bucket">Delete S3 Bucket</h3>
+<h3 id="delete-ec2-volumes">Delete EC2 Volumes</h3>
+<h3 id="delete-load-balancers-target-groups">Delete Load Balancers + Target Groups</h3>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../kubernetes-rollouts-rollbacks-deployments/" class="btn btn-neutral float-left" title="Lab K107 - Deployments"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../kubernetes-sample-project/" class="btn btn-neutral float-right" title="Lab K109 - Mini Project">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../eks_costs/" class="btn btn-neutral float-left" title="Lab K511 - EKS Costs"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../xer-001-pods/" class="btn btn-neutral float-right" title="XER001 - Pods">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -396,10 +281,10 @@ kubectl get pods
         </span>
     
     
-      <span><a href="../kubernetes-rollouts-rollbacks-deployments/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../eks_costs/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../kubernetes-sample-project/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../xer-001-pods/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
