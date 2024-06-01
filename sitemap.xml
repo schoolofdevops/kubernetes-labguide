@@ -51,6 +51,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>http://kubernetes-tutorial.schoolofdevops.com/argo_multi_env_deploy/</loc>
+         <lastmod>2024-06-01</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/aws_ack_demo/</loc>
          <lastmod>2024-06-01</lastmod>
          <changefreq>daily</changefreq>

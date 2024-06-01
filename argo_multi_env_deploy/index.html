@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/argo_multi_env_deploy/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Lab K602 - Multi Env Deployment with ArgoCD - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Lab K602 - Multi Env Deployment with ArgoCD";
+        var mkdocs_page_input_path = "argo_multi_env_deploy.md";
+        var mkdocs_page_url = "/argo_multi_env_deploy/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+      <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+        ga('create', "UA-36802546-16", "kubernetes-tutorial.schoolofdevops.com");
+        ga('send', 'pageview');
+      </script>
+    
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> Kubernetes Tutorial with CKA/CKAD Prep
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Docker Essentials for Kubernetes</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../operating-docker-containers/">Lab D101 - Operating Containers</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../building-publishing-docker-images/">Lab D102 - Building and Publishing Docker Images</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../docker-networking/">Lab D103 - Docker Networking</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../docker-volumes/">Lab D104 - Docker Volumes</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Kubernetes Essentials for CKA/CKAD</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../kind_create_cluster/">Lab K101 - Install Kubernetes with KIND</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../kubernetes_quickdive/">Lab K102 - Kubernetes Quickdive</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../create-and-deploy-kubernetes-pods/">Lab K103 - Pods</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../kubernetes-replicasets-howto/">Lab K104 - Namespaces and ReplicaSets</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../kubernetes-service-networking/">Lab K105 - Service Networking</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../kubernetes-rollouts-rollbacks-deployments/">Lab K107 - Deployments</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../kubernetes-dynamic-storage-provisioning/">Lab K108 - Storage</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../kubernetes-sample-project/">Lab K109 - Mini Project</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../kubernetes-configuration-management-configmaps-secrets/">Lab K110 - ConfigMaps & Secrets</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../ingress/">Lab K112 - Ingress</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../helm/">Lab K113 - HELM Package Manager</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../helm_charts/">Lab K114 - Writing HELM Charts</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../helm_charts_publish/">Lab K115 - Publishing HELM Charts</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Additional CKAD Topics</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../advanced_pod_design/">Lab K201 - Advanced Pod Design</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../pods-health-probes/">Lab K204 - Health Checks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../daemonsets_cronsjobs/">Lab K205 - DaemonsSets & CronJobs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../13_redis_statefulset/">Lab K206 - Statefulsets</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Additional CKA Topics</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../10_kubernetes_autoscaling/">Lab K301 - Auto Scaling with HPA</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../custom_autoscaling/">Lab K302 - Autoscaling on Custom Metric</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../advanced_pod_scheduling/">Lab K303 - Advanced Pod Scheduling</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../cluster-administration/">Lab K304 - Cluster Administration</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../cluster-troubleshooting/">Lab K305 - Cluster Troubleshooting</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Kubernetes Security</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../rbac_101/">Lab K111 - RBAC Policies</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../network_policies/">Lab K207 - Network Policies</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Additional Topics</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../install_kubernetes_with_kubeadm/">Lab K400 - Install Kubernetes with Kubeadm</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../configuring_authentication_and_authorization/">Lab K401 - Creating Users, Groups and Authorization</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../vote-deployement_strategies/">Lab K403 - Building Deployment Strategies</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../cni/">Lab K404 - CNI</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../operator/">Lab K404 - Kubernetes Operators</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../12_troubleshooting/">Troubleshooting Tips</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../logging/">Logging</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">AWS and Kubernetes</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../aws_ack_demo/">Lab K405 - AWS Controller for Kubernetes</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">AWS EKS</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_prep/">Lab K501 - EKS Preparatory Setup</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_setup/">Lab K502 - EKS Setup</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_deploy_apps/">Lab K503 - Deploy Apps on EKS</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_ingress_alb/">Lab K504 - Ingress with ALB</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_storage/">Lab K505 - Persistent Storage with EBS</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_irsa/">Lab K506 - IRSA</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_cluster_autoscaler/">Lab K507 - EKS Cluster Autoscaler</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_vpa/">Lab K509 - Verticle Pod Autoscaler</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_monitoring/">Lab K510 - EKS Monitoring</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_costs/">Lab K511 - EKS Costs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_cleanup/">Lab K599 - EKS Cleanup</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Argo</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../kind_create_cluster/">Lab K601 - Setup Kubernetes with KIND</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K602 - Multi Env Deployment with ArgoCD</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#setup-argocd">Setup ArgoCD</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#setup-deployment-repository">Setup Deployment Repository</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#setup-staging-and-prod-deployments-with-argocd">Setup Staging and Prod Deployments with ArgoCD</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#set-up-deploy-to-prod-configuration">Set up Deploy to Prod Configuration</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#deployments-in-action">Deployments in Action</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#exercises">Exercises</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#references">References</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Exercises</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../xer-001-pods/">XER001 - Pods</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../xer-002-rs/">XER002 - ReplicaSets</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../adv-k8s-project/">XER003 - Deploy Instavote Stack</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Web Quests</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../wq001-cni/">KWQ001 - CNI Web Quest</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../wq002-security/">KWQ001 - Kubernetes Security Web Quest</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../wq003-ingress/">KWQ003 - Ingress Web Quest</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../wq004-monitoring/">KWQ004 - Monitoring Web Quest</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../wq005-controllers/">KWQ005 - Controllers Web Quest</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../wq006-persistentvolume/">KWQ006 - Persistent Data Web Quest</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../wq007-maintenance/">KWQ007 - Cluster Maintenance Web Quest</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">References</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../rbac-resource-group-mapping/">RBAC apiGroups to Resource Mapping</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">Kubernetes Tutorial with CKA/CKAD Prep</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a> &raquo;</li>
+          <li>Argo &raquo;</li>
+      <li class="breadcrumb-item active">Lab K602 - Multi Env Deployment with ArgoCD</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/argo_multi_env_deploy.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="lab-10a-setting-up-automated-deployments-with-argocd">Lab 10A -  Setting up Automated Deployments with ArgoCD</h1>
+<p>Author: Gourav Shah
+Publisher: School of Devops
+Version : v2023.10.06.01</p>
+<hr />
+<h2 id="setup-argocd">Setup ArgoCD</h2>
+<p>Install ArgoCD</p>
+<pre><code>kubectl create namespace argocd
+
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+</code></pre>
+<p>Reset admin password to <code>password</code></p>
+<pre><code># bcrypt(password)=$2a$10$rRyBsGSHK6.uc8fntPwVIuLVHgsAhAX7TcdrqW/RADU0uh7CaChLa
+kubectl -n argocd patch secret argocd-secret \
+  -p '{&quot;stringData&quot;: {
+    &quot;admin.password&quot;: &quot;$2a$10$rRyBsGSHK6.uc8fntPwVIuLVHgsAhAX7TcdrqW/RADU0uh7CaChLa&quot;,
+    &quot;admin.passwordMtime&quot;: &quot;'$(date +%FT%T%Z)'&quot;
+  }}'
+
+</code></pre>
+<p>Source: <a href="https://gist.github.com/initcron/09d8b6c70d527b5e8894472efa83a895">reset-argo-password.sh</a>
+Reference: <a href="https://github.com/argoproj/argo-cd/blob/master/docs/faq.md#i-forgot-the-admin-password-how-do-i-reset-it">argo-cd/faq.md at master · argoproj/argo-cd · GitHub</a></p>
+<pre><code>kubectl get all -n argocd
+</code></pre>
+<pre><code>kubectl patch svc argocd-server -n argocd --patch \
+  '{&quot;spec&quot;: { &quot;type&quot;: &quot;NodePort&quot;, &quot;ports&quot;: [ { &quot;nodePort&quot;: 32100, &quot;port&quot;: 443, &quot;protocol&quot;: &quot;TCP&quot;, &quot;targetPort&quot;: 8080 } ] } }'
+
+</code></pre>
+<p>source: <a href="https://gist.github.com/initcron/a14fe418b8a7325e3ed5ecebf6fadb53">patch_argo_svc.sh</a></p>
+<pre><code>kubectl get svc -n argocd
+</code></pre>
+<p>Find out the IP address for one of the nodes. One way to do so is to run the following command,</p>
+<pre><code>kubectl get nodes -o wide
+</code></pre>
+<p>Note IP address for one of the nodes and browse to https://NODEIP:32100</p>
+<p>==replace NODEIP with the actual==</p>
+<p>You should be presented with the  login page for ArgoCD as follows</p>
+<p><img alt="" src="../images/argo/01.png" /></p>
+<ul>
+<li>username  =.   <code>admin</code></li>
+<li>password   =   <code>password</code></li>
+</ul>
+<p>Once logged in, you should see a screen such as  the following screenshot</p>
+<p><img alt="" src="../images/argo/02.png" /></p>
+<h2 id="setup-deployment-repository">Setup Deployment Repository</h2>
+<ul>
+<li>Create a fork of <a href="https://github.com/sfd-cicd/vote-deploy">sfd-cicd/vote-deploy: Kubernetes Deployment Code for Vote App</a></li>
+</ul>
+<p>While creating the fork, ensure that you uncheck the <code>Copy the main branch only</code> option as shown in screenshot below.
+<img alt="" src="../images/argo/03.png" /></p>
+<p>Ensure you have <code>main</code> and release branches available.</p>
+<p><img alt="" src="../images/argo/04.png" /></p>
+<p>If you do not have the release branch, create it from main.</p>
+<p>Review the code created with kustomization overlay configured for <code>staging</code> and <code>prod</code> environments in additional to the base manifests.</p>
+<h2 id="setup-staging-and-prod-deployments-with-argocd">Setup Staging and Prod Deployments with ArgoCD</h2>
+<p>Create namespaces mapping staging and prod environments as,</p>
+<pre><code>kubectl create ns staging
+kubectl create ns prod
+
+kubectl get ns
+</code></pre>
+<p>Browse to ArgoCD web console and click on <strong>Create Application</strong></p>
+<p><img alt="" src="../images/argo/05.png" /></p>
+<p>From General ,
+* Application Name : <code>vote-staging</code>
+* Project : default
+* Sync Policy : <code>Automatic</code>
+* Prune Resources Checked
+<img alt="" src="../images/argo/06.png" /></p>
+<p>From Source,
+* Repository URL : <code>Your Repo URL (https)</code>
+* Revision : main
+* Path :  <code>staging</code>
+<img alt="" src="../images/argo/07.png" /></p>
+<p>From Destination,
+* Cluster URL :  https://kubernetes.default.svc   (default)
+* Namespace : <code>default</code>
+<img alt="" src="../images/argo/08.png" /></p>
+<p>Click on <strong>CREATE</strong> button on the top
+<img alt="" src="../images/argo/09.png" /></p>
+<h3 id="set-up-deploy-to-prod-configuration">Set up Deploy to Prod Configuration</h3>
+<p>Create another application, repeat the same configurations with the following changes,</p>
+<p>Cluster URL :  https://kubernetes.default.svc   (default)
+* Application Name  : <code>vote-prod</code>
+* Revision  : <code>release</code>  (will deploy from release branch)
+* Path  : <code>prod</code>
+* Namespace  : <code>prod</code></p>
+<p><img alt="" src="../images/argo/10.png" /></p>
+<p>Once created, you should see two applications configured on ArgoCD tracking two environments.</p>
+<h2 id="deployments-in-action">Deployments in Action</h2>
+<p>Open two  terminals and start watching for changes in the staging namespace</p>
+<p>Terminal 1</p>
+<pre><code>watch kubectl get all -n staging
+</code></pre>
+<p>Terminal 2</p>
+<pre><code>watch kubectl get all -n staging
+</code></pre>
+<p>Watch for the changes in the console as well as on Argo.  You shall see the application synced from the Git Repo to the Kubernetes Cluster in a few seconds.  </p>
+<p>Staging
+<img alt="" src="../images/argo/11.png" /></p>
+<p>Prod
+<img alt="" src="../images/argo/12.png" /></p>
+<p>Validate by accessing the vote apps on
+* Staging : http://NODEIP:30300
+* Prod  : http://NODEIP:30400</p>
+<p>e.g.</p>
+<p><img alt="" src="../images/argo/13.png" /></p>
+<h2 id="exercises">Exercises</h2>
+<ul>
+<li>Set up branch protection rule to lock down <code>release</code> branch and allow changes via pull requests. You can experiment by adding additional policies as well.</li>
+<li>Try modifying YAML manifests in Deploy  Repo in Git in main branch by changing the image tag in <code>base/deployment.yaml</code> and  wait for the staging deployment.  Then raise the pull request to merge it into release and see it deployed to prod.  </li>
+</ul>
+<h3 id="references">References</h3>
+<ul>
+<li>Getting Started with Argo <a href="https://argoproj.github.io/argo-cd/getting_started/">Getting Started - Argo CD - Declarative GitOps CD for Kubernetes</a></li>
+<li>Reset admin password <a href="https://github.com/argoproj/argo-cd/blob/master/docs/faq.md#i-forgot-the-admin-password-how-do-i-reset-it">argo-cd/faq.md at master · argoproj/argo-cd · GitHub</a></li>
+</ul>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../kind_create_cluster/" class="btn btn-neutral float-left" title="Lab K601 - Setup Kubernetes with KIND"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../xer-001-pods/" class="btn btn-neutral float-right" title="XER001 - Pods">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+      <p>Copyright @ 2017-2020 Gourav Shah, School of Devops. Some rights reserved. License CC BY-NC-SA</p>
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../kind_create_cluster/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../xer-001-pods/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
