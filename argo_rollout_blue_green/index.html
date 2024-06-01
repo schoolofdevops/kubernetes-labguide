@@ -288,14 +288,14 @@ kubectl apply -k staging
 </code></pre>
 <p>where, <code>-k</code> option applies the kustomization spec.</p>
 <p>validate</p>
-<pre><code>kubect get all
+<pre><code>kubectl get all
 </code></pre>
-<p>You should see the deployment and service for vote app. And you should be able to access the staging deployment with  nodeport <code>30300</code>.</p>
+<p>You should see the deployment and service for vote app. And you should be able to access the staging deployment with  nodeport <code>30000</code>.</p>
 <h2 id="install-argo-rollouts">Install Argo Rollouts</h2>
 <p>Install Argo Rollouts Controller and CRDs with ,</p>
 <pre><code>kubectl create namespace argo-rollouts
 kubectl apply -n argo-rollouts -f https://github.com/argoproj/argo-rollouts/releases/latest/download/install.yaml
-re
+
 </code></pre>
 <p>Validate with,</p>
 <pre><code>kubectl api-resources | grep -i argo
@@ -350,7 +350,7 @@ resources:
 <pre><code>kubectl apply -k staging
 </code></pre>
 <p>Validate</p>
-<pre><code>kubectl get all,ro
+<pre><code>kubectl get all
 kubectl describe svc vote
 kubectl describe svc vote-preview
 </code></pre>
@@ -403,13 +403,25 @@ kubectl describe ro vote
 <p>Open a new terminal and start watching with</p>
 <pre><code>watch kubectl get ro,all --show-labels
 </code></pre>
-<p>Also open two browser windows to watch for <code>vote</code> and <code>vote-bg</code> services respectively</p>
-<p>Trigger a rollout by updating the image and labels/annotations as needed in <code>vote-ro.yaml</code> and apply as,</p>
-<pre><code>kubectl apply -f vote-ro.yaml
+<p>Also open two browser windows to watch for <code>vote</code> and <code>vote-preview</code> services respectively</p>
+<p>If you had installed the argo rollout plugin for <code>kubectl</code>, you could also launch the Rollout UI with</p>
+<pre><code>kubectl argo rollouts dashboard -p 3100
+</code></pre>
+<p>and then start watching for the rollout using <a href="http://localhost:3100/rollouts">http://localhost:3100/rollouts</a></p>
+<p>Now, trigger a rollout by updating the image by adding the following to <code>staging/kustomization.yaml</code></p>
+<pre><code>images:
+ - name: schoolofdevops/vote
+   newName: schoolofdevops/vote
+   newTag: v2
+</code></pre>
+<p>and then by applying it as</p>
+<pre><code>kubectl apply -k staging
 </code></pre>
 <p>In the same terminal you could watch the status of the rollout with,</p>
 <pre><code>kubectl argo rollouts status vote
 </code></pre>
+<p>You could also watch the status using Argo Rollouts Dashboard as</p>
+<p><img alt="" src="../images/argo/15.png" /></p>
 <p>You would notice that,</p>
 <ul>
 <li>A new replica set is created with new version  </li>
