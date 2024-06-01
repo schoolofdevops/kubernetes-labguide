@@ -3,18 +3,18 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/eks_cluster_autoscaler/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/argo_rollout_blue_green/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Lab K507 - EKS Cluster Autoscaler - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <title>Lab K603 - Blue/Green Release with Argo Rollouts - Kubernetes Tutorial with CKA/CKAD Prep</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Lab K507 - EKS Cluster Autoscaler";
-        var mkdocs_page_input_path = "eks_cluster_autoscaler.md";
-        var mkdocs_page_url = "/eks_cluster_autoscaler/";
+        var mkdocs_page_name = "Lab K603 - Blue/Green Release with Argo Rollouts";
+        var mkdocs_page_input_path = "argo_rollout_blue_green.md";
+        var mkdocs_page_url = "/argo_rollout_blue_green/";
       </script>
     
     <!--[if lt IE 9]>
@@ -147,7 +147,7 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">AWS EKS</span></p>
-              <ul class="current">
+              <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../eks_prep/">Lab K501 - EKS Preparatory Setup</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../eks_setup/">Lab K502 - EKS Setup</a>
@@ -160,19 +160,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../eks_irsa/">Lab K506 - IRSA</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K507 - EKS Cluster Autoscaler</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#scale-down-the-nodegroup">Scale Down the NodeGroup</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#set-up-cluster-autoscaler">Set up Cluster Autoscaler</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#create-iam-policy-for-cluster-autoscaler">Create IAM Policy for Cluster Autoscaler</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#cluster-auotscaler-in-action">Cluster Auotscaler in Action</a>
-    </li>
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_cluster_autoscaler/">Lab K507 - EKS Cluster Autoscaler</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../eks_vpa/">Lab K509 - Verticle Pod Autoscaler</a>
                   </li>
@@ -184,12 +172,22 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Argo</span></p>
-              <ul>
+              <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../kind_create_cluster/">Lab K601 - Setup Kubernetes with KIND</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../argo_multi_env_deploy/">Lab K602 - Multi Env Deployment with ArgoCD</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../argo_rollout_blue_green/">Lab K603 - Blue/Green Release with Argo Rollouts</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K603 - Blue/Green Release with Argo Rollouts</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#install-argo-rollouts">Install Argo Rollouts</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#create-a-preview-service">Create a Preview Service</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#migrate-deployment-to-argo-rollout">Migrate Deployment to Argo Rollout</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#deploy-a-bluegreen-release">Deploy a Blue/Green Release</a>
+    </li>
+    </ul>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Exercises</span></p>
@@ -237,10 +235,10 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a> &raquo;</li>
-          <li>AWS EKS &raquo;</li>
-      <li class="breadcrumb-item active">Lab K507 - EKS Cluster Autoscaler</li>
+          <li>Argo &raquo;</li>
+      <li class="breadcrumb-item active">Lab K603 - Blue/Green Release with Argo Rollouts</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/eks_cluster_autoscaler.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/argo_rollout_blue_green.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -248,152 +246,120 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="lab-06-scaling-eks-nodes">Lab 06 - Scaling EKS Nodes</h1>
-<p>When cluster nodes are exhausted of capacity, and when you have more pods to schedule, you would also want the underlying nodes to scale. This can be achieved in two differnt ways as follows </p>
-<ul>
-<li>Using Cluster Autoscale </li>
-<li>With Karpenter </li>
-</ul>
-<p>In this lab, you will set up Cluster Autoscaler to scale the node groups. </p>
-<h3 id="scale-down-the-nodegroup">Scale Down the NodeGroup</h3>
-<p>Before starting to scale, you may want to scale down your node group to minimum, so that you could quickly  see the autoscaler in action </p>
-<pre><code>eksctl scale nodegroup --cluster eks-cluster-01 ng-2-workers --nodes 1
+                <h1 id="blue-green-releases-with-argo-rollouts">Blue Green Releases with Argo Rollouts</h1>
+<p>Author: Gourav Shah
+Publisher: School of Devops
+Version : v2023.09.07.01
+Status : Work In Progress</p>
+<hr />
+<h2 id="install-argo-rollouts">Install Argo Rollouts</h2>
+<p>Install Argo Rollouts Controller and CRDs with ,</p>
+<pre><code>kubectl create namespace argo-rollouts
+kubectl apply -n argo-rollouts -f https://github.com/argoproj/argo-rollouts/releases/latest/download/install.yaml
+re
 </code></pre>
-<p>validate </p>
-<pre><code>eksctl get nodegroups -c eks-cluster-01
+<p>Validate with,</p>
+<pre><code>kubectl api-resources | grep -i argo
+</code></pre>
+<p>Optionally, you could install argo plugin for kubectl  </p>
+<p>On linux</p>
+<pre><code>curl -LO https://github.com/argoproj/argo-rollouts/releases/latest/download/kubectl-argo-rollouts-linux-amd64
 
-kubectl get nodes
+chmod +x ./kubectl-argo-rollouts-linux-amd64
+
+sudo mv ./kubectl-argo-rollouts-linux-amd64 /usr/local/bin/kubectl-argo-rollouts
 </code></pre>
-<p>wait for a few minutes for the addiontal nodes to be drained and removed, leaving only one node in the node group. </p>
-<p>Also make sure all the pods are rescheduled and are running </p>
-<pre><code>kubectl get pods -A 
-</code></pre>
-<h2 id="set-up-cluster-autoscaler">Set up Cluster Autoscaler</h2>
-<h3 id="create-iam-policy-for-cluster-autoscaler">Create IAM Policy for Cluster Autoscaler</h3>
-<ul>
-<li>From IAM -&gt; Policies -&gt; Create Policy. Select JSON tab and add the following policy </li>
-</ul>
-<pre><code>{
-  &quot;Version&quot;: &quot;2012-10-17&quot;,
-  &quot;Statement&quot;: [
-    {
-      &quot;Effect&quot;: &quot;Allow&quot;,
-      &quot;Action&quot;: [
-        &quot;autoscaling:DescribeAutoScalingGroups&quot;,
-        &quot;autoscaling:DescribeAutoScalingInstances&quot;,
-        &quot;autoscaling:DescribeLaunchConfigurations&quot;,
-        &quot;autoscaling:DescribeTags&quot;,
-        &quot;autoscaling:SetDesiredCapacity&quot;,
-        &quot;autoscaling:TerminateInstanceInAutoScalingGroup&quot;,
-        &quot;ec2:DescribeLaunchTemplateVersions&quot;
-      ],
-      &quot;Resource&quot;: &quot;*&quot;
-    }
-  ]
-}
+<p>On Mac.</p>
+<pre><code>curl -LO https://github.com/argoproj/argo-rollouts/releases/latest/download/kubectl-argo-rollouts-darwin-amd64
+
+chmod +x ./kubectl-argo-rollouts-darwin-amd64
+
+sudo mv ./kubectl-argo-rollouts-darwin-amd64 /usr/local/bin/kubectl-argo-rollouts
 
 </code></pre>
-<p><img alt="" src="../images/eks/03/12.png" /></p>
-<ul>
-<li>Proceed to Next, add the policy name eg. <code>ClusterAutoscaler</code>  along with a description. </li>
-</ul>
-<p><img alt="" src="../images/eks/03/13.png" />  </p>
-<ul>
-<li>Proceed to create the policy. </li>
-<li>From IAM -&gt; Roles , search for node which select the role associated with the nodegroup </li>
-</ul>
-<p><img alt="" src="../images/eks/03/14.png" /></p>
-<ul>
-<li>
-<p>From Permissions -&gt; Add Permissions -&gt; Attach policies 
-<img alt="" src="../images/eks/03/15.png" /></p>
-</li>
-<li>
-<p>Select the policies created above e.g. <code>ClusterAutoscaler</code> and Add permissions. 
-<img alt="" src="../images/eks/03/16.png" /></p>
-</li>
-</ul>
-<p>Now  Install Cluster Autoscaler as </p>
-<pre><code>kubectl apply -f https://raw.githubusercontent.com/kubernetes/autoscaler/master/cluster-autoscaler/cloudprovider/aws/examples/cluster-autoscaler-autodiscover.yaml
+<p>And validate as,</p>
+<pre><code>kubectl argo rollouts version
 </code></pre>
-<pre><code>kubectl patch deployment cluster-autoscaler -n kube-system \
---type='json' -p='[{&quot;op&quot;: &quot;replace&quot;, &quot;path&quot;: &quot;/spec/template/spec/containers/0/command/6&quot;, &quot;value&quot;: &quot;--node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/eks-cluster-01&quot;}]'
-
+<h2 id="create-a-preview-service">Create a Preview Service</h2>
+<p>Create a copy of vote svc to be used during blue-green analysis</p>
+<pre><code>cp vote-svc.yaml vote-bg-svc.yaml
 </code></pre>
-<p>where, replace <code>eks-cluster-01</code> with  actual cluster name.  Also ensure that this pod can not be evicted with </p>
-<pre><code>kubectl -n kube-system annotate deployment.apps/cluster-autoscaler \
-cluster-autoscaler.kubernetes.io/safe-to-evict=&quot;false&quot;
+<p>Update <code>vote-bg.svc</code> with nodePort and name as,</p>
+<pre><code>---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vote-bg
+  labels:
+    role: vote
+spec:
+  selector:
+    role: vote
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30200
+  type: NodePort
 </code></pre>
-<p>validate with  </p>
-<pre><code>kubectl get pods -n kube-system -l &quot;app=cluster-autoscaler&quot;
-
-kubectl describe pods -n kube-system -l &quot;app=cluster-autoscaler&quot;
+<p>Create <code>vote-bg</code> service as,</p>
+<pre><code>kubectl apply -f vote-bg-svc.yaml
 </code></pre>
-<p>Now start watching the cluster autoscaler logs in one dedicated window so that you can see the autoscaling in action </p>
-<pre><code>kubectl logs -f  -n kube-system -l &quot;app=cluster-autoscaler&quot;
+<p>Validate</p>
+<pre><code>kubectl get svc
+kubectl describe svc vote
+kubectl describe svc vote-bg
 </code></pre>
-<h2 id="cluster-auotscaler-in-action">Cluster Auotscaler in Action</h2>
-<p>Ensure that the deployment spec for <code>vote</code> app has resources defined </p>
-<p>e.g. <code>vote-deploy.yaml</code></p>
-<pre><code>    spec:
-      containers:
-      - image: 665496447754.dkr.ecr.ap-southeast-1.amazonaws.com/demo:v1
-        name: vote
-        resources:
-          requests:
-            cpu: &quot;50m&quot;
-            memory: &quot;64Mi&quot;
-          limits:
-            cpu: &quot;250m&quot;
-            memory: &quot;128Mi&quot;
+<p>Both services should be pointing to the same set of pods.</p>
+<h2 id="migrate-deployment-to-argo-rollout">Migrate Deployment to Argo Rollout</h2>
+<p>From <code>k8s-code/projects/instavote/dev</code>  , create a copy of existing deployment spec as,</p>
+<pre><code>cp vote-deploy.yaml vote-ro.yaml
 </code></pre>
-<p>without resources being defined properly, the scheduler and the autoscaler will not work optimally. </p>
-<p>Now, start scaling up in steps </p>
-<pre><code> kubectl scale deploy vote --replicas=7
+<p>Update the following properties
+* apiVersion: argoproj.io/v1alpha1
+* kind: Rollout
+* replicas: 4</p>
+<p>Remove <code>spec.template.metadata.name</code></p>
+<p>Replace the strategy with blue green as,</p>
+<pre><code>  strategy:
+    blueGreen:
+      autoPromotionEnabled: true
+      autoPromotionSeconds: 30
+      activeService: vote
+      previewService: vote-bg
 </code></pre>
-<p><img alt="" src="../images/eks/03/17.png" /></p>
-<pre><code>kubectl scale deploy vote --replicas=15
+<p>Delete the deployment</p>
+<pre><code>kubectl delete deploy vote
 </code></pre>
-<p><img alt="" src="../images/eks/03/18.png" /></p>
-<p>If you are watching the cluster autoscaler logs, you may see lines such as this: </p>
-<p>[sample autoscaler log]</p>
-<pre><code>I0523 11:37:09.853039       1 klogx.go:87] Pod instavote/vote-6b7c9f85c5-2fnws is unschedulable
-I0523 11:37:09.853045       1 klogx.go:87] Pod instavote/vote-6b7c9f85c5-2b4cs is unschedulable
-I0523 11:37:09.853097       1 scale_up.go:194] Upcoming 0 nodes
-I0523 11:37:09.853458       1 waste.go:55] Expanding Node Group eks-ng-1-workers-eec7d297-f093-b47e-bb83-2cd15d8505fd would waste 95.00% CPU, 93.35% Memory, 94.17% Blended
-I0523 11:37:09.853476       1 scale_up.go:282] Best option to resize: eks-ng-1-workers-eec7d297-f093-b47e-bb83-2cd15d8505fd
-I0523 11:37:09.853487       1 scale_up.go:286] Estimated 1 nodes needed in eks-ng-1-workers-eec7d297-f093-b47e-bb83-2cd15d8505fd
-I0523 11:37:09.853511       1 scale_up.go:405] Final scale-up plan: [{eks-ng-1-workers-eec7d297-f093-b47e-bb83-2cd15d8505fd 2-&gt;3 (max: 5)}]
-I0523 11:37:09.853531       1 scale_up.go:608] Scale-up: setting group eks-ng-1-workers-eec7d297-f093-b47e-bb83-2cd15d8505fd size to 3
-I0523 11:37:09.853560       1 auto_scaling_groups.go:248] Setting asg eks-ng-1-workers-eec7d297-f093-b47e-bb83-2cd15d8505fd size to 3
-I0523 11:37:09.854328       1 event_sink_logging_wrapper.go:48] Event(v1.ObjectReference{Kind:&quot;ConfigMap&quot;, Namespace:&quot;kube-system&quot;, Name:&quot;cluster-autoscaler-status&quot;, UID:&quot;a52ab2f7-d7c4-4c82-bbed-058e1069e2b8&quot;, APIVersion:&quot;v1&quot;, ResourceVersion:&quot;273910&quot;, FieldPath:&quot;&quot;}): type: 'Normal' reason: 'ScaledUpGroup' Scale-up: setting group eks-ng-1-workers-eec7d297-f093-b47e-bb83-2cd15d8505fd size to 3 instead of 2 (max: 5)
-
+<p>And replace it with the rollout as,</p>
+<pre><code>kubectl apply -f vote-ro.yaml
 </code></pre>
-<p>this indicated the scaling activity. </p>
-<p>From EC2 =&gt; Auto Scaler Groups =&gt; Group Name =&gt; Activity, you could observe the node autoscaling as : 
-<img alt="" src="../images/eks/03/19.png" /></p>
-<p>After a few minutes, scale down to 2 </p>
-<pre><code>kubectl scale deploy vote --replicas=2
+<p>Validate</p>
+<pre><code>kubectl get ro,all
+kubectl describe ro vote
 </code></pre>
-<p>In a few minutes time, you should start seeing cluster autoscaler trying to optimize and scale down the nodes  </p>
-<pre><code>
-I0523 11:45:32.175261       1 eligibility.go:102] Scale-down calculation: ignoring 1 nodes unremovable in the last 5m0s
-I0523 11:45:32.175281       1 cluster.go:153] ip-192-168-127-100.ap-southeast-1.compute.internal for removal
-I0523 11:45:32.175374       1 hinting_simulator.go:77] Pod instavote/vote-6b7c9f85c5-2fnws can be moved to ip-192-168-208-12.ap-southeast-1.compute.internal
-I0523 11:45:32.175390       1 cluster.go:176] node ip-192-168-127-100.ap-southeast-1.compute.internal may be removed
-I0523 11:45:32.175399       1 nodes.go:84] ip-192-168-127-100.ap-southeast-1.compute.internal is unneeded since 2024-05-23 11:43:21.695771883 +0000 UTC m=+769.391776888 duration 2m10.478714846s
-I0523 11:45:32.175434       1 static_autoscaler.go:589] Scale down status: lastScaleUpTime=2024-05-23 11:37:09.852038741 +0000 UTC m=+397.548043742 lastScaleDownDeleteTime=2024-05-23 10:30:38.231213092 +0000 UTC m=-3594.072781890 lastScaleDownFailTime=2024-05-23 10:30:38.231213092 +0000 UTC m=-3594.072781890 scaleDownForbidden=false scaleDownInCooldown=true
-I0523 11:47:12.590771       1 delete.go:103] Successfully added DeletionCandidateTaint on node ip-192-168-127-100.ap-southeast-1.compute.internal
-
+<h2 id="deploy-a-bluegreen-release">Deploy a Blue/Green Release</h2>
+<p>Open a new terminal and start watching with</p>
+<pre><code>watch kubectl get ro,all --show-labels
 </code></pre>
-<p><img alt="" src="../images/eks/03/20.png" /></p>
-<p>You could also corraborate from the EC2 Autoscaling Group to see the cluster nodes are scaling down. </p>
+<p>Also open two browser windows to watch for <code>vote</code> and <code>vote-bg</code> services respectively</p>
+<p>Trigger a rollout by updating the image and labels/annotations as needed in <code>vote-ro.yaml</code> and apply as,</p>
+<pre><code>kubectl apply -f vote-ro.yaml
+</code></pre>
+<p>In the same terminal you could watch the status of the rollout with,</p>
+<pre><code>kubectl argo rollouts status vote
+</code></pre>
+<p>You would notice that,
+* A new replica set is created with new version
+* Service <code>vote-bg</code> (Preview service)  starts pointing to the new version, while the active service <code>vote</code> still pointing to previous version
+* After all pods with new version are ready, it will pause for about 30 seconds as configured in the rollout configuration.
+* Once the wait interval is over, active service starts pointing to the new version pods created with the newly launched replica set. This is where there maybe just a blip of a nominal downtime.
+* Eventually the replicase with older version will scale down to zero, completing the rollout.</p>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../eks_irsa/" class="btn btn-neutral float-left" title="Lab K506 - IRSA"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../eks_vpa/" class="btn btn-neutral float-right" title="Lab K509 - Verticle Pod Autoscaler">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../argo_multi_env_deploy/" class="btn btn-neutral float-left" title="Lab K602 - Multi Env Deployment with ArgoCD"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../xer-001-pods/" class="btn btn-neutral float-right" title="XER001 - Pods">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -421,10 +387,10 @@ I0523 11:47:12.590771       1 delete.go:103] Successfully added DeletionCandidat
         </span>
     
     
-      <span><a href="../eks_irsa/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../argo_multi_env_deploy/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../eks_vpa/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../xer-001-pods/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
