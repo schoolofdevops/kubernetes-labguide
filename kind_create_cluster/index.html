@@ -74,7 +74,7 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#setup-kubernetes-cluster-with-kind">Setup Kubernetes Cluster with KIND</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#restartign-and-resetting-the-cluster">Restartign and Resetting the Cluster</a>
+    <li class="toctree-l2"><a class="reference internal" href="#restarting-and-resetting-the-cluster">Restarting and Resetting the Cluster</a>
     </li>
     </ul>
                   </li>
@@ -260,7 +260,7 @@ kubectl version --client=true -o yaml
 <p>Download  Cluster Configurations and Create  a 3 Node Kubernetes Cluster as</p>
 <pre><code>git clone https://github.com/initcron/k8s-code.git
 cd k8s-code/helper/kind/
-kind create cluster --name k8slab --config kind-three-node-cluster.yaml
+kind create cluster --config kind-three-node-cluster.yaml
 </code></pre>
 <p>Validate</p>
 <pre><code>kind get clusters
@@ -297,7 +297,7 @@ service/kubernetes      ClusterIP   10.96.0.1      &lt;none&gt;        443/TCP  
 <p>You shall see a visualiser similar to the following loaded on the browser.
 <img alt="" src="Screenshot%202022-02-25%20at%208.14.45%20PM.png" /></p>
 <p>If you see this page , Congratulations !! You have the cluster setup.</p>
-<h2 id="restartign-and-resetting-the-cluster">Restartign and Resetting the Cluster</h2>
+<h2 id="restarting-and-resetting-the-cluster">Restarting and Resetting the Cluster</h2>
 <p><code>Note: This is a Optional Topic. Skil this during your initial setup lab.</code></p>
 <p>To stop and start the cluster, you could stop and containers created with docker and then start them back</p>
 <pre><code>docker ps
