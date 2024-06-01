@@ -318,29 +318,31 @@ kubectl get ns
 <p>Browse to ArgoCD web console and click on <strong>Create Application</strong></p>
 <p><img alt="" src="../images/argo/05.png" /></p>
 <p>From General ,<br />
-<em> Application Name : <code>vote-staging</code><br />
-</em> Project : default<br />
-<em> Sync Policy : <code>Automatic</code><br />
-</em> Prune Resources Checked<br />
-<img alt="" src="../images/argo/06.png" /></p>
+  * Application Name : <code>vote-staging</code><br />
+  * Project : default<br />
+  * Sync Policy : <code>Automatic</code><br />
+  * Prune Resources Checked</p>
+<p><img alt="" src="../images/argo/06.png" /></p>
 <p>From Source,<br />
-<em> Repository URL : <code>Your Repo URL (https)</code><br />
-</em> Revision : main<br />
-* Path :  <code>staging</code><br />
-<img alt="" src="../images/argo/07.png" /></p>
+  * Repository URL : <code>Your Repo URL (https)</code><br />
+  * Revision : main <br />
+  * Path :  <code>staging</code>  </p>
+<p><img alt="" src="../images/argo/07.png" /></p>
 <p>From Destination,<br />
-<em> Cluster URL :  https://kubernetes.default.svc   (default)<br />
-</em> Namespace : <code>default</code><br />
-<img alt="" src="../images/argo/08.png" />  </p>
-<p>Click on <strong>CREATE</strong> button on the top
-<img alt="" src="../images/argo/09.png" /></p>
+  * Cluster URL :  https://kubernetes.default.svc   (default)<br />
+  * Namespace : <code>default</code>  </p>
+<p><img alt="" src="../images/argo/08.png" />  </p>
+<p>Click on <strong>CREATE</strong> button on the top</p>
+<p><img alt="" src="../images/argo/09.png" /></p>
 <h3 id="set-up-deploy-to-prod-configuration">Set up Deploy to Prod Configuration</h3>
 <p>Create another application, repeat the same configurations with the following changes,</p>
-<p>Cluster URL :  https://kubernetes.default.svc   (default)
-* Application Name  : <code>vote-prod</code>
-* Revision  : <code>release</code>  (will deploy from release branch)
-* Path  : <code>prod</code>
-* Namespace  : <code>prod</code></p>
+<ul>
+<li>Cluster URL :  https://kubernetes.default.svc   (default)  </li>
+<li>Application Name  : <code>vote-prod</code>  </li>
+<li>Revision  : <code>release</code>  (will deploy from release branch)  </li>
+<li>Path  : <code>prod</code>  </li>
+<li>Namespace  : <code>prod</code>  </li>
+</ul>
 <p><img alt="" src="../images/argo/10.png" /></p>
 <p>Once created, you should see two applications configured on ArgoCD tracking two environments.</p>
 <h2 id="deployments-in-action">Deployments in Action</h2>
