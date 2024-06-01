@@ -317,11 +317,13 @@ kubectl get ns
 </code></pre>
 <p>Browse to ArgoCD web console and click on <strong>Create Application</strong></p>
 <p><img alt="" src="../images/argo/05.png" /></p>
-<p>From General ,<br />
-  * Application Name : <code>vote-staging</code><br />
-  * Project : default<br />
-  * Sync Policy : <code>Automatic</code><br />
-  * Prune Resources Checked</p>
+<p>From General ,</p>
+<ul>
+<li>Application Name : <code>vote-staging</code>  </li>
+<li>Project : default  </li>
+<li>Sync Policy : <code>Automatic</code>  </li>
+<li>Prune Resources Checked</li>
+</ul>
 <p><img alt="" src="../images/argo/06.png" /></p>
 <p>From Source,  </p>
 <ul>
@@ -362,9 +364,11 @@ kubectl get ns
 <img alt="" src="../images/argo/11.png" /></p>
 <p>Prod
 <img alt="" src="../images/argo/12.png" /></p>
-<p>Validate by accessing the vote apps on
-* Staging : http://NODEIP:30300
-* Prod  : http://NODEIP:30400</p>
+<p>Validate by accessing the vote apps on</p>
+<ul>
+<li>Staging : http://NODEIP:30300  </li>
+<li>Prod  : http://NODEIP:30400  </li>
+</ul>
 <p>e.g.</p>
 <p><img alt="" src="../images/argo/13.png" /></p>
 <h2 id="exercises">Exercises</h2>
