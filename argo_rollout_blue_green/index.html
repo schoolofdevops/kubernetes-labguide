@@ -257,13 +257,10 @@ Status : Work In Progress  </p>
 <h2 id="launch-vote-app-with-deployment">Launch Vote App with Deployment</h2>
 <p>Lets begin by first deploying the <code>vote</code> service with the <a href="https://github.com/schoolofdevops/argo-labs">deployment code</a> available.</p>
 <ul>
-<li>Create a fork of <a href="https://github.com/sfd-cicd/vote-deploy">Kubernetes Deployment Code for Vote App</a></li>
+<li>Create a fork of <a href="https://github.com/schoolofdevops/argo-labs">Kubernetes Deployment Code for Vote App</a></li>
 </ul>
 <p>While creating the fork, ensure that you uncheck the <code>Copy the main branch only</code> option as shown in screenshot below.</p>
-<p><img alt="" src="../images/argo/03.png" /></p>
-<p>Ensure you have <code>main</code> and release branches available.</p>
-<p><img alt="" src="../images/argo/04.png" /></p>
-<p>If you do not have the release branch, create it from main.</p>
+<p><img alt="" src="../images/argo/14.png" /></p>
 <p>Review the code created with kustomization overlay configured for <code>staging</code> and <code>prod</code> environments in additional to the base manifests.</p>
 <p>Create namespaces for staging environments as,</p>
 <pre><code>kubectl create ns staging
@@ -282,11 +279,11 @@ kubectl config set-context --current --namespace=staging
 *         kind-kind   kind-kind   kind-kind   staging
 </code></pre>
 <p>Now clone the forked repo and switch to it</p>
-<pre><code>git clone https://github.com/xxxx/vote-deploy.git
+<pre><code>git clone https://github.com/xxxx/argo-labs.git
 
 </code></pre>
 <p>replace <code>xxxx</code> with your user name</p>
-<pre><code>cd vote-deploy
+<pre><code>cd argo-labs
 kubectl apply -k staging
 </code></pre>
 <p>where, <code>-k</code> option applies the kustomization spec.</p>
@@ -323,33 +320,39 @@ sudo mv ./kubectl-argo-rollouts-darwin-amd64 /usr/local/bin/kubectl-argo-rollout
 <pre><code>kubectl argo rollouts version
 </code></pre>
 <h2 id="create-a-preview-service">Create a Preview Service</h2>
-<p>Create a copy of vote svc to be used during blue-green analysis</p>
-<pre><code>cp vote-svc.yaml vote-bg-svc.yaml
-</code></pre>
-<p>Update <code>vote-bg.svc</code> with nodePort and name as,</p>
+<p>Create a preview service  during blue-green analysis</p>
+<p>Update <code>argo-labs/base/preview-service.yaml</code> with nodePort and name as,</p>
 <pre><code>---
 apiVersion: v1
 kind: Service
 metadata:
-  name: vote-bg
+  name: vote-preview
   labels:
     role: vote
 spec:
   selector:
-    role: vote
+    app: vote
   ports:
     - port: 80
       targetPort: 80
-      nodePort: 30200
+      nodePort: 30100
   type: NodePort
 </code></pre>
-<p>Create <code>vote-bg</code> service as,</p>
-<pre><code>kubectl apply -f vote-bg-svc.yaml
+<p>Update <code>base/kustomization.yaml</code> with the following</p>
+<pre><code>apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- deployment.yaml
+- service.yaml
+- preview-service.yaml
+</code></pre>
+<p>Create preview  service with ,</p>
+<pre><code>kubectl apply -k staging
 </code></pre>
 <p>Validate</p>
 <pre><code>kubectl get svc
 kubectl describe svc vote
-kubectl describe svc vote-bg
+kubectl describe svc vote-preview
 </code></pre>
 <p>Both services should be pointing to the same set of pods.</p>
 <h2 id="migrate-deployment-to-argo-rollout">Migrate Deployment to Argo Rollout</h2>
