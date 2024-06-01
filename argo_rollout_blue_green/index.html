@@ -314,10 +314,12 @@ kubectl describe svc vote-bg
 <p>From <code>k8s-code/projects/instavote/dev</code>  , create a copy of existing deployment spec as,</p>
 <pre><code>cp vote-deploy.yaml vote-ro.yaml
 </code></pre>
-<p>Update the following properties
-* apiVersion: argoproj.io/v1alpha1
-* kind: Rollout
-* replicas: 4</p>
+<p>Update the following properties</p>
+<ul>
+<li>apiVersion: argoproj.io/v1alpha1  </li>
+<li>kind: Rollout  </li>
+<li>replicas: 4  </li>
+</ul>
 <p>Remove <code>spec.template.metadata.name</code></p>
 <p>Replace the strategy with blue green as,</p>
 <pre><code>  strategy:
