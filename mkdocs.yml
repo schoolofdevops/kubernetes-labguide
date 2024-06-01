@@ -59,6 +59,10 @@ nav:
      - Lab K509 - Verticle Pod Autoscaler: "eks_vpa.md"
      - Lab K510 - EKS Monitoring: "eks_monitoring.md"
      - Lab K511 - EKS Costs: "eks_costs.md"
+     - Lab K599 - EKS Cleanup: "eks_cleanup.md"
+  - Argo:
+     - Lab K601 - Setup Kubernetes with KIND: "kind_create_cluster.md"
+     - Lab K602 - Multi Env Deployment with ArgoCD: "argo_multi_env_deploy.md"    
   - Exercises:
      - XER001 - Pods: "xer-001-pods.md"
      - XER002 - ReplicaSets: "xer-002-rs.md"

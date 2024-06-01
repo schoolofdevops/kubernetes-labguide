@@ -42,7 +42,7 @@ Download  Cluster Configurations and Create  a 3 Node Kubernetes Cluster as
 ```
 git clone https://github.com/initcron/k8s-code.git
 cd k8s-code/helper/kind/
-kind create cluster --name k8slab --config kind-three-node-cluster.yaml
+kind create cluster --config kind-three-node-cluster.yaml
 ```
 
 Validate
@@ -100,7 +100,7 @@ You shall see a visualiser similar to the following loaded on the browser.
 
 If you see this page , Congratulations !! You have the cluster setup.
 
-## Restartign and Resetting the Cluster
+## Restarting and Resetting the Cluster
 
 `Note: This is a Optional Topic. Skil this during your initial setup lab.`
 
