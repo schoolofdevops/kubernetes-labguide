@@ -5,14 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/argo_rollout_blue_green/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Lab K603 - Blue/Green Release with Argo Rollouts - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <title>Lab K602 - Blue/Green Release with Argo Rollouts - Kubernetes Tutorial with CKA/CKAD Prep</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Lab K603 - Blue/Green Release with Argo Rollouts";
+        var mkdocs_page_name = "Lab K602 - Blue/Green Release with Argo Rollouts";
         var mkdocs_page_input_path = "argo_rollout_blue_green.md";
         var mkdocs_page_url = "/argo_rollout_blue_green/";
       </script>
@@ -175,10 +175,10 @@
               <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../kind_create_cluster/">Lab K601 - Setup Kubernetes with KIND</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../argo_multi_env_deploy/">Lab K602 - Multi Env Deployment with ArgoCD</a>
-                  </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K603 - Blue/Green Release with Argo Rollouts</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K602 - Blue/Green Release with Argo Rollouts</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#launch-vote-app-with-deployment">Launch Vote App with Deployment</a>
+    </li>
     <li class="toctree-l2"><a class="reference internal" href="#install-argo-rollouts">Install Argo Rollouts</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#create-a-preview-service">Create a Preview Service</a>
@@ -188,6 +188,8 @@
     <li class="toctree-l2"><a class="reference internal" href="#deploy-a-bluegreen-release">Deploy a Blue/Green Release</a>
     </li>
     </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_multi_env_deploy/">Lab K603 - Multi Env Deployment with ArgoCD</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Exercises</span></p>
@@ -236,7 +238,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a> &raquo;</li>
           <li>Argo &raquo;</li>
-      <li class="breadcrumb-item active">Lab K603 - Blue/Green Release with Argo Rollouts</li>
+      <li class="breadcrumb-item active">Lab K602 - Blue/Green Release with Argo Rollouts</li>
     <li class="wy-breadcrumbs-aside">
           <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/argo_rollout_blue_green.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
@@ -252,6 +254,46 @@ Publisher: School of Devops<br />
 Version : v2023.09.07.01<br />
 Status : Work In Progress  </p>
 <hr />
+<h2 id="launch-vote-app-with-deployment">Launch Vote App with Deployment</h2>
+<p>Lets begin by first deploying the <code>vote</code> service with the <a href="https://github.com/schoolofdevops/argo-labs">deployment code</a> available.</p>
+<ul>
+<li>Create a fork of <a href="https://github.com/sfd-cicd/vote-deploy">Kubernetes Deployment Code for Vote App</a></li>
+</ul>
+<p>While creating the fork, ensure that you uncheck the <code>Copy the main branch only</code> option as shown in screenshot below.</p>
+<p><img alt="" src="../images/argo/03.png" /></p>
+<p>Ensure you have <code>main</code> and release branches available.</p>
+<p><img alt="" src="../images/argo/04.png" /></p>
+<p>If you do not have the release branch, create it from main.</p>
+<p>Review the code created with kustomization overlay configured for <code>staging</code> and <code>prod</code> environments in additional to the base manifests.</p>
+<p>Create namespaces for staging environments as,</p>
+<pre><code>kubectl create ns staging
+
+kubectl get ns
+
+kubectl config set-context --current --namespace=staging
+
+</code></pre>
+<p>validate</p>
+<pre><code>kubectl config get-contexts
+
+</code></pre>
+<p>[sample output]</p>
+<pre><code>CURRENT   NAME        CLUSTER     AUTHINFO    NAMESPACE
+*         kind-kind   kind-kind   kind-kind   staging
+</code></pre>
+<p>Now clone the forked repo and switch to it</p>
+<pre><code>git clone https://github.com/xxxx/vote-deploy.git
+
+</code></pre>
+<p>replace <code>xxxx</code> with your user name</p>
+<pre><code>cd vote-deploy
+kubectl apply -k staging
+</code></pre>
+<p>where, <code>-k</code> option applies the kustomization spec.</p>
+<p>validate</p>
+<pre><code>kubect get all
+</code></pre>
+<p>You should see the deployment and service for vote app. And you should be able to access the staging deployment with  nodeport <code>30300</code>.</p>
 <h2 id="install-argo-rollouts">Install Argo Rollouts</h2>
 <p>Install Argo Rollouts Controller and CRDs with ,</p>
 <pre><code>kubectl create namespace argo-rollouts
@@ -362,8 +404,8 @@ kubectl describe ro vote
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../argo_multi_env_deploy/" class="btn btn-neutral float-left" title="Lab K602 - Multi Env Deployment with ArgoCD"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../xer-001-pods/" class="btn btn-neutral float-right" title="XER001 - Pods">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../kind_create_cluster/" class="btn btn-neutral float-left" title="Lab K601 - Setup Kubernetes with KIND"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../argo_multi_env_deploy/" class="btn btn-neutral float-right" title="Lab K603 - Multi Env Deployment with ArgoCD">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -391,10 +433,10 @@ kubectl describe ro vote
         </span>
     
     
-      <span><a href="../argo_multi_env_deploy/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../kind_create_cluster/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../xer-001-pods/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../argo_multi_env_deploy/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
