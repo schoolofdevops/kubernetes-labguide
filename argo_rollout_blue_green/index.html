@@ -348,12 +348,14 @@ kubectl describe ro vote
 <p>In the same terminal you could watch the status of the rollout with,</p>
 <pre><code>kubectl argo rollouts status vote
 </code></pre>
-<p>You would notice that,
-* A new replica set is created with new version
-* Service <code>vote-bg</code> (Preview service)  starts pointing to the new version, while the active service <code>vote</code> still pointing to previous version
-* After all pods with new version are ready, it will pause for about 30 seconds as configured in the rollout configuration.
-* Once the wait interval is over, active service starts pointing to the new version pods created with the newly launched replica set. This is where there maybe just a blip of a nominal downtime.
-* Eventually the replicase with older version will scale down to zero, completing the rollout.</p>
+<p>You would notice that,</p>
+<ul>
+<li>A new replica set is created with new version  </li>
+<li>Service <code>vote-bg</code> (Preview service)  starts pointing to the new version, while the active service <code>vote</code> still pointing to previous version  </li>
+<li>After all pods with new version are ready, it will pause for about 30 seconds as configured in the rollout configuration.  </li>
+<li>Once the wait interval is over, active service starts pointing to the new version pods created with the newly launched replica set. This is where there maybe just a blip of a nominal downtime.  </li>
+<li>Eventually the replicase with older version will scale down to zero, completing the rollout.  </li>
+</ul>
               
             </div>
           </div><footer>
