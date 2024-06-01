@@ -302,8 +302,8 @@ Reference: <a href="https://github.com/argoproj/argo-cd/blob/master/docs/faq.md#
 <ul>
 <li>Create a fork of <a href="https://github.com/sfd-cicd/vote-deploy">sfd-cicd/vote-deploy: Kubernetes Deployment Code for Vote App</a></li>
 </ul>
-<p>While creating the fork, ensure that you uncheck the <code>Copy the main branch only</code> option as shown in screenshot below.
-<img alt="" src="../images/argo/03.png" /></p>
+<p>While creating the fork, ensure that you uncheck the <code>Copy the main branch only</code> option as shown in screenshot below.</p>
+<p><img alt="" src="../images/argo/03.png" /></p>
 <p>Ensure you have <code>main</code> and release branches available.</p>
 <p><img alt="" src="../images/argo/04.png" /></p>
 <p>If you do not have the release branch, create it from main.</p>
@@ -323,14 +323,18 @@ kubectl get ns
   * Sync Policy : <code>Automatic</code><br />
   * Prune Resources Checked</p>
 <p><img alt="" src="../images/argo/06.png" /></p>
-<p>From Source,<br />
-  * Repository URL : <code>Your Repo URL (https)</code><br />
-  * Revision : main <br />
-  * Path :  <code>staging</code>  </p>
+<p>From Source,  </p>
+<ul>
+<li>Repository URL : <code>Your Repo URL (https)</code>  </li>
+<li>Revision : main   </li>
+<li>Path :  <code>staging</code>  </li>
+</ul>
 <p><img alt="" src="../images/argo/07.png" /></p>
-<p>From Destination,<br />
-  * Cluster URL :  https://kubernetes.default.svc   (default)<br />
-  * Namespace : <code>default</code>  </p>
+<p>From Destination,  </p>
+<ul>
+<li>Cluster URL :  https://kubernetes.default.svc   (default)  </li>
+<li>Namespace : <code>default</code>  </li>
+</ul>
 <p><img alt="" src="../images/argo/08.png" />  </p>
 <p>Click on <strong>CREATE</strong> button on the top</p>
 <p><img alt="" src="../images/argo/09.png" /></p>
