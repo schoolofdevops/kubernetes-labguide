@@ -321,7 +321,7 @@ sudo mv ./kubectl-argo-rollouts-darwin-amd64 /usr/local/bin/kubectl-argo-rollout
 </code></pre>
 <h2 id="create-a-preview-service">Create a Preview Service</h2>
 <p>Create a preview service  during blue-green analysis</p>
-<p>Update <code>argo-labs/base/preview-service.yaml</code> with nodePort and name as,</p>
+<p>File: <code>argo-labs/base/preview-service.yaml</code></p>
 <pre><code>---
 apiVersion: v1
 kind: Service
@@ -346,39 +346,54 @@ resources:
 - service.yaml
 - preview-service.yaml
 </code></pre>
-<p>Create preview  service with ,</p>
+<p>Create rollout along with preview service with</p>
 <pre><code>kubectl apply -k staging
 </code></pre>
 <p>Validate</p>
-<pre><code>kubectl get svc
+<pre><code>kubectl get all,ro
 kubectl describe svc vote
 kubectl describe svc vote-preview
 </code></pre>
 <p>Both services should be pointing to the same set of pods.</p>
 <h2 id="migrate-deployment-to-argo-rollout">Migrate Deployment to Argo Rollout</h2>
-<p>From <code>k8s-code/projects/instavote/dev</code>  , create a copy of existing deployment spec as,</p>
-<pre><code>cp vote-deploy.yaml vote-ro.yaml
+<p>From <code>argo-labs/base</code>  , create a copy of existing deployment spec as,</p>
+<pre><code>git mv deployment.yaml rollout.yaml
 </code></pre>
+<p>also update <code>kustomization.yaml</code> to replace <code>deployment.yaml</code> with <code>rollout.yaml</code></p>
+<pre><code>apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- rollout.yaml
+- service.yaml
+- preview-service.yaml
+</code></pre>
+<p>Now edit <code>base/rollout.yaml</code> to add Blue/Green Release spec as per the <a href="https://argoproj.github.io/argo-rollouts/features/bluegreen/">documentation here</a>.</p>
 <p>Update the following properties</p>
 <ul>
-<li>apiVersion: argoproj.io/v1alpha1  </li>
-<li>kind: Rollout  </li>
-<li>replicas: 4  </li>
+<li>apiVersion: <code>argoproj.io/v1alpha1</code></li>
+<li>kind: <code>Rollout</code>  </li>
+<li>replicas: <code>4</code>  </li>
 </ul>
-<p>Remove <code>spec.template.metadata.name</code></p>
+<p>Remove <code>spec.template.metadata.name</code> if present.</p>
 <p>Replace the strategy with blue green as,</p>
 <pre><code>  strategy:
     blueGreen:
       autoPromotionEnabled: true
       autoPromotionSeconds: 30
       activeService: vote
-      previewService: vote-bg
+      previewService: vote-preview
+</code></pre>
+<p>Also update <code>argo-labs/staging/kustomization.yaml</code> to remove the following</p>
+<p>file: <code>staging/kustomization.yaml</code></p>
+<pre><code>replicas:
+- count: 2
+  name: vote
 </code></pre>
 <p>Delete the deployment</p>
 <pre><code>kubectl delete deploy vote
 </code></pre>
-<p>And replace it with the rollout as,</p>
-<pre><code>kubectl apply -f vote-ro.yaml
+<p>And then create the rollout from <code>argo-labs</code> path as,</p>
+<pre><code>kubectl apply -k staging
 </code></pre>
 <p>Validate</p>
 <pre><code>kubectl get ro,all
