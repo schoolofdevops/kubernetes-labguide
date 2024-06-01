@@ -255,9 +255,9 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="lab-10a-setting-up-automated-deployments-with-argocd">Lab 10A -  Setting up Automated Deployments with ArgoCD</h1>
-<p>Author: Gourav Shah
-Publisher: School of Devops
-Version : v2023.10.06.01</p>
+<p>Author: Gourav Shah<br />
+Publisher: School of Devops<br />
+Version : v2023.10.06.01  </p>
 <hr />
 <h2 id="setup-argocd">Setup ArgoCD</h2>
 <p>Install ArgoCD</p>
@@ -289,7 +289,7 @@ Reference: <a href="https://github.com/argoproj/argo-cd/blob/master/docs/faq.md#
 <pre><code>kubectl get nodes -o wide
 </code></pre>
 <p>Note IP address for one of the nodes and browse to https://NODEIP:32100</p>
-<p>==replace NODEIP with the actual==</p>
+<p>where, replace <code>NODEIP</code> with the actual.</p>
 <p>You should be presented with the  login page for ArgoCD as follows</p>
 <p><img alt="" src="../images/argo/01.png" /></p>
 <ul>
@@ -317,21 +317,21 @@ kubectl get ns
 </code></pre>
 <p>Browse to ArgoCD web console and click on <strong>Create Application</strong></p>
 <p><img alt="" src="../images/argo/05.png" /></p>
-<p>From General ,
-* Application Name : <code>vote-staging</code>
-* Project : default
-* Sync Policy : <code>Automatic</code>
-* Prune Resources Checked
+<p>From General ,<br />
+<em> Application Name : <code>vote-staging</code><br />
+</em> Project : default<br />
+<em> Sync Policy : <code>Automatic</code><br />
+</em> Prune Resources Checked<br />
 <img alt="" src="../images/argo/06.png" /></p>
-<p>From Source,
-* Repository URL : <code>Your Repo URL (https)</code>
-* Revision : main
-* Path :  <code>staging</code>
+<p>From Source,<br />
+<em> Repository URL : <code>Your Repo URL (https)</code><br />
+</em> Revision : main<br />
+* Path :  <code>staging</code><br />
 <img alt="" src="../images/argo/07.png" /></p>
-<p>From Destination,
-* Cluster URL :  https://kubernetes.default.svc   (default)
-* Namespace : <code>default</code>
-<img alt="" src="../images/argo/08.png" /></p>
+<p>From Destination,<br />
+<em> Cluster URL :  https://kubernetes.default.svc   (default)<br />
+</em> Namespace : <code>default</code><br />
+<img alt="" src="../images/argo/08.png" />  </p>
 <p>Click on <strong>CREATE</strong> button on the top
 <img alt="" src="../images/argo/09.png" /></p>
 <h3 id="set-up-deploy-to-prod-configuration">Set up Deploy to Prod Configuration</h3>
