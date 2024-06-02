@@ -179,6 +179,10 @@
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K603 - Canary Release with Argo Rollouts</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#prepare-prod-environment">Prepare Prod Environment</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#create-canary-release">Create Canary Release</a>
+    </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../argo_multi_env_deploy/">Lab K604 - Continuous Deployment with ArgoCD</a>
@@ -241,6 +245,7 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="implementing-canary-release-for-prod">Implementing Canary Release for Prod</h1>
+<h2 id="prepare-prod-environment">Prepare Prod Environment</h2>
 <p>Create and switch to prod namespace</p>
 <pre><code>kubectl create ns prod
 
@@ -322,6 +327,73 @@ images:
 <p>validate as</p>
 <pre><code>kubectl get all
 </code></pre>
+<h2 id="create-canary-release">Create Canary Release</h2>
+<p>Create <code>prod/rollout.yaml</code> with the patch configurations to update  </p>
+<ul>
+<li>Replicas Count</li>
+<li>Strategy</li>
+</ul>
+<p>as</p>
+<p>Filename: <code>prod/rollout.yaml</code></p>
+<pre><code>apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: vote
+spec:
+  replicas: 5
+  strategy:
+    blueGreen: null
+    canary:
+      steps:
+      - setWeight: 20
+      - pause:
+          duration: 10s
+      - setWeight: 40
+      - pause:
+          duration: 10s
+      - setWeight: 60
+      - pause:
+          duration: 10s
+      - setWeight: 80
+      - pause:
+          duration: 10s
+      - setWeight: 100
+</code></pre>
+<p>add this to <code>prod/kustomization.yaml</code> as</p>
+<pre><code>apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- ../base
+namespace: prod
+commonAnnotations:
+  supported-by: sre@example.com
+labels:
+- includeSelectors: false
+  pairs:
+    project: instavote
+patches:
+- path: service.yaml
+- path: preview-service.yaml
+- path: rollout.yaml
+images:
+ - name: schoolofdevops/vote
+   newName: schoolofdevops/vote
+   newTag: v2
+</code></pre>
+<p>If you have <code>kustomize</code> installed, verify the configs from <code>argo-labs</code> as</p>
+<pre><code>kustomize build prod
+</code></pre>
+<p>apply</p>
+<pre><code>kubectl apply -k prod/
+</code></pre>
+<p>validate</p>
+<pre><code>kubectl get all,ro
+
+</code></pre>
+<p>If you have the Argo ROllouts Dashboard, switch the namespace from top right corner to  <code>prod</code></p>
+<p><img alt="" src="../images/argo/16.png" /></p>
+<p>and check the Canary Release as</p>
+<p><img alt="" src="../images/argo/17.png" /></p>
               
             </div>
           </div><footer>
