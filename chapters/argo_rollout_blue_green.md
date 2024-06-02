@@ -338,3 +338,11 @@ git status
 git commit -am "updated staging deployment code with blue green release"
 git push origin main
 ```
+
+#### Cleaning Up
+
+Once you are done with it, clean up the environment with
+
+```
+kubectl delete -k staging/
+```

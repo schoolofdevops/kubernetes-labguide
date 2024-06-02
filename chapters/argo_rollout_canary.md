@@ -246,7 +246,6 @@ kubectl apply -k prod/
 
 Here you could see the progressive canary in action, implmenting it step by step, ultimately rolling out the new version.
 
-![](images/argo/18.png)
 
 
 ## Getting Ready to add Traffic Management - Set up Nginx Ingress Controller
@@ -453,4 +452,13 @@ git add prod/*.yaml
 git status
 git commit -am "added canary releases for prod"
 git push origin main
+```
+
+
+#### Cleaning Up
+
+Once you are done with this lab, clean up the environment with
+
+```
+kubectl delete -k staging/
 ```
