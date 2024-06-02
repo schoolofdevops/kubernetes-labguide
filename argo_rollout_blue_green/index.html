@@ -186,6 +186,10 @@
     <li class="toctree-l2"><a class="reference internal" href="#migrate-deployment-to-argo-rollout">Migrate Deployment to Argo Rollout</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#deploy-a-bluegreen-release">Deploy a Blue/Green Release</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#publish-changes-to-repo">Publish Changes to Repo</a>
+    </li>
+        </ul>
     </li>
     </ul>
                   </li>
@@ -430,6 +434,14 @@ kubectl describe ro vote
 <li>Once the wait interval is over, active service starts pointing to the new version pods created with the newly launched replica set. This is where there maybe just a blip of a nominal downtime.  </li>
 <li>Eventually the replicase with older version will scale down to zero, completing the rollout.  </li>
 </ul>
+<h3 id="publish-changes-to-repo">Publish Changes to Repo</h3>
+<p>All the changes that you have made so dat for the repo</p>
+<pre><code>git status
+git add base/*.yaml
+git status
+git commit -am &quot;updated staging deployment code with blue green release&quot;
+git push origin main
+</code></pre>
               
             </div>
           </div><footer>
