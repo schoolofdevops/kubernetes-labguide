@@ -188,6 +188,10 @@
     <li class="toctree-l2"><a class="reference internal" href="#deploy-a-bluegreen-release">Deploy a Blue/Green Release</a>
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#publish-changes-to-repo">Publish Changes to Repo</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#cleaning-up">Cleaning Up</a>
+    </li>
+        </ul>
     </li>
         </ul>
     </li>
@@ -461,6 +465,10 @@ git add base/*.yaml
 git status
 git commit -am &quot;updated staging deployment code with blue green release&quot;
 git push origin main
+</code></pre>
+<h4 id="cleaning-up">Cleaning Up</h4>
+<p>Once you are done with it, clean up the environment with</p>
+<pre><code>kubectl delete -k staging/
 </code></pre>
               
             </div>
