@@ -62,7 +62,9 @@ nav:
      - Lab K599 - EKS Cleanup: "eks_cleanup.md"
   - Argo:
      - Lab K601 - Setup Kubernetes with KIND: "kind_create_cluster.md"
-     - Lab K602 - Multi Env Deployment with ArgoCD: "argo_multi_env_deploy.md"    
+     - Lab K602 - Blue/Green Release with Argo Rollouts: "argo_rollout_blue_green.md"
+     - Lab K603 - Canary Release with Argo Rollouts: "argo_rollout_canary.md"
+     - Lab K604 - Continuous Deployment with ArgoCD: "argo_multi_env_deploy.md"
   - Exercises:
      - XER001 - Pods: "xer-001-pods.md"
      - XER002 - ReplicaSets: "xer-002-rs.md"
