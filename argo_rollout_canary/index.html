@@ -186,6 +186,10 @@
     <li class="toctree-l2"><a class="reference internal" href="#getting-ready-to-add-traffic-management-set-up-nginx-ingress-controller">Getting Ready to add Traffic Management - Set up Nginx Ingress Controller</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#canary-with-traffic-routing">Canary with Traffic Routing</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#publish-changes-to-repo">Publish Changes to Repo</a>
+    </li>
+        </ul>
     </li>
     </ul>
                   </li>
@@ -544,6 +548,15 @@ spec:
 <pre><code>kubectl describe ing vote-vote-canary
 </code></pre>
 <p>where you will see the weight changing as the release progresses.</p>
+<h3 id="publish-changes-to-repo">Publish Changes to Repo</h3>
+<p>All the changes that you have made so dat for the repo</p>
+<pre><code>git status
+git add base/*.yaml
+git add prod/*.yaml
+git status
+git commit -am &quot;added canary releases for prod&quot;
+git push origin main
+</code></pre>
               
             </div>
           </div><footer>
