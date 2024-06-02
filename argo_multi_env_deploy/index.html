@@ -183,7 +183,7 @@
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#setup-argocd">Setup ArgoCD</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#setup-deployment-repository">Setup Deployment Repository</a>
+    <li class="toctree-l2"><a class="reference internal" href="#configuring-repository-and-project">Configuring Repository and Project</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#setup-staging-and-prod-deployments-with-argocd">Setup Staging and Prod Deployments with ArgoCD</a>
         <ul>
@@ -261,7 +261,7 @@
                 <h1 id="lab-10a-setting-up-automated-deployments-with-argocd">Lab 10A -  Setting up Automated Deployments with ArgoCD</h1>
 <p>Author: Gourav Shah<br />
 Publisher: School of Devops<br />
-Version : v2023.10.06.01  </p>
+Version : v2024.06.02.01  </p>
 <hr />
 <h2 id="setup-argocd">Setup ArgoCD</h2>
 <p>Install ArgoCD</p>
@@ -300,68 +300,101 @@ Reference: <a href="https://github.com/argoproj/argo-cd/blob/master/docs/faq.md#
 <li>username  =.   <code>admin</code></li>
 <li>password   =   <code>password</code></li>
 </ul>
-<p>Once logged in, you should see a screen such as  the following screenshot</p>
-<p><img alt="" src="../images/argo/02.png" /></p>
-<h2 id="setup-deployment-repository">Setup Deployment Repository</h2>
+<h2 id="configuring-repository-and-project">Configuring Repository and Project</h2>
+<p>Ensure that you have checked in all the code from earlier labs and pushed it to your repository.</p>
+<p><img alt="" src="../images/argo/22.png" /></p>
+<p>Once logged in to ArgoCD, select <code>settings</code> from left menu and browse to  <code>Projects</code></p>
+<p><img alt="" src="../images/argo/20.png" /></p>
+<p>Click on <code>New Project</code> -&gt; Create and provide Project Name and Description as</p>
+<p><img alt="" src="../images/argo/21.png" /></p>
+<p>Proceed to create the project.</p>
+<p>From Projecr Configuration page that you are redirected to, edit <code>DESTINATIONS</code></p>
 <ul>
-<li>Create a fork of <a href="https://github.com/sfd-cicd/vote-deploy">sfd-cicd/vote-deploy: Kubernetes Deployment Code for Vote App</a></li>
+<li>Select default cluster name from dropdown  </li>
+<li>Select <code>in-cluster</code> as Name  </li>
+<li>Add two entries, one for <code>staging</code> and another for <code>prod</code> Namespace  </li>
+<li>Save</li>
 </ul>
-<p>While creating the fork, ensure that you uncheck the <code>Copy the main branch only</code> option as shown in screenshot below.</p>
-<p><img alt="" src="../images/argo/03.png" /></p>
-<p>Ensure you have <code>main</code> and release branches available.</p>
-<p><img alt="" src="../images/argo/04.png" /></p>
-<p>If you do not have the release branch, create it from main.</p>
-<p>Review the code created with kustomization overlay configured for <code>staging</code> and <code>prod</code> environments in additional to the base manifests.</p>
+<p><img alt="" src="../images/argo/27.png" /></p>
+<p>From <code>settings</code> from left menu and browse to  <code>Repositories</code></p>
+<p>Select <code>Connet Repo</code> and provide the following configuration</p>
+<ul>
+<li>Via:  HTTPS  </li>
+<li>Type: git  </li>
+<li>Project: instavote   </li>
+<li>Repository URL: https://github.com/xxxx/argo-labs.git (replace with actual)  </li>
+<li>Username: GitHub Username (If Private Repo)  </li>
+<li>Password: GitHub Password or Token (If Private Repo)  </li>
+</ul>
+<p><img alt="" src="../images/argo/25.png" /></p>
+<p>Finally click on <code>Connect</code> to add the repo.</p>
 <h2 id="setup-staging-and-prod-deployments-with-argocd">Setup Staging and Prod Deployments with ArgoCD</h2>
-<p>Create namespaces mapping staging and prod environments as,</p>
-<pre><code>kubectl create ns staging
-kubectl create ns prod
+<p>Clean up resources in the namespaces for <code>staging</code> and <code>prod</code> environments if you haven't already,</p>
+<pre><code>cd argo-labs
+kubectl delete -k staging/ -n staging
+kubectl delete -k prod/ -n prod
 
-kubectl get ns
 </code></pre>
 <p>Browse to ArgoCD web console and click on <strong>Create Application</strong></p>
 <p><img alt="" src="../images/argo/05.png" /></p>
 <p>From General ,</p>
 <ul>
 <li>Application Name : <code>vote-staging</code>  </li>
-<li>Project : default  </li>
+<li>Project : <code>instavote</code>  </li>
 <li>Sync Policy : <code>Automatic</code>  </li>
-<li>Prune Resources Checked</li>
+<li>Prune Resources: Checked</li>
 </ul>
-<p><img alt="" src="../images/argo/06.png" /></p>
+<p><img alt="" src="../images/argo/23.png" /></p>
 <p>From Source,  </p>
 <ul>
 <li>Repository URL : <code>Your Repo URL (https)</code>  </li>
-<li>Revision : main   </li>
+<li>Revision : <code>main</code> / <code>HEAD</code>   </li>
 <li>Path :  <code>staging</code>  </li>
 </ul>
-<p><img alt="" src="../images/argo/07.png" /></p>
+<p><img alt="" src="../images/argo/26.png" /></p>
 <p>From Destination,  </p>
 <ul>
 <li>Cluster URL :  https://kubernetes.default.svc   (default)  </li>
-<li>Namespace : <code>default</code>  </li>
+<li>Namespace : <code>staging</code>  </li>
 </ul>
 <p><img alt="" src="../images/argo/08.png" />  </p>
 <p>Click on <strong>CREATE</strong> button on the top</p>
 <p><img alt="" src="../images/argo/09.png" /></p>
 <h3 id="set-up-deploy-to-prod-configuration">Set up Deploy to Prod Configuration</h3>
+<p>You will deploy to prod based on a specific git branch e.g. <code>release</code>.  Create a release branch to deploy the application to prod with,</p>
+<pre><code>cd argo-labs/
+git pull origin main
+git checkout -b release
+git push origin release
+
+</code></pre>
+<p>You will see a new branch created on GitHub for this repository.</p>
 <p>Create another application, repeat the same configurations with the following changes,</p>
 <ul>
-<li>Cluster URL :  https://kubernetes.default.svc   (default)  </li>
-<li>Application Name  : <code>vote-prod</code>  </li>
-<li>Revision  : <code>release</code>  (will deploy from release branch)  </li>
-<li>Path  : <code>prod</code>  </li>
+<li>Application Name: <code>vote-prod</code>  </li>
+<li>Project Name: <code>instavote</code>  </li>
+<li>Sync Policy: <code>Manual</code>  </li>
+<li>Repository: Same Repo  </li>
+<li>Revision: <code>release</code>  </li>
+<li>Path: <code>prod</code>  </li>
+<li>Cluster URL: default  </li>
 <li>Namespace  : <code>prod</code>  </li>
 </ul>
+<p>Create and Sync manually.</p>
 <p><img alt="" src="../images/argo/10.png" /></p>
-<p>Once created, you should see two applications configured on ArgoCD tracking two environments.</p>
+<p>Once synced, you should see two applications configured on ArgoCD tracking two environments.</p>
+<p>You could also check the applications using kubectl as</p>
+<pre><code>kubectl get applications -n argocd
+kubectl describe  application vote-prod  -n argocd
+
+</code></pre>
 <h2 id="deployments-in-action">Deployments in Action</h2>
 <p>Open two  terminals and start watching for changes in the staging namespace</p>
 <p>Terminal 1</p>
 <pre><code>watch kubectl get all -n staging
 </code></pre>
 <p>Terminal 2</p>
-<pre><code>watch kubectl get all -n staging
+<pre><code>watch kubectl get all -n prod
 </code></pre>
 <p>Watch for the changes in the console as well as on Argo.  You shall see the application synced from the Git Repo to the Kubernetes Cluster in a few seconds.  </p>
 <p>Staging
@@ -370,15 +403,16 @@ kubectl get ns
 <img alt="" src="../images/argo/12.png" /></p>
 <p>Validate by accessing the vote apps on</p>
 <ul>
-<li>Staging : http://NODEIP:30300  </li>
-<li>Prod  : http://NODEIP:30400  </li>
+<li>Staging : http://NODEIP:30000  </li>
+<li>Prod  : http://NODEIP:30200  </li>
 </ul>
+<p>where, replace <code>NODEIP</code> with actual IP or Hostname of your cluster node.</p>
 <p>e.g.</p>
 <p><img alt="" src="../images/argo/13.png" /></p>
 <h2 id="exercises">Exercises</h2>
 <ul>
 <li>Set up branch protection rule to lock down <code>release</code> branch and allow changes via pull requests. You can experiment by adding additional policies as well.</li>
-<li>Try modifying YAML manifests in Deploy  Repo in Git in main branch by changing the image tag in <code>base/deployment.yaml</code> and  wait for the staging deployment.  Then raise the pull request to merge it into release and see it deployed to prod.  </li>
+<li>Try modifying YAML manifests in Deploy  Repo in Git in main branch by changing the image tag in <code>staging/kustomization.yaml</code> and  wait for the staging deployment.  Then raise the pull request to merge it into release and see it deployed to prod.  </li>
 </ul>
 <h3 id="references">References</h3>
 <ul>

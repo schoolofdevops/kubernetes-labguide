@@ -257,6 +257,10 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="implementing-canary-release-for-prod">Implementing Canary Release for Prod</h1>
+<p>Author: Gourav Shah<br />
+Publisher: School of Devops<br />
+Version : v2024.06.02.01  </p>
+<hr />
 <h2 id="prepare-prod-environment">Prepare Prod Environment</h2>
 <p>Create and switch to prod namespace</p>
 <pre><code>kubectl create ns prod
@@ -562,7 +566,7 @@ git push origin main
 </code></pre>
 <h4 id="cleaning-up">Cleaning Up</h4>
 <p>Once you are done with this lab, clean up the environment with</p>
-<pre><code>kubectl delete -k staging/
+<pre><code>kubectl delete -k prod/
 </code></pre>
               
             </div>
