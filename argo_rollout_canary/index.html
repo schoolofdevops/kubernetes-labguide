@@ -183,6 +183,10 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#create-canary-release">Create Canary Release</a>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#getting-ready-to-add-traffic-management-set-up-nginx-ingress-controller">Getting Ready to add Traffic Management - Set up Nginx Ingress Controller</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#canary-with-traffic-routing">Canary with Traffic Routing</a>
+    </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../argo_multi_env_deploy/">Lab K604 - Continuous Deployment with ArgoCD</a>
@@ -394,6 +398,152 @@ images:
 <p><img alt="" src="../images/argo/16.png" /></p>
 <p>and check the Canary Release as</p>
 <p><img alt="" src="../images/argo/17.png" /></p>
+<p>Before starting rollout start wathing for the following in 3 different terminals</p>
+<p>[Termina 1]</p>
+<pre><code>watch kubectl get ro,all --show-labels
+</code></pre>
+<p>[Terminal 2]</p>
+<pre><code>watch kubectl describe svc vote
+</code></pre>
+<p>[Terminal 3]</p>
+<pre><code>watch kubectl describe svc vote-preview
+</code></pre>
+<p>You could also keep monitoring the Argo Rollouts Dashboard. Launch it if required as</p>
+<pre><code>kubectl argo rollouts dashboard -p 3100
+</code></pre>
+<p>Trigger a new rollout by modifying <code>prod/kustomization.yaml</code> file with new image tag as  </p>
+<pre><code>images:
+ - name: schoolofdevops/vote
+   newName: schoolofdevops/vote
+   newTag: v3
+</code></pre>
+<p>and apply</p>
+<pre><code>kubectl apply -k prod/
+</code></pre>
+<p>Here you could see the progressive canary in action, implmenting it step by step, ultimately rolling out the new version.</p>
+<p><img alt="" src="../images/argo/18.png" /></p>
+<h2 id="getting-ready-to-add-traffic-management-set-up-nginx-ingress-controller">Getting Ready to add Traffic Management - Set up Nginx Ingress Controller</h2>
+<p>Install helm to setup Nginx Ingress Controller. To install helm version 3 on Linux or MacOS, you can follow following instructions.</p>
+<pre><code>curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+</code></pre>
+<p>You could further refer to <a href="https://helm.sh/docs/intro/install/">Official HELM Install Instructions</a> for alternative options.</p>
+<p>Verify the installtion is successful,</p>
+<pre><code>helm --help
+helm version
+</code></pre>
+<p>Launch Nginx Ingress controller using helm as :</p>
+<pre><code>helm upgrade --install ingress-nginx ingress-nginx \
+  --repo https://kubernetes.github.io/ingress-nginx \
+  --namespace ingress-nginx --create-namespace \
+  --set controller.hostPort.enabled=true \
+  --set controller.hostPort.ports.http=80 \
+  --set-string controller.nodeSelector.&quot;kubernetes\.io/os&quot;=linux \
+  --set-string controller.nodeSelector.ingress-ready=&quot;true&quot;
+
+</code></pre>
+<p>Check the pod for Nginx Ingress, if its running</p>
+<pre><code>kubectl get pods -n ingress-nginx
+</code></pre>
+<p>You may see the pod in pending state. Check why its pending by describing it.</p>
+<p>Once you descibe, you will see that its pending because it has a <code>nodeSelector</code> defined which is looking for a node with label set to <code>ingress-ready="true"</code>.</p>
+<p>Check the label on the current nodes</p>
+<pre><code>kubectl get nodes --show-labels
+</code></pre>
+<p>Add this lable to first  of the worker nodes as</p>
+<pre><code>
+kubectl label node kind-worker ingress-ready=&quot;true&quot;
+</code></pre>
+<p>validate</p>
+<pre><code>kubectl get nodes --show-labels
+</code></pre>
+<p>This time you should see the label added, and nginx ingress controller running, which can be validated using</p>
+<pre><code>kubectl get pods -n ingress-nginx
+</code></pre>
+<p>You could also validate by connecting to the IPADDRESS of your node where the cluster is beeng setup on port 80, where you should see <code>**404 Not Found**</code> error. This is the sign that nginx is set up as a ingress controller and looking for a request with hostname/path defined.</p>
+<p>Add a path based routing</p>
+<p>Once you have the ingress controller working,  add the following ingress rule</p>
+<p>File : <code>prod/vote-ing.yaml</code></p>
+<pre><code>---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: vote
+  namespace: instavote
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: vote.example.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: vote
+            port:
+              number: 80
+</code></pre>
+<p>add this to <code>prod/kustomization.yaml</code> so that it gets applied as</p>
+<p>File: <code>prod/kustomization.yaml</code></p>
+<pre><code>apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- ../base
+- ingress.yaml
+</code></pre>
+<p>and apply with</p>
+<pre><code>kubectl apply -k prod/
+</code></pre>
+<p>At this time, you would have ingress rule applied.</p>
+<p>You could validate it using</p>
+<pre><code>kubectl get ing
+
+kubectl describe ing vote
+</code></pre>
+<p>Also add the host file configuration as per <a href="https://kubernetes-tutorial.schoolofdevops.com/ingress/#add-local-dns">this lab guide</a>   and validate you are able to use http://vote.example.com/ to access vote  service via ingress.</p>
+<p>If you browse to the nginx ingress URI, you should see the app as</p>
+<p><img alt="" src="../images/argo/18.png" /></p>
+<p>With this you have successfully set up Nginx Ingress Controller in front of your prod app and are ready to use Traffic Management features of Argo Rollouts.</p>
+<h2 id="canary-with-traffic-routing">Canary with Traffic Routing</h2>
+<p>Read <a href="https://argoproj.github.io/argo-rollouts/features/traffic-management/">this document</a> to understand the need for traffic routing. You could set up the traffic routing rules with Nginx by modifying the rollout spec as</p>
+<p>File : <code>prod/rollout.yaml</code></p>
+<pre><code>apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: vote
+spec:
+  replicas: 5
+  strategy:
+    blueGreen: null
+    canary:
+      canaryService: vote-preview
+      stableService: vote
+      trafficRouting:
+        nginx:
+          stableIngress: vote
+      steps:
+      - setWeight: 20
+      - pause:
+          duration: 10s
+      - setWeight: 40
+      - pause:
+          duration: 10s
+      - setWeight: 60
+      - pause:
+          duration: 10s
+      - setWeight: 80
+      - pause:
+          duration: 10s
+      - setWeight: 100
+</code></pre>
+<p>You could refer to <a href="https://argoproj.github.io/argo-rollouts/features/traffic-management/nginx/">Nginx Ingress Controller for Traffic Routing</a> document to understand this spec.</p>
+<p>and apply as</p>
+<pre><code>kubectl apply -k prod/
+</code></pre>
+<p>You could watching using the same commands as earlier as well as using Argo Dashboard. You could also watch for a new canary service created during rollout as</p>
+<pre><code>kubectl describe ing vote-vote-canary
+</code></pre>
+<p>where you will see the weight changing as the release progresses.</p>
               
             </div>
           </div><footer>

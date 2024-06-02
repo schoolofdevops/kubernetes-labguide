@@ -308,7 +308,9 @@ kubectl apply -n argo-rollouts -f https://github.com/argoproj/argo-rollouts/rele
 </code></pre>
 <p>Optionally, you could install argo plugin for kubectl  </p>
 <p>On linux</p>
-<pre><code>curl -LO https://github.com/argoproj/argo-rollouts/releases/latest/download/kubectl-argo-rollouts-linux-amd64
+<pre><code>cd ~
+
+curl -LO https://github.com/argoproj/argo-rollouts/releases/latest/download/kubectl-argo-rollouts-linux-amd64
 
 chmod +x ./kubectl-argo-rollouts-linux-amd64
 
@@ -410,7 +412,11 @@ kubectl describe ro vote
 <p>Open a new terminal and start watching with</p>
 <pre><code>watch kubectl get ro,all --show-labels
 </code></pre>
-<p>Also open two browser windows to watch for <code>vote</code> and <code>vote-preview</code> services respectively</p>
+<p>Also open two browser windows to watch for <code>vote</code> and <code>vote-preview</code> services respectively as</p>
+<pre><code>watch kubectl describe svc vote
+watch kubectl describe svc vote-preview
+
+</code></pre>
 <p>If you had installed the argo rollout plugin for <code>kubectl</code>, you could also launch the Rollout UI with</p>
 <pre><code>kubectl argo rollouts dashboard -p 3100
 </code></pre>
