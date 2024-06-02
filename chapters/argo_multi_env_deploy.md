@@ -1,7 +1,7 @@
 # Lab 10A -  Setting up Automated Deployments with ArgoCD
 Author: Gourav Shah  
 Publisher: School of Devops  
-Version : v2023.10.06.01  
+Version : v2024.06.02.01  
 - - -
 
 ## Setup ArgoCD
@@ -64,38 +64,61 @@ You should be presented with the  login page for ArgoCD as follows
 * password   =   `password`
 
 
-Once logged in, you should see a screen such as  the following screenshot
-
-![](images/argo/02.png)
+## Configuring Repository and Project
 
 
-## Setup Deployment Repository
+Ensure that you have checked in all the code from earlier labs and pushed it to your repository.
 
-* Create a fork of [sfd-cicd/vote-deploy: Kubernetes Deployment Code for Vote App](https://github.com/sfd-cicd/vote-deploy)
+![](images/argo/22.png)
 
 
-While creating the fork, ensure that you uncheck the `Copy the main branch only` option as shown in screenshot below.
+Once logged in to ArgoCD, select `settings` from left menu and browse to  `Projects`
 
-![](images/argo/03.png)
+![](images/argo/20.png)
 
-Ensure you have `main` and release branches available.
+Click on `New Project` -> Create and provide Project Name and Description as
 
-![](images/argo/04.png)
+![](images/argo/21.png)
 
-If you do not have the release branch, create it from main.
+Proceed to create the project.
 
-Review the code created with kustomization overlay configured for `staging` and `prod` environments in additional to the base manifests.
+From Projecr Configuration page that you are redirected to, edit `DESTINATIONS`
+
+  * Select default cluster name from dropdown  
+  * Select `in-cluster` as Name  
+  * Add two entries, one for `staging` and another for `prod` Namespace  
+  * Save
+
+![](images/argo/27.png)
+
+
+From `settings` from left menu and browse to  `Repositories`
+
+Select `Connet Repo` and provide the following configuration
+
+  * Via:  HTTPS  
+  * Type: git  
+  * Project: instavote   
+  * Repository URL: https://github.com/xxxx/argo-labs.git (replace with actual)  
+  * Username: GitHub Username (If Private Repo)  
+  * Password: GitHub Password or Token (If Private Repo)  
+
+
+  ![](images/argo/25.png)
+
+
+Finally click on `Connect` to add the repo.
 
 
 ## Setup Staging and Prod Deployments with ArgoCD
 
-Create namespaces mapping staging and prod environments as,
+Clean up resources in the namespaces for `staging` and `prod` environments if you haven't already,
 
 ```
-kubectl create ns staging
-kubectl create ns prod
+cd argo-labs
+kubectl delete -k staging/ -n staging
+kubectl delete -k prod/ -n prod
 
-kubectl get ns
 ```
 
 Browse to ArgoCD web console and click on **Create Application**
@@ -106,32 +129,29 @@ Browse to ArgoCD web console and click on **Create Application**
 From General ,
 
   * Application Name : `vote-staging`  
-  * Project : default  
+  * Project : `instavote`  
   * Sync Policy : `Automatic`  
-  * Prune Resources Checked
+  * Prune Resources: Checked
 
 
-![](images/argo/06.png)
-
-
+![](images/argo/23.png)
 
 
 
 From Source,  
 
   * Repository URL : `Your Repo URL (https)`  
-  * Revision : main   
+  * Revision : `main` / `HEAD`   
   * Path :  `staging`  
 
 
-![](images/argo/07.png)
-
+![](images/argo/26.png)
 
 
 From Destination,  
 
   * Cluster URL :  https://kubernetes.default.svc   (default)  
-  * Namespace : `default`  
+  * Namespace : `staging`  
 
 
 ![](images/argo/08.png)  
@@ -146,17 +166,43 @@ Click on **CREATE** button on the top
 
 ### Set up Deploy to Prod Configuration
 
+
+You will deploy to prod based on a specific git branch e.g. `release`.  Create a release branch to deploy the application to prod with,
+
+```
+cd argo-labs/
+git pull origin main
+git checkout -b release
+git push origin release
+
+```
+
+You will see a new branch created on GitHub for this repository.
+
 Create another application, repeat the same configurations with the following changes,
 
-  * Cluster URL :  https://kubernetes.default.svc   (default)  
-  * Application Name  : `vote-prod`  
-  * Revision  : `release`  (will deploy from release branch)  
-  * Path  : `prod`  
+  * Application Name: `vote-prod`  
+  * Project Name: `instavote`  
+  * Sync Policy: `Manual`  
+  * Repository: Same Repo  
+  * Revision: `release`  
+  * Path: `prod`  
+  * Cluster URL: default  
   * Namespace  : `prod`  
+
+Create and Sync manually.
 
 ![](images/argo/10.png)
 
-Once created, you should see two applications configured on ArgoCD tracking two environments.
+Once synced, you should see two applications configured on ArgoCD tracking two environments.
+
+You could also check the applications using kubectl as
+
+```
+kubectl get applications -n argocd
+kubectl describe  application vote-prod  -n argocd
+
+```
 
 ## Deployments in Action
 
@@ -169,7 +215,7 @@ watch kubectl get all -n staging
 
 Terminal 2
 ```
-watch kubectl get all -n staging
+watch kubectl get all -n prod
 ```
 
 
@@ -183,9 +229,10 @@ Prod
 
 Validate by accessing the vote apps on
 
-  * Staging : http://NODEIP:30300  
-  * Prod  : http://NODEIP:30400  
+  * Staging : http://NODEIP:30000  
+  * Prod  : http://NODEIP:30200  
 
+where, replace `NODEIP` with actual IP or Hostname of your cluster node.
 
 e.g.
 
@@ -195,7 +242,7 @@ e.g.
 
 
 * Set up branch protection rule to lock down `release` branch and allow changes via pull requests. You can experiment by adding additional policies as well.
-* Try modifying YAML manifests in Deploy  Repo in Git in main branch by changing the image tag in `base/deployment.yaml` and  wait for the staging deployment.  Then raise the pull request to merge it into release and see it deployed to prod.  
+* Try modifying YAML manifests in Deploy  Repo in Git in main branch by changing the image tag in `staging/kustomization.yaml` and  wait for the staging deployment.  Then raise the pull request to merge it into release and see it deployed to prod.  
 
 
 

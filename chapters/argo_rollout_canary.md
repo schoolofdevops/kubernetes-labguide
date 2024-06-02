@@ -1,5 +1,9 @@
 # Implementing Canary Release for Prod
 
+Author: Gourav Shah  
+Publisher: School of Devops  
+Version : v2024.06.02.01  
+- - -
 
 
 ## Prepare Prod Environment
@@ -460,5 +464,5 @@ git push origin main
 Once you are done with this lab, clean up the environment with
 
 ```
-kubectl delete -k staging/
+kubectl delete -k prod/
 ```
