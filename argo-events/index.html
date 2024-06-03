@@ -3,18 +3,18 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/13_redis_statefulset/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/argo-events/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Lab K206 - Statefulsets - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <title>Argo Events - Kubernetes Tutorial with CKA/CKAD Prep</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Lab K206 - Statefulsets";
-        var mkdocs_page_input_path = "13_redis_statefulset.md";
-        var mkdocs_page_url = "/13_redis_statefulset/";
+        var mkdocs_page_name = "Argo Events";
+        var mkdocs_page_input_path = "argo-events.md";
+        var mkdocs_page_url = "/argo-events/";
       </script>
     
     <!--[if lt IE 9]>
@@ -94,32 +94,14 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Additional CKAD Topics</span></p>
-              <ul class="current">
+              <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../advanced_pod_design/">Lab K201 - Advanced Pod Design</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../pods-health-probes/">Lab K204 - Health Checks</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../daemonsets_cronsjobs/">Lab K205 - DaemonsSets & CronJobs</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K206 - Statefulsets</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#creating-a-headless-service">Creating a headless service</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#adding-redis-configurations-with-configmap">Adding Redis configurations with ConfigMap</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#using-initcontainers-to-configure-redis-replication">Using initContainers to configure redis replication</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#deploying-redis-master-slaves-with-statefulsets">Deploying Redis Master Slaves with Statefulsets</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#nano-project-configuring-persistent-volume-claim-per-instance-of-redis">Nano Project: Configuring persistent volume claim per instance of redis</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#reading-list">Reading List</a>
-    </li>
-        </ul>
-    </li>
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../13_redis_statefulset/">Lab K206 - Statefulsets</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Additional CKA Topics</span></p>
@@ -249,10 +231,9 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a> &raquo;</li>
-          <li>Additional CKAD Topics &raquo;</li>
-      <li class="breadcrumb-item active">Lab K206 - Statefulsets</li>
+      <li class="breadcrumb-item active">Argo Events</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/13_redis_statefulset.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/argo-events.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -260,178 +241,328 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="deploying-redis-cluster-with-statefulsets">Deploying Redis Cluster with StatefulSets</h1>
-<p>What will you learn  </p>
-<ul>
-<li>Statefulsets  </li>
-<li>initContainers</li>
-</ul>
-<h2 id="creating-a-headless-service">Creating a headless service</h2>
-<p>We will use Redis as Statefulsets for our instavote application stack.
-It is similar to Deployment, but Statefulsets requires a <code>Service Name</code>.</p>
-<p>Lets being by cleaning up the existing redis installation</p>
-<pre><code>kubectl delete svc redis
-kubectl delete deploy redis
+                <h1 id="argo-events">Argo Events</h1>
+<h2 id="setup-argo-events-along-with-workflows">Setup Argo Events along with  Workflows</h2>
+<p>Launch <a href="https://killercoda.com/argoproj/course/argo-workflows/workflow-examples">Argo Workflow</a> Environment with Killercoda , set up server UI and have it open.</p>
+<p>Install Argo Events</p>
+<pre><code>kubectl create namespace argo-events
+kubectl apply -f https://raw.githubusercontent.com/argoproj/argo-events/stable/manifests/install.yaml
+# Install with a validating admission controller
+kubectl apply -f https://raw.githubusercontent.com/argoproj/argo-events/stable/manifests/install-validating-webhook.yaml
+kubectl apply -n argo-events -f https://raw.githubusercontent.com/argoproj/argo-events/stable/examples/eventbus/native.yaml
+
+
 </code></pre>
-<p>So we will create a <strong>headless</strong> service for redis first. A headless service is the one which will be created with no ClusterIP of its own, but will return the actual IP address of its endpoints (e.g. pods), which we would create later in this case.</p>
-<p><code>file: dev/redis-sts/redis-svc.yml</code></p>
-<pre><code>apiVersion: v1
-kind: Service
+<p>Create an Argo Events EventSource and Sensor to handle the events sent by your polling job.</p>
+<p>File: <code>webook-eventsource.yaml</code></p>
+<pre><code>apiVersion: argoproj.io/v1alpha1
+kind: EventSource
 metadata:
-  name: redis
-  labels:
-    app: redis
+  name: webhook
+  namespace: argo-events
 spec:
-  type: ClusterIP
-  ports:
-  - name: redis
-    port: 6379
-    targetPort: redis
-  clusterIP: None
-  selector:
-    app: redis
-    statefulset.kubernetes.io/pod-name: redis-0
-</code></pre>
-<p>Observe</p>
-<ul>
-<li>clusterIP value is set to None</li>
-<li>selector has been updated to send traffic only to the master</li>
-</ul>
-<p>now apply this and validate</p>
-<pre><code>cd k8s-code/projects/instavote/dev/redis-sts
-kubectl apply -f redis-svc.yml
+  service:
+    ports:
+      - port: 12000
+        targetPort: 12000
+  webhook:
+    example:
+      port: &quot;12000&quot;
+      endpoint: /example
+      method: POST
 
-kubectl get svc
-kubectl describe  svc redis
+    github:
+      port: &quot;12000&quot;
+      endpoint: /github
+      method: POST
+
 </code></pre>
-<h2 id="adding-redis-configurations-with-configmap">Adding Redis configurations with ConfigMap</h2>
-<p>Lets now add the redis configuration with configmap.</p>
-<p>Redis ConfigMap has two keys
-  * master.conf - to provide  Redis master configs
-  * slave.conf - to provide  Redis slave configs</p>
-<p><code>file: redis-cm.yml</code></p>
-<pre><code>apiVersion: v1
-kind: ConfigMap
+<p>apply</p>
+<pre><code>kubectl apply -f webook-eventsource.yaml
+</code></pre>
+<p>Create RBAC Policies</p>
+<pre><code>kubectl apply -n argo-events -f https://raw.githubusercontent.com/argoproj/argo-events/master/examples/rbac/sensor-rbac.yaml
+
+kubectl apply -n argo-events -f https://raw.githubusercontent.com/argoproj/argo-events/master/examples/rbac/workflow-rbac.yaml
+</code></pre>
+<p>File:  <code>vote-ci-template.yaml</code></p>
+<pre><code>apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
 metadata:
-  name: redis
-data:
-  master.conf: |
-    bind 0.0.0.0
-    protected-mode yes
-    port 6379
-    tcp-backlog 511
-    timeout 0
-    tcp-keepalive 300
-    daemonize no
-    supervised no
-    pidfile /var/run/redis_6379.pid
-    loglevel notice
-    logfile &quot;&quot;
-  slave.conf: |
-    slaveof redis-0.redis 6379
-</code></pre>
-<p>apply and validate</p>
-<pre><code>kubectl apply -f redis-cm.yml
+  name: vote-ci-template
+  namespace: argo-events
+spec:
+  entrypoint: main
+  serviceAccountName: default
+  arguments:
+    parameters:
+    - name: repo-url
+      value: &quot;https://github.com/your-username/your-flask-app.git&quot;
+    - name: branch
+      value: &quot;main&quot;
+    - name: image
+      value: &quot;your-registry/your-flask-app&quot;
+    - name: dockerfile
+      value: &quot;Dockerfile&quot;
 
-kubectl get cm
-kubectl describe cm redis
-</code></pre>
-<h2 id="using-initcontainers-to-configure-redis-replication">Using initContainers to configure redis replication</h2>
-<p>We have to deploy redis master/slave set up from one statefulset cluster. This requires two different redis cofigurations , which needs to be described in one Pod template. This complexity can be resolved by using init containers. These init containers copy the appropriate redis configuration by analysing the hostname of the pod. If the Pod's (host)name has <code>0</code> as <strong>Ordinal number</strong>, then it is choosen as the master and master.conf is copied to /etc/ directory. Every other  pod will be configured as a replica with  slave.conf as configuration.</p>
-<p><code>file: redis-sts.yml</code></p>
-<pre><code>[...]
-      initContainers:
-      - name: init-redis
-        image: redis:4.0.9
-        command:
-        - bash
-        - &quot;-c&quot;
-        - |
-          set -ex
-          # Generate mysql server-id from pod ordinal index.
-          [[ `hostname` =~ -([0-9]+)$ ]] || exit 1
-          ordinal=${BASH_REMATCH[1]}
-          # Copy appropriate conf.d files from config-map to emptyDir.
-          if [[ $ordinal -eq 0 ]]; then
-            cp /mnt/config-map/master.conf /etc/redis.conf
-          else
-            cp /mnt/config-map/slave.conf /etc/redis.conf
-          fi
-        volumeMounts:
-        - name: conf
-          mountPath: /etc
-          subPath: redis.conf
-        - name: config-map
-          mountPath: /mnt/config-map
-</code></pre>
-<h3 id="deploying-redis-master-slaves-with-statefulsets">Deploying Redis Master Slaves with Statefulsets</h3>
-<p>These redis containers are started after initContainers are successfully run and exit. One thing to note here, these containers mount the same volume, <code>conf</code>, from the initContainers which has the proper Redis configuration.</p>
-<p><code>file: redis-sts.yaml</code></p>
-<pre><code>[...]
-      containers:
-      - name: redis
-        image: redis:4.0.9
-        command: [&quot;redis-server&quot;]
-        args: [&quot;/etc/redis.conf&quot;]
-        env:
-        - name: ALLOW_EMPTY_PASSWORD
-          value: &quot;yes&quot;
-        ports:
-        - name: redis
-          containerPort: 6379
-        volumeMounts:
-        - name: redis-data
-          mountPath: /data
-        - name: conf
-          mountPath: /etc/
-          subPath: redis.conf
-</code></pre>
-<p>To apply</p>
-<pre><code>kubectl apply -f redis-sts.yml
-</code></pre>
-<p>Validate the MASTER-SLAVE configuration</p>
-<pre><code>kubectl exec redis-0 redis-cli ROLE
+  volumeClaimTemplates:
+  - metadata:
+      name: workspace
+    spec:
+      accessModes: [&quot;ReadWriteOnce&quot;]
+      resources:
+        requests:
+          storage: 100Mi
 
-kubectl exec redis-1 redis-cli ROLE
+  volumes:
+  - name: docker-config
+    secret:
+      secretName: docker-registry-creds
+      items:
+        - key: .dockerconfigjson
+          path: config.json
+
+  templates:
+  - name: main
+    inputs:
+      parameters:
+      - name: repo-url
+      - name: branch
+      - name: image
+      - name: dockerfile
+    steps:
+    - - name: clone
+        template: clone
+        arguments:
+          parameters:
+          - name: repo-url
+            value: &quot;{{inputs.parameters.repo-url}}&quot;
+          - name: branch
+            value: &quot;{{inputs.parameters.branch}}&quot;
+    - - name: build
+        template: build
+    - - name: test
+        template: test
+    - - name: imagebuild
+        template: imagebuild
+        arguments:
+          parameters:
+          - name: commit-sha
+            value: &quot;{{steps.clone.outputs.parameters.commit-sha}}&quot;
+          - name: image
+            value: &quot;{{inputs.parameters.image}}&quot;
+          - name: dockerfile
+            value: &quot;{{inputs.parameters.dockerfile}}&quot;
+
+  # Clone task
+  - name: clone
+    inputs:
+      parameters:
+      - name: repo-url
+      - name: branch
+    script:
+      image: alpine/git
+      command: [sh]
+      source: |
+        #!/bin/sh
+        git clone --branch {{inputs.parameters.branch}} {{inputs.parameters.repo-url}} /workspace
+        cd /workspace
+        COMMIT_SHA=$(git rev-parse --short HEAD)
+        echo $COMMIT_SHA &gt; /workspace/commit-sha.txt
+      volumeMounts:
+      - name: workspace
+        mountPath: /workspace
+    outputs:
+      parameters:
+      - name: commit-sha
+        valueFrom:
+          path: /workspace/commit-sha.txt
+
+  # Build task
+  - name: build
+    script:
+      image: python:3.9
+      command: [&quot;sh&quot;]
+      source: |
+        #!/bin/sh
+        cd /workspace
+        pip install -r requirements.txt
+      volumeMounts:
+      - name: workspace
+        mountPath: /workspace
+
+  # Test task
+  - name: test
+    script:
+      image: python:3.9
+      command: [&quot;sh&quot;]
+      source: |
+        #!/bin/sh
+        cd /workspace
+        pip install nose
+        nosetests
+      volumeMounts:
+      - name: workspace
+        mountPath: /workspace
+
+  # Image build and publish task using Kaniko
+  - name: imagebuild
+    inputs:
+      parameters:
+      - name: commit-sha
+      - name: image
+      - name: dockerfile
+    container:
+      image: gcr.io/kaniko-project/executor:latest
+      command: [&quot;/kaniko/executor&quot;]
+      args:
+      - --dockerfile=/workspace/{{inputs.parameters.dockerfile}}
+      - --context=/workspace
+      - --destination={{inputs.parameters.image}}:{{inputs.parameters.commit-sha}}
+      - --force
+      volumeMounts:
+      - name: workspace
+        mountPath: /workspace
+      - name: docker-config
+        mountPath: /kaniko/.docker
+      env:
+      - name: DOCKER_CONFIG
+        value: /kaniko/.docker
 </code></pre>
-<p>redis-0 should have been  configured as master, redis-1 as slave.  You should also see that redis-1 is been configured as the slave of redis-0.redis as follows,</p>
-<pre><code>kubectl exec redis-1 redis-cli ROLE
-slave
-redis-0.redis
-6379
-connected
-28
+<p>Create workflow template as</p>
+<pre><code>kubectl apply -f vote-ci-template
+
 </code></pre>
-<p>This validated the redis master slave configuration.</p>
-<h2 id="nano-project-configuring-persistent-volume-claim-per-instance-of-redis">Nano Project: Configuring persistent volume claim per instance of redis</h2>
-<p>Similar to databases, each redis instance needs its own data store, which should also be persistent. Current code that you have applied uses emptyDir as the volume type. This is a problem as emptyDir gets deleted when the pod is deleted, and is not persistent.    </p>
-<p>Your task is to update the YAML file for the statefulset  with the following changes,</p>
-<ul>
-<li>use volumeClaimTemplate instead of volumes for volume <strong>redis-data</strong>. This will ensure a persistentVolumeClaim per replica/pod. All other volumes remain unchanged.</li>
-<li>Provide the storageClass as NFS, a provisioner for which is already been configured</li>
-<li>Size of the volume could be 200Mi as its just a key value store used by the instavote app to store the votes.</li>
-<li>accessModes should be ReadWriteOnce as the volumes for redis should not be shared between multiple instances.</li>
-</ul>
-<p>Update the statefulSet, apply and validate that persistentVolumeClaim and persistentVolume are created for each instance/pod of redis application.</p>
-<h5 id="reading-list">Reading List</h5>
-<ul>
-<li><a href="https://redis.io/topics/replication">Redis Replication</a></li>
-<li><a href="https://kubernetes.io/docs/tasks/run-application/run-replicated-stateful-application/">Run Replicated Statefulsets Applications</a></li>
-<li><a href="https://kubernetes.io/docs/concepts/workloads/pods/init-containers/">Init Containers</a></li>
-</ul>
-<p><strong>Search Keywords</strong></p>
-<ul>
-<li>init containers</li>
-<li>kubernetes statefulsets</li>
-<li>redis replication</li>
-</ul>
+<p>validate</p>
+<pre><code>kubectl get workflowtemplate -A
+
+argo template list -A
+</code></pre>
+<p>add registry credentials to <code>argo-events</code> namespace again with</p>
+<pre><code>kubectl create secret -n argo docker-registry docker-registry-creds  \
+   --docker-server=https://index.docker.io/v1/ \
+   --docker-username=xxxx \
+   --docker-password=yyyy
+</code></pre>
+<p>where replace,
+* <code>xxxx</code> with registry username
+* <code>yyyy</code> with registry access token</p>
+<p>Add sensor which will listen to updates to <code>github</code> webhook created with event source and then trigger the argo workflow as,</p>
+<p>File : <code>sensor.yaml</code></p>
+<pre><code>apiVersion: argoproj.io/v1alpha1
+kind: Sensor
+metadata:
+  name: polling-sensor
+  namespace: argo-events
+spec:
+  template:
+    serviceAccountName: operate-workflow-sa
+  dependencies:
+    - name: poll-github
+      eventSourceName: webhook
+      eventName: github
+  triggers:
+    - template:
+        name: launch-vote-ci
+        argoWorkflow:
+          operation: submit
+          source:
+            resource:
+              apiVersion: argoproj.io/v1alpha1
+              kind: Workflow
+              metadata:
+                generateName: ci-pipeline-
+              spec:
+                workflowTemplateRef:
+                  name: vote-ci-template
+                arguments:
+                  parameters:
+                  - name: repo-url
+                    value: &quot;https://github.com/xxxxxx/vote.git&quot;
+                  - name: branch
+                    value: &quot;master&quot;
+                  - name: image
+                    value: &quot;xxxxxx/vote&quot;
+                  - name: dockerfile
+                    value: &quot;Dockerfile&quot;
+
+
+
+</code></pre>
+<p>where,
+* replace <code>repo-url</code> with your code repository url
+* update image tag by replacing <code>xxxxxx</code> with your docker hub user name</p>
+<p>apply</p>
+<pre><code>kubectl apply -f sensor.yaml
+
+</code></pre>
+<p>validate</p>
+<pre><code>kubectl get pods -n argo-events
+</code></pre>
+<p>you should see a new pod launched to run this sensor.</p>
+<p>Now, create a Kubernetes CronJob that periodically polls GitHub for new commits. If new commits are found, the job can send an event to the event source webhook created earlier.</p>
+<p>File: <code>poller-cronjob.yaml</code></p>
+<pre><code>---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: github-polling-job
+spec:
+  schedule: &quot;* * * * *&quot;  # Poll every minute
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: poller
+            image: schoolofdevops/github-poller:latest  
+            env:
+            - name: GITHUB_API_URL
+              value: &quot;https://api.github.com/repos/yourusername/yourrepo/commits&quot;
+            - name: GITHUB_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: github-token-secret
+                  key: token
+            - name: LAST_COMMIT_FILE
+              value: &quot;/data/last_commit.txt&quot;
+            - name: ARGO_EVENT_SOURCE_URL
+              value: &quot;http://webhook-eventsource-svc.argo-events.svc.cluster.local:12000/github&quot;
+            volumeMounts:
+            - name: commit-storage
+              mountPath: /data
+          restartPolicy: OnFailure
+          volumes:
+          - name: commit-storage
+            persistentVolumeClaim:
+              claimName: poller-pvc  # Use a PVC to persist the last commit file
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: poller-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Mi
+
+</code></pre>
+<p>where,
+* replace value of <code>GITHUB_API_URL</code> to match your user name and repo components  e.g. <code>https://api.github.com/repos/devops-0001/vote/commits</code><br />
+* verify values for all env variables to be correct    </p>
+<p>Also create secret with github token with access to the repository, which is used in the cronjob above.</p>
+<pre><code>kubectl create secret generic github-token-secret --from-literal=token=xxxx
+</code></pre>
+<p>replace <code>xxxx</code> with actul GitHub access token.</p>
+<p>create this cronjob as</p>
+<pre><code>kubectl apply -f poller-cronjob.yaml
+</code></pre>
+<p>now start watching the cronjobs as well as event flow from Argo Workflow dashboard.  </p>
               
             </div>
           </div><footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../daemonsets_cronsjobs/" class="btn btn-neutral float-left" title="Lab K205 - DaemonsSets & CronJobs"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../10_kubernetes_autoscaling/" class="btn btn-neutral float-right" title="Lab K301 - Auto Scaling with HPA">Next <span class="icon icon-circle-arrow-right"></span></a>
-    </div>
 
   <hr/>
 
@@ -458,10 +589,6 @@ connected
         </span>
     
     
-      <span><a href="../daemonsets_cronsjobs/" style="color: #fcfcfc">&laquo; Previous</a></span>
-    
-    
-      <span><a href="../10_kubernetes_autoscaling/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
