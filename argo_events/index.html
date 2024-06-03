@@ -256,7 +256,11 @@ kubectl apply -f https://raw.githubusercontent.com/argoproj/argo-events/stable/m
 kubectl apply -f https://raw.githubusercontent.com/argoproj/argo-events/stable/manifests/install-validating-webhook.yaml
 kubectl apply -n argo-events -f https://raw.githubusercontent.com/argoproj/argo-events/stable/examples/eventbus/native.yaml
 
+</code></pre>
+<p>Create RBAC Policies</p>
+<pre><code>kubectl apply -n argo-events -f https://raw.githubusercontent.com/argoproj/argo-events/master/examples/rbac/sensor-rbac.yaml
 
+kubectl apply -n argo-events -f https://raw.githubusercontent.com/argoproj/argo-events/master/examples/rbac/workflow-rbac.yaml
 </code></pre>
 <p>Create an Argo Events EventSource and Sensor to handle the events sent by your polling job.</p>
 <p>File: <code>webook-eventsource.yaml</code></p>
@@ -284,11 +288,6 @@ spec:
 </code></pre>
 <p>apply</p>
 <pre><code>kubectl apply -f webook-eventsource.yaml
-</code></pre>
-<p>Create RBAC Policies</p>
-<pre><code>kubectl apply -n argo-events -f https://raw.githubusercontent.com/argoproj/argo-events/master/examples/rbac/sensor-rbac.yaml
-
-kubectl apply -n argo-events -f https://raw.githubusercontent.com/argoproj/argo-events/master/examples/rbac/workflow-rbac.yaml
 </code></pre>
 <p>File:  <code>vote-ci-template.yaml</code></p>
 <pre><code>apiVersion: argoproj.io/v1alpha1
