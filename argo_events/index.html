@@ -368,7 +368,7 @@ spec:
 <p>you should see a new pod launched to run this sensor.</p>
 <p>At this time, if you have Argo Workflow set up, you should see a event flow such as this</p>
 <p>Event Flow :</p>
-<p><img alt="" src="../images/argo/31.png" /></p>
+<p><img alt="" src="../images/argo/32.png" /></p>
 <p>Now, create a Kubernetes CronJob that periodically polls GitHub for new commits. If new commits are found, the job can send an event to the event source webhook created earlier.</p>
 <p>File: <code>poller-cronjob.yaml</code></p>
 <pre><code>---
@@ -432,7 +432,7 @@ spec:
 </code></pre>
 <p>now start watching the cronjobs as well as event flow from Argo Workflow dashboard.  </p>
 <p>Workflows:</p>
-<p><img alt="" src="../images/argo/30.png" /></p>
+<p><img alt="" src="../images/argo/31.png" /></p>
               
             </div>
           </div><footer>
