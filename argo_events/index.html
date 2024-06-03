@@ -289,152 +289,9 @@ spec:
 <p>apply</p>
 <pre><code>kubectl apply -f webook-eventsource.yaml
 </code></pre>
-<p>File:  <code>vote-ci-template.yaml</code></p>
-<pre><code>apiVersion: argoproj.io/v1alpha1
-kind: WorkflowTemplate
-metadata:
-  name: vote-ci-template
-  namespace: argo-events
-spec:
-  entrypoint: main
-  serviceAccountName: default
-  arguments:
-    parameters:
-    - name: repo-url
-      value: &quot;https://github.com/your-username/your-flask-app.git&quot;
-    - name: branch
-      value: &quot;main&quot;
-    - name: image
-      value: &quot;your-registry/your-flask-app&quot;
-    - name: dockerfile
-      value: &quot;Dockerfile&quot;
-
-  volumeClaimTemplates:
-  - metadata:
-      name: workspace
-    spec:
-      accessModes: [&quot;ReadWriteOnce&quot;]
-      resources:
-        requests:
-          storage: 100Mi
-
-  volumes:
-  - name: docker-config
-    secret:
-      secretName: docker-registry-creds
-      items:
-        - key: .dockerconfigjson
-          path: config.json
-
-  templates:
-  - name: main
-    inputs:
-      parameters:
-      - name: repo-url
-      - name: branch
-      - name: image
-      - name: dockerfile
-    steps:
-    - - name: clone
-        template: clone
-        arguments:
-          parameters:
-          - name: repo-url
-            value: &quot;{{inputs.parameters.repo-url}}&quot;
-          - name: branch
-            value: &quot;{{inputs.parameters.branch}}&quot;
-    - - name: build
-        template: build
-    - - name: test
-        template: test
-    - - name: imagebuild
-        template: imagebuild
-        arguments:
-          parameters:
-          - name: commit-sha
-            value: &quot;{{steps.clone.outputs.parameters.commit-sha}}&quot;
-          - name: image
-            value: &quot;{{inputs.parameters.image}}&quot;
-          - name: dockerfile
-            value: &quot;{{inputs.parameters.dockerfile}}&quot;
-
-  # Clone task
-  - name: clone
-    inputs:
-      parameters:
-      - name: repo-url
-      - name: branch
-    script:
-      image: alpine/git
-      command: [sh]
-      source: |
-        #!/bin/sh
-        git clone --branch {{inputs.parameters.branch}} {{inputs.parameters.repo-url}} /workspace
-        cd /workspace
-        COMMIT_SHA=$(git rev-parse --short HEAD)
-        echo $COMMIT_SHA &gt; /workspace/commit-sha.txt
-      volumeMounts:
-      - name: workspace
-        mountPath: /workspace
-    outputs:
-      parameters:
-      - name: commit-sha
-        valueFrom:
-          path: /workspace/commit-sha.txt
-
-  # Build task
-  - name: build
-    script:
-      image: python:3.9
-      command: [&quot;sh&quot;]
-      source: |
-        #!/bin/sh
-        cd /workspace
-        pip install -r requirements.txt
-      volumeMounts:
-      - name: workspace
-        mountPath: /workspace
-
-  # Test task
-  - name: test
-    script:
-      image: python:3.9
-      command: [&quot;sh&quot;]
-      source: |
-        #!/bin/sh
-        cd /workspace
-        pip install nose
-        nosetests
-      volumeMounts:
-      - name: workspace
-        mountPath: /workspace
-
-  # Image build and publish task using Kaniko
-  - name: imagebuild
-    inputs:
-      parameters:
-      - name: commit-sha
-      - name: image
-      - name: dockerfile
-    container:
-      image: gcr.io/kaniko-project/executor:latest
-      command: [&quot;/kaniko/executor&quot;]
-      args:
-      - --dockerfile=/workspace/{{inputs.parameters.dockerfile}}
-      - --context=/workspace
-      - --destination={{inputs.parameters.image}}:{{inputs.parameters.commit-sha}}
-      - --force
-      volumeMounts:
-      - name: workspace
-        mountPath: /workspace
-      - name: docker-config
-        mountPath: /kaniko/.docker
-      env:
-      - name: DOCKER_CONFIG
-        value: /kaniko/.docker
-</code></pre>
-<p>Create workflow template as</p>
-<pre><code>kubectl apply -f vote-ci-template
+<p>Check the Argo Workflow for Vote CI Pipeline converted into a <a href="https://gist.githubusercontent.com/initcron/c1704b560909f424e66062d86af9ff5c/raw/f7c5f73605a732d358a93854bc2da652113de494/vote-ci-template.yaml">Workflow Template</a>.</p>
+<p>Create workflow template using this code as</p>
+<pre><code>kubectl apply -f https://gist.githubusercontent.com/initcron/c1704b560909f424e66062d86af9ff5c/raw/f7c5f73605a732d358a93854bc2da652113de494/vote-ci-template.yaml
 
 </code></pre>
 <p>validate</p>
@@ -504,6 +361,9 @@ spec:
 </code></pre>
 <p>validate</p>
 <pre><code>kubectl get pods -n argo-events
+</code></pre>
+<p>you could also check the logs for sensor controller (useful for troubleshooting) using</p>
+<pre><code>kubectl logs -n argo-events -l &quot;controller=sensor-controller&quot;
 </code></pre>
 <p>you should see a new pod launched to run this sensor.</p>
 <p>Now, create a Kubernetes CronJob that periodically polls GitHub for new commits. If new commits are found, the job can send an event to the event source webhook created earlier.</p>
