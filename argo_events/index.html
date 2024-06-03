@@ -449,9 +449,11 @@ argo template list -A
    --docker-username=xxxx \
    --docker-password=yyyy
 </code></pre>
-<p>where replace,
-* <code>xxxx</code> with registry username
-* <code>yyyy</code> with registry access token</p>
+<p>where replace,  </p>
+<ul>
+<li><code>xxxx</code> with registry username  </li>
+<li><code>yyyy</code> with registry access token  </li>
+</ul>
 <p>Add sensor which will listen to updates to <code>github</code> webhook created with event source and then trigger the argo workflow as,</p>
 <p>File : <code>sensor.yaml</code></p>
 <pre><code>apiVersion: argoproj.io/v1alpha1
@@ -491,12 +493,12 @@ spec:
                   - name: dockerfile
                     value: &quot;Dockerfile&quot;
 
-
-
 </code></pre>
-<p>where,
-* replace <code>repo-url</code> with your code repository url
-* update image tag by replacing <code>xxxxxx</code> with your docker hub user name</p>
+<p>where,</p>
+<ul>
+<li>replace <code>repo-url</code> with your code repository url  </li>
+<li>update image tag by replacing <code>xxxxxx</code> with your docker hub user name  </li>
+</ul>
 <p>apply</p>
 <pre><code>kubectl apply -f sensor.yaml
 
@@ -554,9 +556,11 @@ spec:
       storage: 10Mi
 
 </code></pre>
-<p>where,
-* replace value of <code>GITHUB_API_URL</code> to match your user name and repo components  e.g. <code>https://api.github.com/repos/devops-0001/vote/commits</code><br />
-* verify values for all env variables to be correct    </p>
+<p>where,</p>
+<ul>
+<li>replace value of <code>GITHUB_API_URL</code> to match your user name and repo components  e.g. <code>https://api.github.com/repos/devops-0001/vote/commits</code>   </li>
+<li>verify values for all env variables to be correct    </li>
+</ul>
 <p>Also create secret with github token with access to the repository, which is used in the cronjob above.</p>
 <pre><code>kubectl create secret generic github-token-secret --from-literal=token=xxxx
 </code></pre>
