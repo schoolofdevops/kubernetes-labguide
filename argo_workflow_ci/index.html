@@ -3,18 +3,18 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/docker-networking/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/argo_workflow_ci/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Lab D103 - Docker Networking - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <title>Lab K604 - Continuous Integration with Argo Workflows - Kubernetes Tutorial with CKA/CKAD Prep</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Lab D103 - Docker Networking";
-        var mkdocs_page_input_path = "docker-networking.md";
-        var mkdocs_page_url = "/docker-networking/";
+        var mkdocs_page_name = "Lab K604 - Continuous Integration with Argo Workflows";
+        var mkdocs_page_input_path = "argo_workflow_ci.md";
+        var mkdocs_page_url = "/argo_workflow_ci/";
       </script>
     
     <!--[if lt IE 9]>
@@ -54,26 +54,12 @@
                 </li>
               </ul>
               <p class="caption"><span class="caption-text">Docker Essentials for Kubernetes</span></p>
-              <ul class="current">
+              <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../operating-docker-containers/">Lab D101 - Operating Containers</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../building-publishing-docker-images/">Lab D102 - Building and Publishing Docker Images</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab D103 - Docker Networking</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#host-networking">Host Networking</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#launching-containers-in-different-bridges">Launching containers in different bridges</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#using-none-network-driver">Using None Network Driver</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#using-host-network-driver">Using Host Network Driver</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#observe-docker-bridge-routing-and-port-mapping">Observe docker bridge, routing and port mapping</a>
-    </li>
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../docker-networking/">Lab D103 - Docker Networking</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../docker-volumes/">Lab D104 - Docker Volumes</a>
                   </li>
@@ -186,7 +172,7 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Argo</span></p>
-              <ul>
+              <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../kind_create_cluster/">Lab K601 - Setup Kubernetes with KIND</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../argo_rollout_blue_green/">Lab K602 - Blue/Green Release with Argo Rollouts</a>
@@ -195,7 +181,13 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../argo_multi_env_deploy/">Lab K604 - Continuous Deployment with ArgoCD</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../argo_workflow_ci/">Lab K604 - Continuous Integration with Argo Workflows</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K604 - Continuous Integration with Argo Workflows</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#setting-up-argo-workflow">Setting up Argo Workflow</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#building-ci-pipeline-with-workflow">Building CI Pipeline with Workflow</a>
+    </li>
+    </ul>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Exercises</span></p>
@@ -243,10 +235,10 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a> &raquo;</li>
-          <li>Docker Essentials for Kubernetes &raquo;</li>
-      <li class="breadcrumb-item active">Lab D103 - Docker Networking</li>
+          <li>Argo &raquo;</li>
+      <li class="breadcrumb-item active">Lab K604 - Continuous Integration with Argo Workflows</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/docker-networking.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/argo_workflow_ci.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -254,147 +246,194 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="lab-docker-networking">Lab: Docker Networking</h1>
-<h3 id="host-networking">Host Networking</h3>
+                <h1 id="argo-workflows">Argo Workflows</h1>
+<p>Author: Gourav Shah<br />
+Publisher: School of Devops<br />
+Version : v2024.06.03.01  </p>
+<hr />
+<h2 id="setting-up-argo-workflow">Setting up Argo Workflow</h2>
 <ul>
-<li>bridge</li>
-<li>host</li>
-<li>peer</li>
-<li>none</li>
+<li>Signup and Login to <a href="https://killercoda.com/">Killercoda</a>  </li>
+<li>From <a href="https://killercoda.com/argoproj/course/argo-workflows">Argo Workflows by argoproj</a> launch <code>Workflow Examples</code> scenario  </li>
+<li>This will take a few minutes for the scenario to be ready with Argo Workflow installed   </li>
 </ul>
-<p>Examine the existing network</p>
-<pre><code>docker network ls
-
-NETWORK ID          NAME                DRIVER              SCOPE
-b3d405dd37e4        bridge              bridge              local
-7527c821537c        host                host                local
-773bea4ca095        none                null                local
-</code></pre>
-<p>Creating new network</p>
-<pre><code>docker network create -d bridge mynet
-</code></pre>
-<p>validate</p>
-<pre><code>docker network ls
-NETWORK ID          NAME                DRIVER              SCOPE
-b3d405dd37e4        bridge              bridge              local
-7527c821537c        host                host                local
-4e0d9b1a39f8        mynet               bridge              local
-773bea4ca095        none                null                local
-</code></pre>
-<pre><code>docker network inspect mynet
-
-
-[
-   {
-       &quot;Name&quot;: &quot;mynet&quot;,
-       &quot;Id&quot;: &quot;4e0d9b1a39f859af4811986534c91527146bc9d2ce178e5de02473c0f8ce62d5&quot;,
-       &quot;Created&quot;: &quot;2018-05-03T04:44:19.187296148Z&quot;,
-       &quot;Scope&quot;: &quot;local&quot;,
-       &quot;Driver&quot;: &quot;bridge&quot;,
-       &quot;EnableIPv6&quot;: false,
-       &quot;IPAM&quot;: {
-           &quot;Driver&quot;: &quot;default&quot;,
-           &quot;Options&quot;: {},
-           &quot;Config&quot;: [
-               {
-                   &quot;Subnet&quot;: &quot;172.18.0.0/16&quot;,
-                   &quot;Gateway&quot;: &quot;172.18.0.1&quot;
-               }
-           ]
-       },
-       &quot;Internal&quot;: false,
-       &quot;Attachable&quot;: false,
-       &quot;Ingress&quot;: false,
-       &quot;ConfigFrom&quot;: {
-           &quot;Network&quot;: &quot;&quot;
-       },
-       &quot;ConfigOnly&quot;: false,
-       &quot;Containers&quot;: {},
-       &quot;Options&quot;: {},
-       &quot;Labels&quot;: {}
-   }
-]
-</code></pre>
-<h4 id="launching-containers-in-different-bridges">Launching containers in different bridges</h4>
-<p>Launch two containers <strong>nt01</strong> and <strong>nt02</strong> in <strong>default</strong> bridge network</p>
-<pre><code>docker container run -idt --name nt01 alpine sh
-docker container run -idt --name nt02 alpine sh
-</code></pre>
-<p>Launch two containers <strong>nt03</strong> and <strong>nt04</strong> in <strong>mynet</strong> bridge network</p>
-<pre><code>docker container run -idt --name nt03 --net mynet alpine sh
-docker container run -idt --name nt04 --net mynet alpine sh
-</code></pre>
-<p>Now, lets examine if they can interconnect,</p>
-<pre><code>
-docker exec nt01 ifconfig eth0
-docker exec nt02 ifconfig eth0
-docker exec nt03 ifconfig eth0
-docker exec nt04 ifconfig eth0
-
-</code></pre>
-<p>This is what I see</p>
-<p>nt01 :  172.17.0.18</p>
-<p>nt02 :  172.17.0.19</p>
-<p>nt03 :  172.18.0.2</p>
-<p>nt04 :  172.18.0.3</p>
-<p>Create a table with the ips on your host.  Once you do that,</p>
-<p>Try to,</p>
+<p><img alt="" src="../images/argo/28.png" /></p>
 <ul>
-<li>ping from <strong>nt01</strong> to <strong>nt02</strong>  </li>
-<li>ping from <strong>nt01</strong> to <strong>nt03</strong>  </li>
-<li>ping from <strong>nt03</strong> to <strong>nt04</strong>  </li>
-<li>ping from <strong>nt03</strong> to <strong>nt02</strong>  </li>
+<li>Once set up, click on <code>START</code> and then run the command under <code>View the server UI</code></li>
 </ul>
-<p>e.g.</p>
-<p>[replace ip addresses as per your setup]</p>
-<pre><code>docker exec nt01  ping 172.17.0.19
+<p><img alt="" src="../images/argo/29.png" /></p>
+<ul>
+<li>Select <code>Click here to access the UI</code> to see th Workflow Dashboard as follows</li>
+</ul>
+<p><img alt="" src="../images/argo/30.png" /></p>
+<h2 id="building-ci-pipeline-with-workflow">Building CI Pipeline with Workflow</h2>
+<pre><code>kubectl create secret -n argo docker-registry docker-registry-creds  \
+   --docker-server=https://index.docker.io/v1/ \
+   --docker-username=xxxx \
+   --docker-password=yyyy
+</code></pre>
+<p>where replace,
+* <code>xxxx</code> with registry username
+* <code>yyyy</code> with registry access token</p>
+<p>File : <code>vote-ci-workflow.yaml</code></p>
+<pre><code>apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: vote-ci-
+spec:
+  entrypoint: main
+  arguments:
+    parameters:
+    - name: repo-url
+      value: &quot;https://github.com/your-username/your-flask-app.git&quot;
+    - name: branch
+      value: &quot;main&quot;
+    - name: image
+      value: &quot;your-registry/your-flask-app&quot;
+    - name: dockerfile
+      value: &quot;Dockerfile&quot;
 
-docker exec nt01  ping 172.18.0.2
+  volumeClaimTemplates:
+  - metadata:
+      name: workspace
+    spec:
+      accessModes: [&quot;ReadWriteOnce&quot;]
+      resources:
+        requests:
+          storage: 100Mi
 
-docker exec nt03  ping 172.17.0.19
+  volumes:
+  - name: docker-config
+    secret:
+      secretName: docker-registry-creds
+      items:
+        - key: .dockerconfigjson
+          path: config.json
 
-docker exec nt03  ping 172.18.0.2
+  templates:
+  - name: main
+    inputs:
+      parameters:
+      - name: repo-url
+      - name: branch
+      - name: image
+      - name: dockerfile
+    steps:
+    - - name: clone
+        template: clone
+        arguments:
+          parameters:
+          - name: repo-url
+            value: &quot;{{inputs.parameters.repo-url}}&quot;
+          - name: branch
+            value: &quot;{{inputs.parameters.branch}}&quot;
+    - - name: build
+        template: build
+    - - name: test
+        template: test
+    - - name: imagebuild
+        template: imagebuild
+        arguments:
+          parameters:
+          - name: commit-sha
+            value: &quot;{{steps.clone.outputs.parameters.commit-sha}}&quot;
+          - name: image
+            value: &quot;{{inputs.parameters.image}}&quot;
+          - name: dockerfile
+            value: &quot;{{inputs.parameters.dockerfile}}&quot;
+
+  # Clone task
+  - name: clone
+    inputs:
+      parameters:
+      - name: repo-url
+      - name: branch
+    script:
+      image: alpine/git
+      command: [sh]
+      source: |
+        #!/bin/sh
+        git clone --branch {{inputs.parameters.branch}} {{inputs.parameters.repo-url}} /workspace
+        cd /workspace
+        COMMIT_SHA=$(git rev-parse --short HEAD)
+        echo $COMMIT_SHA &gt; /workspace/commit-sha.txt
+      volumeMounts:
+      - name: workspace
+        mountPath: /workspace
+    outputs:
+      parameters:
+      - name: commit-sha
+        valueFrom:
+          path: /workspace/commit-sha.txt
+
+  # Build task
+  - name: build
+    script:
+      image: python:3.9
+      command: [&quot;sh&quot;]
+      source: |
+        #!/bin/sh
+        cd /workspace
+        pip install -r requirements.txt
+      volumeMounts:
+      - name: workspace
+        mountPath: /workspace
+
+  # Test task
+  - name: test
+    script:
+      image: python:3.9
+      command: [&quot;sh&quot;]
+      source: |
+        #!/bin/sh
+        cd /workspace
+        pip install nose
+        nosetests
+      volumeMounts:
+      - name: workspace
+        mountPath: /workspace
+
+  # Image build and publish task using Kaniko
+  - name: imagebuild
+    inputs:
+      parameters:
+      - name: commit-sha
+      - name: image
+      - name: dockerfile
+    container:
+      image: gcr.io/kaniko-project/executor:latest
+      command: [&quot;/kaniko/executor&quot;]
+      args:
+      - --dockerfile=/workspace/{{inputs.parameters.dockerfile}}
+      - --context=/workspace
+      - --destination={{inputs.parameters.image}}:{{inputs.parameters.commit-sha}}
+      - --force
+      volumeMounts:
+      - name: workspace
+        mountPath: /workspace
+      - name: docker-config
+        mountPath: /kaniko/.docker
+      env:
+      - name: DOCKER_CONFIG
+        value: /kaniko/.docker
 
 
 </code></pre>
-<p>Clearly, these two are two differnt subnets/networks even though running on the same host. <strong>nt01</strong> and <strong>nt02</strong> can connect with each other, whereas <strong>nt03</strong>  and <strong>nt04</strong> can connect. But connection between containers attached to two different subnets is not possible.</p>
-<h4 id="using-none-network-driver">Using None Network Driver</h4>
-<pre><code>docker container run -idt --name nt05 --net none alpine sh
-
-docker exec -it nt05 sh
-
-ifconfig
+<pre><code>argo submit -n argo --watch vote-ci-workflow.yaml \
+  -p repo-url=https://github.com/devops-0001/vote.git \
+  -p branch=master \
+  -p image=initcron/flask-app \
+  -p dockerfile=Dockerfile
 </code></pre>
-<h4 id="using-host-network-driver">Using Host Network Driver</h4>
-<pre><code>docker container run -idt --name nt05 --net host  alpine sh
-
-docker exec -it nt05 sh
-
-ifconfig
-</code></pre>
-<h3 id="observe-docker-bridge-routing-and-port-mapping">Observe docker bridge, routing and port mapping</h3>
-<p>Exercise: Read about <a href="https://github.com/nicolaka/netshoot"><strong>netshoot</strong> utility here</a></p>
-<p>Launch netshoot and connect to the host network</p>
-<pre><code>
-docker run -it --net host --privileged  nicolaka/netshoot
-
-</code></pre>
-<p>Examine port mapping,</p>
-<pre><code>iptables -nvL -t nat
-</code></pre>
-<p>Traverse host port to container ip and port.</p>
-<p>Observe docker bridge and routing with the following command,</p>
-<pre><code>brctl show
-
-ip route show
-
+<p>you could also watch the pods</p>
+<pre><code>watch kubectl get pods -n argo
 </code></pre>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../building-publishing-docker-images/" class="btn btn-neutral float-left" title="Lab D102 - Building and Publishing Docker Images"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../docker-volumes/" class="btn btn-neutral float-right" title="Lab D104 - Docker Volumes">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../argo_multi_env_deploy/" class="btn btn-neutral float-left" title="Lab K604 - Continuous Deployment with ArgoCD"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../xer-001-pods/" class="btn btn-neutral float-right" title="XER001 - Pods">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -422,10 +461,10 @@ ip route show
         </span>
     
     
-      <span><a href="../building-publishing-docker-images/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../argo_multi_env_deploy/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../docker-volumes/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../xer-001-pods/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
