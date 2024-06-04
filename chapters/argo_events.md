@@ -6,7 +6,7 @@ Version : v2024.06.02.01
 - - -
 
 
-## Project: Trigger CI Pipeline on GitHub Changes 
+## Project: Trigger CI Pipeline on GitHub Changes
 
 Launch [Argo Workflow](https://killercoda.com/argoproj/course/argo-workflows/workflow-examples) Environment with Killercoda , set up server UI and have it open.
 
@@ -86,10 +86,9 @@ argo template list -A
 add registry credentials to `argo-events` namespace again with
 
 ```
-kubectl create secret -n argo docker-registry docker-registry-creds  \
+kubectl create secret -n argo-events docker-registry docker-registry-creds  \
    --docker-server=https://index.docker.io/v1/ \
-   --docker-username=xxxx \
-   --docker-password=yyyy
+   --docker-username=xxxx  --docker-password=yyyy
 ```
 
 where replace,  
@@ -247,6 +246,9 @@ kubectl apply -f poller-cronjob.yaml
 
 now start watching the cronjobs as well as event flow from Argo Workflow dashboard.  
 
+Event Flow :
+
+![](images/argo/33.png)
 
 Workflows:
 
