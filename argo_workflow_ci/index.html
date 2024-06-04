@@ -185,7 +185,9 @@
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#setting-up-argo-workflow">Setting up Argo Workflow</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#building-ci-pipeline-with-workflow">Building CI Pipeline with Workflow</a>
+    <li class="toctree-l2"><a class="reference internal" href="#building-ci-pipeline-with-argo-workflow">Building CI Pipeline with Argo Workflow</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#summary">Summary</a>
     </li>
     </ul>
                   </li>
@@ -271,7 +273,7 @@ Version : v2024.06.03.01  </p>
 <li>Select <code>Click here to access the UI</code> to see th Workflow Dashboard as follows</li>
 </ul>
 <p><img alt="" src="../images/argo/30.png" /></p>
-<h2 id="building-ci-pipeline-with-workflow">Building CI Pipeline with Workflow</h2>
+<h2 id="building-ci-pipeline-with-argo-workflow">Building CI Pipeline with Argo Workflow</h2>
 <p>Before you begin, fork the <a href="https://github.com/sfd226/vote">repository containing source code for vote service</a> on to your account. You are going to use this repository to set up the CI Pipeline with.</p>
 <p>You are going to set up Argo Workflow which will build a CI Pipeline for you.  This workflow will have the following stpes/stages</p>
 <ol>
@@ -285,9 +287,11 @@ Version : v2024.06.03.01  </p>
    --docker-server=https://index.docker.io/v1/ \
    --docker-username=xxxx --docker-password=yyyy
 </code></pre>
-<p>where replace,
-* <code>xxxx</code> with registry username
-* <code>yyyy</code> with registry access token  </p>
+<p>where replace,  </p>
+<ul>
+<li><code>xxxx</code> with registry username  </li>
+<li><code>yyyy</code> with registry access token   </li>
+</ul>
 <p>Instead of providing your password for <code>--docker-password</code>, it is recommended that you create a access token.  For Docker Hub, you could do that as follows:</p>
 <ul>
 <li>Sign in to <a href="https://hub.docker.com/">Docker Hub</a>  </li>
@@ -309,11 +313,11 @@ spec:
   arguments:
     parameters:
     - name: repo-url
-      value: &quot;https://github.com/your-username/your-flask-app.git&quot;
+      value: &quot;https://github.com/xxxxxx/vote.git&quot;
     - name: branch
       value: &quot;main&quot;
     - name: image
-      value: &quot;your-registry/your-flask-app&quot;
+      value: &quot;yyyyyy/vote&quot;
     - name: dockerfile
       value: &quot;Dockerfile&quot;
 
@@ -443,15 +447,54 @@ spec:
 
 
 </code></pre>
+<p>create a workflow by providing your own repo and image tag and start watching it using the following command:</p>
 <pre><code>argo submit -n argo --watch vote-ci-workflow.yaml \
-  -p repo-url=https://github.com/devops-0001/vote.git \
-  -p branch=master \
-  -p image=initcron/flask-app \
+  -p repo-url=https://github.com/xxxxxx/vote.git \
+  -p branch=main \
+  -p image=yyyyyy/vote \
   -p dockerfile=Dockerfile
 </code></pre>
+<p>where,</p>
+<ul>
+<li>Replace <code>xxxxxx</code> with approapriate repo URL   </li>
+<li>Replace <code>yyyyyy</code> with your docker hub user id. Update the repo name as necessary.</li>
+</ul>
 <p>you could also watch the pods</p>
 <pre><code>watch kubectl get pods -n argo
 </code></pre>
+<p>and using dashboard as</p>
+<p><img alt="" src="../images/argo/39.png" /></p>
+<p>If you were watching the workflow here is the sample output</p>
+<pre><code>Name:                vote-ci-x5hzc
+Namespace:           argo
+ServiceAccount:      argo
+Status:              Succeeded
+Conditions:          
+ PodRunning          False
+ Completed           True
+Created:             Tue Jun 04 09:01:06 +0000 (2 minutes ago)
+Started:             Tue Jun 04 09:01:06 +0000 (2 minutes ago)
+Finished:            Tue Jun 04 09:03:50 +0000 (now)
+Duration:            2 minutes 44 seconds
+Progress:            4/4
+ResourcesDuration:   12s*(1 cpu),2m33s*(100Mi memory)
+Parameters:          
+  repo-url:          https://github.com/devops-0001/vote.git
+  branch:            master
+  image:             initcron/flask-app
+  dockerfile:        Dockerfile
+
+STEP               TEMPLATE    PODNAME                              DURATION  MESSAGE
+ ✔ vote-ci-x5hzc   main                                                         
+ ├───✔ clone       clone       vote-ci-x5hzc-clone-2858201196       34s         
+ ├───✔ build       build       vote-ci-x5hzc-build-959094096        47s         
+ ├───✔ test        test        vote-ci-x5hzc-test-1680485113        10s         
+ └───✔ imagebuild  imagebuild  vote-ci-x5hzc-imagebuild-1986147349  43s      
+</code></pre>
+<p>if you broese to DockerHub account, you should see a new image tag published as a result of the argo workflow.</p>
+<p><img alt="" src="../images/argo/40.png" /></p>
+<h2 id="summary">Summary</h2>
+<p>With this lab you learnt how to set up a simple  Continuous Integration Pipeline using Argo Workflows. This pipeline runs a sequence of jobs including build, test and container image build and publish. The result of this pipeline is a new container image available on the registry. This can be further iterated over to create conditionl logic, parallel execution of steps etc. with Argo Workflow.</p>
               
             </div>
           </div><footer>
