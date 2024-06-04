@@ -1,4 +1,4 @@
-# Lab 10A -  Setting up Automated Deployments with ArgoCD
+# Setting up Automated Deployments with ArgoCD
 Author: Gourav Shah  
 Publisher: School of Devops  
 Version : v2024.06.02.01  
@@ -82,7 +82,7 @@ Click on `New Project` -> Create and provide Project Name and Description as
 
 Proceed to create the project.
 
-From Projecr Configuration page that you are redirected to, edit `DESTINATIONS`
+From Project Configuration page that you are redirected to, edit `DESTINATIONS`
 
   * Select default cluster name from dropdown  
   * Select `in-cluster` as Name  
