@@ -100,7 +100,7 @@ You shall see a visualiser similar to the following loaded on the browser.
 
 If you see this page , Congratulations !! You have the cluster setup.
 
-## Restarting and Resetting the Cluster
+## Restarting and Resetting the Cluster (Skip)
 
 `Note: This is a Optional Topic. Skil this during your initial setup lab.`
 

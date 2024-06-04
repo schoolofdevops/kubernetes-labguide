@@ -5,6 +5,7 @@ Publisher: School of Devops
 Version : v2024.06.03.01  
 - - -
 
+**Project:**: Set up a Continuous Integration Pipeline with Argo Workflow.
 
 ## Setting up Argo Workflow
 

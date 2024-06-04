@@ -2,7 +2,7 @@
 
 Author: Gourav Shah  
 Publisher: School of Devops  
-Version : v2024.06.02.01  
+Version : v2024.06.03.01  
 - - -
 
 
@@ -33,7 +33,7 @@ CURRENT   NAME        CLUSTER     AUTHINFO    NAMESPACE
 ```
 
 
-Create a copy of the deployment code
+Create a copy of the kustomization code to set up prod with:  
 
 
 ```
@@ -101,10 +101,6 @@ labels:
 patches:
 - path: service.yaml
 - path: preview-service.yaml
-images:
- - name: schoolofdevops/vote
-   newName: schoolofdevops/vote
-   newTag: v2
 ```
 
 apply with
@@ -176,10 +172,6 @@ patches:
 - path: service.yaml
 - path: preview-service.yaml
 - path: rollout.yaml
-images:
- - name: schoolofdevops/vote
-   newName: schoolofdevops/vote
-   newTag: v2
 ```
 
 If you have `kustomize` installed, verify the configs from `argo-labs` as
@@ -202,7 +194,7 @@ kubectl get all,ro
 ```
 
 
-If you have the Argo ROllouts Dashboard, switch the namespace from top right corner to  `prod`
+If you have the Argo Rollouts Dashboard, switch the namespace from top right corner to  `prod`
 
 ![](images/argo/16.png)
 
@@ -233,13 +225,12 @@ You could also keep monitoring the Argo Rollouts Dashboard. Launch it if require
 kubectl argo rollouts dashboard -p 3100
 ```
 
-Trigger a new rollout by modifying `prod/kustomization.yaml` file with new image tag as  
+Trigger a new rollout by modifying `base/rollouts.yaml` file with new image tag as  
 
 ```
-images:
- - name: schoolofdevops/vote
-   newName: schoolofdevops/vote
-   newTag: v3
+spec:
+  containers:
+  - image: schoolofdevops/vote:v2
 ```
 
 and apply

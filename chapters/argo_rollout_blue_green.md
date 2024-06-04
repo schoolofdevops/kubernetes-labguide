@@ -2,24 +2,22 @@
 
 Author: Gourav Shah  
 Publisher: School of Devops  
-Version : v2024.06.02.01  
+Version : v2024.06.03.01  
 - - -
 
 
 ## Launch Vote App with Deployment
 
-Lets begin by first deploying the `vote` service with the [deployment code](https://github.com/schoolofdevops/argo-labs) available.
+Lets begin by first deploying the `vote` service with the [deployment code](https://github.com/sfd226/argo-labs.git) available.
 
 
-* Create a fork of [Kubernetes Deployment Code for Vote App](https://github.com/schoolofdevops/argo-labs)
+* Create a fork of [Kubernetes Deployment Code for Vote App](https://github.com/sfd226/argo-labs.git)
 
-
-While creating the fork, ensure that you uncheck the `Copy the main branch only` option as shown in screenshot below.
 
 ![](images/argo/14.png)
 
 
-Review the code created with kustomization overlay configured for `staging` and `prod` environments in additional to the base manifests.
+Review the code created with kustomization overlay configured for `staging` environment in additional to the `base` manifests.
 
 
 Create namespaces for staging environments as,
@@ -54,8 +52,19 @@ git clone https://github.com/xxxx/argo-labs.git
 ```
 replace `xxxx` with your user name
 
+change it to `argo-labs` and examine the code for base as well as staging as
+
+
 ```
 cd argo-labs
+
+kustomize build based
+kustomize build staging
+```
+
+then deploy `vote` service to staging as
+
+```
 kubectl apply -k staging
 ```
 
@@ -115,11 +124,14 @@ And validate as,
 kubectl argo rollouts version
 ```
 
+
+Also install Kustomize by following the instructions in [official documentation](https://kubectl.docs.kubernetes.io/installation/kustomize/) here.
+
 ## Create a Preview Service
 
 Create a preview service  during blue-green analysis
 
-File: `argo-labs/base/preview-service.yaml`
+File: `base/preview-service.yaml`
 
 ```
 ---
@@ -253,7 +265,7 @@ watch kubectl get ro,all --show-labels
 ```
 
 
-Also open two browser windows to watch for `vote` and `vote-preview` services respectively as
+Also open two more terminal windows to watch for `vote` and `vote-preview` services respectively as
 
 ```
 watch kubectl describe svc vote
@@ -268,16 +280,15 @@ If you had installed the argo rollout plugin for `kubectl`, you could also launc
 kubectl argo rollouts dashboard -p 3100
 ```
 
-and then start watching for the rollout using [http://localhost:3100/rollouts](http://localhost:3100/rollouts)
+and then start watching for the rollout using [http://localhost:3100/rollouts](http://localhost:3100/rollouts). Replace `localhost` with actul IP address of the host if you are running kubectl on a remote host.
 
 
-Now, trigger a rollout by updating the image by adding the following to `staging/kustomization.yaml`
+Now, trigger a rollout by updating the image by updating the image tag in `base/rollout.yaml`
 
 ```
-images:
- - name: schoolofdevops/vote
-   newName: schoolofdevops/vote
-   newTag: v2
+spec:
+  containers:
+  - image: schoolofdevops/vote:v2
 ```
 
 and then by applying it as
@@ -305,6 +316,8 @@ You would notice that,
   * Eventually the replicase with older version will scale down to zero, completing the rollout.  
 
 
+You could try rolling out (by updating the image version) a few times to learn how it works.
+
 
 ### Publish Changes to Repo
 
@@ -314,6 +327,14 @@ edit `base/rollout.yaml` and set the replicas count to `1`
 ```
 spec:
   replicas: 1
+```
+
+also in the same file, set the image tag back to `v1`
+
+```
+spec:
+  containers:
+  - image: schoolofdevops/vote:v1
 ```
 
 apply
@@ -328,7 +349,20 @@ validate
 kubectl get all
 ```
 
-All the changes that you have made so dat for the repo
+
+Before committing the changes, make sure you have created a GitHub Access Token with repo access.  To do so,
+
+  * Login to GiHub  
+  * Click on your User Profile on top right  
+  * From `Settings` -> `Developer Settings` -> `Personal access tokens` -> `Tokens(classic)`  
+  ![](images/argo/34.png)  
+  * Select `Generate new token(classic)` , provide authentication as needed and proceed to create token.   
+  * From token creation page, provide a token name and select `repo` configurations  
+  ![](images/argo/35.png)  
+  * Generate Token and copy it somewhere safe. You will need this token multiple times throughout this course to be added as kubernetes secret, so keep it handy.
+
+
+Commit all the changes that you have made so far to the repo
 
 ```
 git status
