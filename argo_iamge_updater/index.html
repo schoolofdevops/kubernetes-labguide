@@ -3,18 +3,18 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/wq000-template/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/argo_iamge_updater/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>KWQ001 - Kubernetes Security Web Quest - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <title>Lab K607 - Argo Image Updater - Kubernetes Tutorial with CKA/CKAD Prep</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "KWQ001 - Kubernetes Security Web Quest";
-        var mkdocs_page_input_path = "wq000-template.md";
-        var mkdocs_page_url = "/wq000-template/";
+        var mkdocs_page_name = "Lab K607 - Argo Image Updater";
+        var mkdocs_page_input_path = "argo_iamge_updater.md";
+        var mkdocs_page_url = "/argo_iamge_updater/";
       </script>
     
     <!--[if lt IE 9]>
@@ -172,7 +172,7 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Argo</span></p>
-              <ul>
+              <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../kind_create_cluster/">Lab K601 - Setup Kubernetes Cluster</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../argo_rollout_blue_green/">Lab K602 - Blue/Green with Argo Rollouts</a>
@@ -185,7 +185,15 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../argo_events/">Lab K606 - Argo Events</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../argo_iamge_updater/">Lab K607 - Argo Image Updater</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K607 - Argo Image Updater</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#set-up-automatic-image-updater-with-argocd">Set up automatic Image Updater with ArgoCD</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#marking-staging-application-for-auto-image-updates">Marking Staging Application for Auto Image Updates</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Exercises</span></p>
@@ -233,9 +241,10 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a> &raquo;</li>
-      <li class="breadcrumb-item active">KWQ001 - Kubernetes Security Web Quest</li>
+          <li>Argo &raquo;</li>
+      <li class="breadcrumb-item active">Lab K607 - Argo Image Updater</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/wq000-template.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/argo_iamge_updater.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -243,32 +252,95 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="kwq001-kubernetes-security-web-quest">KWQ001 - Kubernetes Security Web Quest</h1>
-<p>Security is a critical aspect while designing, building and maintaining any application infrastructure including kubernetes environemnts. With this exercise you are on a quest to find the measures you could implement to harden your kubernetes environment holistically.  </p>
-<h3 id="task">Task</h3>
-<p>Your task is to work in your group, research on security measures at every level, and try to find answers to the following questions. You will present on the topic briefly.</p>
-<p><strong>Questions</strong>:</p>
+                <h1 id="argo-image-updater">Argo Image Updater</h1>
+<p>Author: Gourav Shah<br />
+Publisher: School of Devops<br />
+Version : v2024.06.04.01  </p>
+<hr />
+<p><strong>Project</strong>: Connect CI Pipeline set up with Argo Workflow and Argo Events with the CD Pipeline created with ArgoCD and Argo Rollouts. Set up a workflow where</p>
 <ul>
-<li>*
-  *</li>
+<li>Whenever there is change to the <code>main</code> branch of the application code, it triggers the CI Pipeline with Argo Events + Argo Workflow. The result of this is a new image being published to the container registery.   </li>
+<li>Set up a watcher which is monitor the container registry, this is where argo image updater comes in. Whenever a new tag with a certain pattern is available in the registry, update the image tag in the <code>main</code> branch of the deployment repo with it. Auto commit to GitHub.    </li>
+<li>Change to the image tag should be automatically picked up by Argo CD and it should trigger the deployment to staging. Since its been integrated with argo rollouts, it implments the release strategy (e.g. Blue/Green) configured with the rollout spec.   </li>
+<li>Deployment to prod is just one pull request away. Whenever the change (e.g. new image tag) is merged from master to release branch, prod deployment should get triggered based on another application deployment flow set up with Argo CD. And that GitOps in action for you...   </li>
 </ul>
-<h3 id="process">Process</h3>
-<p>Following is the process you could loosely follow,</p>
-<ul>
-<li>Start researching on web and reading individually about the topic. Reference the links and articles in the resources  section while you do so.</li>
-<li>Reflect on how it could apply to your work environment. Speak with with the relevant teams in your organisation if needed gain insights into current implementation, what are the issues being faced. Think about  how you could you apply the knowledge you have researched on.</li>
-<li>Have a group discussion with  within  your group, exchange what you have learnt as well as your experience with the topic in your prior/existing  projects.  You may come up with the notes and common points you would like to present.</li>
-<li>Prepare a short 5/10 minutes presentation to explain the topic and answer the questions given in the <strong>task</strong> section above.</li>
-</ul>
-<h3 id="resources">Resources</h3>
-<ul>
-<li>Article:</li>
-<li>eBook:</li>
-<li>video:</li>
-</ul>
+<h2 id="set-up-automatic-image-updater-with-argocd">Set up automatic Image Updater with ArgoCD</h2>
+<p>Install  <a href="https://argocd-image-updater.readthedocs.io/">Argo CD Image Updater</a> as,</p>
+<pre><code>kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj-labs/argocd-image-updater/stable/manifests/install.yaml
+</code></pre>
+<p>Create a  Secret with your GitHub credentials so that the image updater can discover and commit the image tags to git repository.  </p>
+<pre><code>kubectl -n argocd create secret generic git-creds \
+  --from-literal=username=xxxxxx \
+  --from-literal=password=ghp_yyyyyy
+</code></pre>
+<p>Note : replace <code>xxxxxx</code> with your GitHub Username and <code>ghp_yyyyyy</code> with GitHub Access Token with write access to repository.  If you do not already have token, create it from GitHub</p>
+<h3 id="marking-staging-application-for-auto-image-updates">Marking Staging Application for Auto Image Updates</h3>
+<p>When you set up staging deployment, ArgoCD has created a application object for you.  You would need to add a few annotations  to it so that the Image Updater knows that this application is been marked for image auto update.</p>
+<p>Observe the existing application created from ArgoCD UI as,</p>
+<pre><code>kubectl get application -n argocd
+
+kubectl describe application -n argocd vote-staging
+</code></pre>
+<p>specifically observe the annotations</p>
+<pre><code>Annotations:  &lt;none&gt;
+</code></pre>
+<p>To update this application with  appropriate annotations create a patch file with the name and content given below,</p>
+<p>File : <code>argo_applications_vote-staging_patch.yaml</code></p>
+<pre><code>metadata:
+  annotations:
+    argocd-image-updater.argoproj.io/git-branch: main
+    argocd-image-updater.argoproj.io/image-list: myimage=initcron/argovote
+    argocd-image-updater.argoproj.io/myimage.allow-tags: regexp:^[0-9a-f]{7}$
+    argocd-image-updater.argoproj.io/myimage.ignore-tags: latest, dev
+    argocd-image-updater.argoproj.io/myimage.update-strategy: latest
+    argocd-image-updater.argoproj.io/myimage.kustomize.image-name: schoolofdevops/vote
+    argocd-image-updater.argoproj.io/myimage.force-update: &quot;true&quot;
+    argocd-image-updater.argoproj.io/write-back-method: git:secret:argocd/git-creds
+    argocd-image-updater.argoproj.io/write-back-target: &quot;kustomization:../base&quot;
+</code></pre>
+<p>Source: <a href="https://gist.github.com/initcron/ddf79cb9ba9ca940a1263150b586ec60">Mark Staging App for Automatic Image Updates from Argo</a></p>
+<p>Where,
+* Replace <code>initcron/vote</code> with your own repo in the <code>argocd-image-updater.argoproj.io/image-list</code> annotation.</p>
+<p>Apply the above patch as,</p>
+<pre><code>kubectl patch application --type=merge -n argocd vote-staging --patch-file argo_applications_vote-staging_patch.yaml
+
+</code></pre>
+<p>Validate annotations are added,</p>
+<pre><code>kubectl describe application -n argocd vote-staging
+</code></pre>
+<p>[sample output]</p>
+<pre><code>...
+Labels:       &lt;none&gt;
+Annotations:  argocd-image-updater.argoproj.io/git-branch: main
+              argocd-image-updater.argoproj.io/image-list: myimage=initcron/argovote
+              argocd-image-updater.argoproj.io/myimage.allow-tags: regexp:^[0-9a-f]{7}$
+              argocd-image-updater.argoproj.io/myimage.force-update: true
+              argocd-image-updater.argoproj.io/myimage.ignore-tags: latest, dev
+              argocd-image-updater.argoproj.io/myimage.kustomize.image-name: schoolofdevops/vote
+              argocd-image-updater.argoproj.io/myimage.update-strategy: latest
+              argocd-image-updater.argoproj.io/write-back-method: git:secret:argocd/git-creds
+              argocd-image-updater.argoproj.io/write-back-target: kustomization:../base
+API Version:  argoproj.io/v1alpha1
+Kind:         Application
+...
+</code></pre>
+<p>If everything goes well, within a few minutes, you should see a commit to the main branch of the <code>vote-deploy</code> repository that you have.</p>
+<p>And a few minutes after that, you should see the staging deployment on ArgoCD  pick up the newly updated image tag and deploy it.  From there, its just matter of creating a pull request and merging it to release branch to deploy to prod.</p>
+<p>You could check the logs for the image updater which is running in <code>argocd</code> namespace by using a command similar to</p>
+<pre><code>kubectl get pods -n argocd
+
+kubectl logs -f argocd-image-updater-xxxxx -n argocd
+</code></pre>
+<p>Where you replace <code>argocd-image-updater-xxxxx</code> with actual pod name.</p>
+<p>Thats all ! If you have gotten till here, congratulate yourself as you have just built a simplistic but completely working modern CI/CD Pipeline ! Hurray !!</p>
+<h1 id="coursesargo">courses/argo</h1>
               
             </div>
           </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../argo_events/" class="btn btn-neutral float-left" title="Lab K606 - Argo Events"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../xer-001-pods/" class="btn btn-neutral float-right" title="XER001 - Pods">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
 
   <hr/>
 
@@ -295,6 +367,10 @@
         </span>
     
     
+      <span><a href="../argo_events/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../xer-001-pods/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
