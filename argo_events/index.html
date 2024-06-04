@@ -304,10 +304,9 @@ spec:
 argo template list -A
 </code></pre>
 <p>add registry credentials to <code>argo-events</code> namespace again with</p>
-<pre><code>kubectl create secret -n argo docker-registry docker-registry-creds  \
+<pre><code>kubectl create secret -n argo-events docker-registry docker-registry-creds  \
    --docker-server=https://index.docker.io/v1/ \
-   --docker-username=xxxx \
-   --docker-password=yyyy
+   --docker-username=xxxx  --docker-password=yyyy
 </code></pre>
 <p>where replace,  </p>
 <ul>
