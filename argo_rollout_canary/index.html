@@ -184,6 +184,10 @@
     <li class="toctree-l2"><a class="reference internal" href="#create-canary-release">Create Canary Release</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#getting-ready-to-add-traffic-management-set-up-nginx-ingress-controller">Getting Ready to add Traffic Management - Set up Nginx Ingress Controller</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#add-intress-rule-with-host-based-routing">Add Intress Rule with Host based Routing</a>
+    </li>
+        </ul>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#canary-with-traffic-routing">Canary with Traffic Routing</a>
         <ul>
@@ -304,7 +308,7 @@ spec:
   type: NodePort
 </code></pre>
 <p>create previw service kustomization overlay</p>
-<p>File: <code>prod/previw-service.yaml</code></p>
+<p>File: <code>prod/preview-service.yaml</code></p>
 <pre><code>apiVersion: v1
 kind: Service
 metadata:
@@ -321,7 +325,7 @@ spec:
 <p>update <code>kustomization</code> with</p>
 <ul>
 <li>namespace set to <code>prod</code>  </li>
-<li>path for <code>preview-service.yaml</code> added</li>
+<li>path for <code>preview-service.yaml</code> added to patches section</li>
 </ul>
 <p>File: <code>prod/kustomization.yaml</code></p>
 <pre><code>apiVersion: kustomize.config.k8s.io/v1beta1
@@ -338,6 +342,9 @@ labels:
 patches:
 - path: service.yaml
 - path: preview-service.yaml
+</code></pre>
+<p>check</p>
+<pre><code>kustomize build prod
 </code></pre>
 <p>apply with</p>
 <pre><code>kubectl apply -k prod/
@@ -377,7 +384,7 @@ spec:
           duration: 10s
       - setWeight: 100
 </code></pre>
-<p>add this to <code>prod/kustomization.yaml</code> as</p>
+<p>add this rollout overlay spec to <code>prod/kustomization.yaml</code> in patches section as:</p>
 <pre><code>apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
@@ -427,9 +434,31 @@ patches:
   - image: schoolofdevops/vote:v2
 </code></pre>
 <p>and apply</p>
-<pre><code>kubectl apply -k prod/
+<pre><code>kubectl apply -k prod
+kubectl argo rollouts status vote
 </code></pre>
 <p>Here you could see the progressive canary in action, implmenting it step by step, ultimately rolling out the new version.</p>
+<p><img alt="" src="../images/argo/36.png" /></p>
+<ul>
+<li>A new replicaset is created to maintain the canary deployment during the rollout.  </li>
+<li>Based on the weightage set in the strategy, proportionate number of pods are maintained for each replicaSet.  </li>
+<li>Gradually, all pods are replaced with new version, shifting 100% traffic to it.  </li>
+</ul>
+<p>here is the output of the rollout status command above</p>
+<p>[sample output]</p>
+<pre><code>Progressing - more replicas need to be updated
+Paused - CanaryPauseStep
+Progressing - more replicas need to be updated
+Paused - CanaryPauseStep
+Progressing - more replicas need to be updated
+Paused - CanaryPauseStep
+Progressing - more replicas need to be updated
+Paused - CanaryPauseStep
+Progressing - more replicas need to be updated
+Progressing - updated replicas are still becoming available
+Progressing - waiting for all steps to complete
+Healthy
+</code></pre>
 <h2 id="getting-ready-to-add-traffic-management-set-up-nginx-ingress-controller">Getting Ready to add Traffic Management - Set up Nginx Ingress Controller</h2>
 <p>Install helm to setup Nginx Ingress Controller. To install helm version 3 on Linux or MacOS, you can follow following instructions.</p>
 <pre><code>curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
@@ -465,12 +494,12 @@ kubectl label node kind-worker ingress-ready=&quot;true&quot;
 <pre><code>kubectl get nodes --show-labels
 </code></pre>
 <p>This time you should see the label added, and nginx ingress controller running, which can be validated using</p>
-<pre><code>kubectl get pods -n ingress-nginx
+<pre><code>kubectl get pods -n ingress-nginx --watch
 </code></pre>
-<p>You could also validate by connecting to the IPADDRESS of your node where the cluster is beeng setup on port 80, where you should see <code>**404 Not Found**</code> error. This is the sign that nginx is set up as a ingress controller and looking for a request with hostname/path defined.</p>
-<p>Add a path based routing</p>
+<p>Wait for the container for nginx ingress controller to be up. You could also validate by connecting to the IPADDRESS of your node where the cluster is beeng setup on port 80, where you should see <code>**404 Not Found**</code> error. This is the sign that nginx is set up as a ingress controller and looking for a request with hostname/path defined.</p>
+<h3 id="add-intress-rule-with-host-based-routing">Add Intress Rule with Host based Routing</h3>
 <p>Once you have the ingress controller working,  add the following ingress rule</p>
-<p>File : <code>prod/vote-ing.yaml</code></p>
+<p>File : <code>prod/ingress.yaml</code></p>
 <pre><code>---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -491,7 +520,7 @@ spec:
             port:
               number: 80
 </code></pre>
-<p>add this to <code>prod/kustomization.yaml</code> so that it gets applied as</p>
+<p>add this new manifest resources section of  kustomization.yaml so that it gets applied as</p>
 <p>File: <code>prod/kustomization.yaml</code></p>
 <pre><code>apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
@@ -548,12 +577,20 @@ spec:
 <p>and apply as</p>
 <pre><code>kubectl apply -k prod/
 </code></pre>
-<p>You could watching using the same commands as earlier as well as using Argo Dashboard. You could also watch for a new canary service created during rollout as</p>
+<p>Once the new configuration is applied, you could try rolling out a few times by updating the image tag in <code>base/rollout.yaml</code>.</p>
+<p>You could watch  using the same commands as earlier as well as using Argo Dashboard. You could also watch for a new ingress created for canary service created during rollout as</p>
 <pre><code>kubectl describe ing vote-vote-canary
 </code></pre>
 <p>where you will see the weight changing as the release progresses.</p>
+<p>While you are rolling our a Canary with traffic routing this time, you will observe that</p>
+<ul>
+<li>While the release is in progress, unlike earlier, the stable/main replicaSet does not reduce proportionate to step capacity percentage.  </li>
+<li>Ingress Controller/Service Mesh, in this case Nginx, does the job of routing between stable and canary versions, not tied to the proportationte number of pods.   </li>
+<li>This is to make sure that, any time there is a need to abort and roll back, 100% capacity is available with the stable version.  </li>
+</ul>
+<p>Try rolling out a few times to understand the nuances of how canary works with nginx ingress controller and traffic routing rules.</p>
 <h3 id="publish-changes-to-repo">Publish Changes to Repo</h3>
-<p>All the changes that you have made so dat for the repo</p>
+<p>Commit all the changes that you have made so far to the repo as:</p>
 <pre><code>git status
 git add base/*.yaml
 git add prod/*.yaml
