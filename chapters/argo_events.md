@@ -6,7 +6,10 @@ Version : v2024.06.02.01
 - - -
 
 
-## Project: Trigger CI Pipeline on GitHub Changes
+**Project:** Trigger CI Pipeline on GitHub Changes
+
+
+## Set up Argo Events
 
 Launch [Argo Workflow](https://killercoda.com/argoproj/course/argo-workflows/workflow-examples) Environment with Killercoda , set up server UI and have it open.
 
@@ -21,7 +24,6 @@ kubectl apply -n argo-events -f https://raw.githubusercontent.com/argoproj/argo-
 
 ```
 
-
 Create RBAC Policies
 
 ```
@@ -30,6 +32,14 @@ kubectl apply -n argo-events -f https://raw.githubusercontent.com/argoproj/argo-
 kubectl apply -n argo-events -f https://raw.githubusercontent.com/argoproj/argo-events/master/examples/rbac/workflow-rbac.yaml
 ```
 
+## Setup Components to Trigger CI Pipeline
+
+You will now set up the components required for the Argo Events to trigger the CI workflow based on changes to GitHub. For this you are going to need
+
+   * Event Source - To listen to GitHub change events   
+   * Sensor - Which activates on updated to event source and triggers the workflow  
+   * Workflow Template - To create an instance of the CI Pipeline Workflow   
+   * Container Registry Credentials - Used by the workflow to publish images with   
 
 Create an Argo Events EventSource and Sensor to handle the events sent by your polling job.
 
@@ -172,7 +182,18 @@ Event Flow :
 ![](images/argo/32.png)
 
 
-Now, create a Kubernetes CronJob that periodically polls GitHub for new commits. If new commits are found, the job can send an event to the event source webhook created earlier.
+## Deploy GitHub Poller
+
+After setting up the event flow, you also need to set up something which will trigger the event source on changes to GitHub.
+
+You could do this in two ways
+
+  * Using Webhooks : You could expose the event source service to outside and let GitHub trigger a webhook whenever there is a push event. This is useful if your event source can be publically available (GitHub can connect to it).
+  * In-cluster Polling :  You could alternately set up in cluster system to periodically poll GitHub for changes, and trigger the event source. This is useful when you can not expose event source service pubically, and are running your cluster in a private network.
+
+Since we do not assume your cluster is  public, we will employ the second approach.
+
+To achisve in-cluster polling, create the following  Kubernetes CronJob that periodically polls GitHub for new commits. If new commits are found, the job can trigger the event source webhook created earlier.
 
 File: `poller-cronjob.yaml`
 
