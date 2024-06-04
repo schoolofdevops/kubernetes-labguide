@@ -185,7 +185,11 @@
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K605 - Argo Events</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#project-trigger-ci-pipeline-on-github-changes">Project: Trigger CI Pipeline on GitHub Changes</a>
+    <li class="toctree-l2"><a class="reference internal" href="#set-up-argo-events">Set up Argo Events</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#setup-components-to-trigger-ci-pipeline">Setup Components to Trigger CI Pipeline</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#deploy-github-poller">Deploy GitHub Poller</a>
     </li>
     </ul>
                   </li>
@@ -251,7 +255,8 @@
 Publisher: School of Devops<br />
 Version : v2024.06.02.01  </p>
 <hr />
-<h2 id="project-trigger-ci-pipeline-on-github-changes">Project: Trigger CI Pipeline on GitHub Changes</h2>
+<p><strong>Project:</strong> Trigger CI Pipeline on GitHub Changes</p>
+<h2 id="set-up-argo-events">Set up Argo Events</h2>
 <p>Launch <a href="https://killercoda.com/argoproj/course/argo-workflows/workflow-examples">Argo Workflow</a> Environment with Killercoda , set up server UI and have it open.</p>
 <p>Install Argo Events</p>
 <pre><code>kubectl create namespace argo-events
@@ -266,6 +271,14 @@ kubectl apply -n argo-events -f https://raw.githubusercontent.com/argoproj/argo-
 
 kubectl apply -n argo-events -f https://raw.githubusercontent.com/argoproj/argo-events/master/examples/rbac/workflow-rbac.yaml
 </code></pre>
+<h2 id="setup-components-to-trigger-ci-pipeline">Setup Components to Trigger CI Pipeline</h2>
+<p>You will now set up the components required for the Argo Events to trigger the CI workflow based on changes to GitHub. For this you are going to need</p>
+<ul>
+<li>Event Source - To listen to GitHub change events   </li>
+<li>Sensor - Which activates on updated to event source and triggers the workflow  </li>
+<li>Workflow Template - To create an instance of the CI Pipeline Workflow   </li>
+<li>Container Registry Credentials - Used by the workflow to publish images with   </li>
+</ul>
 <p>Create an Argo Events EventSource and Sensor to handle the events sent by your polling job.</p>
 <p>File: <code>webook-eventsource.yaml</code></p>
 <pre><code>apiVersion: argoproj.io/v1alpha1
@@ -372,7 +385,15 @@ spec:
 <p>At this time, if you have Argo Workflow set up, you should see a event flow such as this</p>
 <p>Event Flow :</p>
 <p><img alt="" src="../images/argo/32.png" /></p>
-<p>Now, create a Kubernetes CronJob that periodically polls GitHub for new commits. If new commits are found, the job can send an event to the event source webhook created earlier.</p>
+<h2 id="deploy-github-poller">Deploy GitHub Poller</h2>
+<p>After setting up the event flow, you also need to set up something which will trigger the event source on changes to GitHub.</p>
+<p>You could do this in two ways</p>
+<ul>
+<li>Using Webhooks : You could expose the event source service to outside and let GitHub trigger a webhook whenever there is a push event. This is useful if your event source can be publically available (GitHub can connect to it).</li>
+<li>In-cluster Polling :  You could alternately set up in cluster system to periodically poll GitHub for changes, and trigger the event source. This is useful when you can not expose event source service pubically, and are running your cluster in a private network.</li>
+</ul>
+<p>Since we do not assume your cluster is  public, we will employ the second approach.</p>
+<p>To achisve in-cluster polling, create the following  Kubernetes CronJob that periodically polls GitHub for new commits. If new commits are found, the job can trigger the event source webhook created earlier.</p>
 <p>File: <code>poller-cronjob.yaml</code></p>
 <pre><code>---
 apiVersion: batch/v1
