@@ -269,6 +269,7 @@
 Publisher: School of Devops<br />
 Version : v2024.06.02.01  </p>
 <hr />
+<p><strong>Project:</strong>: Setup Automated Deployment to Staging and Prod with Argo CD.</p>
 <h2 id="setup-argocd">Setup ArgoCD</h2>
 <p>Install ArgoCD</p>
 <pre><code>kubectl create namespace argocd
@@ -374,16 +375,16 @@ git checkout -b release
 git push origin release
 
 </code></pre>
-<p>You will see a new branch created on GitHub for this repository.</p>
+<p>You will see a new branch created on GitHub for this repository. Alternately, you could also create the branch from GitHub Web UI.</p>
 <p>Create another application, repeat the same configurations with the following changes,</p>
 <ul>
 <li>Application Name: <code>vote-prod</code>  </li>
 <li>Project Name: <code>instavote</code>  </li>
-<li>Sync Policy: <code>Manual</code>  </li>
+<li>Sync Policy: <code>Automatic</code>    </li>
 <li>Repository: Same Repo  </li>
 <li>Revision: <code>release</code>  </li>
 <li>Path: <code>prod</code>  </li>
-<li>Cluster URL: default  </li>
+<li>Cluster URL: default from dropdown.  </li>
 <li>Namespace  : <code>prod</code>  </li>
 </ul>
 <p>Create and Sync manually.</p>
