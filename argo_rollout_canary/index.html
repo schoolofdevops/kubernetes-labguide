@@ -265,7 +265,7 @@
                 <h1 id="implementing-canary-release-for-prod">Implementing Canary Release for Prod</h1>
 <p>Author: Gourav Shah<br />
 Publisher: School of Devops<br />
-Version : v2024.06.02.01  </p>
+Version : v2024.06.03.01  </p>
 <hr />
 <h2 id="prepare-prod-environment">Prepare Prod Environment</h2>
 <p>Create and switch to prod namespace</p>
@@ -284,7 +284,7 @@ kubectl config set-context --current --namespace=prod
 <pre><code>CURRENT   NAME        CLUSTER     AUTHINFO    NAMESPACE
 *         kind-kind   kind-kind   kind-kind   prod
 </code></pre>
-<p>Create a copy of the deployment code</p>
+<p>Create a copy of the kustomization code to set up prod with:  </p>
 <pre><code>cd argo-labs
 cp -r staging prod
 </code></pre>
@@ -338,10 +338,6 @@ labels:
 patches:
 - path: service.yaml
 - path: preview-service.yaml
-images:
- - name: schoolofdevops/vote
-   newName: schoolofdevops/vote
-   newTag: v2
 </code></pre>
 <p>apply with</p>
 <pre><code>kubectl apply -k prod/
@@ -397,10 +393,6 @@ patches:
 - path: service.yaml
 - path: preview-service.yaml
 - path: rollout.yaml
-images:
- - name: schoolofdevops/vote
-   newName: schoolofdevops/vote
-   newTag: v2
 </code></pre>
 <p>If you have <code>kustomize</code> installed, verify the configs from <code>argo-labs</code> as</p>
 <pre><code>kustomize build prod
@@ -412,7 +404,7 @@ images:
 <pre><code>kubectl get all,ro
 
 </code></pre>
-<p>If you have the Argo ROllouts Dashboard, switch the namespace from top right corner to  <code>prod</code></p>
+<p>If you have the Argo Rollouts Dashboard, switch the namespace from top right corner to  <code>prod</code></p>
 <p><img alt="" src="../images/argo/16.png" /></p>
 <p>and check the Canary Release as</p>
 <p><img alt="" src="../images/argo/17.png" /></p>
@@ -429,11 +421,10 @@ images:
 <p>You could also keep monitoring the Argo Rollouts Dashboard. Launch it if required as</p>
 <pre><code>kubectl argo rollouts dashboard -p 3100
 </code></pre>
-<p>Trigger a new rollout by modifying <code>prod/kustomization.yaml</code> file with new image tag as  </p>
-<pre><code>images:
- - name: schoolofdevops/vote
-   newName: schoolofdevops/vote
-   newTag: v3
+<p>Trigger a new rollout by modifying <code>base/rollouts.yaml</code> file with new image tag as  </p>
+<pre><code>spec:
+  containers:
+  - image: schoolofdevops/vote:v2
 </code></pre>
 <p>and apply</p>
 <pre><code>kubectl apply -k prod/

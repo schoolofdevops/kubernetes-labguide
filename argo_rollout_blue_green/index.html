@@ -267,16 +267,15 @@
                 <h1 id="blue-green-releases-with-argo-rollouts">Blue Green Releases with Argo Rollouts</h1>
 <p>Author: Gourav Shah<br />
 Publisher: School of Devops<br />
-Version : v2024.06.02.01  </p>
+Version : v2024.06.03.01  </p>
 <hr />
 <h2 id="launch-vote-app-with-deployment">Launch Vote App with Deployment</h2>
-<p>Lets begin by first deploying the <code>vote</code> service with the <a href="https://github.com/schoolofdevops/argo-labs">deployment code</a> available.</p>
+<p>Lets begin by first deploying the <code>vote</code> service with the <a href="https://github.com/sfd226/argo-labs.git">deployment code</a> available.</p>
 <ul>
-<li>Create a fork of <a href="https://github.com/schoolofdevops/argo-labs">Kubernetes Deployment Code for Vote App</a></li>
+<li>Create a fork of <a href="https://github.com/sfd226/argo-labs.git">Kubernetes Deployment Code for Vote App</a></li>
 </ul>
-<p>While creating the fork, ensure that you uncheck the <code>Copy the main branch only</code> option as shown in screenshot below.</p>
 <p><img alt="" src="../images/argo/14.png" /></p>
-<p>Review the code created with kustomization overlay configured for <code>staging</code> and <code>prod</code> environments in additional to the base manifests.</p>
+<p>Review the code created with kustomization overlay configured for <code>staging</code> environment in additional to the <code>base</code> manifests.</p>
 <p>Create namespaces for staging environments as,</p>
 <pre><code>kubectl create ns staging
 
@@ -336,6 +335,7 @@ sudo mv ./kubectl-argo-rollouts-darwin-amd64 /usr/local/bin/kubectl-argo-rollout
 <p>And validate as,</p>
 <pre><code>kubectl argo rollouts version
 </code></pre>
+<p>Also install Kustomize by following the instructions in <a href="https://kubectl.docs.kubernetes.io/installation/kustomize/">official documentation</a> here.</p>
 <h2 id="create-a-preview-service">Create a Preview Service</h2>
 <p>Create a preview service  during blue-green analysis</p>
 <p>File: <code>argo-labs/base/preview-service.yaml</code></p>
@@ -430,11 +430,10 @@ watch kubectl describe svc vote-preview
 <pre><code>kubectl argo rollouts dashboard -p 3100
 </code></pre>
 <p>and then start watching for the rollout using <a href="http://localhost:3100/rollouts">http://localhost:3100/rollouts</a></p>
-<p>Now, trigger a rollout by updating the image by adding the following to <code>staging/kustomization.yaml</code></p>
-<pre><code>images:
- - name: schoolofdevops/vote
-   newName: schoolofdevops/vote
-   newTag: v2
+<p>Now, trigger a rollout by updating the image by updating the image tag in <code>base/rollout.yaml</code></p>
+<pre><code>spec:
+  containers:
+  - image: schoolofdevops/vote:v2
 </code></pre>
 <p>and then by applying it as</p>
 <pre><code>kubectl apply -k staging
@@ -457,6 +456,11 @@ watch kubectl describe svc vote-preview
 <p>edit <code>base/rollout.yaml</code> and set the replicas count to <code>1</code></p>
 <pre><code>spec:
   replicas: 1
+</code></pre>
+<p>also in the same file, set the image tag back to <code>v1</code></p>
+<pre><code>spec:
+  containers:
+  - image: schoolofdevops/vote:v1
 </code></pre>
 <p>apply</p>
 <pre><code>kubectl apply -k staging/
