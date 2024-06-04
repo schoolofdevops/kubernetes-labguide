@@ -185,7 +185,7 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#getting-ready-to-add-traffic-management-set-up-nginx-ingress-controller">Getting Ready to add Traffic Management - Set up Nginx Ingress Controller</a>
         <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#add-intress-rule-with-host-based-routing">Add Intress Rule with Host based Routing</a>
+    <li class="toctree-l3"><a class="reference internal" href="#add-ingress-rule-with-host-based-routing">Add Ingress Rule with Host based Routing</a>
     </li>
         </ul>
     </li>
@@ -497,7 +497,7 @@ kubectl label node kind-worker ingress-ready=&quot;true&quot;
 <pre><code>kubectl get pods -n ingress-nginx --watch
 </code></pre>
 <p>Wait for the container for nginx ingress controller to be up. You could also validate by connecting to the IPADDRESS of your node where the cluster is beeng setup on port 80, where you should see <code>**404 Not Found**</code> error. This is the sign that nginx is set up as a ingress controller and looking for a request with hostname/path defined.</p>
-<h3 id="add-intress-rule-with-host-based-routing">Add Intress Rule with Host based Routing</h3>
+<h3 id="add-ingress-rule-with-host-based-routing">Add Ingress Rule with Host based Routing</h3>
 <p>Once you have the ingress controller working,  add the following ingress rule</p>
 <p>File : <code>prod/ingress.yaml</code></p>
 <pre><code>---
@@ -582,12 +582,41 @@ spec:
 <pre><code>kubectl describe ing vote-vote-canary
 </code></pre>
 <p>where you will see the weight changing as the release progresses.</p>
+<p>e.g.</p>
+<p>when weight is set to 20%</p>
+<pre><code>Every 2.0s: kubectl describe ing vote-vote-canary                                                     argo-01: Tue Jun  4 08:08:10 2024
+
+Name:             vote-vote-canary
+Labels:           &lt;none&gt;
+Namespace:        prod
+Address:
+Ingress Class:    nginx
+Default backend:  &lt;default&gt;
+Rules:
+  Host              Path  Backends
+  ----              ----  --------
+  vote.example.com
+                    /   vote-preview:80 (10.244.1.18:80)
+Annotations:        nginx.ingress.kubernetes.io/canary: true
+                    nginx.ingress.kubernetes.io/canary-weight: 20
+Events:
+  Type    Reason  Age               From                      Message
+  ----    ------  ----              ----                      -------
+  Normal  Sync    20s (x2 over 2m)  nginx-ingress-controller  Scheduled for sync
+
+
+</code></pre>
+<p>after weight changed to 40%</p>
+<pre><code>Annotations:        nginx.ingress.kubernetes.io/canary: true
+                    nginx.ingress.kubernetes.io/canary-weight: 40
+</code></pre>
 <p>While you are rolling our a Canary with traffic routing this time, you will observe that</p>
 <ul>
 <li>While the release is in progress, unlike earlier, the stable/main replicaSet does not reduce proportionate to step capacity percentage.  </li>
 <li>Ingress Controller/Service Mesh, in this case Nginx, does the job of routing between stable and canary versions, not tied to the proportationte number of pods.   </li>
 <li>This is to make sure that, any time there is a need to abort and roll back, 100% capacity is available with the stable version.  </li>
 </ul>
+<p><img alt="" src="../images/argo/38.png" /></p>
 <p>Try rolling out a few times to understand the nuances of how canary works with nginx ingress controller and traffic routing rules.</p>
 <h3 id="publish-changes-to-repo">Publish Changes to Repo</h3>
 <p>Commit all the changes that you have made so far to the repo as:</p>
