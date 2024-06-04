@@ -57,7 +57,7 @@ File : `argo_applications_vote-staging_patch.yaml`
 metadata:
   annotations:
     argocd-image-updater.argoproj.io/git-branch: main
-    argocd-image-updater.argoproj.io/image-list: myimage=initcron/argovote
+    argocd-image-updater.argoproj.io/image-list: myimage=xxxxxx/vote
     argocd-image-updater.argoproj.io/myimage.allow-tags: regexp:^[0-9a-f]{7}$
     argocd-image-updater.argoproj.io/myimage.ignore-tags: latest, dev
     argocd-image-updater.argoproj.io/myimage.update-strategy: latest
@@ -69,7 +69,8 @@ metadata:
 Source: [Mark Staging App for Automatic Image Updates from Argo](https://gist.github.com/initcron/ddf79cb9ba9ca940a1263150b586ec60)
 
 Where,
-* Replace `initcron/vote` with your own repo in the `argocd-image-updater.argoproj.io/image-list` annotation.
+
+* Replace `xxxxxx/vote` with your own repo in the `argocd-image-updater.argoproj.io/image-list` annotation.  
 
 Apply the above patch as,
 
@@ -104,22 +105,45 @@ Kind:         Application
 
 If everything goes well, within a few minutes, you should see a commit to the main branch of the `vote-deploy` repository that you have.
 
+![](images/argo/41.png)
 
-And a few minutes after that, you should see the staging deployment on ArgoCD  pick up the newly updated image tag and deploy it.  From there, its just matter of creating a pull request and merging it to release branch to deploy to prod.
+And a few minutes after that, you should see the staging deployment on ArgoCD  pick up the newly updated image tag and deploy it.
+
+![](images/argo/42.png)
+
+You could tally it from Rollout Dashboard that it has picked up the new image with commit hash as tag
+
+![](images/argo/43.png)
+
+and also validate with
+
+```
+kubectl describe application -n argocd vote-staging
+```
+
+where you should see the following in the output status
+
+```
+Summary:
+  Images:
+    initcron/vote:52eea4d
+Sync:
+  Compared To:
+    Destination:
+      Namespace:  staging
+      Server:     https://kubernetes.default.svc
+    Source:
+```
+
+From now, its just matter of creating a pull request and merging it to release branch to deploy to prod.
+
 
 You could check the logs for the image updater which is running in `argocd` namespace by using a command similar to
 
 ```
-kubectl get pods -n argocd
-
-kubectl logs -f argocd-image-updater-xxxxx -n argocd
+kubectl logs -f -l "app.kubernetes.io/name=argocd-image-updater" -n argocd
 ```
 
-Where you replace `argocd-image-updater-xxxxx` with actual pod name.
 
 
 Thats all ! If you have gotten till here, congratulate yourself as you have just built a simplistic but completely working modern CI/CD Pipeline ! Hurray !!
-
-
-
-#courses/argo

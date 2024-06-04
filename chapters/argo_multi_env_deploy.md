@@ -4,6 +4,8 @@ Publisher: School of Devops
 Version : v2024.06.02.01  
 - - -
 
+**Project:**: Setup Automated Deployment to Staging and Prod with Argo CD.
+
 ## Setup ArgoCD
 
 Install ArgoCD
@@ -164,6 +166,12 @@ Click on **CREATE** button on the top
 ![](images/argo/09.png)
 
 
+validate with
+
+```
+kubectl get all -n staging
+```
+
 ### Set up Deploy to Prod Configuration
 
 
@@ -177,17 +185,19 @@ git push origin release
 
 ```
 
-You will see a new branch created on GitHub for this repository.
+You will see a new branch created on GitHub for this repository. Alternately, you could also create the branch from GitHub Web UI.
+
 
 Create another application, repeat the same configurations with the following changes,
 
   * Application Name: `vote-prod`  
   * Project Name: `instavote`  
-  * Sync Policy: `Manual`  
+  * Sync Policy: `Automatic`  
+  * Prune Resources: Checked    
   * Repository: Same Repo  
-  * Revision: `release`  
+  * Revision: `release`  (Branches)  
   * Path: `prod`  
-  * Cluster URL: default  
+  * Cluster URL: default from dropdown.  
   * Namespace  : `prod`  
 
 Create and Sync manually.
@@ -210,12 +220,12 @@ Open two  terminals and start watching for changes in the staging namespace
 
 Terminal 1
 ```
-watch kubectl get all -n staging
+watch kubectl get ro,all -n staging
 ```
 
 Terminal 2
 ```
-watch kubectl get all -n prod
+watch kubectl get ro,all -n prod
 ```
 
 

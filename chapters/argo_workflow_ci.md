@@ -23,20 +23,48 @@ Version : v2024.06.03.01
 
   ![](images/argo/30.png)
 
-## Building CI Pipeline with Workflow  
+
+
+## Building CI Pipeline with Argo Workflow  
+
+Before you begin, fork the [repository containing source code for vote service](https://github.com/sfd226/vote) on to your account. You are going to use this repository to set up the CI Pipeline with.
+
+
+You are going to set up Argo Workflow which will build a CI Pipeline for you.  This workflow will have the following stpes/stages
+
+  1. clone - Clones the source code from Git and store it in a volume which is available to all subsequent steps.   
+  1. build - Build the application. In case of this python flask app, its just about checking if the dependencies are being built/instlled with python-pip.  
+  1. test - Run unit tests with python nose testing framework.  
+  1. imagebuild - Uses kaniko to build and publish container image. This step will require you to provide credentials to container registry.  
+
+
+Create a secret with your container registry credentials which is then used in `imagebuild` step of the workflow as described above with:
 
 
 ```
 kubectl create secret -n argo docker-registry docker-registry-creds  \
    --docker-server=https://index.docker.io/v1/ \
-   --docker-username=xxxx \
-   --docker-password=yyyy
+   --docker-username=xxxx --docker-password=yyyy
 ```
 
-where replace,
-* `xxxx` with registry username
-* `yyyy` with registry access token
+where replace,  
 
+* `xxxx` with registry username  
+* `yyyy` with registry access token   
+
+Instead of providing your password for `--docker-password`, it is recommended that you create a access token.  For Docker Hub, you could do that as follows:
+
+  * Sign in to [Docker Hub](https://hub.docker.com/)  
+  * From top right corner where you see your profile picture, select `Account settings`  
+  * From `Security` -> `Access Tokens` select `New Access Token`  
+  * Add a Description/Name and set access permissions to `Read & Write`  
+  ![](images/argo/37.png)
+
+  Proceed to Generate the token, and copy it to a safe location. Keep it handy as you are going to need this a few times throughout this course.  
+
+Once you have the token, proceed to create the secret with the command provided above.
+
+Once you create the secret, create the Argo Workflow with all the necessary steps as described earlier.  
 
 File : `vote-ci-workflow.yaml`
 
@@ -50,11 +78,11 @@ spec:
   arguments:
     parameters:
     - name: repo-url
-      value: "https://github.com/your-username/your-flask-app.git"
+      value: "https://github.com/xxxxxx/vote.git"
     - name: branch
       value: "main"
     - name: image
-      value: "your-registry/your-flask-app"
+      value: "yyyyyy/vote"
     - name: dockerfile
       value: "Dockerfile"
 
@@ -185,16 +213,67 @@ spec:
 
 ```
 
+create a workflow by providing your own repo and image tag and start watching it using the following command:
+
 ```
 argo submit -n argo --watch vote-ci-workflow.yaml \
-  -p repo-url=https://github.com/devops-0001/vote.git \
-  -p branch=master \
-  -p image=initcron/flask-app \
+  -p repo-url=https://github.com/xxxxxx/vote.git \
+  -p branch=main \
+  -p image=yyyyyy/vote \
   -p dockerfile=Dockerfile
 ```
+
+where,
+
+  * Replace `xxxxxx` with approapriate repo URL   
+  * Replace `yyyyyy` with your docker hub user id. Update the repo name as necessary.
 
 you could also watch the pods
 
 ```
 watch kubectl get pods -n argo
 ```
+
+and using dashboard as
+
+![](images/argo/39.png)
+
+
+If you were watching the workflow here is the sample output
+
+```
+Name:                vote-ci-x5hzc
+Namespace:           argo
+ServiceAccount:      argo
+Status:              Succeeded
+Conditions:          
+ PodRunning          False
+ Completed           True
+Created:             Tue Jun 04 09:01:06 +0000 (2 minutes ago)
+Started:             Tue Jun 04 09:01:06 +0000 (2 minutes ago)
+Finished:            Tue Jun 04 09:03:50 +0000 (now)
+Duration:            2 minutes 44 seconds
+Progress:            4/4
+ResourcesDuration:   12s*(1 cpu),2m33s*(100Mi memory)
+Parameters:          
+  repo-url:          https://github.com/devops-0001/vote.git
+  branch:            master
+  image:             initcron/flask-app
+  dockerfile:        Dockerfile
+
+STEP               TEMPLATE    PODNAME                              DURATION  MESSAGE
+ ✔ vote-ci-x5hzc   main                                                         
+ ├───✔ clone       clone       vote-ci-x5hzc-clone-2858201196       34s         
+ ├───✔ build       build       vote-ci-x5hzc-build-959094096        47s         
+ ├───✔ test        test        vote-ci-x5hzc-test-1680485113        10s         
+ └───✔ imagebuild  imagebuild  vote-ci-x5hzc-imagebuild-1986147349  43s      
+```
+
+if you broese to DockerHub account, you should see a new image tag published as a result of the argo workflow.
+
+![](images/argo/40.png)
+
+
+## Summary
+
+With this lab you learnt how to set up a simple  Continuous Integration Pipeline using Argo Workflows. This pipeline runs a sequence of jobs including build, test and container image build and publish. The result of this pipeline is a new container image available on the registry. This can be further iterated over to create conditionl logic, parallel execution of steps etc. with Argo Workflow.

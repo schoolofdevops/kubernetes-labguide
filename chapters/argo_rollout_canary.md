@@ -62,13 +62,13 @@ spec:
 
 create previw service kustomization overlay
 
-File: `prod/previw-service.yaml`
+File: `prod/preview-service.yaml`
 
 ```
 apiVersion: v1
 kind: Service
 metadata:
-  name: vote
+  name: vote-preview
 spec:
   ports:
   - name: "80"
@@ -82,7 +82,7 @@ spec:
 update `kustomization` with
 
    * namespace set to `prod`  
-   * path for `preview-service.yaml` added
+   * path for `preview-service.yaml` added to patches section
 
 
 File: `prod/kustomization.yaml`
@@ -103,6 +103,11 @@ patches:
 - path: preview-service.yaml
 ```
 
+check
+
+```
+kustomize build prod
+```
 apply with
 
 ```
@@ -154,7 +159,7 @@ spec:
       - setWeight: 100
 ```
 
-add this to `prod/kustomization.yaml` as
+add this rollout overlay spec to `prod/kustomization.yaml` in patches section as:
 
 ```
 apiVersion: kustomize.config.k8s.io/v1beta1
@@ -236,11 +241,35 @@ spec:
 and apply
 
 ```
-kubectl apply -k prod/
+kubectl apply -k prod
+kubectl argo rollouts status vote
 ```
 
 Here you could see the progressive canary in action, implmenting it step by step, ultimately rolling out the new version.
 
+![](images/argo/36.png)
+
+  * A new replicaset is created to maintain the canary deployment during the rollout.  
+  * Based on the weightage set in the strategy, proportionate number of pods are maintained for each replicaSet.  
+  * Gradually, all pods are replaced with new version, shifting 100% traffic to it.  
+
+here is the output of the rollout status command above
+
+[sample output]
+```
+Progressing - more replicas need to be updated
+Paused - CanaryPauseStep
+Progressing - more replicas need to be updated
+Paused - CanaryPauseStep
+Progressing - more replicas need to be updated
+Paused - CanaryPauseStep
+Progressing - more replicas need to be updated
+Paused - CanaryPauseStep
+Progressing - more replicas need to be updated
+Progressing - updated replicas are still becoming available
+Progressing - waiting for all steps to complete
+Healthy
+```
 
 
 ## Getting Ready to add Traffic Management - Set up Nginx Ingress Controller
@@ -305,17 +334,17 @@ This time you should see the label added, and nginx ingress controller running, 
 
 
 ```
-kubectl get pods -n ingress-nginx
+kubectl get pods -n ingress-nginx --watch
 ```
 
-You could also validate by connecting to the IPADDRESS of your node where the cluster is beeng setup on port 80, where you should see `**404 Not Found**` error. This is the sign that nginx is set up as a ingress controller and looking for a request with hostname/path defined.
+Wait for the container for nginx ingress controller to be up. You could also validate by connecting to the IPADDRESS of your node where the cluster is beeng setup on port 80, where you should see `**404 Not Found**` error. This is the sign that nginx is set up as a ingress controller and looking for a request with hostname/path defined.
 
-Add a path based routing
+### Add Ingress Rule with Host based Routing
 
 Once you have the ingress controller working,  add the following ingress rule
 
 
-File : `prod/vote-ing.yaml`
+File : `prod/ingress.yaml`
 
 ```
 ---
@@ -339,7 +368,7 @@ spec:
               number: 80
 ```
 
-add this to `prod/kustomization.yaml` so that it gets applied as
+add this new manifest resources section of  kustomization.yaml so that it gets applied as
 
 File: `prod/kustomization.yaml`
 
@@ -425,20 +454,67 @@ and apply as
 kubectl apply -k prod/
 ```
 
-You could watching using the same commands as earlier as well as using Argo Dashboard. You could also watch for a new canary service created during rollout as
+Once the new configuration is applied, you could try rolling out a few times by updating the image tag in `base/rollout.yaml`.
+
+You could watch  using the same commands as earlier as well as using Argo Dashboard. You could also watch for a new ingress created for canary service created during rollout as
 
 ```
 kubectl describe ing vote-vote-canary
 ```
 
+
 where you will see the weight changing as the release progresses.
 
+e.g.
+
+when weight is set to 20%
+```
+Every 2.0s: kubectl describe ing vote-vote-canary                                                     argo-01: Tue Jun  4 08:08:10 2024
+
+Name:             vote-vote-canary
+Labels:           <none>
+Namespace:        prod
+Address:
+Ingress Class:    nginx
+Default backend:  <default>
+Rules:
+  Host              Path  Backends
+  ----              ----  --------
+  vote.example.com
+                    /   vote-preview:80 (10.244.1.18:80)
+Annotations:        nginx.ingress.kubernetes.io/canary: true
+                    nginx.ingress.kubernetes.io/canary-weight: 20
+Events:
+  Type    Reason  Age               From                      Message
+  ----    ------  ----              ----                      -------
+  Normal  Sync    20s (x2 over 2m)  nginx-ingress-controller  Scheduled for sync
+
+
+```
+
+after weight changed to 40%
+```
+Annotations:        nginx.ingress.kubernetes.io/canary: true
+                    nginx.ingress.kubernetes.io/canary-weight: 40
+```
+
+While you are rolling our a Canary with traffic routing this time, you will observe that
+
+  * While the release is in progress, unlike earlier, the stable/main replicaSet does not reduce proportionate to step capacity percentage.  
+  * Ingress Controller/Service Mesh, in this case Nginx, does the job of routing between stable and canary versions, not tied to the proportationte number of pods.   
+  * This is to make sure that, any time there is a need to abort and roll back, 100% capacity is available with the stable version.  
+
+
+![](images/argo/38.png)
+
+
+Try rolling out a few times to understand the nuances of how canary works with nginx ingress controller and traffic routing rules.
 
 
 ### Publish Changes to Repo
 
 
-All the changes that you have made so dat for the repo
+Commit all the changes that you have made so far to the repo as:
 
 ```
 git status
