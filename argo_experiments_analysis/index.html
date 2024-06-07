@@ -3,18 +3,18 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/kubernetes-replicasets-howto/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/argo_experiments_analysis/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Lab K104 - Namespaces and ReplicaSets - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <title>Lab K608 - Experiments and Analysis - Kubernetes Tutorial with CKA/CKAD Prep</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Lab K104 - Namespaces and ReplicaSets";
-        var mkdocs_page_input_path = "kubernetes-replicasets-howto.md";
-        var mkdocs_page_url = "/kubernetes-replicasets-howto/";
+        var mkdocs_page_name = "Lab K608 - Experiments and Analysis";
+        var mkdocs_page_input_path = "argo_experiments_analysis.md";
+        var mkdocs_page_url = "/argo_experiments_analysis/";
       </script>
     
     <!--[if lt IE 9]>
@@ -65,36 +65,14 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Kubernetes Essentials for CKA/CKAD</span></p>
-              <ul class="current">
+              <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../kind_create_cluster/">Lab K101 - Install Kubernetes with KIND</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../kubernetes_quickdive/">Lab K102 - Kubernetes Quickdive</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../create-and-deploy-kubernetes-pods/">Lab K103 - Pods</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K104 - Namespaces and ReplicaSets</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#part-i-namespaces">PART I - Namespaces</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#creating-a-namespace-and-switching-to-it">Creating a Namespace and Switching to it</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#part-ii-replicasets">PART II - ReplicaSets</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#adding-replicaset-configurations">Adding ReplicaSet Configurations</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#high-availability">High Availability</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#scalability">Scalability</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#exercise-deploying-new-version-of-the-application">Exercise: Deploying new version of the application</a>
-        <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#summary">Summary</a>
-    </li>
-        </ul>
-    </li>
-        </ul>
-    </li>
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../kubernetes-replicasets-howto/">Lab K104 - Namespaces and ReplicaSets</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../kubernetes-service-networking/">Lab K105 - Service Networking</a>
                   </li>
@@ -194,7 +172,7 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Argo</span></p>
-              <ul>
+              <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../kind_create_cluster/">Lab K601 - Setup Kubernetes Cluster</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../argo_rollout_blue_green/">Lab K602 - Blue/Green with Argo Rollouts</a>
@@ -209,7 +187,35 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../argo_iamge_updater/">Lab K607 - Argo Image Updater</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../argo_experiments_analysis/">Lab K608 - Experiments and Analysis</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K608 - Experiments and Analysis</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#setup-metrics-server">Setup Metrics Server</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#deploy-prometheus-and-grafana">Deploy Prometheus and Grafana</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#nginx">Nginx</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#updated-rollout-configuration-with-experiment-and-analysis">Updated Rollout Configuration with Experiment and Analysis</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#explanation">Explanation</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#how-it-works">How it Works</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#template-for-load-testing">Template for Load Testing</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#analysistemplate-for-prometheus-metrics">AnalysisTemplate for Prometheus Metrics</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#fitness-test-for-canary">Fitness Test for Canary</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#update-kustomization-for-prod">Update Kustomization for Prod</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_1"></a>
+    </li>
+        </ul>
+    </li>
+    </ul>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Exercises</span></p>
@@ -257,10 +263,10 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a> &raquo;</li>
-          <li>Kubernetes Essentials for CKA/CKAD &raquo;</li>
-      <li class="breadcrumb-item active">Lab K104 - Namespaces and ReplicaSets</li>
+          <li>Argo &raquo;</li>
+      <li class="breadcrumb-item active">Lab K608 - Experiments and Analysis</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/kubernetes-replicasets-howto.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/argo_experiments_analysis.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -268,200 +274,371 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="adding-ha-and-scalability-with-replicasets">Adding HA and Scalability with ReplicaSets</h1>
-<p>If you are not running a monitoring screen, start it in a new terminal with the following command.</p>
-<pre><code>watch kubectl get all --show-labels
+                <h1 id="analysis-and-experiments">Analysis and Experiments</h1>
+<h2 id="setup-metrics-server">Setup Metrics Server</h2>
+<p>If you try to pull monitoring information using the following commands</p>
+<pre><code>kubectl top pod
+
+kubectl top node
 </code></pre>
-<h2 id="part-i-namespaces">PART I - Namespaces</h2>
-<p>Check current config</p>
-<pre><code>
-kubectl config view
+<p>it does not show it, rather gives you a error message similar to</p>
+<p>[output]</p>
+<pre><code>Error from server (NotFound): the server could not find the requested resource (get services http:heapster:)
 </code></pre>
-<p>You could also examine the current configs in file <strong>cat ~/.kube/config</strong></p>
-<h2 id="creating-a-namespace-and-switching-to-it">Creating a Namespace and Switching to it</h2>
-<p>Namespaces offers separation of resources running on the same physical infrastructure into virtual clusters. It is typically useful in mid to large scale environments with multiple projects, teams and need separate scopes. It could also be useful to map to your workflow stages e.g. dev, stage, prod.   </p>
-<p>Before you create a namespace, delete all the pods in the default namespace that you may have created earlier and which you would not need.</p>
-<p>e.g.</p>
-<pre><code>kubectl delete pod vote db web
+<p>Even though the error mentions heapster, its replaced with metrics server by default now.</p>
+<p>Deploy metric server with the following commands,</p>
+<pre><code>cd ~
+git clone https://github.com/schoolofdevops/metrics-server.git
+kubectl apply -k metrics-server/manifests/overlays/release
 </code></pre>
-<p>Lets create a namespace called <strong>instavote</strong>  </p>
-<pre><code>kubectl get ns
+<p>Validate</p>
+<pre><code>kubectl get deploy,pods -n kube-system --selector='k8s-app=metrics-server'
+</code></pre>
+<p>You could validate again with</p>
+<pre><code>kubectl top pod
 
-kubectl create namespace instavote
+kubectl top node
+</code></pre>
+<p>where expected output should be similar to,</p>
+<pre><code>kubectl top node
 
-kubectl get ns
+NAME                 CPU(cores)   CPU%   MEMORY(bytes)   MEMORY%
+kind-control-plane   123m         6%     688Mi           17%
+kind-worker          39m          1%     498Mi           12%
+kind-worker2         31m          1%     422Mi           10%
+</code></pre>
+<p>If you see a similar output, monitoring is now been setup.</p>
+<h2 id="deploy-prometheus-and-grafana">Deploy Prometheus and Grafana</h2>
+<pre><code>helm upgrade --install prom -n monitoring \
+  prometheus-community/kube-prometheus-stack \
+  --set grafana.service.type=NodePort \
+  --set grafana.service.nodePort=30400 \
+  --set prometheus.prometheusSpec.podMonitorSelectorNilUsesHelmValues=false \
+  --set prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues=false
+</code></pre>
+<h2 id="nginx">Nginx</h2>
+<p>Re deploy nginx ingress controller with helm, this time enabling the exposing the metrics which can then be scraped/collected by prometheus.</p>
+<pre><code>helm upgrade --install ingress-nginx ingress-nginx \
+  --repo https://kubernetes.github.io/ingress-nginx \
+  --namespace ingress-nginx --create-namespace \
+  --set controller.metrics.enabled=true \
+  --set controller.metrics.serviceMonitor.enabled=true --set \ controller.metrics.serviceMonitor.additionalLabels.release=&quot;prometheus&quot; \
+  --set controller.hostPort.enabled=true \
+  --set controller.hostPort.ports.http=80 \
+  --set controller.hostPort.ports.https=443 \
+  --set-string controller.nodeSelector.&quot;kubernetes\.io/os&quot;=linux \
+  --set-string controller.nodeSelector.ingress-ready=&quot;true&quot;
 
 </code></pre>
-<p>And switch to it</p>
-<pre><code>
-kubectl config --help
-
-kubectl config get-contexts
-
-kubectl config current-context
-
-kubectl config set-context --help
-
-kubectl config set-context --current --namespace=instavote
-
-kubectl config get-contexts
-
-kubectl config view
-
-
-</code></pre>
-<p><strong>Exercise</strong>: Go back to the monitoring screen and observe what happens after switching the namespace.</p>
-<p>e.g.</p>
-<pre><code>kubectl config set-context --current --namespace=default
-
-kubectl config set-context --current --namespace=kube-system
-
-kubectl config set-context --current --namespace=instavote
-</code></pre>
-<h2 id="part-ii-replicasets">PART II - ReplicaSets</h2>
-<p>To understand how ReplicaSets works with the selectors  lets launch a pod in the new namespace with existing spec.</p>
-<pre><code>cd k8s-code/pods
-kubectl apply -f vote-pod.yaml
-
-kubectl get pods
-</code></pre>
-<h3 id="adding-replicaset-configurations">Adding ReplicaSet Configurations</h3>
-<p>Lets now write the spec for the ReplicaSet. This is going to mainly contain,</p>
+<p>Now, login to grafana and import custom dashboard for Nginx Ingress as</p>
 <ul>
-<li>replicas : define the scalability configs here</li>
-<li>selector : define configs which provide as a base for checking availibility</li>
-<li>template (pod spec )</li>
-<li>minReadySeconds : duration to wait after pod is ready till its declared as available (used by deployment)</li>
+<li>Left menu (hover over +) -&gt; Dashboard</li>
+<li>Click "Import"</li>
+<li>Enter the copy pasted json from <a href="https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/grafana/dashboards/nginx.json">https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/grafana/dashboards/nginx.json</a></li>
+<li>Click Import JSON</li>
+<li>Select the Prometheus data source</li>
+<li>Click "Import"</li>
 </ul>
-<p>From here on, we would switch to the project and environment specific path and work from there.</p>
-<pre><code>cd projects/instavote/dev
-
-</code></pre>
-<p><code>edit file: vote-rs.yaml</code></p>
-<pre><code>apiVersion: xxx
-kind: xxx
-metadata:
-  xxx
-spec:
-  xxx
-  template:
-    metadata:
-      name: vote
-      labels:
-        app: python
-        role: vote
-        version: v1
-    spec:
-      containers:
-        - name: app
-          image: schoolofdevops/vote:v1
-          resources:
-            requests:
-              memory: &quot;64Mi&quot;
-              cpu: &quot;50m&quot;
-            limits:
-              memory: &quot;128Mi&quot;
-              cpu: &quot;250m&quot;
-</code></pre>
-<p>Above file already containts the spec that you had written for the pod. You would observe its already been added as part of <em>spec.template</em> for replicaset.</p>
-<p>Lets now add the details specific to replicaset.</p>
-<p><em>file: vote-rs.yaml</em></p>
-<pre><code>apiVersion: apps/v1
-kind: ReplicaSet
+<p>⠀
+It may look similar to this, with possibly less data initially
+<img alt="" src="../images/grafana-01.png" /></p>
+<p>However, if you see some metric coming in, your setup with Nginx Ingress and Promethus Integration is working ! You may pat your back at this time :)</p>
+<hr />
+<h3 id="updated-rollout-configuration-with-experiment-and-analysis">Updated Rollout Configuration with Experiment and Analysis</h3>
+<p>File: <code>/prod/rollout.yaml</code></p>
+<pre><code>apiVersion: argoproj.io/v1alpha1
+kind: Rollout
 metadata:
   name: vote
 spec:
-  replicas: 4
-  minReadySeconds: 20
+  replicas: 5
+  strategy:
+    blueGreen: null
+    canary:
+      canaryService: vote-preview
+      stableService: vote
+      steps:
+      - setCanaryScale:
+          replicas: 2
+      - experiment:
+          duration: 3m
+          templates:
+          - name: canary
+            specRef: canary
+            service:
+              name: experiment
+          analyses:
+            - name: fitness-test
+              templateName: canary-fitness-test
+      - setWeight: 20
+      - pause:
+          duration: 10s
+      - setWeight: 40
+      - pause:
+          duration: 10s
+      - setWeight: 60
+      - analysis:
+          templates:
+          - templateName: loadtest
+          - templateName: latency
+      - setWeight: 80
+      - pause:
+          duration: 10s
+      - setWeight: 100
+      trafficRouting:
+        nginx:
+          stableIngress: vote
+          additionalIngressAnnotations:
+            canary-by-header: X-Canary
+            canary-by-header-value: siege
+</code></pre>
+<p>DELETE</p>
+<pre><code>apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  annotations:
+    supported-by: sre@example.com
+  creationTimestamp: null
+  labels:
+    app: vote
+    project: instavote
+    tier: front
+  name: vote
+  namespace: prod
+spec:
+  replicas: 5
   selector:
     matchLabels:
-      role: vote
-    matchExpressions:
-      - key: version
-        operator: Exists
+      app: vote
+  strategy:
+    blueGreen: null
+    canary:
+      canaryService: vote-preview
+      stableService: vote
+      steps:
+      - setCanaryScale:
+          replicas: 2
+      - experiment:
+          duration: 3m
+          templates:
+          - name: canary
+            specRef: canary
+            service:
+              name: experiment
+          analyses:
+            - name: fitness-test
+              templateName: canary-fitness-test
+      - setWeight: 20
+      - pause:
+          duration: 10s
+      - setWeight: 40
+      - pause:
+          duration: 10s
+      - setWeight: 60
+      - analysis:
+          templates:
+          - templateName: loadtest
+          - templateName: latency
+      - setWeight: 80
+      - pause:
+          duration: 10s
+      - setWeight: 100
+      trafficRouting:
+        nginx:
+          stableIngress: vote
+          additionalIngressAnnotations:
+            canary-by-header: X-Canary
+            canary-by-header-value: siege
   template:
     metadata:
-      name: vote
       labels:
-        app: python
-        role: vote
-        version: v1
+        app: vote
+        tier: front
     spec:
       containers:
-        - name: app
-          image: schoolofdevops/vote:v1
-          resources:
-            requests:
-              memory: &quot;64Mi&quot;
-              cpu: &quot;50m&quot;
-            limits:
-              memory: &quot;128Mi&quot;
-              cpu: &quot;250m&quot;
+      - image: schoolofdevops/vote:v1
+        imagePullPolicy: Always
+        name: vote
+        resources:
+          limits:
+            cpu: 250m
+            memory: 128Mi
+          requests:
+            cpu: 50m
+            memory: 64Mi
 </code></pre>
-<p>The complete file will look similar to above. Lets now go ahead and apply it.</p>
-<pre><code>kubectl apply -f vote-rs.yaml --dry-run=client
-
-kubectl apply -f vote-rs.yaml
-
-kubectl get rs
-
-kubectl describe rs vote
-
-kubectl get pods
-
-kubectl get pods --show-labels
-</code></pre>
-<h3 id="high-availability">High Availability</h3>
-<p>Try deleting pods created by the replicaset,</p>
-<p><code>replace pod-xxxx and pod-yyyy with actuals</code></p>
-<pre><code>kubectl get pods
-
-kubectl delete pods vote-xxxx vote-yyyy
-</code></pre>
-<p>Observe as the pods are automatically created again.</p>
-<p>Lets now delete the pod created independent of replica set.</p>
-<pre><code>kubectl get pods
-kubectl delete pods  vote
-</code></pre>
-<p>Observe what happens.
-  * Does replica set take any action after deleting the pod created outside of its spec ? Why?</p>
-<h3 id="scalability">Scalability</h3>
-<p>Scaling out and scaling in your application is as easy as running,  </p>
-<pre><code>  kubectl scale rs vote --replicas=8
-  kubectl get pods --show-labels
-
-  kubectl scale rs vote --replicas=25
-  kubectl get pods --show-labels
-
-  kubectl scale rs vote --replicas=7
-  kubectl get pods --show-labels
-
-</code></pre>
-<p>Observe what happens</p>
+<h4 id="explanation">Explanation</h4>
+<ol>
+<li>
+<p><strong>Rollout Configuration</strong>:</p>
+</li>
+<li>
+<p>The rollout strategy includes canary steps with set weights and pauses.</p>
+</li>
+<li>Each canary step includes an experiment with a specified duration (e.g., 3 minutes).</li>
+<li>The experiment step runs a experimental replicaset and launches a fitness test to  validate if the new version looks okay.</li>
+<li>
+<p>After 60% traffic is shifted to canary, a load test is lauched along with analysis from prometheus to check if the new version will perform okay with the load.</p>
+</li>
+<li>
+<p><strong>Analysis Templates</strong>:</p>
+</li>
+<li>
+<p>Defines a template for running a .</p>
+</li>
+<li>The <code>loadtest</code> container runs the load testing script against the canary service (<code>vote-preview</code>).</li>
+<li>The <code>fitness-test</code> job runs a test to validate if the new version is fit for deployment.</li>
+<li>the <code>latency</code> analysis fetches latency metrics from Prometheus and checks if the application is responding in acceptable time frame even with load conditions.</li>
+</ol>
+<p>⠀</p>
+<h4 id="how-it-works">How it Works</h4>
 <ul>
-<li>Did the number of  replicas increase to 8, then to 25 and reduced to 7 ?</li>
+<li>At each setWeight step, traffic is gradually shifted to the canary version.</li>
+<li>The analysis step includes both the load test and the metric analysis.</li>
+<li>The experiment runs for 3 minutes, during which the fitness test is conducted.</li>
+<li>Simultaneously with load test , the analysis template checks Prometheus metrics to ensure the canary is performing correctly.</li>
+<li>If the analysis detects errors beyond the acceptable threshold, the rollout will trigger a rollback.</li>
+<li>If the canary passes the load test and analysis, the rollout proceeds to the next step.</li>
 </ul>
-<h3 id="exercise-deploying-new-version-of-the-application">Exercise: Deploying new version of the application</h3>
-<pre><code>kubectl edit rs vote
+<p>⠀
+By configuring the experiment and analysis to run in parallel, you can ensure comprehensive testing and validation of the canary version, enabling automatic rollback if any issues are detected.</p>
+<h3 id="template-for-load-testing">Template for Load Testing</h3>
+<p>File <code>prod/loadtest-analysistemplate.yaml</code></p>
+<pre><code>apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: loadtest
+spec:
+  metrics:
+  - name: loadtest-vote
+    provider:
+      job:
+        spec:
+          template:
+            spec:
+              containers:
+              - name: siege
+                image: schoolofdevops/loadtest:v1
+                command:
+                  - siege
+                  - &quot;--concurrent=2&quot;
+                  - &quot;--benchmark&quot;
+                  - &quot;--time=5m&quot;
+                  - &quot;--header='X-Canary: siege'&quot;
+                  - &quot;http://vote.example.com&quot;
+              restartPolicy: Never
+              hostAliases:
+              - ip: &quot;xx.xx.xx.xx&quot;
+                hostnames:
+                - &quot;vote.example.com&quot;
+          backoffLimit: 4
 </code></pre>
-<ul>
-<li>Update the version of the image from <strong>schoolofdevops/vote:v1</strong> to <strong>schoolofdevops/vote:v2</strong></li>
-<li>From template.metadata.labels update <code>version=v1</code> to <code>version=v2</code></li>
-</ul>
-<p>Save the file. If you are using <code>kubectl edit</code> it would apply the changes immediately as you save, without needing to use <code>kubectl apply</code> command.</p>
-<p>Observe what happens ?</p>
-<ul>
-<li>Did application get  updated.</li>
-<li>Did updating replicaset launched new pods to deploy new version ?</li>
-</ul>
-<h4 id="summary">Summary</h4>
-<p>With <strong>ReplicaSets</strong> your application is now high available as well as scalable. However ReplicaSet by itself does not have the intelligence to trigger a rollout if you update the version. For that, you are going to need a <strong>deployment</strong> which is something you would learn in an upcoming  lesson.</p>
+<p>where,
+* replace <code>xx.xx.xx.xx</code> with internal IP Address of <code>worker</code> node. Find out by using</p>
+<pre><code>kubectl get nodes -o wide
+</code></pre>
+<p>[sample output]</p>
+<pre><code>NAME                 STATUS   ROLES           AGE     VERSION   INTERNAL-IP   EXTERNAL-IP   OS-IMAGE                         KERNEL-VERSION     CONTAINER-RUNTIME
+kind-control-plane   Ready    control-plane   2d23h   v1.30.0   172.18.0.2    &lt;none&gt;        Debian GNU/Linux 12 (bookworm)   6.8.0-31-generic   containerd://1.7.15
+kind-worker          Ready    &lt;none&gt;          2d23h   v1.30.0   172.18.0.4    &lt;none&gt;        Debian GNU/Linux 12 (bookworm)   6.8.0-31-generic   containerd://1.7.15
+kind-worker2         Ready    &lt;none&gt;          2d23h   v1.30.0   172.18.0.3    &lt;none&gt;        Debian GNU/Linux 12 (bookworm)   6.8.0-31-generic   containerd://1.7.15
+</code></pre>
+<p>From this output, you are going to use <code>172.18.0.4</code> in the configuration above.</p>
+<h3 id="analysistemplate-for-prometheus-metrics">AnalysisTemplate for Prometheus Metrics</h3>
+<p>File : <code>prod/latency-analysistemplate.yaml</code></p>
+<pre><code>apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: latency
+spec:
+  metrics:
+  - name: nginx-latency-ms
+    initialDelay: 1m
+    interval: 1m
+    failureLimit: 2
+    count: 4
+    successCondition: result &lt; 50.0
+    failureCondition: result &gt;= 50.0
+    provider:
+      prometheus:
+        address: http://prom-kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090
+        query: |
+          scalar(
+            1000 * histogram_quantile(0.99,
+              sum(
+                rate(
+                  nginx_ingress_controller_request_duration_seconds_bucket{ingress=&quot;vote&quot;, exported_namespace=&quot;prod&quot;}[1m]
+                )
+              ) by (le)
+            )
+          )
+</code></pre>
+<h3 id="fitness-test-for-canary">Fitness Test for Canary</h3>
+<p>File: <code>prod/fitness-analysistemplate.yaml</code></p>
+<pre><code>apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: canary-fitness-test
+spec:
+  metrics:
+  - name: canary-fitness
+    interval: 30s
+    count: 3
+    successCondition: result == &quot;true&quot;
+    failureLimit: 1
+    provider:
+      job:
+        spec:
+          template:
+            spec:
+              containers:
+              - name: fitness-test
+                image: curlimages/curl
+                command: [&quot;/bin/sh&quot;, &quot;-c&quot;]
+                args:
+                - |
+                  FITNESS_RESULT=&quot;false&quot;
+                  CANARY_SERVICE_URL=&quot;http://vote-preview&quot;
+
+                  # Perform the fitness test
+                  RESPONSE=$(curl -s $CANARY_SERVICE_URL)
+
+                  # Check if the response contains the expected string
+                  if [[ &quot;$RESPONSE&quot; == *&quot;Processed by container ID&quot;* ]]; then
+                    FITNESS_RESULT=&quot;true&quot;
+                  fi
+
+                  # Return the fitness test result
+                  echo $FITNESS_RESULT
+              restartPolicy: Never
+          backoffLimit: 1
+</code></pre>
+<h3 id="update-kustomization-for-prod">Update Kustomization for Prod</h3>
+<p>File : <code>prod/kustomization.yaml</code></p>
+<pre><code>apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- ../base
+- ingress.yaml
+- fitness-analysistemplate.yaml
+- latency-analysistemplate.yaml
+- loadtest-analysistemplate.yaml
+</code></pre>
+<p>apply</p>
+<pre><code>kustomize build prod
+kubectl apply -k prod
+</code></pre>
+<p>watch the rollout using</p>
+<pre><code>kubectl argo rollouts get rollout  vote
+</code></pre>
+<h3 id="_1"></h3>
+<hr />
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../create-and-deploy-kubernetes-pods/" class="btn btn-neutral float-left" title="Lab K103 - Pods"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../kubernetes-service-networking/" class="btn btn-neutral float-right" title="Lab K105 - Service Networking">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../argo_iamge_updater/" class="btn btn-neutral float-left" title="Lab K607 - Argo Image Updater"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../xer-001-pods/" class="btn btn-neutral float-right" title="XER001 - Pods">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -489,10 +666,10 @@ kubectl delete pods  vote
         </span>
     
     
-      <span><a href="../create-and-deploy-kubernetes-pods/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../argo_iamge_updater/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../kubernetes-service-networking/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../xer-001-pods/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
