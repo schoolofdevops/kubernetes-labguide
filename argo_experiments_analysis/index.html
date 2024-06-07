@@ -192,9 +192,11 @@
     <li class="toctree-l2"><a class="reference internal" href="#setup-metrics-server">Setup Metrics Server</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#deploy-prometheus-and-grafana">Deploy Prometheus and Grafana</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#nginx">Nginx</a>
         <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#redeploy-nginx-ingress-controller">Redeploy Nginx Ingress Controller</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#setup-grafana-dashboard-for-nginx-ingress-controller">Setup Grafana Dashboard for Nginx Ingress Controller</a>
+    </li>
     <li class="toctree-l3"><a class="reference internal" href="#updated-rollout-configuration-with-experiment-and-analysis">Updated Rollout Configuration with Experiment and Analysis</a>
         <ul>
     <li class="toctree-l4"><a class="reference internal" href="#explanation">Explanation</a>
@@ -316,7 +318,7 @@ kind-worker2         31m          1%     422Mi           10%
   --set prometheus.prometheusSpec.podMonitorSelectorNilUsesHelmValues=false \
   --set prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues=false
 </code></pre>
-<h2 id="nginx">Nginx</h2>
+<h3 id="redeploy-nginx-ingress-controller">Redeploy Nginx Ingress Controller</h3>
 <p>Re deploy nginx ingress controller with helm, this time enabling the exposing the metrics which can then be scraped/collected by prometheus.</p>
 <pre><code>helm upgrade --install ingress-nginx ingress-nginx \
   --repo https://kubernetes.github.io/ingress-nginx \
@@ -330,6 +332,7 @@ kind-worker2         31m          1%     422Mi           10%
   --set-string controller.nodeSelector.ingress-ready=&quot;true&quot;
 
 </code></pre>
+<h3 id="setup-grafana-dashboard-for-nginx-ingress-controller">Setup Grafana Dashboard for Nginx Ingress Controller</h3>
 <p>Now, login to grafana and import custom dashboard for Nginx Ingress as</p>
 <ul>
 <li>Left menu (hover over +) -&gt; Dashboard</li>
