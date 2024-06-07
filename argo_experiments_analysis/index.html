@@ -396,37 +396,37 @@ spec:
             canary-by-header-value: siege
 </code></pre>
 <h4 id="explanation">Explanation</h4>
-<ol>
+<ul>
 <li>
 <p><strong>Rollout Configuration</strong>:</p>
 </li>
 <li>
-<p>The rollout strategy includes canary steps with set weights and pauses.</p>
+<p>The rollout strategy includes canary steps with set weights and pauses.  </p>
 </li>
-<li>Each canary step includes an experiment with a specified duration (e.g., 3 minutes).</li>
-<li>The experiment step runs a experimental replicaset and launches a fitness test to  validate if the new version looks okay.</li>
+<li>Each canary step includes an experiment with a specified duration (e.g., 3 minutes).  </li>
+<li>The experiment step runs a experimental replicaset and launches a fitness test to  validate if the new version looks okay.  </li>
 <li>
-<p>After 60% traffic is shifted to canary, a load test is lauched along with analysis from prometheus to check if the new version will perform okay with the load.</p>
+<p>After 60% traffic is shifted to canary, a load test is lauched along with analysis from prometheus to check if the new version will perform okay with the load.  </p>
 </li>
 <li>
 <p><strong>Analysis Templates</strong>:</p>
 </li>
 <li>
-<p>Defines a template for running a .</p>
+<p>Defines a templates for running various tests and analyses.    </p>
 </li>
-<li>The <code>loadtest</code> container runs the load testing script against the canary service (<code>vote-preview</code>).</li>
-<li>The <code>fitness-test</code> job runs a test to validate if the new version is fit for deployment.</li>
-<li>the <code>latency</code> analysis fetches latency metrics from Prometheus and checks if the application is responding in acceptable time frame even with load conditions.</li>
-</ol>
+<li>The <code>loadtest</code> container runs the load testing script against the canary service (<code>vote-preview</code>).  </li>
+<li>The <code>fitness-test</code> job runs a test to validate if the new version is fit for deployment.  </li>
+<li>the <code>latency</code> analysis fetches latency metrics from Prometheus and checks if the application is responding in acceptable time frame even with load conditions.  </li>
+</ul>
 <p>⠀</p>
 <h4 id="how-it-works">How it Works</h4>
 <ul>
-<li>At each setWeight step, traffic is gradually shifted to the canary version.</li>
-<li>The analysis step includes both the load test and the metric analysis.</li>
-<li>The experiment runs for 3 minutes, during which the fitness test is conducted.</li>
-<li>Simultaneously with load test , the analysis template checks Prometheus metrics to ensure the canary is performing correctly.</li>
-<li>If the analysis detects errors beyond the acceptable threshold, the rollout will trigger a rollback.</li>
-<li>If the canary passes the load test and analysis, the rollout proceeds to the next step.</li>
+<li>At each setWeight step, traffic is gradually shifted to the canary version.  </li>
+<li>The analysis step includes both the load test and the metric analysis.  </li>
+<li>The experiment runs for 3 minutes, during which the fitness test is conducted.  </li>
+<li>Simultaneously with load test , the analysis template checks Prometheus metrics to ensure the canary is performing correctly.  </li>
+<li>If the analysis detects errors beyond the acceptable threshold, the rollout will trigger a rollback.  </li>
+<li>If the canary passes the load test and analysis, the rollout proceeds to the next step.  </li>
 </ul>
 <p>⠀
 By configuring the experiment and analysis to run in parallel, you can ensure comprehensive testing and validation of the canary version, enabling automatic rollback if any issues are detected.</p>
