@@ -68,6 +68,7 @@ nav:
      - Lab K605 - Argo Workflows: "argo_workflow_ci.md"
      - Lab K606 - Argo Events: "argo_events.md"
      - Lab K607 - Argo Image Updater: "argo_iamge_updater.md"
+     - Lab K608 - Experiments and Analysis: "argo_experiments_analysis.md"
   - Exercises:
      - XER001 - Pods: "xer-001-pods.md"
      - XER002 - ReplicaSets: "xer-002-rs.md"
