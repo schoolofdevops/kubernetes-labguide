@@ -69,7 +69,7 @@ helm upgrade --install prom -n monitoring \
 ```
 
 
-## Nginx
+### Redeploy Nginx Ingress Controller
 
 
 Re deploy nginx ingress controller with helm, this time enabling the exposing the metrics which can then be scraped/collected by prometheus.
@@ -87,6 +87,8 @@ helm upgrade --install ingress-nginx ingress-nginx \
   --set-string controller.nodeSelector.ingress-ready="true"
 
 ```
+
+### Setup Grafana Dashboard for Nginx Ingress Controller
 
 Now, login to grafana and import custom dashboard for Nginx Ingress as
 
@@ -159,108 +161,31 @@ spec:
 ```
 
 
-DELETE
-```
-apiVersion: argoproj.io/v1alpha1
-kind: Rollout
-metadata:
-  annotations:
-    supported-by: sre@example.com
-  creationTimestamp: null
-  labels:
-    app: vote
-    project: instavote
-    tier: front
-  name: vote
-  namespace: prod
-spec:
-  replicas: 5
-  selector:
-    matchLabels:
-      app: vote
-  strategy:
-    blueGreen: null
-    canary:
-      canaryService: vote-preview
-      stableService: vote
-      steps:
-      - setCanaryScale:
-          replicas: 2
-      - experiment:
-          duration: 3m
-          templates:
-          - name: canary
-            specRef: canary
-            service:
-              name: experiment
-          analyses:
-            - name: fitness-test
-              templateName: canary-fitness-test
-      - setWeight: 20
-      - pause:
-          duration: 10s
-      - setWeight: 40
-      - pause:
-          duration: 10s
-      - setWeight: 60
-      - analysis:
-          templates:
-          - templateName: loadtest
-          - templateName: latency
-      - setWeight: 80
-      - pause:
-          duration: 10s
-      - setWeight: 100
-      trafficRouting:
-        nginx:
-          stableIngress: vote
-          additionalIngressAnnotations:
-            canary-by-header: X-Canary
-            canary-by-header-value: siege
-  template:
-    metadata:
-      labels:
-        app: vote
-        tier: front
-    spec:
-      containers:
-      - image: schoolofdevops/vote:v1
-        imagePullPolicy: Always
-        name: vote
-        resources:
-          limits:
-            cpu: 250m
-            memory: 128Mi
-          requests:
-            cpu: 50m
-            memory: 64Mi
-```
-
 #### Explanation
 
-1. **Rollout Configuration**:
+*  **Rollout Configuration**:
 
-   * The rollout strategy includes canary steps with set weights and pauses.
-   * Each canary step includes an experiment with a specified duration (e.g., 3 minutes).
-   * The experiment step runs a experimental replicaset and launches a fitness test to  validate if the new version looks okay.
-   * After 60% traffic is shifted to canary, a load test is lauched along with analysis from prometheus to check if the new version will perform okay with the load.
+   * The rollout strategy includes canary steps with set weights and pauses.  
+   * Each canary step includes an experiment with a specified duration (e.g., 3 minutes).  
+   * The experiment step runs a experimental replicaset and launches a fitness test to  validate if the new version looks okay.  
+   * After 60% traffic is shifted to canary, a load test is lauched along with analysis from prometheus to check if the new version will perform okay with the load.  
 
-2. **Analysis Templates**:
+*  **Analysis Templates**:
 
-   * Defines a template for running a .
-   * The `loadtest` container runs the load testing script against the canary service (`vote-preview`).
-   * The `fitness-test` job runs a test to validate if the new version is fit for deployment.
-   * the `latency` analysis fetches latency metrics from Prometheus and checks if the application is responding in acceptable time frame even with load conditions.
+   * Defines a templates for running various tests and analyses.    
+   * The `loadtest` container runs the load testing script against the canary service (`vote-preview`).  
+   * The `fitness-test` job runs a test to validate if the new version is fit for deployment.  
+   * the `latency` analysis fetches latency metrics from Prometheus and checks if the application is responding in acceptable time frame even with load conditions.  
 
 ⠀
 #### How it Works
 
-* At each setWeight step, traffic is gradually shifted to the canary version.
-* The analysis step includes both the load test and the metric analysis.
-* The experiment runs for 3 minutes, during which the fitness test is conducted.
-* Simultaneously with load test , the analysis template checks Prometheus metrics to ensure the canary is performing correctly.
-* If the analysis detects errors beyond the acceptable threshold, the rollout will trigger a rollback.
-* If the canary passes the load test and analysis, the rollout proceeds to the next step.
+* At each setWeight step, traffic is gradually shifted to the canary version.  
+* The analysis step includes both the load test and the metric analysis.  
+* The experiment runs for 3 minutes, during which the fitness test is conducted.  
+* Simultaneously with load test , the analysis template checks Prometheus metrics to ensure the canary is performing correctly.  
+* If the analysis detects errors beyond the acceptable threshold, the rollout will trigger a rollback.  
+* If the canary passes the load test and analysis, the rollout proceeds to the next step.  
 
 ⠀
 By configuring the experiment and analysis to run in parallel, you can ensure comprehensive testing and validation of the canary version, enabling automatic rollback if any issues are detected.
