@@ -141,7 +141,7 @@ spec:
                   - name: repo-url
                     value: "https://github.com/xxxxxx/vote.git"
                   - name: branch
-                    value: "master"
+                    value: "main"
                   - name: image
                     value: "xxxxxx/vote"
                   - name: dockerfile
