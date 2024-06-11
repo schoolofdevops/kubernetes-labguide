@@ -158,7 +158,7 @@
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#phase-i-apply-existing-code">Phase I - Apply existing code</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#phase-ii-micrate-to-a-new-node-group">Phase II - Micrate to a New Node Group</a>
+    <li class="toctree-l3"><a class="reference internal" href="#phase-ii-migrate-to-a-new-node-group">Phase II - Migrate to a New Node Group</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#phase-iii-create-deployments-and-services-for-remaining-services">Phase III - Create Deployments and Services for Remaining Services</a>
         <ul>
@@ -340,7 +340,7 @@ kubectl apply -f db-deploy.yaml -f db-svc.yaml
 </ul>
 <p>⠀
 If you see the above objects, proceed with the next task.</p>
-<h3 id="phase-ii-micrate-to-a-new-node-group">Phase II - Micrate to a New Node Group</h3>
+<h3 id="phase-ii-migrate-to-a-new-node-group">Phase II - Migrate to a New Node Group</h3>
 <p>You may notice that your pods are not running or stuck in containerCreating stage. This could be due to the insufficient capacity due to the <code>t2.micro</code> instance types.  You could mitigate this by migrating to a new Node Group.</p>
 <p>This could be done by adding a new node group e.g.</p>
 <pre><code>
