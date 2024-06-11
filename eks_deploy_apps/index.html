@@ -158,13 +158,13 @@
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#phase-i-apply-existing-code">Phase I - Apply existing code</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#phase-ii-create-deployments-and-services-for-remaining-services">Phase II - Create Deployments and Services for Remaining Services</a>
+    <li class="toctree-l3"><a class="reference internal" href="#phase-ii-micrate-to-a-new-node-group">Phase II - Micrate to a New Node Group</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#phase-iii-create-deployments-and-services-for-remaining-services">Phase III - Create Deployments and Services for Remaining Services</a>
         <ul>
     <li class="toctree-l4"><a class="reference internal" href="#to-validate">To Validate:</a>
     </li>
         </ul>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#phase-iii-creating-a-new-node-group">Phase III - Creating a New Node Group</a>
     </li>
         </ul>
     </li>
@@ -340,43 +340,7 @@ kubectl apply -f db-deploy.yaml -f db-svc.yaml
 </ul>
 <p>⠀
 If you see the above objects, proceed with the next task.</p>
-<h3 id="phase-ii-create-deployments-and-services-for-remaining-services">Phase II - Create Deployments and Services for Remaining Services</h3>
-<p>You may find the files available in the same directory as above i.e. <em>k8s-code/projects/instavote/dev/</em> with either partial or blank code. Your job is to complete the deployment and service yaml specs and apply those. While writing the specs, you could refer to the following specification.</p>
-<ul>
-<li>vote  <ul>
-<li>image: schoolofdevops/vote:v1  </li>
-<li>application port: 80  </li>
-<li>replicas: 2</li>
-<li>service type: NodePort  </li>
-<li>nodePort : 30000  </li>
-</ul>
-</li>
-<li>worker  <ul>
-<li>image: schoolofdevops/worker:latest  </li>
-</ul>
-</li>
-<li>results  <ul>
-<li>image: schoolofdevops/vote-result  </li>
-<li>application port: 80  </li>
-<li>replicas: 1</li>
-<li>service type: NodePort  </li>
-<li>nodePort : 30100  </li>
-</ul>
-</li>
-</ul>
-<p>⠀</p>
-<h4 id="to-validate">To Validate:</h4>
-<pre><code>kubectl get all
-</code></pre>
-<p>The above command should show, <em>five deployments and four services created</em> services for vote and result app should have been exposed with NodePort</p>
-<p>Find out the NodePort for vote and service apps and load those from your browser.</p>
-<p><img alt="" src="../images/eks/03/01.png" /></p>
-<p>This is how the vote application should look like.</p>
-<p>You could also load the Result page on the <code>30100</code> port of your Node IP/Address as,</p>
-<p><img alt="" src="../images/eks/03/02.png" /></p>
-<p>Above is how the result app should look like.</p>
-<p>Final validation is, if you submit the vote, you should see the results changing accordingly. You would see this behavior only if all deployments and services are created and configured properly.</p>
-<h3 id="phase-iii-creating-a-new-node-group">Phase III - Creating a New Node Group</h3>
+<h3 id="phase-ii-micrate-to-a-new-node-group">Phase II - Micrate to a New Node Group</h3>
 <p>You may notice that your pods are not running or stuck in containerCreating stage. This could be due to the insufficient capacity due to the <code>t2.micro</code> instance types.  You could mitigate this by migrating to a new Node Group.</p>
 <p>This could be done by adding a new node group e.g.</p>
 <pre><code>
@@ -386,7 +350,7 @@ If you see the above objects, proceed with the next task.</p>
 managedNodeGroups:
   - name: ng-1-workers
     labels: { role: workers }
-    instanceType: t3.small
+    instanceType: t3.micro
     desiredCapacity: 1
     minSize: 1
     maxSize: 5
@@ -422,12 +386,48 @@ managedNodeGroups:
 <pre><code>eksctl create nodegroup -f cluster.yaml --include=ng-2-workers
 </code></pre>
 <p>and to delete the previous one:</p>
-<pre><code>eksctl delete nodegroup -f cluster.yaml --include=ng-1-workers
+<pre><code>eksctl delete nodegroup -f cluster.yaml --include=ng-1-workers --approve
 </code></pre>
 <p>This should help you migrate the workloads to the new node group and help it run with sufficient resources.</p>
 <p>You could also scale it up with</p>
 <pre><code>eksctl scale nodegroup --cluster eks-cluster-01 ng-2-workers --nodes 2
 </code></pre>
+<h3 id="phase-iii-create-deployments-and-services-for-remaining-services">Phase III - Create Deployments and Services for Remaining Services</h3>
+<p>You may find the files available in the same directory as above i.e. <em>k8s-code/projects/instavote/dev/</em> with either partial or blank code. Your job is to complete the deployment and service yaml specs and apply those. While writing the specs, you could refer to the following specification.</p>
+<ul>
+<li>vote  <ul>
+<li>image: schoolofdevops/vote:v1  </li>
+<li>application port: 80  </li>
+<li>replicas: 2</li>
+<li>service type: NodePort  </li>
+<li>nodePort : 30000  </li>
+</ul>
+</li>
+<li>worker  <ul>
+<li>image: schoolofdevops/worker:latest  </li>
+</ul>
+</li>
+<li>results  <ul>
+<li>image: schoolofdevops/vote-result  </li>
+<li>application port: 80  </li>
+<li>replicas: 1</li>
+<li>service type: NodePort  </li>
+<li>nodePort : 30100  </li>
+</ul>
+</li>
+</ul>
+<p>⠀</p>
+<h4 id="to-validate">To Validate:</h4>
+<pre><code>kubectl get all
+</code></pre>
+<p>The above command should show, <em>five deployments and four services created</em> services for vote and result app should have been exposed with NodePort</p>
+<p>Find out the NodePort for vote and service apps and load those from your browser.</p>
+<p><img alt="" src="../images/eks/03/01.png" /></p>
+<p>This is how the vote application should look like.</p>
+<p>You could also load the Result page on the <code>30100</code> port of your Node IP/Address as,</p>
+<p><img alt="" src="../images/eks/03/02.png" /></p>
+<p>Above is how the result app should look like.</p>
+<p>Final validation is, if you submit the vote, you should see the results changing accordingly. You would see this behavior only if all deployments and services are created and configured properly.</p>
               
             </div>
           </div><footer>
