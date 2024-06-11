@@ -66,7 +66,7 @@ Where you should see,
 ⠀
 If you see the above objects, proceed with the next task.
 
-### Phase II - Micrate to a New Node Group
+### Phase II - Migrate to a New Node Group
 
 You may notice that your pods are not running or stuck in containerCreating stage. This could be due to the insufficient capacity due to the `t2.micro` instance types.  You could mitigate this by migrating to a new Node Group.
 
