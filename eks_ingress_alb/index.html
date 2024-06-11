@@ -263,10 +263,10 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="lab-04-ingress-with-alb">Lab 04 - Ingress with ALB</h1>
-<p>In this lab you are going to learn how to route traffic to your applications running inside EKS using Application Load Balancer offered by AWS. </p>
+<p>In this lab you are going to learn how to route traffic to your applications running inside EKS using Application Load Balancer offered by AWS.</p>
 <h2 id="pre-requisites">Pre Requisites</h2>
 <ul>
-<li>[ ] EKS Cluster </li>
+<li>[ ] EKS Cluster</li>
 <li>[ ] Two Subnets in two AZs  </li>
 <li>[ ] Public/Private Subnets should have relevant tags (Already done if created with Cloudformation Template)</li>
 </ul>
@@ -309,15 +309,15 @@
 </ul>
 <p>⠀
 The LBC listens to the Ingress resources in the Kubernetes cluster and dynamically updates the ALB configuration in AWS to match the defined routing rules, ensuring seamless traffic management.</p>
-<p>Download IAM Policy </p>
+<p>Download IAM Policy</p>
 <pre><code>curl -O https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.7.2/docs/install/iam_policy.json
 </code></pre>
-<p>Create IAM Policy </p>
+<p>Create IAM Policy</p>
 <pre><code>aws iam create-policy \
     --policy-name AWSLoadBalancerControllerIAMPolicy \
     --policy-document file://iam_policy.json
 </code></pre>
-<p>Note the ARN which you will use in the next command. </p>
+<p>Note the ARN which you will use in the next command.</p>
 <p><strong>Create IAM Role using</strong> eksctl</p>
 <p>Replace eks-cluster-01 with the name of your cluster, 111122223333 with your account ID, and then run the command. If your cluster is in the AWS GovCloud (US-East) or AWS GovCloud (US-West) AWS Regions, then replace arn:aws: with arn:aws-us-gov:. </p>
 <pre><code>eksctl create iamserviceaccount \
@@ -326,9 +326,9 @@ The LBC listens to the Ingress resources in the Kubernetes cluster and dynamical
   --name=aws-load-balancer-controller \
   --role-name AmazonEKSLoadBalancerControllerRole \
   --attach-policy-arn=arn:aws:iam::111122223333:policy/AWSLoadBalancerControllerIAMPolicy \
-  --approve 
+  --approve
 </code></pre>
-<p>validate </p>
+<p>validate</p>
 <pre><code>eksctl get iamserviceaccount --cluster eks-cluster-01
 </code></pre>
 <h6 id="install-aws-load-balancer-controller-using-helm-v3">Install AWS Load Balancer Controller using <a href="https://helm.sh/">Helm V3</a></h6>
@@ -347,7 +347,7 @@ helm repo update eks
   --set serviceAccount.name=aws-load-balancer-controller
 
 </code></pre>
-<p>validate </p>
+<p>validate</p>
 <pre><code>helm list -A
 
 kubectl get deployment,pods -n kube-system -l &quot;app.kubernetes.io/instance=aws-load-balancer-controller&quot;
@@ -387,28 +387,28 @@ spec:
               port:
                 number: 80
 </code></pre>
-<pre><code>kubectl apply -f vote-ing.yaml 
+<pre><code>kubectl apply -f vote-ing.yaml
 </code></pre>
-<pre><code>kubectl get ing 
+<pre><code>kubectl get ing
 </code></pre>
-<p>You could further get the details of the ALB using AWS CLI as </p>
+<p>You could further get the details of the ALB using AWS CLI as</p>
 <pre><code>aws elbv2 describe-load-balancers --query 'LoadBalancers[?contains(LoadBalancerName, `k8s-instavot-vote`) == `true`]'
 </code></pre>
 <p>At this time, you shall see a Application Load Balancer(ALB) created with the rules autoamtically added to route traffic to vote and result apps. <img alt="" src="../images/eks/03/03.png" />
 <img alt="" src="../images/eks/03/04.png" /></p>
 <h2 id="add-local-dns">Add Local DNS</h2>
-<p>You have created the ingress rules based on hostnames e.g. <strong>vote.example.com</strong> and <strong>result.example.com</strong>. In order for you to be able to access those, there has to be a dns entry pointing to your ALB. </p>
+<p>You have created the ingress rules based on hostnames e.g. <strong>vote.example.com</strong> and <strong>result.example.com</strong>. In order for you to be able to access those, there has to be a dns entry pointing to your ALB.</p>
 <pre><code>   vote.example.com    -------+                        +----- vote:80
                               |     +-------------+    |
                               |     |   ingress   |    |
                               +===&gt; |   node:80   | ===+
                               |     +-------------+    |
                               |                        |
-  results.example.com  -------+                        +----- result:80
+  result.example.com   -------+                        +----- result:80
 </code></pre>
 <p>To achieve this you need to either,</p>
 <ul>
-<li>Find out the IP Address that your ALB is pointing to </li>
+<li>Find out the IP Address that your ALB is pointing to</li>
 <li>Create a DNS entry, provided you own the domain and have access to the dns management console.</li>
 <li>Create a local <strong>hosts</strong> file entry. On unix systems its in <code>/etc/hosts</code> file. On windows its at <code>C:\Windows\System32\drivers\etc\hosts</code>. You need admin access to edit this file.</li>
 </ul>
@@ -417,13 +417,13 @@ For example, on a linux or osx, you could edit it as,</p>
 <pre><code>sudo vim /etc/hosts
 </code></pre>
 <p>And add an entry such as ,</p>
-<pre><code>xxx.xxx.xxx.xxx vote.example.com results.example.com  kube-ops-view.example.org
+<pre><code>xxx.xxx.xxx.xxx vote.example.com result.example.com  
 </code></pre>
 <p>where,</p>
 <ul>
 <li>xxx.xxx.xxx.xxx is one of the  actual IP addresss of ALB.</li>
 </ul>
-<p>You could find the IP address by using the following command </p>
+<p>You could find the IP address by using the following command</p>
 <pre><code>nslookup k8s-instavot-vote-e764f4b4a3-2050376139.ap-southeast-1.elb.amazonaws.com
 </code></pre>
 <p>where DNS name is copied from ALB’s DNS name
