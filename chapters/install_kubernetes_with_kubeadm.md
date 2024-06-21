@@ -12,11 +12,11 @@ The below steps are applicable for the below mentioned OS
 
 | OS | Version |
 | --- | --- |
-| **Ubuntu** | ** 22.10 ** |
+| **Ubuntu** | ** 24.04 LTS  ** |
 
-## Base Setup 
+## Base Setup
 
-Refer to [base setup document](../base_setup) to set up the nodes if you are configuring the nodes from scratch. 
+Refer to [base setup document](../base_setup) to set up the nodes if you are configuring the nodes from scratch.
 
 
 
@@ -26,10 +26,10 @@ This tutorial assumes **kube-01**  as the master and used kubeadm as a tool to i
 
 To initialize master, run this on kube-01 (1st node)
 
-`replace 192.168.56.101 with the actual IP of your node`
+`replace xx.xx.xx.xx with the actual IP of your node that is reachable from other nodes`
 
 ```
-kubeadm init --apiserver-advertise-address 192.168.56.101 --pod-network-cidr=192.168.0.0/16
+kubeadm init --apiserver-advertise-address xx.xx.xx.xx --pod-network-cidr=192.168.0.0/16
 
 ```
 
