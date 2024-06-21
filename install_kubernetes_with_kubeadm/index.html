@@ -283,17 +283,17 @@
 <tbody>
 <tr>
 <td><strong>Ubuntu</strong></td>
-<td>** 22.10 **</td>
+<td>** 24.04 LTS  **</td>
 </tr>
 </tbody>
 </table>
 <h2 id="base-setup">Base Setup</h2>
-<p>Refer to <a href="../base_setup">base setup document</a> to set up the nodes if you are configuring the nodes from scratch. </p>
+<p>Refer to <a href="../base_setup">base setup document</a> to set up the nodes if you are configuring the nodes from scratch.</p>
 <h2 id="initializing-master">Initializing Master</h2>
 <p>This tutorial assumes <strong>kube-01</strong>  as the master and used kubeadm as a tool to install and setup the cluster. This section also assumes that you are using vagrant based setup provided along with this tutorial. If not, please update the IP address of the master accordingly.</p>
 <p>To initialize master, run this on kube-01 (1st node)</p>
-<p><code>replace 192.168.56.101 with the actual IP of your node</code></p>
-<pre><code>kubeadm init --apiserver-advertise-address 192.168.56.101 --pod-network-cidr=192.168.0.0/16
+<p><code>replace xx.xx.xx.xx with the actual IP of your node that is reachable from other nodes</code></p>
+<pre><code>kubeadm init --apiserver-advertise-address xx.xx.xx.xx --pod-network-cidr=192.168.0.0/16
 
 </code></pre>
 <h3 id="initialization-of-the-nodes-previously-minions">Initialization of the Nodes (Previously Minions)</h3>
