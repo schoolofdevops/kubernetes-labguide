@@ -311,8 +311,14 @@ kind-worker2         31m          1%     422Mi           10%
 </code></pre>
 <p>If you see a similar output, monitoring is now been setup.</p>
 <h2 id="deploy-prometheus-and-grafana">Deploy Prometheus and Grafana</h2>
+<p>Set up repository</p>
+<pre><code>helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
+</code></pre>
+<p>Install Prometheus and Grafana as</p>
 <pre><code>helm upgrade --install prom -n monitoring \
   prometheus-community/kube-prometheus-stack \
+  --create-namespace \
   --set grafana.service.type=NodePort \
   --set grafana.service.nodePort=30400 \
   --set prometheus.prometheusSpec.podMonitorSelectorNilUsesHelmValues=false \
