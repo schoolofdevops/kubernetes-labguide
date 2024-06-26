@@ -439,7 +439,7 @@ patches:
 <pre><code>kubectl apply -k prod
 kubectl argo rollouts status vote
 </code></pre>
-<p>Here you could see the progressive canary in action, implmenting it step by step, ultimately rolling out the new version.</p>
+<p>Here you could see the progressive canary in action, implementing it step by step, ultimately rolling out the new version.</p>
 <p><img alt="" src="../images/argo/36.png" /></p>
 <ul>
 <li>A new replicaset is created to maintain the canary deployment during the rollout.  </li>
@@ -484,7 +484,7 @@ helm version
 <pre><code>kubectl get pods -n ingress-nginx
 </code></pre>
 <p>You may see the pod in pending state. Check why its pending by describing it.</p>
-<p>Once you descibe, you will see that its pending because it has a <code>nodeSelector</code> defined which is looking for a node with label set to <code>ingress-ready="true"</code>.</p>
+<p>Once you describe, you will see that its pending because it has a <code>nodeSelector</code> defined which is looking for a node with label set to <code>ingress-ready="true"</code>.</p>
 <p>Check the label on the current nodes</p>
 <pre><code>kubectl get nodes --show-labels
 </code></pre>
