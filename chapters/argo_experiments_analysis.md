@@ -59,9 +59,19 @@ If you see a similar output, monitoring is now been setup.
 ## Deploy Prometheus and Grafana
 
 
+Set up repository
+
+```
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
+```
+
+Install Prometheus and Grafana as
+
 ```
 helm upgrade --install prom -n monitoring \
   prometheus-community/kube-prometheus-stack \
+  --create-namespace \
   --set grafana.service.type=NodePort \
   --set grafana.service.nodePort=30400 \
   --set prometheus.prometheusSpec.podMonitorSelectorNilUsesHelmValues=false \
@@ -83,6 +93,7 @@ helm upgrade --install ingress-nginx ingress-nginx \
   --set controller.hostPort.enabled=true \
   --set controller.hostPort.ports.http=80 \
   --set controller.hostPort.ports.https=443 \
+  --set controller.service.type=NodePort \
   --set-string controller.nodeSelector."kubernetes\.io/os"=linux \
   --set-string controller.nodeSelector.ingress-ready="true"
 

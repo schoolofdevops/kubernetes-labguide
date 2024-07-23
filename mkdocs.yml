@@ -69,6 +69,10 @@ nav:
      - Lab K606 - Argo Events: "argo_events.md"
      - Lab K607 - Argo Image Updater: "argo_iamge_updater.md"
      - Lab K608 - Experiments and Analysis: "argo_experiments_analysis.md"
+  - Argo Articles:
+     - ArgoCD - Server Side Apply: "articles/argo_serversideapply.md"
+     - ArgoCD - RETRY Options: "articles/argo_retry_options.md"
+     - ArgoCD - Prune Propogation Policy: "articles/argo_prune_propogation_policy.md"
   - Exercises:
      - XER001 - Pods: "xer-001-pods.md"
      - XER002 - ReplicaSets: "xer-002-rs.md"

@@ -245,7 +245,7 @@ kubectl apply -k prod
 kubectl argo rollouts status vote
 ```
 
-Here you could see the progressive canary in action, implmenting it step by step, ultimately rolling out the new version.
+Here you could see the progressive canary in action, implementing it step by step, ultimately rolling out the new version.
 
 ![](images/argo/36.png)
 
@@ -296,6 +296,7 @@ helm upgrade --install ingress-nginx ingress-nginx \
   --repo https://kubernetes.github.io/ingress-nginx \
   --namespace ingress-nginx --create-namespace \
   --set controller.hostPort.enabled=true \
+  --set controller.service.type=NodePort \
   --set controller.hostPort.ports.http=80 \
   --set-string controller.nodeSelector."kubernetes\.io/os"=linux \
   --set-string controller.nodeSelector.ingress-ready="true"
@@ -311,7 +312,7 @@ kubectl get pods -n ingress-nginx
 
 You may see the pod in pending state. Check why its pending by describing it.
 
-Once you descibe, you will see that its pending because it has a `nodeSelector` defined which is looking for a node with label set to `ingress-ready="true"`.
+Once you describe, you will see that its pending because it has a `nodeSelector` defined which is looking for a node with label set to `ingress-ready="true"`.
 
 Check the label on the current nodes
 

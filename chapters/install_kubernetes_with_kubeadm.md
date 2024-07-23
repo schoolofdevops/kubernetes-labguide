@@ -12,7 +12,7 @@ The below steps are applicable for the below mentioned OS
 
 | OS | Version |
 | --- | --- |
-| **Ubuntu** | ** 24.04 LTS  ** |
+| **Ubuntu** | **24.04 LTS** |
 
 ## Base Setup
 

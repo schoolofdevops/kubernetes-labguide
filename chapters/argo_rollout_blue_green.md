@@ -58,7 +58,7 @@ change it to `argo-labs` and examine the code for base as well as staging as
 ```
 cd argo-labs
 
-kustomize build based
+kustomize build base
 kustomize build staging
 ```
 
