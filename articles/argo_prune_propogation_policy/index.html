@@ -3,18 +3,18 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/istio/labs/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/articles/argo_prune_propogation_policy/" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>Power of Istio -  Labs - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <title>ArgoCD - Prune Propogation Policy - Kubernetes Tutorial with CKA/CKAD Prep</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Power of Istio -  Labs";
-        var mkdocs_page_input_path = "istio/labs.md";
-        var mkdocs_page_url = "/istio/labs/";
+        var mkdocs_page_name = "ArgoCD - Prune Propogation Policy";
+        var mkdocs_page_input_path = "articles/argo_prune_propogation_policy.md";
+        var mkdocs_page_url = "/articles/argo_prune_propogation_policy/";
       </script>
     
     <!--[if lt IE 9]>
@@ -191,12 +191,24 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Argo Articles</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../articles/argo_serversideapply/">ArgoCD - Server Side Apply</a>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_serversideapply/">ArgoCD - Server Side Apply</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../articles/argo_retry_options/">ArgoCD - RETRY Options</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_retry_options/">ArgoCD - RETRY Options</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../articles/argo_prune_propogation_policy/">ArgoCD - Prune Propogation Policy</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">ArgoCD - Prune Propogation Policy</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#1-foreground">1. Foreground</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#2-background">2. Background</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#3-orphan">3. Orphan</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#summary-of-all-three-policies">Summary of All Three Policies</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#use-case-examples">Use Case Examples</a>
+    </li>
+    </ul>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Exercises</span></p>
@@ -244,9 +256,10 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" aria-label="Docs"></a> &raquo;</li>
-      <li class="breadcrumb-item active">Power of Istio -  Labs</li>
+          <li>Argo Articles &raquo;</li>
+      <li class="breadcrumb-item active">ArgoCD - Prune Propogation Policy</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/istio/labs.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/articles/argo_prune_propogation_policy.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -254,61 +267,119 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="power-of-istio-labs">Power of Istio -  Labs</h1>
-<h2 id="concepts">Concepts:</h2>
+                <h1 id="prune-propogation-policy">Prune Propogation Policy</h1>
+<p>The Prune Propagation Policy in ArgoCD defines how deletions of Kubernetes resources are handled, particularly when dealing with parent-child resource relationships. Pruning is the process of deleting resources that are no longer defined in the Git repository but still exist in the Kubernetes cluster.</p>
+<p>ArgoCD supports three prune propagation policies that control how resource deletions (pruning) are handled, especially when dealing with resources that have parent-child relationships. Let's go through all three prune propagation policies:</p>
+<h3 id="1-foreground">1. Foreground</h3>
+<p><strong>Description</strong>: Waits for all child resources to be deleted before deleting the parent resource.</p>
+<p><strong>How It Works</strong>:</p>
 <ul>
-<li><a href="https://istio.io/docs/concepts/traffic-management/">Traffic Management</a>: Explains whats Virtual Services, Destination Rules, Gateways, Service Entries, Sidecars</li>
-<li><a href=""></a></li>
-<li><a href=""></a></li>
-<li><a href=""></a></li>
-<li><a href=""></a></li>
-<li><a href=""></a></li>
+<li>When you delete a parent resource, Kubernetes ensures that all child resources are deleted first.</li>
+<li>Only after all child resources are confirmed to be deleted, the parent resource itself is deleted.</li>
 </ul>
-<h2 id="lab-request-routing">Lab: Request Routing</h2>
-<p><a href="https://istio.io/docs/tasks/traffic-management/request-routing/">Request Routing Lab </a></p>
-<p><strong>Steps</strong>:
-  * Create virtual services for all apps
-  * Route all traffic to v1
-  * Route traffic to v2 only for jason user</p>
-<h2 id="lab-fault-injection">Lab: Fault Injection</h2>
-<p><a href="https://istio.io/docs/tasks/traffic-management/fault-injection/">Fault Injection Lab</a></p>
-<p><strong>Steps</strong>
-  * inject a <strong>7s delay</strong> between reviews/v2 || ratings service, only for user jason.  Analyse what happens and possible solutions.
-  * inject <strong>http abort</strong> fault between reviews/v2 || rating service, for user jason.</p>
-<h2 id="lab-traffic-shifting-ab-testing">Lab: Traffic Shifting (A/B Testing)</h2>
-<p><a href="https://istio.io/docs/tasks/traffic-management/traffic-shifting/">A/B Testing Lab</a></p>
-<p><strong>Steps:</strong>
-  * Apply default rule to send 100% traffic to v1
-  * Add weights so that 50% goes to v3 (needs 15 refreshs or more for proper distribution of traffic)
-  * Shift 100% traffic to v3
-  * Refer here for <a href="https://istio.io/blog/2017/0.1-canary/">Canary Releases</a></p>
-<h2 id="lab-observability-with-prometheus-and-grafana">Lab: Observability  with  Prometheus and Grafana</h2>
+<p>⠀
+<strong>Use Case</strong>:</p>
 <ul>
-<li><a href="https://istio.io/docs/tasks/observability/metrics/querying-metrics/">Prometheus Lab</a></li>
-<li>
-<p><a href="https://istio.io/docs/tasks/observability/metrics/using-istio-dashboard/">Grafana Lab</a></p>
-</li>
-<li>
-<p>Access Prometheus and Grafana using NodePort</p>
-</li>
-<li>Query and observe metrics generated by istio</li>
-<li>Observe dashboards created by Grafana</li>
+<li>Ensures that the entire resource hierarchy is cleaned up in a consistent and orderly manner.</li>
+<li>Useful for complex resources with dependencies to avoid leaving orphaned child resources.</li>
 </ul>
-<h2 id="lab-log-collection">Lab : Log Collection</h2>
-<p><a href="https://istio.io/docs/tasks/observability/logs/collecting-logs/">Log Collection Lab</a></p>
-<p><strong>Components:</strong>
-  * instance
-  * handler
-  * rule</p>
+<p>⠀
+<strong>Example</strong>:</p>
+<pre><code>plaintextCopy codeDeployment (Parent)
+  |
+  |-- ReplicaSet (Child)
+       |
+       |-- Pods (Child)
+</code></pre>
 <ul>
-<li><a href=""></a></li>
-<li><a href=""></a></li>
-<li><a href=""></a></li>
-<li><a href=""></a></li>
+<li><strong>Foreground</strong>: Pods are deleted first, then the ReplicaSet, and finally the Deployment.</li>
 </ul>
+<p>⠀
+<strong>Analogy</strong>: Think of cleaning up a project. Before you can archive the main project file, you must ensure that all related sub-tasks and documents are completed and removed.</p>
+<h3 id="2-background">2. Background</h3>
+<p><strong>Description</strong>: Deletes the parent resource immediately, and the garbage collector then deletes the child resources.</p>
+<p><strong>How It Works</strong>:</p>
+<ul>
+<li>When you delete a parent resource, Kubernetes marks the parent for deletion and removes it immediately.</li>
+<li>Child resources are subsequently deleted by the Kubernetes garbage collector in the background.</li>
+</ul>
+<p>⠀
+<strong>Use Case</strong>:</p>
+<ul>
+<li>Faster deletion of the parent resource, but the cleanup of child resources happens asynchronously.</li>
+<li>Suitable for scenarios where you don't need immediate and synchronous cleanup of all child resources.</li>
+</ul>
+<p>⠀
+<strong>Example</strong>:</p>
+<pre><code>plaintextCopy codeDeployment (Parent)
+  |
+  |-- ReplicaSet (Child)
+       |
+       |-- Pods (Child)
+</code></pre>
+<ul>
+<li><strong>Background</strong>: Deployment is deleted immediately, and the garbage collector takes care of deleting the ReplicaSet and Pods in the background.</li>
+</ul>
+<p>⠀
+<strong>Analogy</strong>: Think of deleting a project file and letting an automated script run in the background to clean up all related sub-tasks and documents.</p>
+<h3 id="3-orphan">3. Orphan</h3>
+<p><strong>Description</strong>: Deletes the parent resource but leaves the child resources untouched.</p>
+<p><strong>How It Works</strong>:</p>
+<ul>
+<li>When you delete a parent resource, Kubernetes deletes the parent but does not delete the child resources.</li>
+<li>Child resources are orphaned and remain in the cluster.</li>
+</ul>
+<p>⠀
+<strong>Use Case</strong>:</p>
+<ul>
+<li>Useful when you want to retain child resources for further analysis or reuse.</li>
+<li>Suitable for scenarios where child resources need to be preserved even after the parent resource is deleted.</li>
+</ul>
+<p>⠀
+<strong>Example</strong>:</p>
+<pre><code>plaintextCopy codeDeployment (Parent)
+  |
+  |-- ReplicaSet (Child)
+       |
+       |-- Pods (Child)
+</code></pre>
+<ul>
+<li><strong>Orphan</strong>: Deployment is deleted, but the ReplicaSet and Pods remain in the cluster.</li>
+</ul>
+<p>⠀
+<strong>Analogy</strong>: Think of deleting a main project file but keeping all the sub-tasks and documents for future reference or repurposing.</p>
+<h3 id="summary-of-all-three-policies">Summary of All Three Policies</h3>
+<pre><code>plaintextCopy codePrune Propagation Policies:
+  - Foreground:
+      - Parent deleted after all children are deleted.
+      - Synchronous and orderly cleanup.
+      - Suitable for complex dependencies.
+
+  - Background:
+      - Parent deleted immediately.
+      - Children deleted asynchronously by garbage collector.
+      - Faster parent deletion but less immediate cleanup.
+
+  - Orphan:
+      - Parent deleted but children remain.
+      - Retains child resources for further use or analysis.
+      - Useful when child resources need to be preserved.
+</code></pre>
+<h3 id="use-case-examples">Use Case Examples</h3>
+<ul>
+<li><strong>Foreground</strong>: Use when you have complex applications with dependencies, and you want to ensure a clean and orderly deletion process.</li>
+<li><strong>Background</strong>: Use when you need to delete parent resources quickly and can tolerate asynchronous cleanup of child resources.</li>
+<li><strong>Orphan</strong>: Use when you want to retain child resources even after the parent resource is deleted, for example, to analyze their state or repurpose them.</li>
+</ul>
+<p>⠀
+By understanding these policies, you can choose the appropriate prune propagation strategy based on your specific needs and resource relationships in your Kubernetes cluster.</p>
               
             </div>
           </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../argo_retry_options/" class="btn btn-neutral float-left" title="ArgoCD - RETRY Options"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../../xer-001-pods/" class="btn btn-neutral float-right" title="XER001 - Pods">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
 
   <hr/>
 
@@ -335,6 +406,10 @@
         </span>
     
     
+      <span><a href="../argo_retry_options/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../../xer-001-pods/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

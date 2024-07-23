@@ -3,18 +3,18 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/istio/labs/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/articles/argo_retry_options/" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>Power of Istio -  Labs - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <title>ArgoCD - RETRY Options - Kubernetes Tutorial with CKA/CKAD Prep</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Power of Istio -  Labs";
-        var mkdocs_page_input_path = "istio/labs.md";
-        var mkdocs_page_url = "/istio/labs/";
+        var mkdocs_page_name = "ArgoCD - RETRY Options";
+        var mkdocs_page_input_path = "articles/argo_retry_options.md";
+        var mkdocs_page_url = "/articles/argo_retry_options/";
       </script>
     
     <!--[if lt IE 9]>
@@ -191,12 +191,40 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Argo Articles</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../articles/argo_serversideapply/">ArgoCD - Server Side Apply</a>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_serversideapply/">ArgoCD - Server Side Apply</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../articles/argo_retry_options/">ArgoCD - RETRY Options</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">ArgoCD - RETRY Options</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#retry-option">Retry Option</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#sync-intervals-and-retries">Sync Intervals and Retries</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#automated-sync">Automated Sync</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#manual-sync">Manual Sync</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#example-scenario">Example Scenario</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#configuring-retry-behavior">Configuring Retry Behavior</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#diving-into-the-factor-parameter">Diving into the  factor Parameter</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#example-scenario_1">Example Scenario</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#summary-of-retry-intervals">Summary of Retry Intervals</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#conclusion">Conclusion</a>
+    </li>
+    </ul>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../articles/argo_prune_propogation_policy/">ArgoCD - Prune Propogation Policy</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_prune_propogation_policy/">ArgoCD - Prune Propogation Policy</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Exercises</span></p>
@@ -244,9 +272,10 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" aria-label="Docs"></a> &raquo;</li>
-      <li class="breadcrumb-item active">Power of Istio -  Labs</li>
+          <li>Argo Articles &raquo;</li>
+      <li class="breadcrumb-item active">ArgoCD - RETRY Options</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/istio/labs.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/articles/argo_retry_options.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -254,61 +283,166 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="power-of-istio-labs">Power of Istio -  Labs</h1>
-<h2 id="concepts">Concepts:</h2>
+                <h1 id="retry-options-in-argocd">RETRY Options in ArgoCD</h1>
+<p>The "Retry" option in ArgoCD controls whether failed sync operations are automatically retried. Let's break this down and also address your questions about the behavior when retries are turned off and the default sync interval.</p>
+<h4 id="retry-option">Retry Option</h4>
 <ul>
-<li><a href="https://istio.io/docs/concepts/traffic-management/">Traffic Management</a>: Explains whats Virtual Services, Destination Rules, Gateways, Service Entries, Sidecars</li>
-<li><a href=""></a></li>
-<li><a href=""></a></li>
-<li><a href=""></a></li>
-<li><a href=""></a></li>
-<li><a href=""></a></li>
+<li><strong>OFF</strong>: No automatic retries. If a sync operation fails, ArgoCD will not retry it automatically.</li>
+<li><strong>Behavior</strong>: When a sync operation fails, ArgoCD will not attempt to retry the operation until the next scheduled sync or a manual sync is triggered.</li>
+<li><strong>ON</strong>: Automatically retry on failure. If a sync operation fails, ArgoCD will attempt to retry the operation until it succeeds or reaches a retry limit.</li>
+<li><strong>Behavior</strong>: When a sync operation fails, ArgoCD will automatically retry the operation based on configured retry settings (like retry count and interval).</li>
 </ul>
-<h2 id="lab-request-routing">Lab: Request Routing</h2>
-<p><a href="https://istio.io/docs/tasks/traffic-management/request-routing/">Request Routing Lab </a></p>
-<p><strong>Steps</strong>:
-  * Create virtual services for all apps
-  * Route all traffic to v1
-  * Route traffic to v2 only for jason user</p>
-<h2 id="lab-fault-injection">Lab: Fault Injection</h2>
-<p><a href="https://istio.io/docs/tasks/traffic-management/fault-injection/">Fault Injection Lab</a></p>
-<p><strong>Steps</strong>
-  * inject a <strong>7s delay</strong> between reviews/v2 || ratings service, only for user jason.  Analyse what happens and possible solutions.
-  * inject <strong>http abort</strong> fault between reviews/v2 || rating service, for user jason.</p>
-<h2 id="lab-traffic-shifting-ab-testing">Lab: Traffic Shifting (A/B Testing)</h2>
-<p><a href="https://istio.io/docs/tasks/traffic-management/traffic-shifting/">A/B Testing Lab</a></p>
-<p><strong>Steps:</strong>
-  * Apply default rule to send 100% traffic to v1
-  * Add weights so that 50% goes to v3 (needs 15 refreshs or more for proper distribution of traffic)
-  * Shift 100% traffic to v3
-  * Refer here for <a href="https://istio.io/blog/2017/0.1-canary/">Canary Releases</a></p>
-<h2 id="lab-observability-with-prometheus-and-grafana">Lab: Observability  with  Prometheus and Grafana</h2>
+<p>⠀</p>
+<h3 id="sync-intervals-and-retries">Sync Intervals and Retries</h3>
+<p>ArgoCD can operate in two primary modes regarding syncing: automated sync with intervals or manual syncs. Here's how it works:</p>
+<h4 id="automated-sync">Automated Sync</h4>
 <ul>
-<li><a href="https://istio.io/docs/tasks/observability/metrics/querying-metrics/">Prometheus Lab</a></li>
+<li><strong>Sync Interval</strong>: If you have automated sync enabled, ArgoCD will check for changes in your Git repository at a regular interval.</li>
+<li><strong>Default Sync Interval</strong>: The default sync interval in ArgoCD is 3 minutes. This means ArgoCD will check the repository for changes every 3 minutes and attempt to sync if there are any differences between the desired state in Git and the actual state in the cluster.</li>
+<li><strong>Behavior with Retry OFF</strong>:</li>
+<li>If a sync operation fails, ArgoCD will not retry the failed operation automatically.</li>
+<li>The next sync attempt will happen at the next sync interval (every 3 minutes by default) unless you trigger a manual sync.</li>
+</ul>
+<p>⠀</p>
+<h4 id="manual-sync">Manual Sync</h4>
+<ul>
+<li><strong>Manual Trigger</strong>: If you are using manual sync mode or if you want to re-sync before the next interval, you need to manually trigger a sync operation.</li>
+<li><strong>Behavior with Retry OFF</strong>: After a failed sync, you would need to manually trigger another sync operation or wait for the next automated sync interval.</li>
+</ul>
+<p>⠀</p>
+<h3 id="example-scenario">Example Scenario</h3>
+<p>Let's consider an example to make this clear:</p>
+<ol>
+<li><strong>Automated Sync with Retry OFF</strong>:</li>
+<li><strong>Time 0</strong>: A sync operation starts and fails due to some error.</li>
+<li><strong>Time 0 to 3 Minutes</strong>: No retry happens automatically because the retry option is OFF.</li>
+<li><strong>Time 3 Minutes</strong>: The next automated sync interval occurs, and ArgoCD attempts to sync again.</li>
+<li><strong>Automated Sync with Retry ON</strong>:</li>
+<li><strong>Time 0</strong>: A sync operation starts and fails due to some error.</li>
+<li><strong>Time 0 to (retry interval)</strong>: ArgoCD automatically retries the sync operation according to the configured retry settings until it succeeds or reaches the retry limit.</li>
+</ol>
+<p>⠀</p>
+<h3 id="configuring-retry-behavior">Configuring Retry Behavior</h3>
+<p>When retries are turned ON, you can configure how ArgoCD handles retries:</p>
+<pre><code>yamlCopy codeapiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: my-application
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/my-repo.git
+    path: manifests
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - Retry=true
+    retry:
+      limit: 5 # Maximum number of retries
+      backoff:
+        duration: 5s # Initial retry interval
+        factor: 2 # Multiplication factor for the backoff
+        maxDuration: 1m # Maximum retry interval
+</code></pre>
+<p>where,</p>
+<ol>
+<li><strong>limit</strong>: Maximum number of retries. In this case, it is set to 5.</li>
+<li><strong>backoff</strong>:</li>
+<li><strong>duration</strong>: Initial retry interval. In this case, it is set to 5 seconds.</li>
+<li><strong>factor</strong>: Multiplication factor for the backoff. In this case, it is set to 2.</li>
+<li><strong>maxDuration</strong>: Maximum retry interval. In this case, it is set to 1 minute (60 seconds).</li>
+</ol>
+<p>⠀</p>
+<h4 id="diving-into-the-factor-parameter">Diving into the  <code>factor</code> Parameter</h4>
+<p>The <code>factor</code> determines how the retry interval increases exponentially after each failed retry attempt. The backoff duration is multiplied by this factor for each subsequent retry until the maximum duration is reached.</p>
+<h5 id="example-scenario_1">Example Scenario</h5>
+<p>Let's go through a detailed example using the provided configuration:</p>
+<ol>
 <li>
-<p><a href="https://istio.io/docs/tasks/observability/metrics/using-istio-dashboard/">Grafana Lab</a></p>
+<p><strong>Initial Retry</strong>:</p>
 </li>
 <li>
-<p>Access Prometheus and Grafana using NodePort</p>
+<p><strong>Initial Interval</strong>: 5 seconds</p>
 </li>
-<li>Query and observe metrics generated by istio</li>
-<li>Observe dashboards created by Grafana</li>
-</ul>
-<h2 id="lab-log-collection">Lab : Log Collection</h2>
-<p><a href="https://istio.io/docs/tasks/observability/logs/collecting-logs/">Log Collection Lab</a></p>
-<p><strong>Components:</strong>
-  * instance
-  * handler
-  * rule</p>
+<li>
+<p><strong>First Retry (Attempt 1)</strong>:</p>
+</li>
+<li>
+<p>Wait 5 seconds before retrying.</p>
+</li>
+<li><strong>Next Interval</strong>: 5s * 2 = 10 seconds</li>
+<li>
+<p><strong>Second Retry (Attempt 2)</strong>:</p>
+</li>
+<li>
+<p>Wait 10 seconds before retrying.</p>
+</li>
+<li><strong>Next Interval</strong>: 10s * 2 = 20 seconds</li>
+<li>
+<p><strong>Third Retry (Attempt 3)</strong>:</p>
+</li>
+<li>
+<p>Wait 20 seconds before retrying.</p>
+</li>
+<li><strong>Next Interval</strong>: 20s * 2 = 40 seconds</li>
+<li>
+<p><strong>Fourth Retry (Attempt 4)</strong>:</p>
+</li>
+<li>
+<p>Wait 40 seconds before retrying.</p>
+</li>
+<li><strong>Next Interval</strong>: 40s * 2 = 80 seconds (but limited to maxDuration)</li>
+<li>
+<p><strong>Fifth Retry (Attempt 5)</strong>:</p>
+</li>
+<li>
+<p>Wait the maximum duration, which is 60 seconds before retrying (since 80 seconds exceeds the maxDuration).</p>
+</li>
+</ol>
+<p>⠀</p>
+<h5 id="summary-of-retry-intervals">Summary of Retry Intervals</h5>
+<p>Here’s a summary of the retry intervals for each attempt based on the given configuration:</p>
+<ol>
+<li><strong>Retry 1</strong>: 5 seconds</li>
+<li><strong>Retry 2</strong>: 10 seconds</li>
+<li><strong>Retry 3</strong>: 20 seconds</li>
+<li><strong>Retry 4</strong>: 40 seconds</li>
+<li><strong>Retry 5</strong>: 60 seconds (maxDuration)</li>
+</ol>
+<p>⠀
+Here's a simple ASCII diagram to visualize the retry intervals:</p>
+<pre><code>Retry Attempts:
+  |
+  |-- Attempt 1: Wait 5 seconds
+  |
+  |-- Attempt 2: Wait 10 seconds
+  |
+  |-- Attempt 3: Wait 20 seconds
+  |
+  |-- Attempt 4: Wait 40 seconds
+  |
+  |-- Attempt 5: Wait 60 seconds (capped by maxDuration)
+</code></pre>
+<p>The <code>factor</code> parameter in the retry configuration allows for exponential backoff of retry intervals. Each subsequent retry interval is calculated by multiplying the previous interval by the <code>factor</code>, up to the <code>maxDuration</code>. This approach helps in gradually increasing the wait time between retries, reducing the load on the system and allowing transient issues to resolve themselves.</p>
+<h3 id="conclusion">Conclusion</h3>
 <ul>
-<li><a href=""></a></li>
-<li><a href=""></a></li>
-<li><a href=""></a></li>
-<li><a href=""></a></li>
+<li><strong>With Retry OFF</strong>: ArgoCD will not retry failed sync operations automatically. It will wait until the next sync interval (default 3 minutes) or a manual sync is triggered.</li>
+<li><strong>With Retry ON</strong>: ArgoCD will automatically retry failed sync operations based on the configured retry settings.</li>
 </ul>
+<p>⠀
+By understanding these options, you can configure ArgoCD to handle sync failures in a way that suits your operational needs, whether prioritizing quick resolution of failures with retries or relying on periodic sync intervals.</p>
               
             </div>
           </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../argo_serversideapply/" class="btn btn-neutral float-left" title="ArgoCD - Server Side Apply"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../argo_prune_propogation_policy/" class="btn btn-neutral float-right" title="ArgoCD - Prune Propogation Policy">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
 
   <hr/>
 
@@ -335,6 +469,10 @@
         </span>
     
     
+      <span><a href="../argo_serversideapply/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../argo_prune_propogation_policy/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
