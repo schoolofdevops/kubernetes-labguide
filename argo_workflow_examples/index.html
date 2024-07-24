@@ -3,18 +3,18 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/eks_vpa/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/argo_workflow_examples/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Lab K509 - Verticle Pod Autoscaler - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <title>Lab K605 - Argo Workflow Examples - Kubernetes Tutorial with CKA/CKAD Prep</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Lab K509 - Verticle Pod Autoscaler";
-        var mkdocs_page_input_path = "eks_vpa.md";
-        var mkdocs_page_url = "/eks_vpa/";
+        var mkdocs_page_name = "Lab K605 - Argo Workflow Examples";
+        var mkdocs_page_input_path = "argo_workflow_examples.md";
+        var mkdocs_page_url = "/argo_workflow_examples/";
       </script>
     
     <!--[if lt IE 9]>
@@ -147,7 +147,7 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">AWS EKS</span></p>
-              <ul class="current">
+              <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../eks_prep/">Lab K501 - EKS Preparatory Setup</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../eks_setup/">Lab K502 - EKS Setup</a>
@@ -162,9 +162,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../eks_cluster_autoscaler/">Lab K507 - EKS Cluster Autoscaler</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K509 - Verticle Pod Autoscaler</a>
-    <ul class="current">
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_vpa/">Lab K509 - Verticle Pod Autoscaler</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../eks_monitoring/">Lab K510 - EKS Monitoring</a>
                   </li>
@@ -174,7 +172,7 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Argo</span></p>
-              <ul>
+              <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../kind_create_cluster/">Lab K601 - Setup Kubernetes Cluster</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../argo_rollout_blue_green/">Lab K602 - Blue/Green with Argo Rollouts</a>
@@ -183,7 +181,13 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../argo_multi_env_deploy/">Lab K604 - ArgoCD</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../argo_workflow_examples/">Lab K605 - Argo Workflow Examples</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K605 - Argo Workflow Examples</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#how-to-run-the-workflows">How to run the Workflows</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#workflow-practice-labs">Workflow Practice Labs</a>
+    </li>
+    </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../argo_workflow_ci/">Lab K606 - CI Pipeline with Argo Workflows</a>
                   </li>
@@ -248,10 +252,10 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a> &raquo;</li>
-          <li>AWS EKS &raquo;</li>
-      <li class="breadcrumb-item active">Lab K509 - Verticle Pod Autoscaler</li>
+          <li>Argo &raquo;</li>
+      <li class="breadcrumb-item active">Lab K605 - Argo Workflow Examples</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/eks_vpa.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/argo_workflow_examples.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -259,105 +263,92 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="lab-07-verticle-pod-autoscaler">Lab 07 - Verticle Pod Autoscaler</h1>
-<p>Before you begin, ensure OpenSSL is installed and is up to date on your system. </p>
-<p>Clone the <a href="https://github.com/kubernetes/autoscaler">kubernetes/autoscaler</a> GitHub repository and switch to path where VPA manifests are, </p>
-<pre><code>git clone https://github.com/kubernetes/autoscaler.git
-cd autoscaler/vertical-pod-autoscaler/ 
+                <h1 id="argo-workflow">Argo Workflow</h1>
+<ul>
+<li>Workflow Spec Structure  : https://argo-workflows.readthedocs.io/en/latest/walk-through/the-structure-of-workflow-specs/</li>
+</ul>
+<h3 id="how-to-run-the-workflows">How to run the Workflows</h3>
+<p>Launch Killerkoda Environment with Workflow Examples <a href="https://killercoda.com/argoproj/course/argo-workflows/workflow-examples">argoproj</a></p>
+<p>To submit and watch the workflow use the following syntax, </p>
+<pre><code>argo submit -n argo --watch xxx.yaml
+</code></pre>
+<p>where, <code>xxx.yaml</code> is your workflow template. </p>
+<p>to check the outcome/logs from the latest workflow, </p>
+<pre><code>argo logs @latest
+</code></pre>
+<h2 id="workflow-practice-labs">Workflow Practice Labs</h2>
+<pre><code>cd exmaples 
+</code></pre>
+<p>Try these labs : </p>
+<ul>
+<li>Simple Workflow Template with a Container : https://argo-workflows.readthedocs.io/en/latest/walk-through/hello-world/</li>
+</ul>
+<pre><code>argo submit -n argo --watch hello-world.yaml
+argo logs @latest
+</code></pre>
+<ul>
+<li>Container Workflow Template which takes input parameter : https://argo-workflows.readthedocs.io/en/latest/walk-through/parameters/</li>
+</ul>
+<pre><code>argo submit arguments-parameters.yaml -p message=&quot;Awesome Argo Workshop !&quot; --watch
+argo logs @latest
 
 </code></pre>
-<p>deploy VPA as </p>
-<pre><code>./hack/vpa-up.sh
-</code></pre>
-<p>Create a VPA Policy </p>
-<p>File: <code>vote-vpa.yaml</code></p>
-<pre><code>---
-apiVersion: &quot;autoscaling.k8s.io/v1&quot;
-kind: VerticalPodAutoscaler
-metadata:
-  name: vote
-spec:
-  # recommenders field can be unset when using the default recommender.
-  # When using an alternative recommender, the alternative recommender's name
-  # can be specified as the following in a list.
-  # recommenders:
-  #   - name: 'alternative'
-  targetRef:
-    apiVersion: &quot;apps/v1&quot;
-    kind: Deployment
-    name: vote
-  resourcePolicy:
-    containerPolicies:
-      - containerName: '*'
-        minAllowed:
-          cpu: 50m
-          memory: 64Mi
-        maxAllowed:
-          cpu: 500
-          memory: 512Mi
-        controlledResources: [&quot;cpu&quot;, &quot;memory&quot;]
-</code></pre>
-<p>apply </p>
-<pre><code>kubectl apply -f vote-vpa.yaml
-</code></pre>
-<p>watch </p>
-<pre><code>kubectl get vpa vote --watch
+<ul>
+<li>Workflow with Steps : https://argo-workflows.readthedocs.io/en/latest/walk-through/steps/</li>
+</ul>
+<pre><code>argo submit --watch steps.yaml
+argo logs @latest
 
 </code></pre>
-<p>[sample output]</p>
-<pre><code>NAME   MODE   CPU   MEM   PROVIDED   AGE
-vote   Auto                          5s
-vote   Auto   50m   262144k   True       30s
+<ul>
+<li>DAG Template : https://argo-workflows.readthedocs.io/en/latest/walk-through/dag/</li>
+</ul>
+<pre><code>argo submit --watch dag-diamond.yaml
+argo submit --watch dag-diamond-steps.yaml
+[watch the execution from workflow UI]
 </code></pre>
-<p>Create a Load Test Job if not already present as,</p>
-<p><code>file: loadtest-job.yaml</code></p>
-<pre><code>apiVersion: batch/v1
-kind: Job
-metadata:
-  generateName: loadtest
-spec:
-  template:
-    spec:
-      containers:
-      - name: siege
-        image: schoolofdevops/loadtest:v1
-        command: [&quot;siege&quot;,  &quot;--concurrent=1&quot;, &quot;--benchmark&quot;, &quot;--time=4m&quot;, &quot;http://vote&quot;]
-      restartPolicy: Never
-  backoffLimit: 4
+<ul>
+<li>Input/Output with Artifact Handling : https://argo-workflows.readthedocs.io/en/latest/walk-through/artifacts/</li>
+</ul>
+<pre><code>argo submit --watch artifact-passing.yaml 
+[watch the execution from workflow UI]
+
 </code></pre>
-<p>and launch it as</p>
-<pre><code>kubectl create -f loadtest-job.yaml
+<ul>
+<li>Script Workflow: https://argo-workflows.readthedocs.io/en/latest/walk-through/scripts-and-results/</li>
+</ul>
+<pre><code>argo submit --watch scripts-bash.yaml 
+argo logs @latest
+
 </code></pre>
-<p>This will launch a one off Job which would run for 4 minutes.</p>
-<p>keep watching the following in differnt windows </p>
-<p>terminal  1 </p>
-<pre><code>kubectl get vpa vote --watch
+<ul>
+<li>Volumes: https://argo-workflows.readthedocs.io/en/latest/walk-through/volumes/</li>
+</ul>
+<pre><code>argo submit --watch volumes-pvc.yaml
+argo logs @latest
+
 </code></pre>
-<p>terminal 2</p>
-<pre><code>kubectl get hpa vote --watch
+<ul>
+<li>Suspend and Resume: https://argo-workflows.readthedocs.io/en/latest/walk-through/suspending/</li>
+</ul>
+<pre><code>argo submit --watch suspend-template.yaml
+argo list
+argo resume @latest
 </code></pre>
-<p>you should see, both hpa and vpa doing complimentary jobs where, 
-* HPA is launching new pods to ensure more requests are being served 
-* VPA is updating the <code>requests</code> spec based on actual metrics </p>
-<p>You could check the modified request spec by VPA by describing the one of the pods runnnig vote app </p>
-<pre><code>kubectl describe pod vote-xxxx-yyyy
+<ul>
+<li>Managing Kubernetes Resources via Workflows : https://argo-workflows.readthedocs.io/en/latest/walk-through/kubernetes-resources/</li>
+</ul>
+<pre><code>argo submit --watch k8s-jobs.yaml 
+argo logs @latest 
+argo delete @latest 
 </code></pre>
-<pre><code>   Restart Count:  0
-    Limits:
-      cpu:     1235m
-      memory:  500Mi
-    Requests:
-      cpu:        247m
-      memory:     262144k
-    Environment:  &lt;none&gt;
-    Mounts:
-</code></pre>
+<h1 id="coursesargolabs">courses/argo/labs</h1>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../eks_cluster_autoscaler/" class="btn btn-neutral float-left" title="Lab K507 - EKS Cluster Autoscaler"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../eks_monitoring/" class="btn btn-neutral float-right" title="Lab K510 - EKS Monitoring">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../argo_multi_env_deploy/" class="btn btn-neutral float-left" title="Lab K604 - ArgoCD"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../argo_workflow_ci/" class="btn btn-neutral float-right" title="Lab K606 - CI Pipeline with Argo Workflows">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -385,10 +376,10 @@ spec:
         </span>
     
     
-      <span><a href="../eks_cluster_autoscaler/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../argo_multi_env_deploy/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../eks_monitoring/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../argo_workflow_ci/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
