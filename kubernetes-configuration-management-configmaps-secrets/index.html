@@ -539,7 +539,7 @@ nginxpvt-79f8998f6c-9tvsg   0/1     ErrImagePull   0          4s
         name: nginxpvt
         resources: {}
       imagePullSecrets:
-        - name: dhcred
+        - name: dhcreds
 </code></pre>
 <p>and apply as</p>
 <pre><code>kubectl apply -f nginxpvt-deploy.yaml
