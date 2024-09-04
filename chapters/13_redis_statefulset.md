@@ -169,9 +169,9 @@ kubectl apply -f redis-sts.yml
 Validate the MASTER-SLAVE configuration
 
 ```
-kubectl exec redis-0 redis-cli ROLE
+kubectl exec redis-0 -- redis-cli ROLE
 
-kubectl exec redis-1 redis-cli ROLE
+kubectl exec redis-1 -- redis-cli ROLE
 ```
 
 redis-0 should have been  configured as master, redis-1 as slave.  You should also see that redis-1 is been configured as the slave of redis-0.redis as follows,
