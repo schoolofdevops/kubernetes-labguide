@@ -363,7 +363,7 @@ Update `nginxpvt-deploy.yaml` with the `imagePullSecrets` as,
         name: nginxpvt
         resources: {}
       imagePullSecrets:
-        - name: dhcred
+        - name: dhcreds
 ```
 
 and apply as
@@ -379,5 +379,5 @@ once done, you could clean up with
 
 ```
 kubectl delete deploy nginxpvt
-kubectl delete secret dhcred
+kubectl delete secret dhcreds
 ```

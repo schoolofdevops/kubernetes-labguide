@@ -39,7 +39,7 @@ cd ~/kube-prometheus-stack/
 and upgrade
 
 ```
-helm upgrade prom -n monitoring --values my.values.yaml . --set prometheus.prometheusSpec.podMonitorSelectorNilUsesHelmValues=false --set prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues=false
+helm upgrade prom -n monitoring prometheus-community/kube-prometheus-stack   --set grafana.service.type=NodePort   --set grafana.service.nodePort=30200 --set prometheus.prometheusSpec.podMonitorSelectorNilUsesHelmValues=false --set prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues=false
 ```
 
 What this does is starts collecting metrics from services from all the namespaces not just the one in which prometheus is deployed. And it reads the annotations from the pods to figure out where to collect the metrics from.  
@@ -93,7 +93,7 @@ rules:
       name:
         matches: "^nginx_ingress_controller_request_duration_seconds_bucket$"
         as: "nginx_ingress_controller_latency"
-      metricsQuery: 'sum(rate(nginx_ingress_controller_request_duration_seconds_bucket{}[2m])) by (namespace, ingress, le) / 1000'
+      metricsQuery: 'sum(rate(nginx_ingress_controller_request_duration_seconds_bucket{}[2m])) by (namespace, ingress, le)'
 ```
 
 
@@ -245,7 +245,7 @@ spec:
       containers:
       - name: siege
         image: schoolofdevops/loadtest:v1
-        command: ["siege", "--concurrent=2", "--benchmark", "--time=4m", "http://vote.staging.example.com"]
+        command: ["siege", "--concurrent=2", "--benchmark", "--time=4m", "http://vote.example.com"]
       restartPolicy: Never
       hostAliases:
       - ip: "ww.xx.yy.zz"

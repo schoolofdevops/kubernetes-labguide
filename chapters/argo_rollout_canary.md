@@ -432,6 +432,8 @@ spec:
         nginx:
           stableIngress: vote
       steps:
+      - setCanaryScale:
+          replicas: 3
       - setWeight: 20
       - pause:
           duration: 10s
