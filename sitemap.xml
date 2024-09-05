@@ -2,442 +2,442 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/10_kubernetes_autoscaling/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/12_troubleshooting/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/13_redis_statefulset/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/9-vote-configmaps_and_secrets/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/adv-k8s-project/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/advanced_deployment/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/advanced_pod_design/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/advanced_pod_scheduling/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/advanced_services/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/argo_events/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/argo_experiments_analysis/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/argo_iamge_updater/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/argo_multi_env_deploy/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/argo_rollout_blue_green/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/argo_rollout_canary/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/argo_workflow_ci/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/argo_workflow_examples/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/aws_ack_demo/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/base_setup/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/building-publishing-docker-images/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/cluster-administration/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/cluster-troubleshooting/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/cluster_setup_kubespray/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/cni/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/configuring_authentication_and_authorization/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/create-and-deploy-kubernetes-pods/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/custom_autoscaling/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/daemonsets_cronsjobs/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/docker-networking/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/docker-volumes/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/eks_cleanup/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/eks_cluster_autoscaler/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/eks_costs/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/eks_deploy_apps/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/eks_ingress_alb/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/eks_irsa/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/eks_monitoring/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/eks_prep/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/eks_setup/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/eks_storage/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/eks_vpa/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/elk_monitoring/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/helm/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/helm_charts/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/helm_charts_publish/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/ingress/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/install_kubernetes_with_kubeadm/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/kind_create_cluster/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/kubernetes-configuration-management-configmaps-secrets/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/kubernetes-dynamic-storage-provisioning/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/kubernetes-replicasets-howto/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/kubernetes-rollouts-rollbacks-deployments/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/kubernetes-sample-project/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/kubernetes-service-networking/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/kubernetes_quickdive/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/kubespray-prereqs/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/logging/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/minikube/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/network_policies/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/operating-docker-containers/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/operator/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/pod-adv-specs/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/pod_security/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/pods-health-probes/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/rbac-resource-group-mapping/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/rbac_101/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/run_and_publish_image/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/statefulset/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/vote-deployement_strategies/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/wq000-template/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/wq001-cni/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/wq002-security/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/wq003-ingress/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/wq004-monitoring/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/wq005-controllers/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/wq006-persistentvolume/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/wq007-maintenance/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/xer-001-pods/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/xer-002-rs/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/articles/argo_prune_propogation_policy/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/articles/argo_retry_options/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/articles/argo_serversideapply/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/deprecated/2_kube_cluster_vagrant/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/deprecated/kube_visualizer/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/istio/labs/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/istio/setup/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/istio/traffic-management/</loc>
-         <lastmod>2024-09-04</lastmod>
+         <lastmod>2024-09-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>

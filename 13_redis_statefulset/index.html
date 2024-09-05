@@ -405,9 +405,9 @@ kubectl describe cm redis
 <pre><code>kubectl apply -f redis-sts.yml
 </code></pre>
 <p>Validate the MASTER-SLAVE configuration</p>
-<pre><code>kubectl exec redis-0 redis-cli ROLE
+<pre><code>kubectl exec redis-0 -- redis-cli ROLE
 
-kubectl exec redis-1 redis-cli ROLE
+kubectl exec redis-1 -- redis-cli ROLE
 </code></pre>
 <p>redis-0 should have been  configured as master, redis-1 as slave.  You should also see that redis-1 is been configured as the slave of redis-0.redis as follows,</p>
 <pre><code>kubectl exec redis-1 redis-cli ROLE
