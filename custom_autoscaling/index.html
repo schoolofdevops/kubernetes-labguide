@@ -292,7 +292,7 @@
 <pre><code>cd ~/kube-prometheus-stack/
 </code></pre>
 <p>and upgrade</p>
-<pre><code>helm upgrade prom -n monitoring --values my.values.yaml . --set prometheus.prometheusSpec.podMonitorSelectorNilUsesHelmValues=false --set prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues=false
+<pre><code>helm upgrade prom -n monitoring prometheus-community/kube-prometheus-stack   --set grafana.service.type=NodePort   --set grafana.service.nodePort=30200 --set prometheus.prometheusSpec.podMonitorSelectorNilUsesHelmValues=false --set prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues=false
 </code></pre>
 <p>What this does is starts collecting metrics from services from all the namespaces not just the one in which prometheus is deployed. And it reads the annotations from the pods to figure out where to collect the metrics from.  </p>
 <p>Now, login to grafana and import custom dashboard for Nginx Ingress as</p>
@@ -335,7 +335,7 @@ rules:
       name:
         matches: &quot;^nginx_ingress_controller_request_duration_seconds_bucket$&quot;
         as: &quot;nginx_ingress_controller_latency&quot;
-      metricsQuery: 'sum(rate(nginx_ingress_controller_request_duration_seconds_bucket{}[2m])) by (namespace, ingress, le) / 1000'
+      metricsQuery: 'sum(rate(nginx_ingress_controller_request_duration_seconds_bucket{}[2m])) by (namespace, ingress, le)'
 </code></pre>
 <p>install the adapter as,  </p>
 <pre><code>helm upgrade --install  prometheus-adapter prometheus-community/prometheus-adapter -f prometheus-adapter-values.yaml -n monitoring

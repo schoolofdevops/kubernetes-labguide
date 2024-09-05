@@ -276,6 +276,8 @@ apiVersion: &quot;autoscaling.k8s.io/v1&quot;
 kind: VerticalPodAutoscaler
 metadata:
   name: vote
+  labels:
+    role: vote
 spec:
   # recommenders field can be unset when using the default recommender.
   # When using an alternative recommender, the alternative recommender's name
@@ -286,6 +288,8 @@ spec:
     apiVersion: &quot;apps/v1&quot;
     kind: Deployment
     name: vote
+  updatePolicy:
+    updateMode: &quot;Auto&quot;
   resourcePolicy:
     containerPolicies:
       - containerName: '*'
