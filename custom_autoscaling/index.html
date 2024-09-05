@@ -457,7 +457,7 @@ spec:
       containers:
       - name: siege
         image: schoolofdevops/loadtest:v1
-        command: [&quot;siege&quot;, &quot;--concurrent=2&quot;, &quot;--benchmark&quot;, &quot;--time=4m&quot;, &quot;http://vote.staging.example.com&quot;]
+        command: [&quot;siege&quot;, &quot;--concurrent=2&quot;, &quot;--benchmark&quot;, &quot;--time=4m&quot;, &quot;http://vote.example.com&quot;]
       restartPolicy: Never
       hostAliases:
       - ip: &quot;ww.xx.yy.zz&quot;
