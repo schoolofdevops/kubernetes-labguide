@@ -285,9 +285,9 @@
 <p>For Network Policies to work, you need to have a CNI Plugin which supports it. <code>kind-net</code> which is installed as  a defulay CNI with KIND, does not support it.  You could recreate the cluster with <code>calico</code> as a CNI plugin by following the instructions here.</p>
 <p>Delete existing cluster created with KIND as,</p>
 <pre><code>kind get clusters
-kind delete cluster --name k8slab
+kind delete cluster --name kind
 </code></pre>
-<p>assuming <code>k8slab</code> is the name of the cluster. Change it with the actual name.</p>
+<p>assuming <code>kind</code> is the name of the cluster. Change it with the actual name.</p>
 <p>File : <code>k8s-code/helper/kind/kind-three-node-cluster.yaml</code></p>
 <p>disable the default network as</p>
 <pre><code># three node (two workers) cluster config
