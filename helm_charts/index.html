@@ -361,7 +361,15 @@ sed -i 's/Values./Values.vote./g' service.yaml
 sed -i 's/Values./Values.redis./g' deployment.yaml
 sed -i 's/Values./Values.redis./g' service.yaml
 </code></pre>
-<p>Also change the name in the metadata field for the following files  </p>
+<p>You will also need to change a few things in the deployments and services including, </p>
+<ul>
+<li>change the name in the metadata field for the deplyoments and services for both apps </li>
+<li>remove nodePort configuration from service spec of redis </li>
+<li>update the <code>spec.template.spec.labels</code> as well as <code>spec.selectors.labelSelectors</code> with application specific labels for both apps </li>
+<li>update the <code>spec.selectors</code> and add the same label in the services as well </li>
+</ul>
+<p>e.g. </p>
+<p>update </p>
 <pre><code>templates/vote/deployment.yaml
 templates/vote/service.yaml
 </code></pre>
@@ -384,6 +392,36 @@ templates/redis/service.yaml
 <p>to</p>
 <pre><code>metadata:
   name: redis
+</code></pre>
+<p>Also change the selector in <code>templates/redis/deployment.yaml</code> along with template labels as, </p>
+<pre><code>  selector:
+    matchLabels:
+      {{- include &quot;instavote.selectorLabels&quot; . | nindent 6 }}
+      app: redis
+  template:
+    metadata:
+      {{- with .Values.redis.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include &quot;instavote.labels&quot; . | nindent 8 }}
+        {{- with .Values.redis.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        app: redis
+</code></pre>
+<p>and selector spec in <code>templates/redis/service.yaml</code> as, </p>
+<pre><code>spec:
+  type: {{ .Values.redis.service.type }}
+  ports:
+    - port: {{ .Values.redis.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include &quot;instavote.selectorLabels&quot; . | nindent 4 }}
+    app: redis
 </code></pre>
 <p>Now update <code>instavote/values.yaml</code> to support multiple services </p>
 <ul>
