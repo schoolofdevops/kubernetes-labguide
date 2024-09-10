@@ -136,7 +136,17 @@ sed -i 's/Values./Values.redis./g' deployment.yaml
 sed -i 's/Values./Values.redis./g' service.yaml
 ```
 
-Also change the name in the metadata field for the following files  
+You will also need to change a few things in the deployments and services including, 
+
+  *  change the name in the metadata field for the deplyoments and services for both apps 
+  *  remove nodePort configuration from service spec of redis 
+  *  update the `spec.template.spec.labels` as well as `spec.selectors.labelSelectors` with application specific labels for both apps 
+  *  update the `spec.selectors` and add the same label in the services as well 
+
+
+e.g. 
+
+update 
 
 ```
 templates/vote/deployment.yaml
@@ -176,6 +186,42 @@ to
 ```
 metadata:
   name: redis
+```
+
+Also change the selector in `templates/redis/deployment.yaml` along with template labels as, 
+
+```
+  selector:
+    matchLabels:
+      {{- include "instavote.selectorLabels" . | nindent 6 }}
+      app: redis
+  template:
+    metadata:
+      {{- with .Values.redis.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "instavote.labels" . | nindent 8 }}
+        {{- with .Values.redis.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        app: redis
+```
+
+and selector spec in `templates/redis/service.yaml` as, 
+
+```
+spec:
+  type: {{ .Values.redis.service.type }}
+  ports:
+    - port: {{ .Values.redis.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "instavote.selectorLabels" . | nindent 4 }}
+    app: redis
 ```
 
 

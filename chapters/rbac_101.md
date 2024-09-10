@@ -52,7 +52,7 @@ metadata:
   namespace: default
 rules:
 - apiGroups: [""]
-  resources: ["pods", "Services"]
+  resources: ["pods", "services"]
   verbs: ["get", "list", "watch"]
 - apiGroups: ["apps", "extensions"]
   resources: ["deployments"]

@@ -12,10 +12,10 @@ Delete existing cluster created with KIND as,
 
 ```
 kind get clusters
-kind delete cluster --name k8slab
+kind delete cluster --name kind
 ```
 
-assuming `k8slab` is the name of the cluster. Change it with the actual name.
+assuming `kind` is the name of the cluster. Change it with the actual name.
 
 File : `k8s-code/helper/kind/kind-three-node-cluster.yaml`
 
