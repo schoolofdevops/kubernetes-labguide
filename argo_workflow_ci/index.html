@@ -181,7 +181,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../argo_multi_env_deploy/">Lab K604 - ArgoCD</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../argo_workflow_examples/">Lab K605 - Argo Workflow Examples</a>
+                  <li class="toctree-l1"><a class="" href="../argo_workflow_examples.md">Lab K605 - Argo Workflow Examples</a>
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K606 - CI Pipeline with Argo Workflows</a>
     <ul class="current">
@@ -460,6 +460,7 @@ spec:
 
 
 </code></pre>
+<p>If you are using a private registry which requires authentication while cloning, reference this code instead https://gist.github.com/initcron/9b6f14bd6f3c835651ec1b4cfcdea72b </p>
 <p>create a workflow by providing your own repo and image tag and start watching it using the following command:</p>
 <pre><code>argo submit -n argo --watch vote-ci-workflow.yaml \
   -p repo-url=https://github.com/xxxxxx/vote.git \
@@ -512,7 +513,7 @@ STEP               TEMPLATE    PODNAME                              DURATION  ME
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../argo_workflow_examples/" class="btn btn-neutral float-left" title="Lab K605 - Argo Workflow Examples"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../argo_multi_env_deploy/" class="btn btn-neutral float-left" title="Lab K604 - ArgoCD"><span class="icon icon-circle-arrow-left"></span> Previous</a>
         <a href="../argo_events/" class="btn btn-neutral float-right" title="Lab K607 - Argo Events">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
@@ -541,7 +542,7 @@ STEP               TEMPLATE    PODNAME                              DURATION  ME
         </span>
     
     
-      <span><a href="../argo_workflow_examples/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../argo_multi_env_deploy/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
       <span><a href="../argo_events/" style="color: #fcfcfc">Next &raquo;</a></span>
