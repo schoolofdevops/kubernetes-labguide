@@ -213,6 +213,8 @@ spec:
 
 ```
 
+If you are using a private registry which requires authentication while cloning, reference this code instead https://gist.github.com/initcron/9b6f14bd6f3c835651ec1b4cfcdea72b 
+
 create a workflow by providing your own repo and image tag and start watching it using the following command:
 
 ```
