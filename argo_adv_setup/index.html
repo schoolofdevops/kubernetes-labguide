@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/argo_adv_setup/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Lab K701 - Setup CI/CD with GHA and Argo - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Lab K701 - Setup CI/CD with GHA and Argo";
+        var mkdocs_page_input_path = "argo_adv_setup.md";
+        var mkdocs_page_url = "/argo_adv_setup/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+      <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+        ga('create', "UA-36802546-16", "kubernetes-tutorial.schoolofdevops.com");
+        ga('send', 'pageview');
+      </script>
+    
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> Kubernetes Tutorial with CKA/CKAD Prep
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Docker Essentials for Kubernetes</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../operating-docker-containers/">Lab D101 - Operating Containers</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../building-publishing-docker-images/">Lab D102 - Building and Publishing Docker Images</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../docker-networking/">Lab D103 - Docker Networking</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../docker-volumes/">Lab D104 - Docker Volumes</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Kubernetes Essentials for CKA/CKAD</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../kind_create_cluster/">Lab K101 - Install Kubernetes with KIND</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../kubernetes_quickdive/">Lab K102 - Kubernetes Quickdive</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../create-and-deploy-kubernetes-pods/">Lab K103 - Pods</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../kubernetes-replicasets-howto/">Lab K104 - Namespaces and ReplicaSets</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../kubernetes-service-networking/">Lab K105 - Service Networking</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../kubernetes-rollouts-rollbacks-deployments/">Lab K107 - Deployments</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../kubernetes-dynamic-storage-provisioning/">Lab K108 - Storage</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../kubernetes-sample-project/">Lab K109 - Mini Project</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../kubernetes-configuration-management-configmaps-secrets/">Lab K110 - ConfigMaps & Secrets</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../ingress/">Lab K112 - Ingress</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../helm/">Lab K113 - HELM Package Manager</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../helm_charts/">Lab K114 - Writing HELM Charts</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../helm_charts_publish/">Lab K115 - Publishing HELM Charts</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Additional CKAD Topics</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../advanced_pod_design/">Lab K201 - Advanced Pod Design</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../pods-health-probes/">Lab K204 - Health Checks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../daemonsets_cronsjobs/">Lab K205 - DaemonsSets & CronJobs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../13_redis_statefulset/">Lab K206 - Statefulsets</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Additional CKA Topics</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../10_kubernetes_autoscaling/">Lab K301 - Auto Scaling with HPA</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../custom_autoscaling/">Lab K302 - Autoscaling on Custom Metric</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../advanced_pod_scheduling/">Lab K303 - Advanced Pod Scheduling</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../cluster-administration/">Lab K304 - Cluster Administration</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../cluster-troubleshooting/">Lab K305 - Cluster Troubleshooting</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Kubernetes Security</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../rbac_101/">Lab K111 - RBAC Policies</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../network_policies/">Lab K207 - Network Policies</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Additional Topics</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../install_kubernetes_with_kubeadm/">Lab K400 - Install Kubernetes with Kubeadm</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../configuring_authentication_and_authorization/">Lab K401 - Creating Users, Groups and Authorization</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../vote-deployement_strategies/">Lab K403 - Building Deployment Strategies</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../cni/">Lab K404 - CNI</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../operator/">Lab K404 - Kubernetes Operators</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../12_troubleshooting/">Troubleshooting Tips</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../logging/">Logging</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">AWS and Kubernetes</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../aws_ack_demo/">Lab K405 - AWS Controller for Kubernetes</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">AWS EKS</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_prep/">Lab K501 - EKS Preparatory Setup</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_setup/">Lab K502 - EKS Setup</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_deploy_apps/">Lab K503 - Deploy Apps on EKS</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_ingress_alb/">Lab K504 - Ingress with ALB</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_storage/">Lab K505 - Persistent Storage with EBS</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_irsa/">Lab K506 - IRSA</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_cluster_autoscaler/">Lab K507 - EKS Cluster Autoscaler</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_vpa/">Lab K509 - Verticle Pod Autoscaler</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_monitoring/">Lab K510 - EKS Monitoring</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_costs/">Lab K511 - EKS Costs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_cleanup/">Lab K599 - EKS Cleanup</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Argo</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../kind_create_cluster/">Lab K601 - Setup Kubernetes Cluster</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_rollout_blue_green/">Lab K602 - Blue/Green with Argo Rollouts</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_rollout_canary/">Lab K603 - Canary with Argo Rollouts</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_multi_env_deploy/">Lab K604 - ArgoCD</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="../argo_workflow_examples.md">Lab K605 - Argo Workflow Examples</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_workflow_ci/">Lab K606 - CI Pipeline with Argo Workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_events/">Lab K607 - Argo Events</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_iamge_updater/">Lab K608 - Argo Image Updater</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_experiments_analysis/">Lab K609 - Experiments and Analysis</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Argo Articles</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../articles/argo_serversideapply/">ArgoCD - Server Side Apply</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../articles/argo_retry_options/">ArgoCD - RETRY Options</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../articles/argo_prune_propogation_policy/">ArgoCD - Prune Propogation Policy</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Argo Advanced</span></p>
+              <ul class="current">
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K701 - Setup CI/CD with GHA and Argo</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#prerequisites">Prerequisites</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#tools">Tools</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#accounts">Accounts</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#prepare-the-environment">Prepare the Environment</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#launch-three-node-kubernetes-cluster-with-kind">Launch Three Node Kubernetes Cluster with KIND</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#set-up-nginx-ingress-controller-for-traffic-routing">Set up Nginx Ingress Controller for Traffic Routing</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#setup-argocd">Setup ArgoCD</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#install-argocd-cli">Install ArgoCD CLI</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#install-argo-rollouts">Install Argo Rollouts</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#setup-ci-pipeline-with-github-actions">Setup CI Pipeline with GitHub Actions</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#adding-dockerhub-secrets">Adding DockerHub Secrets</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#setup-automated-deployments-to-dev-with-argocd">Setup Automated Deployments to Dev with ArgoCD</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#deploy-to-dev-with-argocd">Deploy to Dev with ArgoCD</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#set-up-argo-image-updater">Set up Argo Image Updater</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#conencting-ci-with-cd-using-auto-image-updates">Conencting CI with CD using Auto Image Updates</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_multi_tenant/">Lab K702 - Building Multi-Tenant Deployment System</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_rollout_canary/">Lab K603 - Canary with Argo Rollouts</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_multi_env_deploy/">Lab K604 - ArgoCD</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="../argo_workflow_examples.md">Lab K605 - Argo Workflow Examples</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_workflow_ci/">Lab K606 - CI Pipeline with Argo Workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_events/">Lab K607 - Argo Events</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_iamge_updater/">Lab K608 - Argo Image Updater</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_experiments_analysis/">Lab K609 - Experiments and Analysis</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Exercises</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../xer-001-pods/">XER001 - Pods</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../xer-002-rs/">XER002 - ReplicaSets</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../adv-k8s-project/">XER003 - Deploy Instavote Stack</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Web Quests</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../wq001-cni/">KWQ001 - CNI Web Quest</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../wq002-security/">KWQ001 - Kubernetes Security Web Quest</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../wq003-ingress/">KWQ003 - Ingress Web Quest</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../wq004-monitoring/">KWQ004 - Monitoring Web Quest</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../wq005-controllers/">KWQ005 - Controllers Web Quest</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../wq006-persistentvolume/">KWQ006 - Persistent Data Web Quest</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../wq007-maintenance/">KWQ007 - Cluster Maintenance Web Quest</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">References</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../rbac-resource-group-mapping/">RBAC apiGroups to Resource Mapping</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">Kubernetes Tutorial with CKA/CKAD Prep</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a> &raquo;</li>
+          <li>Argo Advanced &raquo;</li>
+      <li class="breadcrumb-item active">Lab K701 - Setup CI/CD with GHA and Argo</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/argo_adv_setup.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="setup-automated-cicd-pipeline-using-github-actions-and-argocd">Setup Automated CI/CD pipeline using GitHub Actions and ArgoCD</h1>
+<p>This lab describes the process of how you could quickly create a multi node Kubernetes Envonment using <a href="https://kind.sigs.k8s.io/docs/user/ingress/#ingress-nginx">KIND</a>, which is a simple and quick way to set up a learning environment. Advantage it offers over minikube or docker desktop based kubernetes setup is its a multi node environment closer to the real world setup.  </p>
+<h2 id="prerequisites">Prerequisites</h2>
+<p>You would require the following tools and accounts to get started with this lab.</p>
+<h4 id="tools">Tools</h4>
+<ul>
+<li><a href="https://docs.docker.com/get-docker/">Docker</a>  </li>
+<li><a href="https://git-scm.com/downloads">Git</a>  </li>
+</ul>
+<h4 id="accounts">Accounts</h4>
+<ul>
+<li><a href="https://github.com/join">GitHub Account</a>  </li>
+<li><a href="https://hub.docker.com/signup">Docker Hub Account</a>  </li>
+</ul>
+<h2 id="prepare-the-environment">Prepare the Environment</h2>
+<p>Begin by installing kubectl and kind utilities. </p>
+<p>To install <code>kubectl</code> client, refer to the official documentation here <a href="https://kubernetes.io/docs/tasks/tools/">Install Tools | Kubernetes</a></p>
+<p>Validate by running</p>
+<pre><code>kubectl version --client=true
+
+kubectl version --client=true -o yaml
+
+</code></pre>
+<p>Install KinD (Kubernetes inside Docker)  using operating specific instructions at  <a href="https://kind.sigs.k8s.io/docs/user/quick-start/#installation">kind – Quick Start</a> .</p>
+<p>Validate by running</p>
+<pre><code>kind
+</code></pre>
+<h2 id="launch-three-node-kubernetes-cluster-with-kind">Launch Three Node Kubernetes Cluster with KIND</h2>
+<p>Download  Cluster Configurations and Create  a 3 Node Kubernetes Cluster as</p>
+<pre><code>git clone https://github.com/initcron/k8s-code.git
+cd k8s-code/helper/kind/
+kind create cluster --config kind-three-node-cluster.yaml
+</code></pre>
+<p>Validate</p>
+<pre><code>kind get clusters
+kubectl cluster-info --context kind-kind
+
+
+kubectl get nodes
+kubectl get pods -A 
+</code></pre>
+<p>[sample output]</p>
+<pre><code>root@demo:~# kubectl get nodes
+NAME                 STATUS   ROLES    AGE   VERSION
+kind-control-plane   Ready    master   78s   v1.19.1
+kind-worker          Ready    &lt;none&gt;   47s   v1.19.1
+kind-worker2         Ready    &lt;none&gt;   47s   v1.19.1
+</code></pre>
+<p>Wait till you see all nodes in Ready state and you have a cluster operational.</p>
+<p>Wait for a couple of minutes and then validate if the nodes are up and running.</p>
+<h2 id="set-up-nginx-ingress-controller-for-traffic-routing">Set up Nginx Ingress Controller for Traffic Routing</h2>
+<p>Install helm to setup Nginx Ingress Controller. To install helm version 3 on Linux or MacOS, you can follow following instructions.</p>
+<pre><code>curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+</code></pre>
+<p>You could further refer to <a href="https://helm.sh/docs/intro/install/">Official HELM Install Instructions</a> for alternative options.</p>
+<p>Verify the installtion is successful,</p>
+<pre><code>helm --help
+helm version
+</code></pre>
+<p>Launch Nginx Ingress controller using helm as :</p>
+<pre><code>helm upgrade --install ingress-nginx ingress-nginx \
+  --repo https://kubernetes.github.io/ingress-nginx \
+  --namespace ingress-nginx --create-namespace \
+  --set controller.hostPort.enabled=true \
+  --set controller.service.type=NodePort \
+  --set controller.hostPort.ports.http=80 \
+  --set-string controller.nodeSelector.&quot;kubernetes\.io/os&quot;=linux \
+  --set-string controller.nodeSelector.ingress-ready=&quot;true&quot;
+
+</code></pre>
+<p>Check the pod for Nginx Ingress, if its running</p>
+<pre><code>kubectl get pods -n ingress-nginx
+</code></pre>
+<p>You may see the pod in pending state. Check why its pending by describing it.</p>
+<p>Once you describe, you will see that its pending because it has a <code>nodeSelector</code> defined which is looking for a node with label set to <code>ingress-ready="true"</code>.</p>
+<p>Check the label on the current nodes</p>
+<pre><code>kubectl get nodes --show-labels
+</code></pre>
+<p>Add this lable to first  of the worker nodes as</p>
+<pre><code>
+kubectl label node kind-worker ingress-ready=&quot;true&quot;
+</code></pre>
+<p>validate</p>
+<pre><code>kubectl get nodes --show-labels
+</code></pre>
+<p>This time you should see the label added, and nginx ingress controller running, which can be validated using</p>
+<pre><code>kubectl get pods -n ingress-nginx --watch
+</code></pre>
+<p>Wait for the container for nginx ingress controller to be up. You could also validate by connecting to the IPADDRESS of your node where the cluster is beeng setup on port 80, where you should see <code>**404 Not Found**</code> error. This is the sign that nginx is set up as a ingress controller and looking for a request with hostname/path defined.</p>
+<h2 id="setup-argocd">Setup ArgoCD</h2>
+<p>Install ArgoCD</p>
+<pre><code>kubectl create namespace argocd
+
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+</code></pre>
+<p>Reset admin password to <code>password</code></p>
+<pre><code># bcrypt(password)=$2a$10$rRyBsGSHK6.uc8fntPwVIuLVHgsAhAX7TcdrqW/RADU0uh7CaChLa
+kubectl -n argocd patch secret argocd-secret \
+  -p '{&quot;stringData&quot;: {
+    &quot;admin.password&quot;: &quot;$2a$10$rRyBsGSHK6.uc8fntPwVIuLVHgsAhAX7TcdrqW/RADU0uh7CaChLa&quot;,
+    &quot;admin.passwordMtime&quot;: &quot;'$(date +%FT%T%Z)'&quot;
+  }}'
+
+</code></pre>
+<p>Source: <a href="https://gist.github.com/initcron/09d8b6c70d527b5e8894472efa83a895">reset-argo-password.sh</a>
+Reference: <a href="https://github.com/argoproj/argo-cd/blob/master/docs/faq.md#i-forgot-the-admin-password-how-do-i-reset-it">argo-cd/faq.md at master · argoproj/argo-cd · GitHub</a></p>
+<pre><code>kubectl get all -n argocd
+</code></pre>
+<pre><code>kubectl patch svc argocd-server -n argocd --patch \
+  '{&quot;spec&quot;: { &quot;type&quot;: &quot;NodePort&quot;, &quot;ports&quot;: [ { &quot;nodePort&quot;: 32100, &quot;port&quot;: 443, &quot;protocol&quot;: &quot;TCP&quot;, &quot;targetPort&quot;: 8080 } ] } }'
+
+</code></pre>
+<p>source: <a href="https://gist.github.com/initcron/a14fe418b8a7325e3ed5ecebf6fadb53">patch_argo_svc.sh</a></p>
+<pre><code>kubectl get svc -n argocd
+</code></pre>
+<p>Find out the IP address for one of the nodes. One way to do so is to run the following command,</p>
+<pre><code>kubectl get nodes -o wide
+</code></pre>
+<p>Note IP address for one of the nodes and browse to https://NODEIP:32100</p>
+<p>where, replace <code>NODEIP</code> with the actual.</p>
+<p>You should be presented with the  login page for ArgoCD as follows</p>
+<p><img alt="" src="../images/argo/01.png" /></p>
+<ul>
+<li>username  =.   <code>admin</code></li>
+<li>password   =   <code>password</code></li>
+</ul>
+<h4 id="install-argocd-cli">Install ArgoCD CLI</h4>
+<p>You could refer to OS specific instructions to <a href="https://argo-cd.readthedocs.io/en/stable/cli_installation/">Install ArgoCD CLI</a> for installing <code>agocd</code> utility.</p>
+<h2 id="install-argo-rollouts">Install Argo Rollouts</h2>
+<p>Install Argo Rollouts Controller and CRDs with ,</p>
+<pre><code>kubectl create namespace argo-rollouts
+kubectl apply -n argo-rollouts -f https://github.com/argoproj/argo-rollouts/releases/latest/download/install.yaml
+
+</code></pre>
+<p>Validate with,</p>
+<pre><code>kubectl api-resources | grep -i argo
+</code></pre>
+<p>Optionally, you could install argo plugin for kubectl  </p>
+<p>On linux</p>
+<pre><code>cd ~
+
+curl -LO https://github.com/argoproj/argo-rollouts/releases/latest/download/kubectl-argo-rollouts-linux-amd64
+
+chmod +x ./kubectl-argo-rollouts-linux-amd64
+
+sudo mv ./kubectl-argo-rollouts-linux-amd64 /usr/local/bin/kubectl-argo-rollouts
+</code></pre>
+<p>On Mac.</p>
+<pre><code>curl -LO https://github.com/argoproj/argo-rollouts/releases/latest/download/kubectl-argo-rollouts-darwin-amd64
+
+chmod +x ./kubectl-argo-rollouts-darwin-amd64
+
+sudo mv ./kubectl-argo-rollouts-darwin-amd64 /usr/local/bin/kubectl-argo-rollouts
+
+</code></pre>
+<p>And validate as,</p>
+<pre><code>kubectl argo rollouts version
+</code></pre>
+<p>Also install Kustomize by following the instructions in <a href="https://kubectl.docs.kubernetes.io/installation/kustomize/">official documentation</a> here.</p>
+<h2 id="setup-ci-pipeline-with-github-actions">Setup CI Pipeline with GitHub Actions</h2>
+<p>Fork the <a href="https://github.com/sfd226/vote">sample repo</a> to get started. </p>
+<p>This repo contains a simple application written in python that allows you to vote, along with Dockerfile,  kubernetes manifests and GitHub Actions workflow to build a Continuous Integration pipeline.</p>
+<p>You will find GitHub Actions workflow file in <code>.github/workflows/ci.yml</code>Here is a sample code. </p>
+<pre><code>name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+  unit-test:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run tests
+        run: nose2
+
+  image-bp:
+    runs-on: ubuntu-latest
+    needs: unit-test
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Log in to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push Docker image
+        run: |
+          COMMIT_HASH=$(echo ${{ github.sha }} | cut -c1-7)
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/vote:$COMMIT_HASH .
+          docker push ${{ secrets.DOCKER_USERNAME }}/vote:$COMMIT_HASH
+</code></pre>
+<p>To build your own CI Pipeline, all you need to do is, fork this repo and add the secret variables in your repository settings so that GitHub Actions can access your DockerHub account.</p>
+<h3 id="adding-dockerhub-secrets">Adding DockerHub Secrets</h3>
+<p>You need to add DOCKER_USERNAME and DOCKER_PASSWORD as secrets in your GitHub repository settings. Here are the steps to add these secrets:  </p>
+<p>1 Go to your GitHub repository on the web.<br />
+  2 Click on the Settings tab.
+  3 In the left sidebar, click on Secrets and variables and then Actions.</p>
+<p><img alt="" src="../images/argo/44.png" /></p>
+<p>4 Click the New repository secret button.  </p>
+<p><img alt="" src="../images/argo/45.png" /></p>
+<p>5 Add a new secret with the name DOCKER_USERNAME and set its value to your DockerHub username.<br />
+  6 Add another new secret with the name DOCKER_PASSWORD and set its value to your DockerHub password.  </p>
+<p><img alt="" src="../images/argo/46.png" /></p>
+<p>Once you have added these secrets, they will be available to your GitHub Actions workflow. The workflow file you provided already references these secrets correctly. </p>
+<p>Make some changes to the application and push the changes to your forked repository. This will trigger the GitHub Actions workflow. You can view the workflow run in the Actions tab of your repository.</p>
+<h2 id="setup-automated-deployments-to-dev-with-argocd">Setup Automated Deployments to Dev with ArgoCD</h2>
+<p>Ensure that you have forked the application repo which also contains the helm chart code. </p>
+<p>Now to setup the automated deployment you should first create a Project and Repository. To do so,  log in to ArgoCD, select <code>settings</code> from left menu and browse to  <code>Projects</code></p>
+<p><img alt="" src="../images/argo/20.png" /></p>
+<p>Click on <code>New Project</code> -&gt; Create and provide Project Name and Description as</p>
+<p><img alt="" src="../images/argo/21.png" /></p>
+<p>Proceed to create the project.</p>
+<p>From Project Configuration page that you are redirected to, edit <code>DESTINATIONS</code></p>
+<ul>
+<li>Select default cluster name from dropdown  </li>
+<li>Select <code>in-cluster</code> as Name  </li>
+<li>Add three entries, eacg for <code>dev</code>, <code>staging</code>, <code>prod</code> Namespaces respectively</li>
+<li>Save</li>
+</ul>
+<p><img alt="" src="../images/argo/47.png" /></p>
+<p>From <code>settings</code> from left menu and browse to  <code>Repositories</code></p>
+<p>Select <code>Connet Repo</code> and provide the following configuration</p>
+<ul>
+<li>Via:  HTTPS  </li>
+<li>Type: git  </li>
+<li>Project: instavote   </li>
+<li>Repository URL: https://github.com/xxxx/vote.git (replace with actual)  </li>
+<li>Username: GitHub Username (If Private Repo)  </li>
+<li>Password: GitHub Password or Token (If Private Repo)  </li>
+</ul>
+<p><img alt="" src="../images/argo/48.png" /></p>
+<p>Finally click on <code>Connect</code> to add the repo.</p>
+<p><img alt="" src="../images/argo/49.png" /></p>
+<p>You should see connection status as <code>Successful</code></p>
+<h3 id="deploy-to-dev-with-argocd">Deploy to Dev with ArgoCD</h3>
+<p>Create a <code>dev</code> namespace </p>
+<pre><code>kubectl create namespace dev
+
+</code></pre>
+<p>Browse to ArgoCD web console and click on <strong>Create Application</strong></p>
+<p><img alt="" src="../images/argo/50.png" /></p>
+<p>From General ,</p>
+<ul>
+<li>Application Name : <code>vote-dev</code>  </li>
+<li>Project : <code>instavote</code>  </li>
+<li>Sync Policy : <code>Automatic</code>  </li>
+<li>Prune Resources: Checked</li>
+</ul>
+<p><img alt="" src="../images/argo/23.png" /></p>
+<p>From Source,  </p>
+<ul>
+<li>Repository URL : <code>Your Repo URL (https)</code>  </li>
+<li>Revision : <code>main</code> / <code>HEAD</code>   </li>
+<li>Path :  <code>chart</code>  </li>
+</ul>
+<p><img alt="" src="../images/argo/51.png" /></p>
+<p>From Destination,  </p>
+<ul>
+<li>Cluster URL :  https://kubernetes.default.svc   (default)  </li>
+<li>Namespace : <code>dev</code>  </li>
+</ul>
+<p><img alt="" src="../images/argo/52.png" /></p>
+<p>From Helm,  </p>
+<ul>
+<li>Values Files : <code>values-dev.yaml</code>  from dropdown</li>
+</ul>
+<p><img alt="" src="../images/argo/53.png" /></p>
+<p>Click on <strong>CREATE</strong> button on the top</p>
+<p>You shall see the application created on ArgoCD web console. 
+<img alt="" src="../images/argo/54.png" /></p>
+<p>And can further examine the deployment status. </p>
+<p><img alt="" src="../images/argo/55.png" /></p>
+<p>you could also validate from command line as,</p>
+<pre><code>kubectl get all -n dev
+</code></pre>
+<p>[sample output]</p>
+<pre><code>NAME                        READY   STATUS    RESTARTS   AGE
+pod/redis-cf4b97c75-hh65q   1/1     Running   0          2m21s
+pod/vote-5bdf44789b-7c7kt   1/1     Running   0          2m21s
+pod/vote-5bdf44789b-97hwf   1/1     Running   0          2m21s
+
+NAME            TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+service/redis   ClusterIP   10.96.246.118   &lt;none&gt;        6379/TCP       2m21s
+service/vote    NodePort    10.96.250.9     &lt;none&gt;        80:30100/TCP   2m21s
+
+NAME                    READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/redis   1/1     1            1           2m21s
+deployment.apps/vote    2/2     2            2           2m21s
+
+NAME                              DESIRED   CURRENT   READY   AGE
+replicaset.apps/redis-cf4b97c75   1         1         1       2m21s
+replicaset.apps/vote-5bdf44789b   2         2         2       2m21s
+</code></pre>
+<h2 id="set-up-argo-image-updater">Set up Argo Image Updater</h2>
+<p>Install  <a href="https://argocd-image-updater.readthedocs.io/">Argo CD Image Updater</a> as,</p>
+<pre><code>kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj-labs/argocd-image-updater/stable/manifests/install.yaml
+</code></pre>
+<p>Create a  Secret with your GitHub credentials so that the image updater can discover and commit the image tags to git repository.  </p>
+<pre><code>kubectl -n argocd create secret generic git-creds \
+  --from-literal=username=xxxxxx \
+  --from-literal=password=ghp_yyyyyy
+</code></pre>
+<p>Note : replace <code>xxxxxx</code> with your GitHub Username and <code>ghp_yyyyyy</code> with GitHub Access Token with write access to repository.  If you do not already have token, create it from GitHub</p>
+<p>Validate by running</p>
+<pre><code>kubectl get pods -n argocd
+</code></pre>
+<p>[expected output]</p>
+<pre><code>NAME                                               READY   STATUS    RESTARTS   AGE
+argocd-image-updater-74ddc74d5d-j5wkg              1/1     Running   0          2m42s
+</code></pre>
+<h2 id="conencting-ci-with-cd-using-auto-image-updates">Conencting CI with CD using Auto Image Updates</h2>
+<p>When you set up dev deployment, ArgoCD has created a application object for you.  You would need to add a few annotations  to it so that the Image Updater knows that this application is been marked for image auto update.</p>
+<p>Observe the existing application created from ArgoCD UI as,</p>
+<pre><code>kubectl get application -n argocd
+
+kubectl describe application -n argocd vote-dev
+</code></pre>
+<p>specifically observe the annotations</p>
+<pre><code>Annotations:  &lt;none&gt;
+</code></pre>
+<p>To update this application with  appropriate annotations create a patch file with the name and content given below,</p>
+<p>File : <code>argo-applications-vote-dev-patch.yaml</code></p>
+<pre><code>metadata:
+  annotations:
+    argocd-image-updater.argoproj.io/git-branch: main
+    argocd-image-updater.argoproj.io/image-list: myimage=xxx/vote
+    argocd-image-updater.argoproj.io/myimage.allow-tags: regexp:^[0-9a-f]{7}$
+    argocd-image-updater.argoproj.io/myimage.ignore-tags: latest, dev
+    argocd-image-updater.argoproj.io/myimage.update-strategy: newest-build
+    argocd-image-updater.argoproj.io/myimage.helm.image-name: vote.image.repository
+    argocd-image-updater.argoproj.io/myimage.helm.image-tag: vote.image.tag
+    argocd-image-updater.argoproj.io/myimage.force-update: &quot;true&quot;
+    argocd-image-updater.argoproj.io/write-back-method: git:secret:argocd/git-creds
+    argocd-image-updater.argoproj.io/write-back-target: &quot;helmvalues:values-dev.yaml&quot;
+</code></pre>
+<p>Where,</p>
+<ul>
+<li>Replace <code>xxxxxx/vote</code> with your own repo in the <code>argocd-image-updater.argoproj.io/image-list</code> annotation.  </li>
+</ul>
+<p>Apply the above patch as,</p>
+<pre><code>kubectl patch application --type=merge -n argocd vote-dev --patch-file argo-applications-vote-dev-patch.yaml
+
+</code></pre>
+<p>Validate annotations are added,</p>
+<pre><code>kubectl describe application -n argocd vote-dev
+</code></pre>
+<p>[sample output]</p>
+<pre><code>Name:         vote-dev
+Namespace:    argocd
+Labels:       &lt;none&gt;
+Annotations:  argocd-image-updater.argoproj.io/git-branch: main
+              argocd-image-updater.argoproj.io/image-list: myimage=initcron/initcron
+              argocd-image-updater.argoproj.io/myimage.allow-tags: regexp:^[0-9a-f]{7}$
+              argocd-image-updater.argoproj.io/myimage.force-update: true
+              argocd-image-updater.argoproj.io/myimage.helm.image-name: vote.image.repository
+              argocd-image-updater.argoproj.io/myimage.helm.image-tag: vote.image.tag
+              argocd-image-updater.argoproj.io/myimage.ignore-tags: latest, dev
+              argocd-image-updater.argoproj.io/myimage.kustomize.image-name: schoolofdevops/vote
+              argocd-image-updater.argoproj.io/myimage.update-strategy: newest-build
+              argocd-image-updater.argoproj.io/write-back-method: git:secret:argocd/git-creds
+              argocd-image-updater.argoproj.io/write-back-target: helmvalues:values-dev.yaml
+API Version:  argoproj.io/v1alpha1
+Kind:         Application
+...
+</code></pre>
+<p>If everything goes well, within a few minutes, you should see a commit to the main branch of the <code>vote-deploy</code> repository that you have.</p>
+<p><img alt="" src="../images/argo/56.png" /></p>
+<p>And a few minutes after that, you should see the dev deployment on ArgoCD  pick up the newly updated image tag and deploy it.</p>
+<p><img alt="" src="../images/argo/57.png" /></p>
+<p>and also validate with</p>
+<pre><code>kubectl describe application -n argocd vote-dev
+</code></pre>
+<p>where you should see the following in the output status</p>
+<pre><code>  Summary:
+    Images:
+      initcron/initcron:1065b15
+      redis:alpine
+  Sync:
+    Compared To:
+      Destination:
+        Namespace:  dev
+        Server:     https://kubernetes.default.svc
+</code></pre>
+<p>You could check the logs for the image updater which is running in <code>argocd</code> namespace by using a command similar to</p>
+<pre><code>kubectl logs -f -l &quot;app.kubernetes.io/name=argocd-image-updater&quot; -n argocd
+</code></pre>
+<p>[sample output]</p>
+<pre><code>
+time=&quot;2025-02-23T04:06:17Z&quot; level=info msg=&quot;Committing 1 parameter update(s) for application vote-dev&quot; application=vote-dev
+time=&quot;2025-02-23T04:06:17Z&quot; level=info msg=&quot;Initializing https://github.com/sfd226/vote.git to /tmp/git-vote-dev4083369370&quot;
+time=&quot;2025-02-23T04:06:17Z&quot; level=info msg=&quot;git fetch origin main --force --prune --depth 1&quot; dir=/tmp/git-vote-dev4083369370 execID=2bc9e
+time=&quot;2025-02-23T04:06:18Z&quot; level=info msg=Trace args=&quot;[git fetch origin main --force --prune --depth 1]&quot; dir=/tmp/git-vote-dev4083369370 operation_name=&quot;exec git&quot; time_ms=796.059257
+time=&quot;2025-02-23T04:06:18Z&quot; level=info msg=&quot;git checkout --force main&quot; dir=/tmp/git-vote-dev4083369370 execID=5dbc4
+time=&quot;2025-02-23T04:06:18Z&quot; level=info msg=Trace args=&quot;[git checkout --force main]&quot; dir=/tmp/git-vote-dev4083369370 operation_name=&quot;exec git&quot; time_ms=8.651031
+time=&quot;2025-02-23T04:06:18Z&quot; level=info msg=&quot;git clean -ffdx&quot; dir=/tmp/git-vote-dev4083369370 execID=85664
+time=&quot;2025-02-23T04:06:18Z&quot; level=info msg=Trace args=&quot;[git clean -ffdx]&quot; dir=/tmp/git-vote-dev4083369370 operation_name=&quot;exec git&quot; time_ms=1.851311
+time=&quot;2025-02-23T04:06:18Z&quot; level=info msg=&quot;Successfully updated the live application spec&quot; application=vote-dev
+time=&quot;2025-02-23T04:06:18Z&quot; level=info msg=&quot;Processing results: applications=1 images_considered=1 images_skipped=0 images_updated=1 errors=0&quot;
+</code></pre>
+<p>Thats all ! If you have gotten till here, congratulate yourself as you have just built a simplistic but completely working modern CI/CD Pipeline ! Hurray !!</p>
+<p>You could test this complete CI/CD pipeline by making changes to the <code>vote</code> application and pushing it to the <code>main</code> branch.
+You will see that, <br />
+1. When you me a change to the <code>vote</code> application, it will be automatically trigger GitHub Actions workflow which will build a new image and push it to the <code>dev</code> namespace.<br />
+2. The Argo Image Updater will detect the new image and update the image tag in the repository which containts the helm chart. <br />
+3. The ArgoCD will detect the change in the helm chart and deploy the new image to the <code>dev</code> namespace.<br />
+4. You could then test the application by accessing the URL of the <code>dev</code> namespace.  </p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../articles/argo_prune_propogation_policy/" class="btn btn-neutral float-left" title="ArgoCD - Prune Propogation Policy"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../argo_multi_tenant/" class="btn btn-neutral float-right" title="Lab K702 - Building Multi-Tenant Deployment System">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+      <p>Copyright @ 2017-2020 Gourav Shah, School of Devops. Some rights reserved. License CC BY-NC-SA</p>
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../articles/argo_prune_propogation_policy/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../argo_multi_tenant/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
