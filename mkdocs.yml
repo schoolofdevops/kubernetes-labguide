@@ -74,6 +74,16 @@ nav:
      - ArgoCD - Server Side Apply: "articles/argo_serversideapply.md"
      - ArgoCD - RETRY Options: "articles/argo_retry_options.md"
      - ArgoCD - Prune Propogation Policy: "articles/argo_prune_propogation_policy.md"
+  - Argo Advanced:
+     - Lab K701 - Setup CI/CD with GHA and Argo: "argo_adv_setup.md"
+     - Lab K702 - Building Multi-Tenant Deployment System: "argo_multi_tenant.md"
+     - Lab K603 - Canary with Argo Rollouts: "argo_rollout_canary.md"
+     - Lab K604 - ArgoCD: "argo_multi_env_deploy.md"
+     - Lab K605 - Argo Workflow Examples: "argo_workflow_examples.md"
+     - Lab K606 - CI Pipeline with Argo Workflows: "argo_workflow_ci.md"
+     - Lab K607 - Argo Events: "argo_events.md"
+     - Lab K608 - Argo Image Updater: "argo_iamge_updater.md"
+     - Lab K609 - Experiments and Analysis: "argo_experiments_analysis.md"
   - Exercises:
      - XER001 - Pods: "xer-001-pods.md"
      - XER002 - ReplicaSets: "xer-002-rs.md"
