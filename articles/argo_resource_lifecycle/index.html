@@ -3,18 +3,18 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/istio/traffic-management/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/articles/argo_resource_lifecycle/" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>Traffic Management - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <title>ArgoCD Resource Lifecycle Management - Kubernetes Tutorial with CKA/CKAD Prep</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Traffic Management";
-        var mkdocs_page_input_path = "istio/traffic-management.md";
-        var mkdocs_page_url = "/istio/traffic-management/";
+        var mkdocs_page_name = "ArgoCD Resource Lifecycle Management";
+        var mkdocs_page_input_path = "articles/argo_resource_lifecycle.md";
+        var mkdocs_page_url = "/articles/argo_resource_lifecycle/";
       </script>
     
     <!--[if lt IE 9]>
@@ -193,18 +193,62 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Argo Articles</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../articles/argo_adv_sync_strategies/">ArgoCD Advanced Sync Strategies</a>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_adv_sync_strategies/">ArgoCD Advanced Sync Strategies</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../articles/argo_resource_lifecycle/">ArgoCD Resource Lifecycle Management</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">ArgoCD Resource Lifecycle Management</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#core-sync-options">Core Sync Options</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1-pruning-control">1. Pruning Control</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2-update-strategies">2. Update Strategies</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3-validation-and-finalization">3. Validation and Finalization</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#4-finalizer-management">4. Finalizer Management</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#implementation-patterns">Implementation Patterns</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1-selective-pruning-strategy">1. Selective Pruning Strategy</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2-safe-update-pattern">2. Safe Update Pattern</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#advanced-use-cases">Advanced Use Cases</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1-stateful-application-management">1. Stateful Application Management</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2-large-scale-deployments">2. Large-Scale Deployments</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3-legacy-application-support">3. Legacy Application Support</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#best-practices">Best Practices</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1-resource-protection">1. Resource Protection</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2-performance-optimization">2. Performance Optimization</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3-troubleshooting">3. Troubleshooting</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#4-common-pitfalls">4. Common Pitfalls</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../articles/argo_sync_options/">ArgoCD Sync Options</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_sync_options/">ArgoCD Sync Options</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../articles/argo_serversideapply/">ArgoCD - Server Side Apply</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_serversideapply/">ArgoCD - Server Side Apply</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../articles/argo_retry_options/">ArgoCD - RETRY Options</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_retry_options/">ArgoCD - RETRY Options</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../articles/argo_prune_propogation_policy/">ArgoCD - Prune Propogation Policy</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_prune_propogation_policy/">ArgoCD - Prune Propogation Policy</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../gha_code_explain/">GitHub Actions Code Explainer</a>
                   </li>
@@ -267,9 +311,10 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" aria-label="Docs"></a> &raquo;</li>
-      <li class="breadcrumb-item active">Traffic Management</li>
+          <li>Argo Articles &raquo;</li>
+      <li class="breadcrumb-item active">ArgoCD Resource Lifecycle Management</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/istio/traffic-management.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/articles/argo_resource_lifecycle.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -277,43 +322,133 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="traffic-management">Traffic Management</h1>
-<p>===&gt; [ Gateway ] ==&gt; Virtual ==&gt; Destination ==&gt; Pods
-        L4-L6        Service     Rules</p>
-<h2 id="virtual-services">Virtual Services</h2>
+                <h1 id="resource-lifecycle-management">Resource Lifecycle Management</h1>
+<p>Resource lifecycle management in ArgoCD encompasses a comprehensive set of sync options that control how resources are created, updated, and deleted during the sync process.</p>
+<h2 id="core-sync-options">Core Sync Options</h2>
+<h3 id="1-pruning-control">1. <strong>Pruning Control</strong></h3>
+<pre><code class="language-yaml">   metadata:
+     annotations:
+       argocd.argoproj.io/sync-options: Prune=false
+</code></pre>
 <ul>
-<li>decouples client requests from actual workloads at destination</li>
-<li>allows you to define traffic routing rules</li>
-<li>without virtual service, envoy would just use round robin method</li>
-<li>Enables A/B testing, Canary</li>
-<li>Advanced rules e.g. user 'x' routes to version v1</li>
-<li>Service subsets are defined with destination rules</li>
-<li>One virtual service can route to multiple kubernetes services e.g. rating/ productpage/ rules are defined in same virtual service.</li>
-<li>works with gateway for front facing apps which need ingress/egress rules.</li>
-</ul>
-<h2 id="destination-rules">Destination Rules</h2>
-<ul>
-<li>Subsets</li>
-<li>Load Balancing Algorithms<ul>
-<li>Round Robin (default)</li>
-<li>Random</li>
-<li>Weighted</li>
-<li>Least Requests</li>
+<li><code>Prune=false</code>: Prevents ArgoCD from deleting resources</li>
+<li><code>PruneLast=true</code>: Deletes resources only after all other sync operations complete</li>
+<li><code>PrunePropagationPolicy=(foreground|background|orphan)</code>: Controls how dependent resources are handled during deletion<ul>
+<li><code>foreground</code>: Dependent resources are deleted first (cascading delete)</li>
+<li><code>background</code>: Dependent resources deleted asynchronously</li>
+<li><code>orphan</code>: Dependent resources are not deleted</li>
 </ul>
 </li>
 </ul>
-<h2 id="gateways">Gateways</h2>
+<h3 id="2-update-strategies">2. <strong>Update Strategies</strong></h3>
+<pre><code class="language-yaml">   metadata:
+     annotations:
+       argocd.argoproj.io/sync-options: Replace=true
+</code></pre>
 <ul>
-<li>Similar to ingress controller</li>
-<li>Sits at the edge</li>
-<li>Gateway rules are applied to envoy proxy sidecars  at the edge, not application sidecars</li>
-<li>Similar to k8s ingress, but handles only L4-L6 (e.g. ports, tls) and sends to Virtual Service for test.</li>
-<li>Default is ingress gateway</li>
-<li>Egress gateway is opt in. Allow you to route outgoing traffic through specific hosts</li>
+<li><code>Replace=true</code>: Forces resource replacement instead of patching</li>
+<li><code>ApplyOutOfSyncOnly=true</code>: Only sync resources that are out of sync</li>
+<li><code>Retry=true</code>: Attempts to retry failed sync operations</li>
+</ul>
+<h3 id="3-validation-and-finalization">3. <strong>Validation and Finalization</strong></h3>
+<pre><code class="language-yaml">   metadata:
+     annotations:
+       argocd.argoproj.io/sync-options: SkipSchemaValidation=true
+       argocd.argoproj.io/sync-options: RespectIgnoreDifferences=true
+</code></pre>
+<ul>
+<li><code>SkipSchemaValidation=true</code>: Bypasses Kubernetes schema validation</li>
+<li><code>RespectIgnoreDifferences=true</code>: Honors ignore difference configurations</li>
+<li><code>DeletePropagation=foreground</code>: Controls how deletions propagate to dependent objects</li>
+</ul>
+<h3 id="4-finalizer-management">4. <strong>Finalizer Management</strong></h3>
+<pre><code class="language-yaml">   metadata:
+     annotations:
+       argocd.argoproj.io/sync-options: DeleteOptions.PropagationPolicy=background
+       argocd.argoproj.io/sync-options: DeleteOptions.GracePeriodSeconds=10
+</code></pre>
+<ul>
+<li><code>SetDeletionFinalizers=true/false</code>: Controls whether ArgoCD manages finalizers</li>
+<li>Finalizers ensure proper cleanup before resource deletion</li>
+</ul>
+<h2 id="implementation-patterns">Implementation Patterns</h2>
+<h3 id="1-selective-pruning-strategy">1. <strong>Selective Pruning Strategy</strong></h3>
+<pre><code class="language-yaml">apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: my-app
+spec:
+  syncPolicy:
+    automated:
+      prune: true  # Enable automated pruning
+      selfHeal: true  # Enable drift correction
+    syncOptions:
+    - PruneLast=true  # Prune after all syncs complete
+    - PrunePropagationPolicy=foreground  # Cascading deletion
+</code></pre>
+<h3 id="2-safe-update-pattern">2. <strong>Safe Update Pattern</strong></h3>
+<pre><code class="language-yaml">apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: my-app
+spec:
+  syncPolicy:
+    syncOptions:
+    - ApplyOutOfSyncOnly=true  # Only update changed resources
+    - Validate=false  # Skip validation for specific cases
+    - RespectIgnoreDifferences=true  # Honor ignore rules
+</code></pre>
+<h2 id="advanced-use-cases">Advanced Use Cases</h2>
+<h3 id="1-stateful-application-management">1. <strong>Stateful Application Management</strong></h3>
+<ul>
+<li>Use <code>Replace=false</code> to preserve PVC data</li>
+<li>Implement <code>PruneLast=true</code> for safe database updates</li>
+<li>Configure appropriate finalizers for data protection</li>
+</ul>
+<h3 id="2-large-scale-deployments">2. <strong>Large-Scale Deployments</strong></h3>
+<ul>
+<li><code>ApplyOutOfSyncOnly=true</code> for performance optimization</li>
+<li><code>Retry=true</code> for handling transient failures</li>
+<li>Careful propagation policy selection for complex dependencies</li>
+</ul>
+<h3 id="3-legacy-application-support">3. <strong>Legacy Application Support</strong></h3>
+<ul>
+<li><code>SkipSchemaValidation=true</code> for non-standard resources</li>
+<li><code>RespectIgnoreDifferences=true</code> for handling dynamic fields</li>
+<li>Custom finalizer management for special cleanup requirements</li>
+</ul>
+<h2 id="best-practices">Best Practices</h2>
+<h3 id="1-resource-protection">1. <strong>Resource Protection</strong></h3>
+<ul>
+<li>Carefully consider pruning policies</li>
+<li>Use finalizers for critical resources</li>
+<li>Implement appropriate grace periods</li>
+</ul>
+<h3 id="2-performance-optimization">2. <strong>Performance Optimization</strong></h3>
+<ul>
+<li>Selectively apply sync options</li>
+<li>Balance automation vs. manual control</li>
+<li>Monitor sync operation impact</li>
+</ul>
+<h3 id="3-troubleshooting">3. <strong>Troubleshooting</strong></h3>
+<ul>
+<li>Monitor sync operation logs</li>
+<li>Understand propagation policies</li>
+<li>Track finalizer completion</li>
+</ul>
+<h3 id="4-common-pitfalls">4. <strong>Common Pitfalls</strong></h3>
+<ul>
+<li>Avoid mixing incompatible sync options</li>
+<li>Consider dependencies when setting propagation policies</li>
+<li>Test complex sync strategies in non-production first</li>
 </ul>
               
             </div>
           </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../argo_adv_sync_strategies/" class="btn btn-neutral float-left" title="ArgoCD Advanced Sync Strategies"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../argo_sync_options/" class="btn btn-neutral float-right" title="ArgoCD Sync Options">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
 
   <hr/>
 
@@ -340,6 +475,10 @@
         </span>
     
     
+      <span><a href="../argo_adv_sync_strategies/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../argo_sync_options/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

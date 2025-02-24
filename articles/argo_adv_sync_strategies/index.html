@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/articles/argo_adv_sync_strategies/" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>ArgoCD Advanced Sync Strategies - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "ArgoCD Advanced Sync Strategies";
+        var mkdocs_page_input_path = "articles/argo_adv_sync_strategies.md";
+        var mkdocs_page_url = "/articles/argo_adv_sync_strategies/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+      <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+        ga('create', "UA-36802546-16", "kubernetes-tutorial.schoolofdevops.com");
+        ga('send', 'pageview');
+      </script>
+    
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Kubernetes Tutorial with CKA/CKAD Prep
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Docker Essentials for Kubernetes</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../operating-docker-containers/">Lab D101 - Operating Containers</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../building-publishing-docker-images/">Lab D102 - Building and Publishing Docker Images</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../docker-networking/">Lab D103 - Docker Networking</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../docker-volumes/">Lab D104 - Docker Volumes</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Kubernetes Essentials for CKA/CKAD</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../kind_create_cluster/">Lab K101 - Install Kubernetes with KIND</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../kubernetes_quickdive/">Lab K102 - Kubernetes Quickdive</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../create-and-deploy-kubernetes-pods/">Lab K103 - Pods</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../kubernetes-replicasets-howto/">Lab K104 - Namespaces and ReplicaSets</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../kubernetes-service-networking/">Lab K105 - Service Networking</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../kubernetes-rollouts-rollbacks-deployments/">Lab K107 - Deployments</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../kubernetes-dynamic-storage-provisioning/">Lab K108 - Storage</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../kubernetes-sample-project/">Lab K109 - Mini Project</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../kubernetes-configuration-management-configmaps-secrets/">Lab K110 - ConfigMaps & Secrets</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../ingress/">Lab K112 - Ingress</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../helm/">Lab K113 - HELM Package Manager</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../helm_charts/">Lab K114 - Writing HELM Charts</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../helm_charts_publish/">Lab K115 - Publishing HELM Charts</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Additional CKAD Topics</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../advanced_pod_design/">Lab K201 - Advanced Pod Design</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../pods-health-probes/">Lab K204 - Health Checks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../daemonsets_cronsjobs/">Lab K205 - DaemonsSets & CronJobs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../13_redis_statefulset/">Lab K206 - Statefulsets</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Additional CKA Topics</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../10_kubernetes_autoscaling/">Lab K301 - Auto Scaling with HPA</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../custom_autoscaling/">Lab K302 - Autoscaling on Custom Metric</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../advanced_pod_scheduling/">Lab K303 - Advanced Pod Scheduling</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../cluster-administration/">Lab K304 - Cluster Administration</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../cluster-troubleshooting/">Lab K305 - Cluster Troubleshooting</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Kubernetes Security</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../rbac_101/">Lab K111 - RBAC Policies</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../network_policies/">Lab K207 - Network Policies</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Additional Topics</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../install_kubernetes_with_kubeadm/">Lab K400 - Install Kubernetes with Kubeadm</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../configuring_authentication_and_authorization/">Lab K401 - Creating Users, Groups and Authorization</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../vote-deployement_strategies/">Lab K403 - Building Deployment Strategies</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../cni/">Lab K404 - CNI</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../operator/">Lab K404 - Kubernetes Operators</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../12_troubleshooting/">Troubleshooting Tips</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../logging/">Logging</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">AWS and Kubernetes</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../aws_ack_demo/">Lab K405 - AWS Controller for Kubernetes</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">AWS EKS</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../eks_prep/">Lab K501 - EKS Preparatory Setup</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../eks_setup/">Lab K502 - EKS Setup</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../eks_deploy_apps/">Lab K503 - Deploy Apps on EKS</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../eks_ingress_alb/">Lab K504 - Ingress with ALB</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../eks_storage/">Lab K505 - Persistent Storage with EBS</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../eks_irsa/">Lab K506 - IRSA</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../eks_cluster_autoscaler/">Lab K507 - EKS Cluster Autoscaler</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../eks_vpa/">Lab K509 - Verticle Pod Autoscaler</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../eks_monitoring/">Lab K510 - EKS Monitoring</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../eks_costs/">Lab K511 - EKS Costs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../eks_cleanup/">Lab K599 - EKS Cleanup</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Argo</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../kind_create_cluster/">Lab K601 - Setup Kubernetes Cluster</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../argo_rollout_blue_green/">Lab K602 - Blue/Green with Argo Rollouts</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../argo_rollout_canary/">Lab K603 - Canary with Argo Rollouts</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../argo_multi_env_deploy/">Lab K604 - ArgoCD</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="../../argo_workflow_examples.md">Lab K605 - Argo Workflow Examples</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../argo_workflow_ci/">Lab K606 - CI Pipeline with Argo Workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../argo_events/">Lab K607 - Argo Events</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../argo_iamge_updater/">Lab K608 - Argo Image Updater</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../argo_experiments_analysis/">Lab K609 - Experiments and Analysis</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Argo Articles</span></p>
+              <ul class="current">
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">ArgoCD Advanced Sync Strategies</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#wave-orchestration">Wave Orchestration</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#key-concepts">Key Concepts</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#implementation-patterns">Implementation Patterns</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#sync-phases-and-hooks">Sync Phases and Hooks</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#sync-phases">Sync Phases</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#hook-implementation">Hook Implementation</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#hook-policies">Hook Policies</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#resource-lifecycle-management">Resource Lifecycle Management</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#application-finalizers">Application Finalizers</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#core-sync-options">Core Sync Options</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#1-pruning-control">1. Pruning Control</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#2-prune-propagation-policy">2. Prune Propagation Policy</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#3-prune-last">3. Prune Last</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#4-resource-update-strategies">4. Resource Update Strategies</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#5-validation-options">5. Validation Options</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#resource-pruning-exclusions">Resource Pruning Exclusions</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#sync-hooks-for-lifecycle-events">Sync Hooks for Lifecycle Events</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#implementation-patterns_1">Implementation Patterns</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#1-selective-pruning-strategy">1. Selective Pruning Strategy</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#2-safe-update-pattern">2. Safe Update Pattern</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#advanced-use-cases">Advanced Use Cases</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#1-stateful-application-management">1. Stateful Application Management</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#2-large-scale-deployments">2. Large-Scale Deployments</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#3-legacy-application-support">3. Legacy Application Support</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#best-practices">Best Practices</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#1-resource-protection">1. Resource Protection</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#2-performance-optimization">2. Performance Optimization</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#3-troubleshooting">3. Troubleshooting</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#4-common-pitfalls">4. Common Pitfalls</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#custom-health-checks">Custom Health Checks</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#where-to-add-custom-health-checks">Where to add Custom Health Checks ?</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#example-health-checks">Example Health Checks</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#example-1-kafka-topic-health-check">Example 1: Kafka Topic Health Check</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#example-2-database-custom-resource-health-check">Example 2: Database Custom Resource Health Check</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#example-3-custom-service-mesh-health-check">Example 3: Custom Service Mesh Health Check</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#why-custom-health-checks-matter">Why Custom Health Checks Matter</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#health-check-best-practices">Health Check Best Practices</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#1-comprehensive-checks">1. Comprehensive Checks</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#2-performance-considerations">2. Performance Considerations</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#3-error-handling">3. Error Handling</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_resource_lifecycle/">ArgoCD Resource Lifecycle Management</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_sync_options/">ArgoCD Sync Options</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_serversideapply/">ArgoCD - Server Side Apply</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_retry_options/">ArgoCD - RETRY Options</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_prune_propogation_policy/">ArgoCD - Prune Propogation Policy</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../gha_code_explain/">GitHub Actions Code Explainer</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Argo Advanced</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../argo_adv_setup/">Lab K701 - Setup CI/CD with GHA and Argo</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../argo_multi_tenant/">Lab K702 - Building Multi-Tenant Deployment System</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../argo_rollout_canary/">Lab K703 - TBA</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../argo_multi_env_deploy/">Lab K704 - TBA</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="../../argo_workflow_examples.md">Lab K705 - TBA</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Exercises</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../xer-001-pods/">XER001 - Pods</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../xer-002-rs/">XER002 - ReplicaSets</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../adv-k8s-project/">XER003 - Deploy Instavote Stack</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Web Quests</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../wq001-cni/">KWQ001 - CNI Web Quest</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../wq002-security/">KWQ001 - Kubernetes Security Web Quest</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../wq003-ingress/">KWQ003 - Ingress Web Quest</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../wq004-monitoring/">KWQ004 - Monitoring Web Quest</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../wq005-controllers/">KWQ005 - Controllers Web Quest</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../wq006-persistentvolume/">KWQ006 - Persistent Data Web Quest</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../wq007-maintenance/">KWQ007 - Cluster Maintenance Web Quest</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">References</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../rbac-resource-group-mapping/">RBAC apiGroups to Resource Mapping</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Kubernetes Tutorial with CKA/CKAD Prep</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a> &raquo;</li>
+          <li>Argo Articles &raquo;</li>
+      <li class="breadcrumb-item active">ArgoCD Advanced Sync Strategies</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/articles/argo_adv_sync_strategies.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="agro-advanced-module-3-notes-advanced-sync-strategies">Agro Advanced Module 3 Notes - Advanced Sync Strategies</h1>
+<h2 id="wave-orchestration">Wave Orchestration</h2>
+<p>Wave orchestration in ArgoCD provides a sophisticated mechanism for controlling the order of resource deployments within an application. This feature is crucial for managing complex dependencies and ensuring proper deployment sequences.</p>
+<h3 id="key-concepts">Key Concepts</h3>
+<ol>
+<li><strong>Sync Waves</strong></li>
+<li>Waves are defined using the annotation: <code>argocd.argoproj.io/sync-wave</code></li>
+<li>Lower numbers are processed first (e.g., -1 before 0, 0 before 1)</li>
+<li>Resources within the same wave are processed in parallel</li>
+<li>Next wave begins only after all resources in the current wave are healthy</li>
+</ol>
+<h3 id="implementation-patterns">Implementation Patterns</h3>
+<ol>
+<li><strong>Infrastructure-First Pattern</strong></li>
+</ol>
+<pre><code class="language-yaml"># Namespace (Wave -2)
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: application
+  annotations:
+    argocd.argoproj.io/sync-wave: &quot;-2&quot;
+
+# ConfigMaps and Secrets (Wave -1)
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: &quot;-1&quot;
+
+# Core Services (Wave 0)
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: &quot;0&quot;
+
+# Deployments (Wave 1)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: &quot;1&quot;
+</code></pre>
+<ol>
+<li><strong>Database-First Pattern</strong></li>
+<li>Wave -1: Database StatefulSet</li>
+<li>Wave 0: Database initialization jobs</li>
+<li>Wave 1: Application backend services</li>
+<li>Wave 2: Frontend services</li>
+</ol>
+<h2 id="sync-phases-and-hooks">Sync Phases and Hooks</h2>
+<p>Sync phases provide fine-grained control over the deployment lifecycle, while hooks enable custom actions at specific points in the sync process.</p>
+<h3 id="sync-phases">Sync Phases</h3>
+<ol>
+<li><strong>PreSync Phase</strong></li>
+<li>Executes before the main sync operation</li>
+<li>
+<p>Common uses:</p>
+<ul>
+<li>Database schema migrations</li>
+<li>Resource validation</li>
+<li>Backup creation</li>
+<li>Service announcements</li>
+</ul>
+</li>
+<li>
+<p><strong>Sync Phase</strong></p>
+</li>
+<li>Main resource deployment phase</li>
+<li>Follows wave ordering</li>
+<li>
+<p>Respects resource dependencies</p>
+</li>
+<li>
+<p><strong>PostSync Phase</strong></p>
+</li>
+<li>Executes after successful sync</li>
+<li>Use cases:<ul>
+<li>Smoke tests</li>
+<li>Cache warming</li>
+<li>Notification sending</li>
+<li>Cleanup operations</li>
+</ul>
+</li>
+</ol>
+<h3 id="hook-implementation">Hook Implementation</h3>
+<pre><code class="language-yaml">apiVersion: batch/v1
+kind: Job
+metadata:
+  name: database-migration
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
+spec:
+  template:
+    spec:
+      containers:
+      - name: migration
+        image: migration-tool:v1
+</code></pre>
+<h3 id="hook-policies">Hook Policies</h3>
+<ol>
+<li><strong>Delete Policies</strong></li>
+<li><code>HookSucceeded</code>: Delete after successful execution</li>
+<li><code>HookFailed</code>: Delete after failed execution</li>
+<li>
+<p><code>BeforeHookCreation</code>: Delete before creating new hook</p>
+</li>
+<li>
+<p><strong>Timing Policies</strong></p>
+</li>
+<li><code>argocd.argoproj.io/sync-wave</code>: Control execution order</li>
+<li><code>argocd.argoproj.io/hook-delete-policy</code>: Manage cleanup</li>
+<li><code>argocd.argoproj.io/sync-options</code>: Fine-tune sync behavior</li>
+</ol>
+<h2 id="resource-lifecycle-management">Resource Lifecycle Management</h2>
+<p>Resource lifecycle management in ArgoCD encompasses a comprehensive set of options that control how resources are created, updated, and deleted during the sync process.</p>
+<h3 id="application-finalizers">Application Finalizers</h3>
+<p>Finalizers are Kubernetes mechanisms that prevent resources from being immediately deleted, allowing for cleanup operations to complete first.</p>
+<pre><code class="language-yaml">apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: my-app
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  # application specs...
+</code></pre>
+<ul>
+<li>The <code>resources-finalizer.argocd.argoproj.io</code> finalizer ensures:</li>
+<li>When the Application CR is deleted, ArgoCD first deletes all its managed resources</li>
+<li>The Application CR remains in "Terminating" state until cleanup completes</li>
+<li>Only after all resources are removed is the finalizer itself removed</li>
+<li>Then the Application CR is finally deleted</li>
+<li>This prevents orphaned resources in the cluster</li>
+</ul>
+<h3 id="core-sync-options">Core Sync Options</h3>
+<h4 id="1-pruning-control">1. <strong>Pruning Control</strong></h4>
+<pre><code class="language-yaml">   apiVersion: argoproj.io/v1alpha1
+   kind: Application
+   metadata:
+     name: my-app
+   spec:
+     syncPolicy:
+       automated:
+         prune: true  # Enable automated pruning during sync
+</code></pre>
+<h4 id="2-prune-propagation-policy">2. <strong>Prune Propagation Policy</strong></h4>
+<pre><code class="language-yaml">   apiVersion: argoproj.io/v1alpha1
+   kind: Application
+   metadata:
+     name: my-app
+   spec:
+     syncPolicy:
+       syncOptions:
+       - PrunePropagationPolicy=foreground
+</code></pre>
+<p>Options:
+   - <code>foreground</code>: Parent resources wait for child resources to be deleted first
+   - <code>background</code>: Parent resources begin deletion, and children are deleted asynchronously
+   - <code>orphan</code>: Child resources remain when parent resources are deleted</p>
+<h4 id="3-prune-last">3. <strong>Prune Last</strong></h4>
+<pre><code class="language-yaml">   apiVersion: argoproj.io/v1alpha1
+   kind: Application
+   metadata:
+     name: my-app
+   spec:
+     syncPolicy:
+       syncOptions:
+       - PruneLast=true
+</code></pre>
+<ul>
+<li>Deletes resources only after all other sync operations complete</li>
+<li>Provides safer handling for dependent resources</li>
+</ul>
+<h4 id="4-resource-update-strategies">4. <strong>Resource Update Strategies</strong></h4>
+<pre><code class="language-yaml">   apiVersion: argoproj.io/v1alpha1
+   kind: Application
+   metadata:
+     name: my-app
+   spec:
+     syncPolicy:
+       syncOptions:
+       - Replace=true
+       - ApplyOutOfSyncOnly=true
+</code></pre>
+<ul>
+<li><code>Replace=true</code>: Forces resource replacement instead of patching</li>
+<li><code>ApplyOutOfSyncOnly=true</code>: Only sync resources that are out of sync</li>
+</ul>
+<h4 id="5-validation-options">5. <strong>Validation Options</strong></h4>
+<pre><code class="language-yaml">   apiVersion: argoproj.io/v1alpha1
+   kind: Application
+   metadata:
+     name: my-app
+   spec:
+     syncPolicy:
+       syncOptions:
+       - SkipSchemaValidation=true
+       - RespectIgnoreDifferences=true
+</code></pre>
+<ul>
+<li><code>SkipSchemaValidation=true</code>: Bypasses Kubernetes schema validation</li>
+<li><code>RespectIgnoreDifferences=true</code>: Honors ignore difference configurations</li>
+</ul>
+<h3 id="resource-pruning-exclusions">Resource Pruning Exclusions</h3>
+<p>To protect specific resources from being pruned during sync operations (but not from Application deletion):</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: database-data
+  annotations:
+    argocd.argoproj.io/sync-options: Prune=false
+</code></pre>
+<ul>
+<li><code>Prune=false</code>: Prevents this resource from being deleted during normal sync operations</li>
+<li><strong>Note</strong>: This does NOT protect the resource when the entire Application is deleted</li>
+</ul>
+<h3 id="sync-hooks-for-lifecycle-events">Sync Hooks for Lifecycle Events</h3>
+<pre><code class="language-yaml">apiVersion: batch/v1
+kind: Job
+metadata:
+  name: database-backup
+  annotations:
+    argocd.argoproj.io/hook: PreDelete
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
+spec:
+  template:
+    spec:
+      containers:
+      - name: backup
+        image: backup-tool:v1
+        command: ['sh', '-c', './backup.sh']
+      restartPolicy: Never
+</code></pre>
+<ul>
+<li>Hooks provide actions at specific lifecycle points:</li>
+<li><code>PreSync</code>: Before sync starts</li>
+<li><code>Sync</code>: During sync</li>
+<li><code>PostSync</code>: After sync completes</li>
+<li><code>PreDelete</code>: Before resources are deleted</li>
+</ul>
+<h3 id="implementation-patterns_1">Implementation Patterns</h3>
+<h4 id="1-selective-pruning-strategy">1. <strong>Selective Pruning Strategy</strong></h4>
+<pre><code class="language-yaml">apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: my-app
+spec:
+  syncPolicy:
+    automated:
+      prune: true  # Enable automated pruning
+      selfHeal: true  # Enable drift correction
+    syncOptions:
+    - PruneLast=true  # Prune after all syncs complete
+    - PrunePropagationPolicy=foreground  # Cascading deletion
+</code></pre>
+<h4 id="2-safe-update-pattern">2. <strong>Safe Update Pattern</strong></h4>
+<pre><code class="language-yaml">apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: my-app
+spec:
+  syncPolicy:
+    syncOptions:
+    - ApplyOutOfSyncOnly=true  # Only update changed resources
+    - Validate=false  # Skip validation for specific cases
+    - RespectIgnoreDifferences=true  # Honor ignore rules
+</code></pre>
+<h3 id="advanced-use-cases">Advanced Use Cases</h3>
+<h4 id="1-stateful-application-management">1. <strong>Stateful Application Management</strong></h4>
+<ul>
+<li>Use <code>Replace=false</code> to preserve PVC data</li>
+<li>Implement <code>PruneLast=true</code> for safe database updates</li>
+<li>Configure application finalizers for proper cleanup on deletion</li>
+</ul>
+<p><strong>Example: Complete Stateful Application Protection Strategy</strong></p>
+<pre><code class="language-yaml">   # Application definition
+   apiVersion: argoproj.io/v1alpha1
+   kind: Application
+   metadata:
+     name: postgres-database
+     finalizers:
+       - resources-finalizer.argocd.argoproj.io
+   spec:
+     source:
+       repoURL: https://github.com/myorg/databases.git
+       path: postgres
+       targetRevision: HEAD
+     destination:
+       server: https://kubernetes.default.svc
+       namespace: database
+     syncPolicy:
+       automated:
+         prune: false  # Disable automatic pruning for safety
+         selfHeal: true
+       syncOptions:
+       - PruneLast=true
+       - ApplyOutOfSyncOnly=true
+       - RespectIgnoreDifferences=true
+
+   ---
+   # Project-level protection
+   apiVersion: argoproj.io/v1alpha1
+   kind: AppProject
+   metadata:
+     name: database-systems
+   spec:
+     description: &quot;Database applications with data protection&quot;
+     # Project specs...
+
+     # Critical resources exclusion
+     resourceExclusions:
+     - group: &quot;&quot;
+       kind: PersistentVolumeClaim
+       resourceNames:
+       - &quot;data-*&quot;
+
+     # Scheduled sync windows to prevent updates during peak hours
+     syncWindows:
+     - kind: deny
+       schedule: &quot;0 9 * * 1-5&quot;  # No updates weekdays 9am
+       duration: 9h             # For 9 hours (business day)
+       applications:
+       - &quot;*-database&quot;
+</code></pre>
+<h4 id="2-large-scale-deployments">2. <strong>Large-Scale Deployments</strong></h4>
+<ul>
+<li><code>ApplyOutOfSyncOnly=true</code> for performance optimization</li>
+<li><code>Retry=true</code> for handling transient failures</li>
+<li>Careful propagation policy selection for complex dependencies</li>
+</ul>
+<h4 id="3-legacy-application-support">3. <strong>Legacy Application Support</strong></h4>
+<ul>
+<li><code>SkipSchemaValidation=true</code> for non-standard resources</li>
+<li><code>RespectIgnoreDifferences=true</code> for handling dynamic fields</li>
+<li>Custom finalizer management for special cleanup requirements</li>
+</ul>
+<h3 id="best-practices">Best Practices</h3>
+<h4 id="1-resource-protection">1. <strong>Resource Protection</strong></h4>
+<ul>
+<li>Carefully consider pruning policies</li>
+<li>Use finalizers for critical applications</li>
+<li>Implement appropriate hooks for data backup before deletion</li>
+</ul>
+<h4 id="2-performance-optimization">2. <strong>Performance Optimization</strong></h4>
+<ul>
+<li>Selectively apply sync options</li>
+<li>Balance automation vs. manual control</li>
+<li>Monitor sync operation impact</li>
+</ul>
+<h4 id="3-troubleshooting">3. <strong>Troubleshooting</strong></h4>
+<ul>
+<li>Monitor sync operation logs</li>
+<li>Understand propagation policies</li>
+<li>Track finalizer completion</li>
+</ul>
+<h4 id="4-common-pitfalls">4. <strong>Common Pitfalls</strong></h4>
+<ul>
+<li>Remember that <code>Prune=false</code> annotations don't protect resources during Application deletion</li>
+<li>Consider dependencies when setting propagation policies</li>
+<li>Test complex sync strategies in non-production first</li>
+</ul>
+<h2 id="custom-health-checks">Custom Health Checks</h2>
+<p>Custom health checks are written in <strong>lua</strong> scripting language and  allow for sophisticated application health monitoring beyond default Kubernetes probes.</p>
+<h3 id="where-to-add-custom-health-checks">Where to add Custom Health Checks ?</h3>
+<p>Custom health checks in ArgoCD are added in one of two places:</p>
+<p><strong>Resource Customizations ConfigMap</strong>: For cluster-wide custom health checks</p>
+<pre><code class="language-bash">   kubectl edit configmap argocd-cm -n argocd
+</code></pre>
+<p><strong>Application-specific Configuration</strong>: For individual application health checks</p>
+<pre><code class="language-yaml">   apiVersion: argoproj.io/v1alpha1
+   kind: Application
+   metadata:
+     name: my-app
+   spec:
+     # ... other configs
+     ignoreDifferences:
+     # ... other configs
+     resourceCustomizations: |
+       customresources.example.com/MyCustomResource:
+         health.lua: |
+           -- custom health check logic here
+</code></pre>
+<h3 id="example-health-checks">Example Health Checks</h3>
+<p>Here are some examples of custom health checks written in lua scripting language. </p>
+<h4 id="example-1-kafka-topic-health-check">Example 1: Kafka Topic Health Check</h4>
+<p>This checks if a Kafka topic has the correct number of partitions and replication factor:</p>
+<pre><code class="language-yaml">apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kafka-app
+spec:
+  # ... other configs
+  resourceCustomizations: |
+    kafka.strimzi.io/KafkaTopic:
+      health.lua: |
+        health_status = {}
+        if obj.spec == nil then
+          health_status.status = &quot;Degraded&quot;
+          health_status.message = &quot;Missing spec&quot;
+          return health_status
+        end
+
+        if obj.status == nil then
+          health_status.status = &quot;Progressing&quot;
+          health_status.message = &quot;Waiting for status&quot;
+          return health_status
+        end
+
+        -- Check if partitions match desired count
+        if obj.spec.partitions ~= obj.status.partitions then
+          health_status.status = &quot;Progressing&quot;
+          health_status.message = &quot;Partition count doesn't match desired state&quot;
+          return health_status
+        end
+
+        -- Check if replication factor is correct
+        if obj.spec.replicas ~= obj.status.replicas then
+          health_status.status = &quot;Degraded&quot;
+          health_status.message = &quot;Replication factor doesn't match desired state&quot;
+          return health_status
+        end
+
+        health_status.status = &quot;Healthy&quot;
+        health_status.message = &quot;Topic is healthy&quot;
+        return health_status
+</code></pre>
+<h4 id="example-2-database-custom-resource-health-check">Example 2: Database Custom Resource Health Check</h4>
+<p>For a custom database resource that reports detailed status:</p>
+<pre><code class="language-yaml">resourceCustomizations: |
+  databases.example.com/PostgreSQL:
+    health.lua: |
+      health_status = {}
+
+      if obj.status == nil then
+        health_status.status = &quot;Progressing&quot;
+        health_status.message = &quot;Status not reported yet&quot;
+        return health_status
+      end
+
+      -- Check database status conditions
+      if obj.status.conditions ~= nil then
+        for i, condition in ipairs(obj.status.conditions) do
+          if condition.type == &quot;Ready&quot; and condition.status == &quot;False&quot; then
+            health_status.status = &quot;Degraded&quot;
+            health_status.message = condition.message or &quot;Database not ready&quot;
+            return health_status
+          end
+
+          if condition.type == &quot;Syncing&quot; and condition.status == &quot;True&quot; then
+            health_status.status = &quot;Progressing&quot;
+            health_status.message = &quot;Database is syncing&quot;
+            return health_status
+          end
+        end
+      end
+
+      -- Check specific database metrics
+      if obj.status.metrics ~= nil then
+        if obj.status.metrics.connectionCount &gt; 100 then
+          health_status.status = &quot;Degraded&quot;
+          health_status.message = &quot;Too many connections: &quot; .. obj.status.metrics.connectionCount
+          return health_status
+        end
+
+        if obj.status.metrics.replicationLag &gt; 300 then
+          health_status.status = &quot;Degraded&quot;
+          health_status.message = &quot;Replication lag too high: &quot; .. obj.status.metrics.replicationLag .. &quot; seconds&quot;
+          return health_status
+        end
+      end
+
+      -- Check database instance state
+      if obj.status.phase == &quot;Running&quot; and obj.status.databaseInitialized == true then
+        health_status.status = &quot;Healthy&quot;
+        health_status.message = &quot;Database is running normally&quot;
+      elseif obj.status.phase == &quot;Creating&quot; then
+        health_status.status = &quot;Progressing&quot;
+        health_status.message = &quot;Database is being created&quot;
+      else
+        health_status.status = &quot;Degraded&quot;
+        health_status.message = &quot;Database in unexpected state: &quot; .. (obj.status.phase or &quot;Unknown&quot;)
+      end
+
+      return health_status
+</code></pre>
+<h4 id="example-3-custom-service-mesh-health-check">Example 3: Custom Service Mesh Health Check</h4>
+<p>For an Istio VirtualService with advanced health criteria:</p>
+<pre><code class="language-yaml">resourceCustomizations: |
+  networking.istio.io/VirtualService:
+    health.lua: |
+      health_status = {}
+
+      -- Check if the virtual service has hosts defined
+      if obj.spec.hosts == nil or #obj.spec.hosts == 0 then
+        health_status.status = &quot;Degraded&quot;
+        health_status.message = &quot;No hosts defined&quot;
+        return health_status
+      end
+
+      -- Check if routes are defined
+      if obj.spec.http == nil or #obj.spec.http == 0 then
+        health_status.status = &quot;Degraded&quot;
+        health_status.message = &quot;No HTTP routes defined&quot;
+        return health_status
+      end
+
+      -- Check for specific traffic routing issues
+      local totalWeight = 0
+      local hasRoutes = false
+
+      for _, route in ipairs(obj.spec.http) do
+        if route.route ~= nil then
+          hasRoutes = true
+          for _, destination in ipairs(route.route) do
+            if destination.weight ~= nil then
+              totalWeight = totalWeight + destination.weight
+            end
+          end
+
+          -- If using weighted routing, weights should add up to 100
+          if totalWeight &gt; 0 and totalWeight ~= 100 then
+            health_status.status = &quot;Degraded&quot;
+            health_status.message = &quot;Route weights do not sum to 100: &quot; .. totalWeight
+            return health_status
+          end
+        end
+      end
+
+      if not hasRoutes then
+        health_status.status = &quot;Degraded&quot;
+        health_status.message = &quot;No destinations defined in routes&quot;
+        return health_status
+      end
+
+      -- Check if service references exist in the cluster (requires custom status field)
+      if obj.status ~= nil and obj.status.validationErrors ~= nil and #obj.status.validationErrors &gt; 0 then
+        health_status.status = &quot;Degraded&quot;
+        health_status.message = &quot;Validation errors: &quot; .. obj.status.validationErrors[1]
+        return health_status
+      end
+
+      health_status.status = &quot;Healthy&quot;
+      health_status.message = &quot;VirtualService configuration is valid&quot;
+      return health_status
+</code></pre>
+<h3 id="why-custom-health-checks-matter">Why Custom Health Checks Matter</h3>
+<p>The default health checks in ArgoCD are basic and only look at standard Kubernetes resource states. Custom health checks provide several key advantages:</p>
+<ol>
+<li><strong>Business Logic Awareness</strong>: They can check application-specific health criteria that generic checks can't understand</li>
+<li><strong>Deep Integration</strong>: They can interpret custom resource status fields that only make sense for specific applications</li>
+<li><strong>Advanced Validation</strong>: They can implement complex validation logic that goes beyond "exists/doesn't exist"</li>
+<li><strong>Predictive Health</strong>: They can detect conditions that might lead to failures before they happen</li>
+<li><strong>Multi-resource Health</strong>: They can aggregate health status across related resources</li>
+</ol>
+<p>Without custom health checks, ArgoCD might show a resource as "Healthy" even when it's not functioning correctly from an application perspective. These custom checks bridge the gap between Kubernetes state and actual application health.</p>
+<h3 id="health-check-best-practices">Health Check Best Practices</h3>
+<h4 id="1-comprehensive-checks">1. <strong>Comprehensive Checks</strong></h4>
+<ul>
+<li>Verify all critical dependencies</li>
+<li>Check both internal and external endpoints</li>
+<li>Monitor resource utilization</li>
+</ul>
+<h4 id="2-performance-considerations">2. <strong>Performance Considerations</strong></h4>
+<ul>
+<li>Keep checks lightweight</li>
+<li>Implement appropriate timeouts</li>
+<li>Cache results when possible</li>
+</ul>
+<h4 id="3-error-handling">3. <strong>Error Handling</strong></h4>
+<ul>
+<li>Define clear failure conditions</li>
+<li>Implement graceful degradation</li>
+<li>Provide detailed health status messages</li>
+</ul>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../../argo_experiments_analysis/" class="btn btn-neutral float-left" title="Lab K609 - Experiments and Analysis"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../argo_resource_lifecycle/" class="btn btn-neutral float-right" title="ArgoCD Resource Lifecycle Management">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+      <p>Copyright @ 2017-2020 Gourav Shah, School of Devops. Some rights reserved. License CC BY-NC-SA</p>
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../../argo_experiments_analysis/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../argo_resource_lifecycle/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

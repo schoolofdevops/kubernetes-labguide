@@ -411,7 +411,17 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>http://kubernetes-tutorial.schoolofdevops.com/articles/argo_adv_sync_strategies/</loc>
+         <lastmod>2025-02-24</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/articles/argo_prune_propogation_policy/</loc>
+         <lastmod>2025-02-24</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>http://kubernetes-tutorial.schoolofdevops.com/articles/argo_resource_lifecycle/</loc>
          <lastmod>2025-02-24</lastmod>
          <changefreq>daily</changefreq>
     </url>
@@ -422,6 +432,11 @@
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/articles/argo_serversideapply/</loc>
+         <lastmod>2025-02-24</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>http://kubernetes-tutorial.schoolofdevops.com/articles/argo_sync_options/</loc>
          <lastmod>2025-02-24</lastmod>
          <changefreq>daily</changefreq>
     </url>

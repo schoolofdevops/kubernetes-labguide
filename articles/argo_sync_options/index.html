@@ -3,18 +3,18 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/istio/traffic-management/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/articles/argo_sync_options/" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>Traffic Management - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <title>ArgoCD Sync Options - Kubernetes Tutorial with CKA/CKAD Prep</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Traffic Management";
-        var mkdocs_page_input_path = "istio/traffic-management.md";
-        var mkdocs_page_url = "/istio/traffic-management/";
+        var mkdocs_page_name = "ArgoCD Sync Options";
+        var mkdocs_page_input_path = "articles/argo_sync_options.md";
+        var mkdocs_page_url = "/articles/argo_sync_options/";
       </script>
     
     <!--[if lt IE 9]>
@@ -193,18 +193,92 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Argo Articles</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../articles/argo_adv_sync_strategies/">ArgoCD Advanced Sync Strategies</a>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_adv_sync_strategies/">ArgoCD Advanced Sync Strategies</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../articles/argo_resource_lifecycle/">ArgoCD Resource Lifecycle Management</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_resource_lifecycle/">ArgoCD Resource Lifecycle Management</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../articles/argo_sync_options/">ArgoCD Sync Options</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">ArgoCD Sync Options</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#sync-policy-automatic-vs-manual">Sync Policy: Automatic vs Manual</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#automatic-sync">Automatic Sync</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#prune-resources">PRUNE RESOURCES</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#self-heal">SELF HEAL</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#set-deletion-finalizer">SET DELETION FINALIZER</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#sync-options">Sync Options</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#skip-schema-validation">SKIP SCHEMA VALIDATION</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#prune-last">PRUNE LAST</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#respect-ignore-differences">RESPECT IGNORE DIFFERENCES</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#auto-create-namespace">AUTO-CREATE NAMESPACE</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#apply-out-of-sync-only">APPLY OUT OF SYNC ONLY</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#server-side-apply">SERVER-SIDE APPLY</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#prune-propagation-policy">PRUNE PROPAGATION POLICY</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#replace">REPLACE</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#retry">RETRY</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#best-practices">Best Practices</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#production-environments">Production Environments</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#development-environments">Development Environments</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#performance-optimization">Performance Optimization</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#common-scenarios-and-solutions">Common Scenarios and Solutions</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#scenario-1-stateful-application">Scenario 1: Stateful Application</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#scenario-2-high-scale-environment">Scenario 2: High-Scale Environment</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#scenario-3-critical-production-service">Scenario 3: Critical Production Service</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#troubleshooting-guide">Troubleshooting Guide</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#common-issues-and-solutions">Common Issues and Solutions</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#1-resources-not-pruning">1. Resources Not Pruning</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#2-sync-failures">2. Sync Failures</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#3-performance-issues">3. Performance Issues</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#4-namespace-issues">4. Namespace Issues</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    </ul>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../articles/argo_serversideapply/">ArgoCD - Server Side Apply</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_serversideapply/">ArgoCD - Server Side Apply</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../articles/argo_retry_options/">ArgoCD - RETRY Options</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_retry_options/">ArgoCD - RETRY Options</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../articles/argo_prune_propogation_policy/">ArgoCD - Prune Propogation Policy</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_prune_propogation_policy/">ArgoCD - Prune Propogation Policy</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../gha_code_explain/">GitHub Actions Code Explainer</a>
                   </li>
@@ -267,9 +341,10 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" aria-label="Docs"></a> &raquo;</li>
-      <li class="breadcrumb-item active">Traffic Management</li>
+          <li>Argo Articles &raquo;</li>
+      <li class="breadcrumb-item active">ArgoCD Sync Options</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/istio/traffic-management.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/articles/argo_sync_options.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -277,43 +352,288 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="traffic-management">Traffic Management</h1>
-<p>===&gt; [ Gateway ] ==&gt; Virtual ==&gt; Destination ==&gt; Pods
-        L4-L6        Service     Rules</p>
-<h2 id="virtual-services">Virtual Services</h2>
+                <h1 id="argocd-sync-policies-and-options">ArgoCD Sync Policies and Options</h1>
+<h2 id="sync-policy-automatic-vs-manual">Sync Policy: Automatic vs Manual</h2>
+<h3 id="automatic-sync">Automatic Sync</h3>
+<p>Automatic sync enables continuous deployment by automatically keeping the cluster state in sync with the Git repository.</p>
+<pre><code class="language-yaml">apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: my-app
+spec:
+  syncPolicy:
+    automated: {}  # Basic automatic sync
+    # or with additional options:
+    automated:
+      prune: true     # Auto-delete resources
+      selfHeal: true  # Auto-sync on drift detection
+</code></pre>
+<h4 id="prune-resources">PRUNE RESOURCES</h4>
 <ul>
-<li>decouples client requests from actual workloads at destination</li>
-<li>allows you to define traffic routing rules</li>
-<li>without virtual service, envoy would just use round robin method</li>
-<li>Enables A/B testing, Canary</li>
-<li>Advanced rules e.g. user 'x' routes to version v1</li>
-<li>Service subsets are defined with destination rules</li>
-<li>One virtual service can route to multiple kubernetes services e.g. rating/ productpage/ rules are defined in same virtual service.</li>
-<li>works with gateway for front facing apps which need ingress/egress rules.</li>
+<li>Enables automatic deletion of resources that are no longer defined in Git</li>
+<li><strong>Warning</strong>: Use carefully with stateful applications</li>
+<li>Common use cases:</li>
+<li>Cleaning up deprecated resources</li>
+<li>Maintaining environment consistency</li>
+<li>Preventing resource sprawl</li>
 </ul>
-<h2 id="destination-rules">Destination Rules</h2>
+<h4 id="self-heal">SELF HEAL</h4>
 <ul>
-<li>Subsets</li>
-<li>Load Balancing Algorithms<ul>
-<li>Round Robin (default)</li>
-<li>Random</li>
-<li>Weighted</li>
-<li>Least Requests</li>
+<li>Automatically syncs when drift is detected between Git and cluster state</li>
+<li>Useful for:</li>
+<li>Preventing manual cluster changes</li>
+<li>Maintaining GitOps compliance</li>
+<li>Recovering from failed manual interventions</li>
+</ul>
+<h3 id="set-deletion-finalizer">SET DELETION FINALIZER</h3>
+<pre><code class="language-yaml">spec:
+  syncPolicy:
+    finalizers:
+    - resources-finalizer.argocd.argoproj.io
+</code></pre>
+<ul>
+<li>Ensures proper cleanup of application resources</li>
+<li>Prevents orphaned resources during application deletion</li>
+<li>Important for:</li>
+<li>Stateful applications</li>
+<li>Resources with dependencies</li>
+<li>Complex multi-resource applications</li>
+</ul>
+<h2 id="sync-options">Sync Options</h2>
+<h3 id="skip-schema-validation">SKIP SCHEMA VALIDATION</h3>
+<pre><code class="language-yaml">spec:
+  syncPolicy:
+    syncOptions:
+    - Validate=false
+</code></pre>
+<ul>
+<li>Bypasses Kubernetes schema validation</li>
+<li>Use cases:</li>
+<li>Custom Resources without registered CRDs</li>
+<li>Legacy applications</li>
+<li>Development/testing scenarios</li>
+<li><strong>Warning</strong>: Can lead to invalid resource states</li>
+</ul>
+<h3 id="prune-last">PRUNE LAST</h3>
+<pre><code class="language-yaml">spec:
+  syncPolicy:
+    syncOptions:
+    - PruneLast=true
+</code></pre>
+<ul>
+<li>Deletes resources only after all other sync operations complete</li>
+<li>Crucial for:</li>
+<li>Database migrations</li>
+<li>Stateful application updates</li>
+<li>Complex dependency chains</li>
+</ul>
+<h3 id="respect-ignore-differences">RESPECT IGNORE DIFFERENCES</h3>
+<pre><code class="language-yaml">spec:
+  syncPolicy:
+    syncOptions:
+    - RespectIgnoreDifferences=true
+</code></pre>
+<ul>
+<li>Honors the ignoreDifferences configuration</li>
+<li>Useful for:</li>
+<li>Fields managed by controllers</li>
+<li>Dynamic or auto-generated values</li>
+<li>Status fields</li>
+</ul>
+<h3 id="auto-create-namespace">AUTO-CREATE NAMESPACE</h3>
+<pre><code class="language-yaml">spec:
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+</code></pre>
+<ul>
+<li>Automatically creates target namespace if it doesn't exist</li>
+<li>Benefits:</li>
+<li>Simplified application deployment</li>
+<li>Self-contained application definitions</li>
+<li>Reduced manual setup</li>
+</ul>
+<h3 id="apply-out-of-sync-only">APPLY OUT OF SYNC ONLY</h3>
+<pre><code class="language-yaml">spec:
+  syncPolicy:
+    syncOptions:
+    - ApplyOutOfSyncOnly=true
+</code></pre>
+<ul>
+<li>Only syncs resources that differ from desired state</li>
+<li>Advantages:</li>
+<li>Reduced API server load</li>
+<li>Faster sync operations</li>
+<li>Minimized disruption</li>
+</ul>
+<h3 id="server-side-apply">SERVER-SIDE APPLY</h3>
+<pre><code class="language-yaml">spec:
+  syncPolicy:
+    syncOptions:
+    - ServerSideApply=true
+</code></pre>
+<ul>
+<li>Uses server-side apply instead of client-side</li>
+<li>Benefits:</li>
+<li>Better conflict resolution</li>
+<li>More accurate field ownership</li>
+<li>Improved performance for large resources</li>
+</ul>
+<h3 id="prune-propagation-policy">PRUNE PROPAGATION POLICY</h3>
+<pre><code class="language-yaml">spec:
+  syncPolicy:
+    syncOptions:
+    - PrunePropagationPolicy=foreground
+</code></pre>
+<p>Options:
+- <code>foreground</code>: Cascading deletion, waits for dependents
+- <code>background</code>: Async deletion of dependents
+- <code>orphan</code>: Leaves dependent resources untouched</p>
+<p>Use cases:
+- <code>foreground</code>: Most applications (safe default)
+- <code>background</code>: Large applications with many dependents
+- <code>orphan</code>: Preserving shared resources</p>
+<h3 id="replace">REPLACE</h3>
+<pre><code class="language-yaml">spec:
+  syncPolicy:
+    syncOptions:
+    - Replace=true
+</code></pre>
+<ul>
+<li>Forces complete resource replacement instead of patching</li>
+<li>Important for:</li>
+<li>Breaking out of invalid states</li>
+<li>Complete resource recreation</li>
+<li><strong>Warning</strong>: Can cause downtime</li>
+</ul>
+<h3 id="retry">RETRY</h3>
+<pre><code class="language-yaml">spec:
+  syncPolicy:
+    syncOptions:
+    - Retry=true
+</code></pre>
+<ul>
+<li>Automatically retries failed sync operations</li>
+<li>Configurable with:</li>
+<li><code>retry.limit</code>: Maximum retry attempts</li>
+<li><code>retry.backoff.duration</code>: Time between retries</li>
+<li><code>retry.backoff.factor</code>: Exponential backoff factor</li>
+<li><code>retry.backoff.maxDuration</code>: Maximum backoff duration</li>
+</ul>
+<h2 id="best-practices">Best Practices</h2>
+<h3 id="production-environments">Production Environments</h3>
+<ol>
+<li>
+<p>Use selective automation:
+   <code>yaml
+   spec:
+     syncPolicy:
+       automated:
+         prune: false     # Prevent automatic deletion
+         selfHeal: true   # Allow drift correction</code></p>
+</li>
+<li>
+<p>Implement safe deletion:
+   ```yaml
+   spec:
+     syncPolicy:
+       syncOptions:</p>
+<ul>
+<li>PruneLast=true</li>
+<li>PrunePropagationPolicy=foreground
+   ```</li>
 </ul>
 </li>
+</ol>
+<h3 id="development-environments">Development Environments</h3>
+<ol>
+<li>Enable full automation:
+   ```yaml
+   spec:
+     syncPolicy:
+       automated:
+         prune: true
+         selfHeal: true
+       syncOptions:<ul>
+<li>CreateNamespace=true
+   ```</li>
 </ul>
-<h2 id="gateways">Gateways</h2>
+</li>
+</ol>
+<h3 id="performance-optimization">Performance Optimization</h3>
+<ol>
+<li>Selective sync:
+   ```yaml
+   spec:
+     syncPolicy:
+       syncOptions:<ul>
+<li>ApplyOutOfSyncOnly=true</li>
+<li>ServerSideApply=true
+   ```</li>
+</ul>
+</li>
+</ol>
+<h2 id="common-scenarios-and-solutions">Common Scenarios and Solutions</h2>
+<h3 id="scenario-1-stateful-application">Scenario 1: Stateful Application</h3>
+<pre><code class="language-yaml">spec:
+  syncPolicy:
+    automated:
+      prune: false
+    syncOptions:
+    - PrunePropagationPolicy=orphan
+    - RespectIgnoreDifferences=true
+</code></pre>
+<h3 id="scenario-2-high-scale-environment">Scenario 2: High-Scale Environment</h3>
+<pre><code class="language-yaml">spec:
+  syncPolicy:
+    syncOptions:
+    - ServerSideApply=true
+    - ApplyOutOfSyncOnly=true
+    - PrunePropagationPolicy=background
+</code></pre>
+<h3 id="scenario-3-critical-production-service">Scenario 3: Critical Production Service</h3>
+<pre><code class="language-yaml">spec:
+  syncPolicy:
+    automated:
+      selfHeal: true
+    syncOptions:
+    - Validate=true
+    - PruneLast=true
+    - Retry=true
+</code></pre>
+<h2 id="troubleshooting-guide">Troubleshooting Guide</h2>
+<h3 id="common-issues-and-solutions">Common Issues and Solutions</h3>
+<h4 id="1-resources-not-pruning">1. <strong>Resources Not Pruning</strong></h4>
 <ul>
-<li>Similar to ingress controller</li>
-<li>Sits at the edge</li>
-<li>Gateway rules are applied to envoy proxy sidecars  at the edge, not application sidecars</li>
-<li>Similar to k8s ingress, but handles only L4-L6 (e.g. ports, tls) and sends to Virtual Service for test.</li>
-<li>Default is ingress gateway</li>
-<li>Egress gateway is opt in. Allow you to route outgoing traffic through specific hosts</li>
+<li>Check prune policy configuration  </li>
+<li>Verify finalizer presence  </li>
+<li>Review propagation policy  </li>
+</ul>
+<h4 id="2-sync-failures">2. <strong>Sync Failures</strong></h4>
+<ul>
+<li>Enable retry mechanism  </li>
+<li>Check schema validation  </li>
+<li>Review server-side apply conflicts  </li>
+</ul>
+<h4 id="3-performance-issues">3. <strong>Performance Issues</strong></h4>
+<ul>
+<li>Enable ApplyOutOfSyncOnly  </li>
+<li>Use ServerSideApply  </li>
+<li>Review resource batch size  </li>
+</ul>
+<h4 id="4-namespace-issues">4. <strong>Namespace Issues</strong></h4>
+<ul>
+<li>Enable auto-create namespace  </li>
+<li>Check RBAC permissions  </li>
+<li>Verify namespace exists in cluster  </li>
 </ul>
               
             </div>
           </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../argo_resource_lifecycle/" class="btn btn-neutral float-left" title="ArgoCD Resource Lifecycle Management"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../argo_serversideapply/" class="btn btn-neutral float-right" title="ArgoCD - Server Side Apply">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
 
   <hr/>
 
@@ -340,6 +660,10 @@
         </span>
     
     
+      <span><a href="../argo_resource_lifecycle/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../argo_serversideapply/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

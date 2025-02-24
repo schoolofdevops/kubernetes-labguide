@@ -194,25 +194,47 @@
               </ul>
               <p class="caption"><span class="caption-text">Argo Articles</span></p>
               <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_adv_sync_strategies/">ArgoCD Advanced Sync Strategies</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_resource_lifecycle/">ArgoCD Resource Lifecycle Management</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_sync_options/">ArgoCD Sync Options</a>
+                  </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="./">ArgoCD - Server Side Apply</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#client-side-apply-vs-server-side-apply">Client-Side Apply vs. Server-Side Apply</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#client-side-apply-off">Client-Side Apply (OFF)</a>
+    <li class="toctree-l2"><a class="reference internal" href="#client-side-apply-server-side-apply-off">Client-Side Apply (SERVER-SIDE Apply = OFF)</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#server-side-apply-on">Server-Side Apply (ON)</a>
+    <li class="toctree-l2"><a class="reference internal" href="#server-side-apply-on">SERVER-SIDE Apply = ON</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#analogy-updating-a-document">Analogy: Updating a Document</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#detailed-example">Detailed Example</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#example-deployment-resource">Example Deployment Resource</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#client-side-apply-approach">Client-Side Apply Approach</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#team-a-updates-the-image-version">Team A Updates the Image Version</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#team-b-updates-resources-and-environment-variables">Team B Updates Resources and Environment Variables</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#the-problem-with-client-side-apply">The Problem with Client-Side Apply</a>
     </li>
         </ul>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#real-life-example">Real-Life Example</a>
+    <li class="toctree-l3"><a class="reference internal" href="#server-side-apply-approach">Server-Side Apply Approach</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#team-a-updates-using-server-side-apply">Team A Updates Using Server-Side Apply</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#scenario-with-client-side-apply-off">Scenario with Client-Side Apply (OFF)</a>
+    <li class="toctree-l4"><a class="reference internal" href="#team-b-updates-using-server-side-apply">Team B Updates Using Server-Side Apply</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#scenario-with-server-side-apply-on">Scenario with Server-Side Apply (ON)</a>
+    <li class="toctree-l4"><a class="reference internal" href="#the-result-with-server-side-apply">The Result with Server-Side Apply</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#how-to-configure-in-argocd">How to Configure in ArgoCD</a>
+        </ul>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#analogy-updating-a-document">Analogy: Updating a Document</a>
+    <li class="toctree-l3"><a class="reference internal" href="#how-this-works-with-argocd">How This Works with ArgoCD</a>
+    </li>
+        </ul>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#conclusion">Conclusion</a>
     </li>
@@ -296,8 +318,7 @@
               
                 <h1 id="server-side-apply-option-with-argocd">Server Side Apply Option with ArgoCD</h1>
 <p>The "Server-Side Apply" option in ArgoCD changes how resource updates are applied to the Kubernetes cluster. Let's break down what this means in simple terms.</p>
-<h3 id="client-side-apply-vs-server-side-apply">Client-Side Apply vs. Server-Side Apply</h3>
-<h4 id="client-side-apply-off">Client-Side Apply (OFF)</h4>
+<h2 id="client-side-apply-server-side-apply-off">Client-Side Apply (SERVER-SIDE Apply = OFF)</h2>
 <ul>
 <li><strong>Default Behavior</strong>: This is the standard method used by <code>kubectl apply</code>.</li>
 <li><strong>How It Works</strong>:</li>
@@ -310,7 +331,7 @@
 <li>Can lead to conflicts if multiple clients are updating the same resource because it replaces the entire configuration.</li>
 </ul>
 <p>⠀</p>
-<h4 id="server-side-apply-on">Server-Side Apply (ON)</h4>
+<h2 id="server-side-apply-on">SERVER-SIDE Apply = ON</h2>
 <ul>
 <li><strong>Advanced Behavior</strong>: This is a more sophisticated approach that Kubernetes provides.</li>
 <li><strong>How It Works</strong>:</li>
@@ -325,54 +346,7 @@
 <li>Slightly more complex to understand and implement.</li>
 <li>Requires Kubernetes 1.18 or later.</li>
 </ul>
-<p>⠀</p>
-<h3 id="real-life-example">Real-Life Example</h3>
-<p>Imagine you have a Deployment managed by multiple teams:</p>
-<ol>
-<li><strong>Team A</strong>: Manages the container image and replicas.</li>
-<li><strong>Team B</strong>: Manages the resource limits and environment variables.</li>
-</ol>
-<p>⠀</p>
-<h3 id="scenario-with-client-side-apply-off">Scenario with Client-Side Apply (OFF)</h3>
-<ul>
-<li><strong>Team A</strong>: Updates the container image and applies the change.</li>
-<li>Command: <code>kubectl apply -f deployment.yaml</code></li>
-<li><strong>Team B</strong>: Updates the resource limits and applies the change.</li>
-<li>Command: <code>kubectl apply -f deployment.yaml</code></li>
-<li><strong>Potential Conflict</strong>: If Team B's <code>deployment.yaml</code> doesn't include the latest image changes from Team A, applying it will overwrite Team A's changes.</li>
-</ul>
-<p>⠀</p>
-<h3 id="scenario-with-server-side-apply-on">Scenario with Server-Side Apply (ON)</h3>
-<ul>
-<li><strong>Team A</strong>: Updates the container image and applies the change using server-side apply.</li>
-<li>Command: <code>kubectl apply --server-side -f deployment.yaml</code></li>
-<li><strong>Team B</strong>: Updates the resource limits and applies the change using server-side apply.</li>
-<li>Command: <code>kubectl apply --server-side -f deployment.yaml</code></li>
-<li><strong>No Conflict</strong>: The server merges the changes, ensuring both the new image from Team A and the new resource limits from Team B are applied.</li>
-</ul>
-<p>⠀</p>
-<h3 id="how-to-configure-in-argocd">How to Configure in ArgoCD</h3>
-<p>You can enable Server-Side Apply in ArgoCD by setting the <code>Server-Side Apply</code> option to ON.</p>
-<pre><code>yamlCopy codeapiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: my-application
-spec:
-  project: default
-  source:
-    repoURL: https://github.com/my-repo.git
-    path: manifests
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: default
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-    - Server-Side Apply=true
-</code></pre>
-<h3 id="analogy-updating-a-document">Analogy: Updating a Document</h3>
+<h2 id="analogy-updating-a-document">Analogy: Updating a Document</h2>
 <p>Consider a shared document managed by multiple editors:</p>
 <ul>
 <li>
@@ -392,14 +366,200 @@ spec:
 <li>The server merges these changes into the existing document.</li>
 <li>Changes from different editors are combined smoothly.</li>
 </ul>
+<h2 id="detailed-example">Detailed Example</h2>
+<p>Let's use a deployment example to illustrate how Team A (responsible for container images and replicas) and Team B (responsible for resource limits and environment variables) would work with both approaches.</p>
+<h3 id="example-deployment-resource">Example Deployment Resource</h3>
+<p>First, let's look at the complete deployment:</p>
+<pre><code class="language-yaml">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-application
+  namespace: production
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+      - name: web
+        image: company/web-app:v1.2.3
+        ports:
+        - containerPort: 8080
+        env:
+        - name: LOG_LEVEL
+          value: &quot;info&quot;
+        - name: API_ENDPOINT
+          value: &quot;https://api.example.com&quot;
+        resources:
+          limits:
+            cpu: &quot;500m&quot;
+            memory: &quot;512Mi&quot;
+          requests:
+            cpu: &quot;200m&quot;
+            memory: &quot;256Mi&quot;
+</code></pre>
+<h3 id="client-side-apply-approach">Client-Side Apply Approach</h3>
+<p>With client-side apply (the traditional approach), each team would need to maintain and apply the entire YAML file.</p>
+<h4 id="team-a-updates-the-image-version">Team A Updates the Image Version</h4>
+<p>Team A updates the image from v1.2.3 to v1.3.0 and changes replicas from 3 to 5:</p>
+<pre><code class="language-yaml">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-application
+  namespace: production
+spec:
+  replicas: 5  # Changed from 3 to 5
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+      - name: web
+        image: company/web-app:v1.3.0  # Changed from v1.2.3 to v1.3.0
+        ports:
+        - containerPort: 8080
+        env:
+        - name: LOG_LEVEL
+          value: &quot;info&quot;
+        - name: API_ENDPOINT
+          value: &quot;https://api.example.com&quot;
+        resources:
+          limits:
+            cpu: &quot;500m&quot;
+            memory: &quot;512Mi&quot;
+          requests:
+            cpu: &quot;200m&quot;
+            memory: &quot;256Mi&quot;
+</code></pre>
+<p>They apply this with: <code>kubectl apply -f deployment-team-a.yaml</code></p>
+<h4 id="team-b-updates-resources-and-environment-variables">Team B Updates Resources and Environment Variables</h4>
+<p>Meanwhile, Team B wants to update resource requests and add a new environment variable:</p>
+<pre><code class="language-yaml">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-application
+  namespace: production
+spec:
+  replicas: 3  # Team B might still have the old value
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+      - name: web
+        image: company/web-app:v1.2.3  # Team B might still have the old version
+        ports:
+        - containerPort: 8080
+        env:
+        - name: LOG_LEVEL
+          value: &quot;debug&quot;  # Changed from info to debug
+        - name: API_ENDPOINT
+          value: &quot;https://api.example.com&quot;
+        - name: FEATURE_FLAG_ENABLED  # New environment variable
+          value: &quot;true&quot;
+        resources:
+          limits:
+            cpu: &quot;800m&quot;  # Increased from 500m
+            memory: &quot;1Gi&quot;  # Increased from 512Mi
+          requests:
+            cpu: &quot;300m&quot;  # Increased from 200m
+            memory: &quot;512Mi&quot;  # Increased from 256Mi
+</code></pre>
+<p>They apply this with: <code>kubectl apply -f deployment-team-b.yaml</code></p>
+<h4 id="the-problem-with-client-side-apply">The Problem with Client-Side Apply</h4>
+<p>If Team B applies their changes after Team A, they will <strong>overwrite</strong> Team A's changes:
+- The image would revert to v1.2.3
+- The replicas would revert to 3</p>
+<p>This is because client-side apply replaces the entire resource with the version provided by the last team to apply changes.</p>
+<h3 id="server-side-apply-approach">Server-Side Apply Approach</h3>
+<p>With server-side apply, each team only needs to specify the fields they care about.</p>
+<h4 id="team-a-updates-using-server-side-apply">Team A Updates Using Server-Side Apply</h4>
+<p>Team A's patch file (<code>team-a-patch.yaml</code>):</p>
+<pre><code class="language-yaml">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-application
+  namespace: production
+spec:
+  replicas: 5
+  template:
+    spec:
+      containers:
+      - name: web
+        image: company/web-app:v1.3.0
+</code></pre>
+<p>They apply this with: <code>kubectl apply -f team-a-patch.yaml --server-side</code></p>
+<h4 id="team-b-updates-using-server-side-apply">Team B Updates Using Server-Side Apply</h4>
+<p>Team B's patch file (<code>team-b-patch.yaml</code>):</p>
+<pre><code class="language-yaml">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-application
+  namespace: production
+spec:
+  template:
+    spec:
+      containers:
+      - name: web
+        env:
+        - name: LOG_LEVEL
+          value: &quot;debug&quot;
+        - name: API_ENDPOINT
+          value: &quot;https://api.example.com&quot;
+        - name: FEATURE_FLAG_ENABLED
+          value: &quot;true&quot;
+        resources:
+          limits:
+            cpu: &quot;800m&quot;
+            memory: &quot;1Gi&quot;
+          requests:
+            cpu: &quot;300m&quot;
+            memory: &quot;512Mi&quot;
+</code></pre>
+<p>They apply this with: <code>kubectl apply -f team-b-patch.yaml --server-side</code></p>
+<h4 id="the-result-with-server-side-apply">The Result with Server-Side Apply</h4>
+<p>The resulting deployment will include <strong>both teams' changes</strong>:</p>
+<ul>
+<li>Image: company/web-app:v1.3.0 (from Team A)  </li>
+<li>Replicas: 5 (from Team A)  </li>
+<li>Resource limits/requests: increased values (from Team B)  </li>
+<li>Environment variables: updated and new variables (from Team B)  </li>
+</ul>
+<p>Server-side apply maintains "field ownership" - each client (team) owns the fields they've applied, and those fields won't be overwritten by other clients unless they explicitly claim ownership of those fields.</p>
+<h3 id="how-this-works-with-argocd">How This Works with ArgoCD</h3>
+<p>When you enable "Server-Side Apply" in ArgoCD:</p>
+<ol>
+<li>ArgoCD acts as a client that applies changes with the server-side approach</li>
+<li>It preserves field ownership for different teams or components</li>
+<li>It submits only the fields defined in your Git repo for the application</li>
+<li>Other controllers or teams can own other fields without conflicts</li>
+</ol>
+<p>This is particularly useful in environments where:
+- Multiple controllers manage different aspects of resources
+- You have operators that manage custom resources
+- Different teams use different GitOps repositories to manage parts of the same applications</p>
+<p>The resulting deployment combines all changes correctly without unexpected overwrites, making it more suitable for complex enterprise environments with multiple teams and automation tools.</p>
 <p>⠀</p>
-<h3 id="conclusion">Conclusion</h3>
+<h2 id="conclusion">Conclusion</h2>
 <p>"Server-Side Apply" is a powerful feature for managing Kubernetes resources, especially in environments where multiple clients or teams update the same resources. It helps reduce conflicts and provides better control over resource updates by merging changes on the server. For most basic use cases, client-side apply is sufficient, but for more complex scenarios involving multiple contributors, server-side apply is highly beneficial.</p>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../../argo_experiments_analysis/" class="btn btn-neutral float-left" title="Lab K609 - Experiments and Analysis"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../argo_sync_options/" class="btn btn-neutral float-left" title="ArgoCD Sync Options"><span class="icon icon-circle-arrow-left"></span> Previous</a>
         <a href="../argo_retry_options/" class="btn btn-neutral float-right" title="ArgoCD - RETRY Options">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
@@ -428,7 +588,7 @@ spec:
         </span>
     
     
-      <span><a href="../../argo_experiments_analysis/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../argo_sync_options/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
       <span><a href="../argo_retry_options/" style="color: #fcfcfc">Next &raquo;</a></span>
