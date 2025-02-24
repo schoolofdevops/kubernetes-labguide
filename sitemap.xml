@@ -221,6 +221,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>http://kubernetes-tutorial.schoolofdevops.com/gha_code_explain/</loc>
+         <lastmod>2025-02-24</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/helm/</loc>
          <lastmod>2025-02-24</lastmod>
          <changefreq>daily</changefreq>

@@ -200,6 +200,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../articles/argo_prune_propogation_policy/">ArgoCD - Prune Propogation Policy</a>
                   </li>
+                  <li class="toctree-l1"><a class="" href="../gha_coode_explainer.md">GitHub Actions Code Explainer</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">Argo Advanced</span></p>
               <ul class="current">
@@ -247,19 +249,11 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../argo_multi_tenant/">Lab K702 - Building Multi-Tenant Deployment System</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../argo_rollout_canary/">Lab K603 - Canary with Argo Rollouts</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_rollout_canary/">Lab K703 - TBA</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../argo_multi_env_deploy/">Lab K604 - ArgoCD</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_multi_env_deploy/">Lab K704 - TBA</a>
                   </li>
-                  <li class="toctree-l1"><a class="" href="../argo_workflow_examples.md">Lab K605 - Argo Workflow Examples</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../argo_workflow_ci/">Lab K606 - CI Pipeline with Argo Workflows</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../argo_events/">Lab K607 - Argo Events</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../argo_iamge_updater/">Lab K608 - Argo Image Updater</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../argo_experiments_analysis/">Lab K609 - Experiments and Analysis</a>
+                  <li class="toctree-l1"><a class="" href="../argo_workflow_examples.md">Lab K705 - TBA</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Exercises</span></p>
@@ -479,8 +473,8 @@ sudo mv ./kubectl-argo-rollouts-darwin-amd64 /usr/local/bin/kubectl-argo-rollout
 <p>Also install Kustomize by following the instructions in <a href="https://kubectl.docs.kubernetes.io/installation/kustomize/">official documentation</a> here.</p>
 <h2 id="setup-ci-pipeline-with-github-actions">Setup CI Pipeline with GitHub Actions</h2>
 <p>Fork the <a href="https://github.com/sfd226/vote">sample repo</a> to get started. </p>
-<p>This repo contains a simple application written in python that allows you to vote, along with Dockerfile,  kubernetes manifests and GitHub Actions workflow to build a Continuous Integration pipeline.</p>
-<p>Create a GitHub Actions workflow pipeline at <code>.github/workflows/ci.yml</code> to setup the CI Process.  Here is a sample code. </p>
+<p>This repo contains a simple application written in python that allows you to vote, along with Dockerfile,  kubernetes manifests. </p>
+<p>To build a Continuous Integration Pipeline, you would add the  and GitHub Actions workflow to this repo. Create a GitHub Actions workflow pipeline at <code>.github/workflows/ci.yml</code> to setup the CI Process.  Here is a sample code. </p>
 <pre><code>#.github/workflows/ci.yml
 name: CI
 
@@ -552,7 +546,7 @@ jobs:
           docker build -t ${{ secrets.DOCKER_USERNAME }}/initcron:$COMMIT_HASH .
           docker push ${{ secrets.DOCKER_USERNAME }}/initcron:$COMMIT_HASH
 </code></pre>
-<p>To build your own CI Pipeline, all you need to do is, fork this repo and add the secret variables in your repository settings so that GitHub Actions can access your DockerHub account.</p>
+<p>To make this work after adding this code,  all you need to do is,  add the secret variables in your repository settings so that GitHub Actions can access your DockerHub account.</p>
 <h3 id="adding-dockerhub-secrets">Adding DockerHub Secrets</h3>
 <p>You need to add DOCKER_USERNAME and DOCKER_PASSWORD as secrets in your GitHub repository settings. Here are the steps to add these secrets:  </p>
 <p>1 Go to your GitHub repository on the web.<br />

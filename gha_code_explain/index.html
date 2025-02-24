@@ -3,18 +3,18 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/configuring_authentication_and_authorization/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/gha_code_explain/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Lab K401 - Creating Users, Groups and Authorization - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <title>GitHub Actions Workflow File Explanation - Kubernetes Tutorial with CKA/CKAD Prep</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Lab K401 - Creating Users, Groups and Authorization";
-        var mkdocs_page_input_path = "configuring_authentication_and_authorization.md";
-        var mkdocs_page_url = "/configuring_authentication_and_authorization/";
+        var mkdocs_page_name = "GitHub Actions Workflow File Explanation";
+        var mkdocs_page_input_path = "gha_code_explain.md";
+        var mkdocs_page_url = "/gha_code_explain/";
       </script>
     
     <!--[if lt IE 9]>
@@ -125,38 +125,10 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Additional Topics</span></p>
-              <ul class="current">
+              <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../install_kubernetes_with_kubeadm/">Lab K400 - Install Kubernetes with Kubeadm</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K401 - Creating Users, Groups and Authorization</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#how-one-can-access-the-kubernetes-api">How one can access the Kubernetes API?</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#who-can-access-the-kubernetes-api">Who can access the Kubernetes API?</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#stages-of-a-request">Stages of a Request</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#api-groups-and-resources">api groups and resources</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#notes">Notes</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#role-based-access-control-rbac">Role Based Access Control (RBAC)</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#creating-kubernetes-users-and-groups">Creating Kubernetes Users and Groups</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#setting-up-user-configs-with-kubectl">Setting up User configs with kubectl</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#define-authorisation-rules-with-roles-and-clusterroles">Define authorisation rules with Roles and ClusterRoles</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#exercise">Exercise</a>
-    </li>
-        </ul>
-    </li>
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../configuring_authentication_and_authorization/">Lab K401 - Creating Users, Groups and Authorization</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../vote-deployement_strategies/">Lab K403 - Building Deployment Strategies</a>
                   </li>
@@ -289,10 +261,9 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a> &raquo;</li>
-          <li>Additional Topics &raquo;</li>
-      <li class="breadcrumb-item active">Lab K401 - Creating Users, Groups and Authorization</li>
+      <li class="breadcrumb-item active">GitHub Actions Workflow File Explanation</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/configuring_authentication_and_authorization.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/gha_code_explain.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -300,351 +271,297 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="lab-k202-kubernetes-access-control-authentication-and-authorization">Lab K202 - Kubernetes Access Control:  Authentication and Authorization</h1>
-<p>In  this lab you are going to,</p>
+                <h1 id="github-actions-workflow-file-explanation">GitHub Actions Workflow File Explanation</h1>
+<p>Here is the GHA workflow code </p>
+<pre><code>#.github/workflows/ci.yml
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'Dockerfile'
+      - 'Jenkinsfile'
+      - 'chart/**'
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - 'Dockerfile'
+      - 'Jenkinsfile'
+      - 'chart/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+  unit-test:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run tests
+        run: nose2
+
+  image-bp:
+    runs-on: ubuntu-latest
+    needs: unit-test
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Log in to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push Docker image
+        run: |
+          COMMIT_HASH=$(echo ${{ github.sha }} | cut -c1-7)
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/initcron:$COMMIT_HASH .
+          docker push ${{ secrets.DOCKER_USERNAME }}/initcron:$COMMIT_HASH
+</code></pre>
+<p>This GitHub Actions workflow file defines a Continuous Integration (CI) pipeline that runs on pushes and pull requests targeting the main branch, with three main jobs: building the environment, running unit tests, and building &amp; pushing a Docker image. Here’s a detailed, step-by-step explanation:</p>
+<hr />
+<h3 id="1-workflow-trigger-and-naming">1. Workflow Trigger and Naming</h3>
 <ul>
-<li>Create users and groups and setup certs based authentication</li>
-<li>Create service accounts for applications</li>
-<li>Create Roles and ClusterRoles to define authorizations</li>
-<li>Map Roles and ClusterRoles to subjects i.e. users, groups and service accounts using RoleBingings and ClusterRoleBindings.</li>
+<li>
+<p><strong>Name of the Workflow:</strong><br />
+<code>yaml
+  name: CI</code><br />
+  This gives the workflow a clear identifier ("CI") that shows up in the GitHub Actions UI.</p>
+</li>
+<li>
+<p><strong>Triggers (<code>on</code>):</strong><br />
+<code>yaml
+  on:
+    push:
+      branches:
+        - main
+      paths-ignore:
+        - 'Dockerfile'
+        - 'Jenkinsfile'
+        - 'chart/**'
+    pull_request:
+      branches:
+        - main
+      paths-ignore:
+        - 'Dockerfile'
+        - 'Jenkinsfile'
+        - 'chart/**'</code>  </p>
+</li>
+<li><strong>Push and Pull Request:</strong> The workflow will run when:<ul>
+<li>A push is made to the <code>main</code> branch.</li>
+<li>A pull request is opened or updated that targets the <code>main</code> branch.</li>
 </ul>
-<h2 id="how-one-can-access-the-kubernetes-api">How one can access the Kubernetes API?</h2>
-<p>The Kubernetes API can be accessed by three ways.</p>
+</li>
+<li><strong>Paths-ignore:</strong> It ignores triggers if changes are made only to specific files (like <code>Dockerfile</code>, <code>Jenkinsfile</code>) or any files under the <code>chart</code> directory. This helps avoid unnecessary runs when only documentation or non-code files are modified.</li>
+</ul>
+<hr />
+<h3 id="2-jobs-overview">2. Jobs Overview</h3>
+<p>The workflow defines <strong>three jobs</strong>:
+- <strong>build:</strong> Sets up the environment and installs dependencies.
+- <strong>unit-test:</strong> Runs tests and depends on the successful completion of the <code>build</code> job.
+- <strong>image-bp:</strong> Logs in to DockerHub, builds a Docker image, and pushes it. This job runs only after the <code>unit-test</code> job passes.</p>
+<p>Each job is executed on an <code>ubuntu-latest</code> runner, meaning they run in a fresh Ubuntu environment provided by GitHub Actions.</p>
+<hr />
+<h3 id="3-job-build">3. Job: Build</h3>
+<pre><code class="language-yaml">jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+</code></pre>
 <ul>
-<li>Kubectl - A command line utility of Kubernetes</li>
-<li>Client libraries - Go, Python, etc.,</li>
-<li>REST requests</li>
-</ul>
-<h2 id="who-can-access-the-kubernetes-api">Who can access the Kubernetes API?</h2>
-<p>Kubernetes API can be accessed by,</p>
+<li>
+<p><strong>Environment Setup:</strong><br />
+<code>runs-on: ubuntu-latest</code> ensures the job runs on the latest Ubuntu runner.</p>
+</li>
+<li>
+<p><strong>Steps:</strong></p>
+</li>
+<li>
+<p><strong>Checkout code:</strong>  </p>
 <ul>
-<li>Human Users</li>
-<li>Service Accounts  </li>
+<li><strong>Action Used:</strong> <code>actions/checkout@v2</code></li>
+<li><strong>Purpose:</strong> Retrieves your repository’s code so that subsequent steps can work on it.</li>
 </ul>
-<p>Each of these topics will be discussed in detail in the later part of this chapter.</p>
-<h2 id="stages-of-a-request">Stages of a Request</h2>
-<p>When a request tries to contact the API , it goes through various stages as illustrated in the image given below.</p>
-<p><img alt="request-stages" src="../images/access-control.svg" />
-  <sub><a href="https://kubernetes.io/docs/home/">source: official kubernetes site</a></sub></p>
-<h2 id="api-groups-and-resources">api groups and resources</h2>
-<table>
-<thead>
-<tr>
-<th style="text-align: left;">apiGroup</th>
-<th style="text-align: left;">Resources</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;">apps</td>
-<td style="text-align: left;">daemonsets, deployments, deployments/rollback, deployments/scale, replicasets, replicasets/scale, statefulsets, statefulsets/scale</td>
-</tr>
-<tr>
-<td style="text-align: left;">core</td>
-<td style="text-align: left;">configmaps, endpoints, persistentvolumeclaims, replicationcontrollers, replicationcontrollers/scale, secrets, serviceaccounts, services,services/proxy</td>
-</tr>
-<tr>
-<td style="text-align: left;">autoscaling</td>
-<td style="text-align: left;">horizontalpodautoscalers</td>
-</tr>
-<tr>
-<td style="text-align: left;">batch</td>
-<td style="text-align: left;">cronjobs, jobs</td>
-</tr>
-<tr>
-<td style="text-align: left;">policy</td>
-<td style="text-align: left;">poddisruptionbudgets</td>
-</tr>
-<tr>
-<td style="text-align: left;">networking.k8s.io</td>
-<td style="text-align: left;">networkpolicies</td>
-</tr>
-<tr>
-<td style="text-align: left;">authorization.k8s.io</td>
-<td style="text-align: left;">localsubjectaccessreviews</td>
-</tr>
-<tr>
-<td style="text-align: left;">rbac.authorization.k8s.io</td>
-<td style="text-align: left;">rolebindings,roles</td>
-</tr>
-<tr>
-<td style="text-align: left;">extensions</td>
-<td style="text-align: left;">deprecated (read notes)</td>
-</tr>
-</tbody>
-</table>
-<h5 id="notes">Notes</h5>
-<p>In addition to the above apiGroups, you may see <strong>extensions</strong> being used in some example code snippets. Please note that <strong>extensions</strong> was initially created as a experiement and is been deprecated, by moving most of the matured apis to one of the groups mentioned above.  <a href="https://github.com/kubernetes/kubernetes/issues/43214#issuecomment-287143011">You could read this comment and the thread</a> to get clarity on this.  </p>
-<h2 id="role-based-access-control-rbac">Role Based Access Control (RBAC)</h2>
-<table>
-<thead>
-<tr>
-<th style="text-align: left;">Group</th>
-<th style="text-align: left;">User</th>
-<th style="text-align: left;">Namespaces</th>
-<th style="text-align: left;">Resources</th>
-<th style="text-align: left;">Access Type (verbs)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;">ops</td>
-<td style="text-align: left;">maya</td>
-<td style="text-align: left;">all</td>
-<td style="text-align: left;">all</td>
-<td style="text-align: left;">get, list, watch, update, patch, create, delete, deletecollection</td>
-</tr>
-<tr>
-<td style="text-align: left;">dev</td>
-<td style="text-align: left;">kim</td>
-<td style="text-align: left;">instavote</td>
-<td style="text-align: left;">deployments, statefulsets, services, pods, configmaps, secrets, replicasets, ingresses, endpoints, cronjobs, jobs, persistentvolumeclaims</td>
-<td style="text-align: left;">get, list , watch, update, patch, create</td>
-</tr>
-<tr>
-<td style="text-align: left;">interns</td>
-<td style="text-align: left;">yono</td>
-<td style="text-align: left;">instavote</td>
-<td style="text-align: left;">readonly</td>
-<td style="text-align: left;">get, list, watch</td>
-</tr>
-</tbody>
-</table>
-<table>
-<thead>
-<tr>
-<th style="text-align: left;">Service Accounts</th>
-<th style="text-align: left;">Namespace</th>
-<th style="text-align: left;">Resources</th>
-<th style="text-align: left;">Access Type (verbs)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;">monitoring</td>
-<td style="text-align: left;">all</td>
-<td style="text-align: left;">all</td>
-<td style="text-align: left;">readonly</td>
-</tr>
-</tbody>
-</table>
-<h3 id="creating-kubernetes-users-and-groups">Creating Kubernetes Users and Groups</h3>
-<p>Generate the user's private key</p>
-<pre><code>mkdir -p  ~/.kube/users
-cd ~/.kube/users
-
-openssl genrsa -out kim.key 2048
-
-</code></pre>
-<p>[sample Output]</p>
-<pre><code>openssl genrsa -out kim.key 2048
-Generating RSA private key, 2048 bit long modulus
-.............................................................+++
-.........................+++
-e is 65537 (0x10001)
-
-</code></pre>
-<p>Lets now create a <strong>Certification Signing Request (CSR)</strong> for each of the users. When you generate the csr make sure you also provide</p>
+</li>
+<li>
+<p><strong>Set up Python:</strong><br />
+     ```yaml</p>
 <ul>
-<li>CN: This will be set as username</li>
-<li>O: Org name. This is actually used as a <strong>group</strong> by kubernetes while authenticating/authorizing users.  You could add as many as you need</li>
+<li>name: Set up Python
+    uses: actions/setup-python@v2
+    with:
+      python-version: '3.x'
+ ```  </li>
+<li><strong>Action Used:</strong> <code>actions/setup-python@v2</code></li>
+<li><strong>Purpose:</strong> Installs and configures Python (any version in the 3.x series) for the job.</li>
 </ul>
-<p>e.g.</p>
-<pre><code>openssl req -new -key kim.key -out kim.csr -subj &quot;/CN=kim/O=dev/O=example.org&quot;
-
-</code></pre>
-<p>In order to be deemed authentic, these CSRs need to be signed by the <strong>Certification Authority (CA)</strong> which in this case is Kubernetes Master.   You need access to the folllwing files on  kubernetes master.</p>
+</li>
+<li>
+<p><strong>Install dependencies:</strong><br />
+     ```yaml</p>
 <ul>
-<li>Certificate : ca.crt (kubeadm) or ca.key (kubespray)</li>
-<li>Pricate Key : ca.key (kubeadm) or ca-key.pem  (kubespray)</li>
+<li>name: Install dependencies
+    run: pip install -r requirements.txt
+ ```  </li>
+<li><strong>Command:</strong> Runs <code>pip install -r requirements.txt</code></li>
+<li><strong>Purpose:</strong> Installs all Python dependencies listed in the <code>requirements.txt</code> file.</li>
 </ul>
-<p>You would typically find it  the following paths</p>
+</li>
+</ul>
+<hr />
+<h3 id="4-job-unit-test">4. Job: Unit Test</h3>
+<pre><code class="language-yaml">  unit-test:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+</code></pre>
 <ul>
-<li>/etc/kubernetes/pki</li>
+<li><strong>Dependency:</strong>  </li>
+<li>
+<p><code>needs: build</code> indicates that this job will run only if the <code>build</code> job completes successfully.</p>
+</li>
+<li>
+<p><strong>Steps (Similar Setup to Build Job):</strong></p>
+</li>
+<li><strong>Checkout code:</strong> Again, uses <code>actions/checkout@v2</code> to ensure that the code is available.</li>
+<li><strong>Set up Python:</strong> Uses <code>actions/setup-python@v2</code> to configure Python.</li>
+<li><strong>Install dependencies:</strong> Installs Python packages using <code>pip install -r requirements.txt</code>.</li>
+<li><strong>Run tests:</strong><br />
+     ```yaml<ul>
+<li>name: Run tests
+    run: nose2
+ ```  </li>
+<li><strong>Command:</strong> Runs <code>nose2</code></li>
+<li><strong>Purpose:</strong> Executes unit tests using the nose2 test runner.</li>
 </ul>
-<p>To verify which one is your cert and which one is key, use the following command,</p>
-<pre><code>$ file /etc/kubernetes/pki/ca.crt
-ca.pem: PEM certificate
-
-
-$ file /etc/kubernetes/pki/ca.key
-ca-key.pem: PEM RSA private key
+</li>
+</ul>
+<hr />
+<h3 id="5-job-image-build-and-push">5. Job: Image Build and Push</h3>
+<pre><code class="language-yaml">  image-bp:
+    runs-on: ubuntu-latest
+    needs: unit-test
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 </code></pre>
-<p>Once signed, .csr files with added signatures become the certificates that could be used to authenticate.</p>
-<p>You could either</p>
 <ul>
-<li>move the crt files to k8s master, sign and download  </li>
-<li>copy over the CA certs and keys to your management node and use it to sign. Make sure to keep your CA related files secure.</li>
-</ul>
-<p>In the example here, I have already downloaded <strong>ca.pem</strong> and <strong>ca-key.pem</strong> to my management workstation, which are used to sign the CSRs.  </p>
-<p>Assuming all the files are in the same directory, sign the CSR as,</p>
-<pre><code>openssl x509 -req -CA /etc/kubernetes/pki/ca.crt -CAkey /etc/kubernetes/pki/ca.key -CAcreateserial -days 730 -in kim.csr -out kim.crt
-
-</code></pre>
-<h3 id="setting-up-user-configs-with-kubectl">Setting up User configs with kubectl</h3>
-<p>In order to configure the users that you created above, following steps need to be performed with kubectl</p>
+<li><strong>Dependency:</strong>  </li>
+<li>
+<p><code>needs: unit-test</code> means this job will only start if the unit tests have passed.</p>
+</li>
+<li>
+<p><strong>Steps:</strong></p>
+</li>
+<li>
+<p><strong>Checkout code:</strong> Once more, checks out the repository using <code>actions/checkout@v2</code>.</p>
+</li>
+<li>
+<p><strong>Log in to DockerHub:</strong><br />
+     ```yaml</p>
 <ul>
-<li>Add credentials in the configurations</li>
-<li>Set context to login as a user to a cluster</li>
-<li>Switch context in order to assume the user's identity while working with the cluster</li>
+<li>name: Log in to DockerHub
+    uses: docker/login-action@v2
+    with:
+      username: ${{ secrets.DOCKER_USERNAME }}
+      password: ${{ secrets.DOCKER_PASSWORD }}
+ ```  </li>
+<li><strong>Action Used:</strong> <code>docker/login-action@v2</code></li>
+<li><strong>Purpose:</strong> Authenticates to DockerHub using credentials stored in GitHub Secrets (<code>DOCKER_USERNAME</code> and <code>DOCKER_PASSWORD</code>), ensuring that the Docker commands can push images to the DockerHub repository securely.</li>
 </ul>
-<p>to add credentials,</p>
-<pre><code>kubectl config set-credentials kim --client-certificate=/root/.kube/users/kim.crt --client-key=/root/.kube/users/kim.key
-</code></pre>
-<p>where,</p>
+</li>
+<li>
+<p><strong>Build and push Docker image:</strong><br />
+     ```yaml</p>
 <ul>
-<li>/root/.kube/users/kim.crt : Absolute path to the users' certificate</li>
-<li>/root/.kube/users/kim.key: Absolute path to the users' key</li>
+<li>name: Build and push Docker image
+    run: |
+      COMMIT_HASH=$(echo ${{ github.sha }} | cut -c1-7)
+      docker build -t ${{ secrets.DOCKER_USERNAME }}/initcron:$COMMIT_HASH .
+      docker push ${{ secrets.DOCKER_USERNAME }}/initcron:$COMMIT_HASH
+ ```  </li>
+<li><strong>Commands Explained:</strong></li>
+<li><strong>Generate a Commit Hash:</strong><br />
+<code>bash
+     COMMIT_HASH=$(echo ${{ github.sha }} | cut -c1-7)</code><br />
+     This extracts the first 7 characters of the commit SHA (a unique identifier for the commit) to use as a tag.</li>
+<li><strong>Build the Docker Image:</strong><br />
+<code>bash
+     docker build -t ${{ secrets.DOCKER_USERNAME }}/initcron:$COMMIT_HASH .</code><br />
+     Builds a Docker image using the Dockerfile in the repository’s root directory, tagging it with a combination of the DockerHub username and the commit hash.</li>
+<li><strong>Push the Docker Image:</strong><br />
+<code>bash
+     docker push ${{ secrets.DOCKER_USERNAME }}/initcron:$COMMIT_HASH</code><br />
+     Pushes the built image to DockerHub so that it can be used elsewhere (e.g., in production or further testing).</li>
 </ul>
-<p>And proceed to set/create  contexts (user@cluster). If you are not sure whats the cluster name, use the following command to find,</p>
-<pre><code>kubectl config get-contexts
-
-</code></pre>
-<p>[sample output]</p>
-<pre><code>CURRENT   NAME                          CLUSTER      AUTHINFO           NAMESPACE
-*         kubernetes-admin@kubernetes   kubernetes   kubernetes-admin   instavote
-</code></pre>
-<p>where,  <strong>kubernetes</strong> is the  cluster name.</p>
-<p>To set context for <strong>kubernetes</strong> cluster,</p>
-<pre><code>kubectl config set-context kim-kubernetes --cluster=kubernetes  --user=kim --namespace=instavote
-
-</code></pre>
-<p>Where,</p>
-<ul>
-<li>kim-kubernetes : name of the context  </li>
-<li>kubernetes  : name of the  cluster you set while creating it  </li>
-<li>kim : user you created and configured above to connect to the cluster  </li>
+</li>
 </ul>
-<p>You could verify the configs with</p>
-<pre><code>kubectl config get-contexts
-
-CURRENT   NAME                          CLUSTER      AUTHINFO           NAMESPACE
-          kim-kubernetes                kubernetes   kim                instavote
-*         kubernetes-admin@kubernetes   kubernetes   kubernetes-admin   instavote
-</code></pre>
-<p>and</p>
-<pre><code>kubectl config view
-
-apiVersion: v1
-clusters:
-- cluster:
-    certificate-authority-data: DATA+OMITTED
-    server: https://178.128.109.8:6443
-  name: kubernetes
-contexts:
-- context:
-    cluster: kubernetes
-    namespace: instavote
-    user: kim
-  name: kim-kubernetes
-- context:
-    cluster: kubernetes
-    namespace: instavote
-    user: kubernetes-admin
-  name: kubernetes-admin@kubernetes
-current-context: kubernetes-admin@kubernetes
-kind: Config
-preferences: {}
-users:
-- name: kim
-  user:
-    client-certificate: users/kim.crt
-    client-key: users/kim.key
-- name: kubernetes-admin
-  user:
-    client-certificate-data: REDACTED
-    client-key-data: REDACTED
-</code></pre>
-<p>Where, you should see the configurations for the new user you created have been added.</p>
-<p>You could assume the identity of user <strong>kim</strong> and connect  to the <strong>kubernetes</strong> cluster as,</p>
-<pre><code>kubectl config use-context kim-kubernetes
-
-kubectl config get-contexts
-
-CURRENT   NAME                          CLUSTER      AUTHINFO           NAMESPACE
-*         kim-kubernetes                kubernetes   kim                instavote
-          kubernetes-admin@kubernetes   kubernetes   kubernetes-admin   instavote
-</code></pre>
-<p>This time * appears on the line which lists context <strong>kim-kubernetes</strong> that you just created.</p>
-<p>And then try running any command as,</p>
-<pre><code>kubectl get pods
-</code></pre>
-<p>Alternately, if you are a admin user, you could impersonate a user and run a command with that literally using  --as option</p>
-<pre><code>kubectl config use-context admin-prod
-kubectl get pods --as yono
-</code></pre>
-<p>[Sample Output]</p>
-<pre><code>No resources found.
-Error from server (Forbidden): pods is forbidden: User &quot;yono&quot; cannot list pods in the namespace &quot;instavote&quot;
-
-</code></pre>
-<p>Either ways, since there are authorization rules set, the user can not make any api calls. Thats when you would create some roles and bind it to the users in the next section.</p>
-<h2 id="define-authorisation-rules-with-roles-and-clusterroles">Define authorisation rules with Roles and ClusterRoles</h2>
-<p>Whats the difference between Roles and ClusterRoles ??</p>
-<ul>
-<li>Role is  limited to a namespace (Projects/Orgs/Env)</li>
-<li>ClusterRole is Global</li>
-</ul>
-<p>Lets say you want to provide read only access to <strong>instavote</strong>, a project specific namespace to all users in the <strong>example.org</strong></p>
-<pre><code>kubectl config use-context kubernetes-admin@kubernetes
-cd projects/instavote/dev
-</code></pre>
-<p><code>file: readonly-role.yaml</code></p>
-<pre><code>apiVersion: rbac.authorization.k8s.io/v1beta1
-kind: Role
-metadata:
-  namespace: instavote
-  name: readonly
-rules:
-- apiGroups: [&quot;*&quot;]
-  resources: [&quot;*&quot;]
-  verbs: [&quot;get&quot;, &quot;list&quot;, &quot;watch&quot;]
-</code></pre>
-<p>In order to map it to all users in <strong>example.org</strong>, create a RoleBinding as</p>
-<p><code>file: readonly-rolebinding.yml</code></p>
-<pre><code>kind: RoleBinding
-apiVersion: rbac.authorization.k8s.io/v1
-metadata:
-  name: readonly
-  namespace: instavote
-subjects:
-- kind: Group
-  name: dev
-  apiGroup: rbac.authorization.k8s.io
-roleRef:
-  kind: Role
-  name: readonly
-  apiGroup: rbac.authorization.k8s.io
-</code></pre>
-<pre><code>kubectl apply -f readonly-role.yaml
-kubectl apply -f readonly-rolebinding.yml
-</code></pre>
-<p>To get information about the objects created above,</p>
-<pre><code>kubectl get roles,rolebindings -n instavote
-
-kubectl describe role readonly
-kubectl describe rolebinding readonly
-
-</code></pre>
-<p>To validate the access,</p>
-<pre><code>kubectl config get-contexts
-kubectl config use-context kim-kubernetes
-kubectl get pods
-
-</code></pre>
-<p>To switch back to admin,</p>
-<pre><code>kubectl config use-context kubernetes-admin@kubernetes
-
-</code></pre>
-<h4 id="exercise">Exercise</h4>
-<p>Create a Role and Rolebinding for <strong>dev</strong> group with the authorizations defined in the table above. Once applied, test it</p>
+<hr />
+<h3 id="summary">Summary</h3>
+<ol>
+<li>
+<p><strong>Workflow Triggers:</strong><br />
+   The pipeline triggers on pushes and pull requests to the main branch, excluding specific file changes.</p>
+</li>
+<li>
+<p><strong>Build Job:</strong>  </p>
+</li>
+<li>Checks out the code.</li>
+<li>Sets up Python.</li>
+<li>
+<p>Installs dependencies from <code>requirements.txt</code>.</p>
+</li>
+<li>
+<p><strong>Unit Test Job:</strong>  </p>
+</li>
+<li>Depends on the build job.</li>
+<li>Repeats the setup steps.</li>
+<li>
+<p>Runs tests using <code>nose2</code>.</p>
+</li>
+<li>
+<p><strong>Image Build and Push Job:</strong>  </p>
+</li>
+<li>Depends on the unit-test job.</li>
+<li>Checks out the code.</li>
+<li>Logs into DockerHub with secure credentials.</li>
+<li>Builds a Docker image tagged with a short commit hash.</li>
+<li>Pushes the image to DockerHub.</li>
+</ol>
+<p>This setup ensures that code changes are automatically tested and, if successful, packaged as a Docker image ready for deployment or further use.</p>
               
             </div>
           </div><footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../install_kubernetes_with_kubeadm/" class="btn btn-neutral float-left" title="Lab K400 - Install Kubernetes with Kubeadm"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../vote-deployement_strategies/" class="btn btn-neutral float-right" title="Lab K403 - Building Deployment Strategies">Next <span class="icon icon-circle-arrow-right"></span></a>
-    </div>
 
   <hr/>
 
@@ -671,10 +588,6 @@ kubectl get pods
         </span>
     
     
-      <span><a href="../install_kubernetes_with_kubeadm/" style="color: #fcfcfc">&laquo; Previous</a></span>
-    
-    
-      <span><a href="../vote-deployement_strategies/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
