@@ -546,6 +546,7 @@ jobs:
           docker build -t ${{ secrets.DOCKER_USERNAME }}/initcron:$COMMIT_HASH .
           docker push ${{ secrets.DOCKER_USERNAME }}/initcron:$COMMIT_HASH
 </code></pre>
+<p>Read this guide to understand this code better: <a href="https://kubernetes-tutorial.schoolofdevops.com/gha_code_explain/">GHA Code Explainer</a></p>
 <p>To make this work after adding this code,  all you need to do is,  add the secret variables in your repository settings so that GitHub Actions can access your DockerHub account.</p>
 <h3 id="adding-dockerhub-secrets">Adding DockerHub Secrets</h3>
 <p>You need to add DOCKER_USERNAME and DOCKER_PASSWORD as secrets in your GitHub repository settings. Here are the steps to add these secrets:  </p>
