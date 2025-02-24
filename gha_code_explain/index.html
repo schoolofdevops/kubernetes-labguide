@@ -356,8 +356,8 @@ jobs:
       - name: Build and push Docker image
         run: |
           COMMIT_HASH=$(echo ${{ github.sha }} | cut -c1-7)
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/initcron:$COMMIT_HASH .
-          docker push ${{ secrets.DOCKER_USERNAME }}/initcron:$COMMIT_HASH
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/vote:$COMMIT_HASH .
+          docker push ${{ secrets.DOCKER_USERNAME }}/vote:$COMMIT_HASH
 </code></pre>
 <p>This GitHub Actions workflow file defines a Continuous Integration (CI) pipeline that runs on pushes and pull requests targeting the main branch, with three main jobs: building the environment, running unit tests, and building &amp; pushing a Docker image. Here’s a detailed, step-by-step explanation:</p>
 <hr />
