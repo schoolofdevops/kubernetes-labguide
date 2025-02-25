@@ -241,9 +241,7 @@
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#fitness-test-for-canary">Fitness Test for Canary</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#update-kustomization-for-prod">Update Kustomization for Prod</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#_1"></a>
+    <li class="toctree-l3"><a class="reference internal" href="#update-helm-for-prod">Update HELM for Prod</a>
     </li>
         </ul>
     </li>
@@ -354,11 +352,18 @@ helm repo update
   prometheus-community/kube-prometheus-stack \
   --create-namespace \
   --set grafana.service.type=NodePort \
-  --set grafana.service.nodePort=30400 \
+  --set grafana.service.nodePort=30500 \
   --set prometheus.prometheusSpec.podMonitorSelectorNilUsesHelmValues=false \
   --set prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues=false
 </code></pre>
+<p>Login using</p>
+<pre><code>User : admin
+Pass: prom-operator
+</code></pre>
 <h3 id="redeploy-nginx-ingress-controller">Redeploy Nginx Ingress Controller</h3>
+<p>First, uninstall nginx ingress conroller as,</p>
+<pre><code>helm un ingress-nginx -n ingress-nginx
+</code></pre>
 <p>Re deploy nginx ingress controller with helm, this time enabling the exposing the metrics which can then be scraped/collected by prometheus.</p>
 <pre><code>helm upgrade --install ingress-nginx ingress-nginx \
   --repo https://kubernetes.github.io/ingress-nginx \
@@ -377,9 +382,9 @@ helm repo update
 <p>Now, login to grafana and import custom dashboard for Nginx Ingress as</p>
 <ul>
 <li>Left menu (hover over +) -&gt; Dashboard</li>
-<li>Click "Import"</li>
+<li>Click New -&gt; Import"</li>
 <li>Enter the copy pasted json from <a href="https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/grafana/dashboards/nginx.json">https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/grafana/dashboards/nginx.json</a></li>
-<li>Click Import JSON</li>
+<li>Click <code>Import JSON / Load</code></li>
 <li>Select the Prometheus data source</li>
 <li>Click "Import"</li>
 </ul>
@@ -389,52 +394,36 @@ It may look similar to this, with possibly less data initially
 <p>However, if you see some metric coming in, your setup with Nginx Ingress and Promethus Integration is working ! You may pat your back at this time :)</p>
 <hr />
 <h3 id="updated-rollout-configuration-with-experiment-and-analysis">Updated Rollout Configuration with Experiment and Analysis</h3>
-<p>File: <code>/prod/rollout.yaml</code></p>
-<pre><code>apiVersion: argoproj.io/v1alpha1
-kind: Rollout
-metadata:
-  name: vote
-spec:
-  replicas: 5
-  strategy:
-    blueGreen: null
-    canary:
-      canaryService: vote-preview
-      stableService: vote
-      steps:
-      - setCanaryScale:
-          replicas: 2
-      - experiment:
-          duration: 3m
-          templates:
-          - name: canary
-            specRef: canary
-            service:
-              name: experiment
-          analyses:
-            - name: fitness-test
-              templateName: canary-fitness-test
-      - setWeight: 20
-      - pause:
-          duration: 10s
-      - setWeight: 40
-      - pause:
-          duration: 10s
-      - setWeight: 60
-      - analysis:
-          templates:
-          - templateName: loadtest
-          - templateName: latency
-      - setWeight: 80
-      - pause:
-          duration: 10s
-      - setWeight: 100
-      trafficRouting:
-        nginx:
-          stableIngress: vote
-          additionalIngressAnnotations:
-            canary-by-header: X-Canary
-            canary-by-header-value: siege
+<p>File: <code>instavote-gitops/charts/vote/env/prod.yaml</code></p>
+<pre><code>canary:
+  steps:
+    - setCanaryScale:
+        replicas: 2
+    - experiment:
+        duration: 3m
+        templates:
+        - name: canary
+          specRef: canary
+          service:
+            name: experiment
+        analyses:
+          - name: fitness-test
+            templateName: canary-fitness-test
+    - setWeight: 20
+    - pause:
+        duration: 10s
+    - setWeight: 40
+    - pause:
+        duration: 10s
+    - setWeight: 60
+    - analysis:
+        templates:
+        - templateName: loadtest
+        - templateName: latency
+    - setWeight: 80
+    - pause:
+        duration: 10s
+    - setWeight: 100
 </code></pre>
 <h4 id="explanation">Explanation</h4>
 <ul>
@@ -472,7 +461,7 @@ spec:
 <p>⠀
 By configuring the experiment and analysis to run in parallel, you can ensure comprehensive testing and validation of the canary version, enabling automatic rollback if any issues are detected.</p>
 <h3 id="template-for-load-testing">Template for Load Testing</h3>
-<p>File <code>prod/loadtest-analysistemplate.yaml</code></p>
+<p>File <code>intstavote-gitops/charts/vote/templates/loadtest-analysistemplate.yaml</code></p>
 <pre><code>apiVersion: argoproj.io/v1alpha1
 kind: AnalysisTemplate
 metadata:
@@ -503,7 +492,7 @@ spec:
           backoffLimit: 4
 </code></pre>
 <p>where,
-* replace <code>xx.xx.xx.xx</code> with internal IP Address of <code>worker</code> node. Find out by using</p>
+* replace <code>xx.xx.xx.xx</code> with internal IP Address of <code>kind-worker</code> node which runs nginx. Find out by using</p>
 <pre><code>kubectl get nodes -o wide
 </code></pre>
 <p>[sample output]</p>
@@ -514,7 +503,7 @@ kind-worker2         Ready    &lt;none&gt;          2d23h   v1.30.0   172.18.0.3
 </code></pre>
 <p>From this output, you are going to use <code>172.18.0.4</code> in the configuration above.</p>
 <h3 id="analysistemplate-for-prometheus-metrics">AnalysisTemplate for Prometheus Metrics</h3>
-<p>File : <code>prod/latency-analysistemplate.yaml</code></p>
+<p>File : <code>intstavote-gitops/charts/vote/templates/latency-analysistemplate.yaml</code></p>
 <pre><code>apiVersion: argoproj.io/v1alpha1
 kind: AnalysisTemplate
 metadata:
@@ -543,7 +532,7 @@ spec:
           )
 </code></pre>
 <h3 id="fitness-test-for-canary">Fitness Test for Canary</h3>
-<p>File: <code>prod/fitness-analysistemplate.yaml</code></p>
+<p>File: <code>intstavote-gitops/charts/vote/templates/fitness-analysistemplate.yaml</code></p>
 <pre><code>apiVersion: argoproj.io/v1alpha1
 kind: AnalysisTemplate
 metadata:
@@ -567,7 +556,7 @@ spec:
                 args:
                 - |
                   FITNESS_RESULT=&quot;false&quot;
-                  CANARY_SERVICE_URL=&quot;http://vote-preview&quot;
+                  CANARY_SERVICE_URL=&quot;http://vote-canary&quot;
 
                   # Perform the fitness test
                   RESPONSE=$(curl -s $CANARY_SERVICE_URL)
@@ -582,25 +571,23 @@ spec:
               restartPolicy: Never
           backoffLimit: 1
 </code></pre>
-<h3 id="update-kustomization-for-prod">Update Kustomization for Prod</h3>
-<p>File : <code>prod/kustomization.yaml</code></p>
-<pre><code>apiVersion: kustomize.config.k8s.io/v1beta1
-kind: Kustomization
-resources:
-- ../base
-- ingress.yaml
-- fitness-analysistemplate.yaml
-- latency-analysistemplate.yaml
-- loadtest-analysistemplate.yaml
+<p>where, replace <code>CANARY_SERVICE_URL="http://vote-canary"</code> with the actual URL of the canary service.</p>
+<h3 id="update-helm-for-prod">Update HELM for Prod</h3>
+<p>validate </p>
+<pre><code>helm template vote --values env/prod.yaml .
 </code></pre>
-<p>apply</p>
-<pre><code>kustomize build prod
-kubectl apply -k prod
+<p>commit and push to git</p>
+<pre><code>git status
+git add *
+git status
+git commit -am &quot;added fitness test and prometheus analysis&quot;
+
 </code></pre>
+<p>If you are mapping prod to release branch, raise a PR and merge the changes to release branch.</p>
 <p>watch the rollout using</p>
-<pre><code>kubectl argo rollouts get rollout  vote
+<pre><code>kubectl argo rollouts list rollout -A
+watch kubectl argo rollouts get rollout  vote-prod -n instavote-prod
 </code></pre>
-<h3 id="_1"></h3>
 <hr />
               
             </div>
