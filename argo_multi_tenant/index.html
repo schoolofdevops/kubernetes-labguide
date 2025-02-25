@@ -347,8 +347,9 @@
 <li>GitHub account</li>
 </ul>
 <h2 id="repository-structure">Repository Structure</h2>
-<p>Three repositories are used in this setup:</p>
-<p>+--------------------+      +--------------------+      +--------------------+
+<pre><code>Three repositories are used in this setup:
+
++--------------------+      +--------------------+      +--------------------+
 |                    |      |                    |      |                    |
 | APPLICATION CODE   |      | GITOPS CODE        |      | PLATFORM CODE      |
 | REPOSITORY         |      | REPOSITORY         |      | REPOSITORY         |
@@ -372,7 +373,9 @@
 | and pushes to      |-----&gt;| are deployed and   |&lt;-----| maintains the     |
 | container registry |      | promoted between   |      | platform itself    |
 +--------------------+      | environments       |      +--------------------+
-                            +--------------------+</p>
+                            +--------------------+
+
+</code></pre>
 <pre><code>#Platform Repo Structure
 # Source : https://github.com/sfd226/instavote-platform-config
 
