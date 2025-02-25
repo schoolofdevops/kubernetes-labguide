@@ -234,6 +234,10 @@
         </ul>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#install-argo-rollouts">Install Argo Rollouts</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#setup-argo-rollouts-dashboard">Setup Argo Rollouts Dashboard</a>
+    </li>
+        </ul>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#setup-ci-pipeline-with-github-actions">Setup CI Pipeline with GitHub Actions</a>
         <ul>
@@ -479,6 +483,12 @@ sudo mv ./kubectl-argo-rollouts-darwin-amd64 /usr/local/bin/kubectl-argo-rollout
 <pre><code>kubectl argo rollouts version
 </code></pre>
 <p>Also install Kustomize by following the instructions in <a href="https://kubectl.docs.kubernetes.io/installation/kustomize/">official documentation</a> here.</p>
+<h3 id="setup-argo-rollouts-dashboard">Setup Argo Rollouts Dashboard</h3>
+<pre><code>apply -n argo-rollouts -f https://raw.githubusercontent.com/argoproj/argo-rollouts/stable/manifests/dashboard-install.yaml
+</code></pre>
+<pre><code>kubectl patch svc argo-rollouts-dashboard -n argo-rollouts --type='merge' -p '{&quot;spec&quot;: {&quot;type&quot;: &quot;NodePort&quot;, &quot;ports&quot;: [{&quot;port&quot;: 3100, &quot;targetPort&quot;: 3100, &quot;nodePort&quot;: 30600}]}}'
+</code></pre>
+<p>Access it using http://NODEIP:30600/rollouts</p>
 <h2 id="setup-ci-pipeline-with-github-actions">Setup CI Pipeline with GitHub Actions</h2>
 <p>Fork the <a href="https://github.com/sfd226/vote">sample repo</a> to get started. </p>
 <p>This repo contains a simple application written in python that allows you to vote, along with Dockerfile,  kubernetes manifests. </p>
