@@ -219,6 +219,18 @@
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K704 - Experiments and Analysis</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#setup-argocd-extension-for-rollout-visualization">Setup ArgoCD Extension for Rollout Visualization</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#step-1-save-the-patch-to-a-file">Step 1: Save the Patch to a File</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#step-2-apply-the-patch">Step 2: Apply the Patch</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#step-3-restart-the-argocd-server">Step 3: Restart the ArgoCD Server</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#step-4-verify-the-deployment">Step 4: Verify the Deployment</a>
+    </li>
+        </ul>
+    </li>
     <li class="toctree-l2"><a class="reference internal" href="#setup-metrics-server">Setup Metrics Server</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#deploy-prometheus-and-grafana">Deploy Prometheus and Grafana</a>
@@ -309,6 +321,53 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="analysis-and-experiments">Analysis and Experiments</h1>
+<h2 id="setup-argocd-extension-for-rollout-visualization">Setup ArgoCD Extension for Rollout Visualization</h2>
+<p>To apply the ArgoCD server patch to install the Argo Rollouts extension, follow these steps:</p>
+<h3 id="step-1-save-the-patch-to-a-file"><strong>Step 1: Save the Patch to a File</strong></h3>
+<p>Create a new YAML file, e.g., <code>argocd-rollouts-extension-patch.yaml</code>, and add the following content:</p>
+<pre><code class="language-yaml">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: argocd-server
+  namespace: argocd
+spec:
+  template:
+    spec:
+      initContainers:
+        - name: rollout-extension
+          image: quay.io/argoprojlabs/argocd-extension-installer:v0.0.5
+          env:
+            - name: EXTENSION_URL
+              value: 'https://github.com/argoproj-labs/rollout-extension/releases/download/v0.3.5/extension.tar'
+          volumeMounts:
+            - mountPath: /tmp/extensions/
+              name: extensions
+          securityContext:
+            allowPrivilegeEscalation: false
+      containers:
+        - name: argocd-server
+          volumeMounts:
+            - mountPath: /tmp/extensions/
+              name: extensions
+      volumes:
+        - name: extensions
+          emptyDir: {}
+</code></pre>
+<h3 id="step-2-apply-the-patch"><strong>Step 2: Apply the Patch</strong></h3>
+<p>Run the following command to apply the patch to the <code>argocd-server</code> deployment:</p>
+<pre><code class="language-bash">kubectl patch deployment argocd-server -n argocd --patch-file argocd-rollouts-extension-patch.yaml
+</code></pre>
+<h3 id="step-3-restart-the-argocd-server"><strong>Step 3: Restart the ArgoCD Server</strong></h3>
+<p>After applying the patch, restart the ArgoCD server to ensure changes take effect:</p>
+<pre><code class="language-bash">kubectl rollout restart deployment argocd-server -n argocd
+</code></pre>
+<h3 id="step-4-verify-the-deployment"><strong>Step 4: Verify the Deployment</strong></h3>
+<p>Check if the <code>argocd-server</code> deployment includes the new <code>initContainers</code> section:</p>
+<pre><code class="language-bash">kubectl get deployment argocd-server -n argocd -o yaml | grep -A 10 &quot;initContainers:&quot;
+</code></pre>
+<p>To validate, try accessing your <strong>ArgoCD UI</strong>, navigate to an application, and you should see the <strong>"Rollout" tab</strong> under the app details. 🚀</p>
+<p><img alt="" src="../images/argo/67.png" />
+<img alt="" src="../images/argo/68.png" /></p>
 <h2 id="setup-metrics-server">Setup Metrics Server</h2>
 <p>If you try to pull monitoring information using the following commands</p>
 <pre><code>kubectl top pod
@@ -525,7 +584,7 @@ spec:
             1000 * histogram_quantile(0.99,
               sum(
                 rate(
-                  nginx_ingress_controller_request_duration_seconds_bucket{ingress=&quot;vote&quot;, exported_namespace=&quot;prod&quot;}[1m]
+                  nginx_ingress_controller_request_duration_seconds_bucket{ingress=&quot;vote&quot;, exported_namespace=&quot;instavote-prod&quot;}[1m]
                 )
               ) by (le)
             )
