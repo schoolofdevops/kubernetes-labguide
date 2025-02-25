@@ -263,7 +263,9 @@
     </li>
     </ul>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../argo_rollout_canary/">Lab K703 - TBA</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_adv_sync/">Lab K703 - Advanced Sync Strategues</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_adv_prom_exp_analysis/">Lab K704 - Experiments and Analysis</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../argo_multi_env_deploy/">Lab K704 - TBA</a>
                   </li>
@@ -345,20 +347,73 @@
 <li>GitHub account</li>
 </ul>
 <h2 id="repository-structure">Repository Structure</h2>
-<pre><code>instavote-gitops/
+<p>Three repositories are used in this setup:</p>
+<p>+--------------------+      +--------------------+      +--------------------+
+|                    |      |                    |      |                    |
+| APPLICATION CODE   |      | GITOPS CODE        |      | PLATFORM CODE      |
+| REPOSITORY         |      | REPOSITORY         |      | REPOSITORY         |
+|                    |      |                    |      |                    |
++--------------------+      +--------------------+      +--------------------+
+|                    |      |                    |      |                    |
+| Purpose:           |      | Purpose:           |      | Purpose:           |
+| - Source code      |      | - K8s manifests    |      | - Cluster config   |
+| - Build configs    |      | - Kustomizations   |      | - Platform tools   |
+| - Tests            |      | - Helm charts      |      | - CI/CD pipelines  |
+| - Dockerfiles      |      |                    |      | - Infra as code    |
+| - App dependencies |      | - Environment vars |      | - Monitoring setup |
+| - Business logic   |      | - Argo Rollouts    |      | - Security configs |
+|                    |      | - Release configs  |      | - Shared services  |
+|                    |      |                    |      |                    |
++--------------------+      +--------------------+      +--------------------+
+        |                           |                           |
+        v                           v                           v
++--------------------+      +--------------------+      +--------------------+
+| CI builds images   |      | Defines how apps   |      | Provisions and     |
+| and pushes to      |-----&gt;| are deployed and   |&lt;-----| maintains the     |
+| container registry |      | promoted between   |      | platform itself    |
++--------------------+      | environments       |      +--------------------+
+                            +--------------------+</p>
+<pre><code>#Platform Repo Structure
+# Source : https://github.com/sfd226/instavote-platform-config
+
+instavote-platform-config/
+├── tenants/
+│   ├── dev/
+│   │   ├── project.yaml                # ArgoCD project definition
+│   │   ├── resource-quota.yaml         # Resource limits
+│   │   └── network-policies.yaml       # Network policies
+│   ├── staging/
+│   │   └── [similar structure as dev]
+│   └── prod/
+│       └── [similar structure as dev]
+├── rbac/
+│   ├── groups/
+│   │   ├── platform-admins.yaml
+│   │   ├── dev-team.yaml
+│   │   └── ops-team.yaml
+│   └── roles/
+│       ├── tenant-admin.yaml
+│       └── tenant-viewer.yaml
+└── applicationsets/
+    └── instavote-apps.yaml           # Application deployment patterns
+</code></pre>
+<pre><code># Tenant Repo Structure
+# Source : https://github.com/sfd226/instavote-gitops
+
+instavote-gitops/
 ├── charts/
 │   ├── vote/                  # Vote frontend service
 │   │   ├── Chart.yaml
 │   │   ├── values.yaml
 │   │   ├── templates/
-│   │   │   ├── rollout.yaml
-│   │   │   ├── service.yaml
-│   │   │   └── preview-service.yaml
+│   │   │   ├── rollout.yaml        # Argo Rollouts configuration
+│   │   │   ├── service.yaml        # Main service
+│   │   │   └── preview-service.yaml # Preview service for blue/green
 │   │   └── env/
-│   │       ├── dev.yaml
-│   │       ├── staging.yaml
-│   │       └── prod.yaml
-│   └── redis/                 # Redis backend service
+│   │       ├── dev.yaml      # Dev environment values
+│   │       ├── staging.yaml  # Staging environment values
+│   │       └── prod.yaml     # Production environment values
+│   └── redis/                 # Redis service
 │       ├── Chart.yaml
 │       ├── values.yaml
 │       ├── templates/
@@ -368,15 +423,23 @@
 │           ├── dev.yaml
 │           ├── staging.yaml
 │           └── prod.yaml
-├── tenants/
-│   ├── dev/
-│   │   └── project.yaml
-│   ├── staging/
-│   │   └── project.yaml
-│   └── prod/
-│       └── project.yaml
-└── applicationset/
-    └── instavote-apps.yaml
+└── docs/                      # Additional documentation
+    └── architecture.md        # Architecture documentation
+</code></pre>
+<pre><code>#Application Repo Structure
+# Source : https://github.com/sfd226/vote
+.
+├── Dockerfile
+├── Jenkinsfile
+├── README.md
+├── app.py
+├── requirements.txt
+├── static
+│   └── stylesheets
+│       └── style.css
+└── templates
+    └── index.html
+
 </code></pre>
 <h2 id="lab-steps">Lab Steps</h2>
 <h3 id="phase-1-development-environment-setup">Phase 1: Development Environment Setup</h3>
@@ -664,7 +727,7 @@ kubectl describe application vote-dev -n argocd
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
         <a href="../argo_adv_setup/" class="btn btn-neutral float-left" title="Lab K701 - Setup CI/CD with GHA and Argo"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../argo_rollout_canary/" class="btn btn-neutral float-right" title="Lab K703 - TBA">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../argo_adv_sync/" class="btn btn-neutral float-right" title="Lab K703 - Advanced Sync Strategues">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -695,7 +758,7 @@ kubectl describe application vote-dev -n argocd
       <span><a href="../argo_adv_setup/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../argo_rollout_canary/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../argo_adv_sync/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

@@ -3,18 +3,18 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/ingress/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/argo_adv_prom_exp_analysis/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Lab K112 - Ingress - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <title>Lab K704 - Experiments and Analysis - Kubernetes Tutorial with CKA/CKAD Prep</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Lab K112 - Ingress";
-        var mkdocs_page_input_path = "ingress.md";
-        var mkdocs_page_url = "/ingress/";
+        var mkdocs_page_name = "Lab K704 - Experiments and Analysis";
+        var mkdocs_page_input_path = "argo_adv_prom_exp_analysis.md";
+        var mkdocs_page_url = "/argo_adv_prom_exp_analysis/";
       </script>
     
     <!--[if lt IE 9]>
@@ -65,7 +65,7 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Kubernetes Essentials for CKA/CKAD</span></p>
-              <ul class="current">
+              <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../kind_create_cluster/">Lab K101 - Install Kubernetes with KIND</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../kubernetes_quickdive/">Lab K102 - Kubernetes Quickdive</a>
@@ -84,25 +84,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../kubernetes-configuration-management-configmaps-secrets/">Lab K110 - ConfigMaps & Secrets</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K112 - Ingress</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#pre-requisites">Pre Requisites</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#launch-ingress-controller">Launch Ingress Controller</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#set-up-named-based-routing-for-vote-app">Set up Named Based Routing for Vote App</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#add-local-dns">Add Local DNS</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#add-another-web-application-with-ingress">Add another  Web Application with Ingress</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#mini-project-configure-ingress-for-result-app">Mini Project : Configure  Ingress  for Result App</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#reading-resources">Reading Resources</a>
-    </li>
-        </ul>
-    </li>
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../ingress/">Lab K112 - Ingress</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../helm/">Lab K113 - HELM Package Manager</a>
                   </li>
@@ -228,14 +210,44 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Argo Advanced</span></p>
-              <ul>
+              <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../argo_adv_setup/">Lab K701 - Setup CI/CD with GHA and Argo</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../argo_multi_tenant/">Lab K702 - Building Multi-Tenant Deployment System</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../argo_adv_sync/">Lab K703 - Advanced Sync Strategues</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../argo_adv_prom_exp_analysis/">Lab K704 - Experiments and Analysis</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K704 - Experiments and Analysis</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#setup-metrics-server">Setup Metrics Server</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#deploy-prometheus-and-grafana">Deploy Prometheus and Grafana</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#redeploy-nginx-ingress-controller">Redeploy Nginx Ingress Controller</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#setup-grafana-dashboard-for-nginx-ingress-controller">Setup Grafana Dashboard for Nginx Ingress Controller</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#updated-rollout-configuration-with-experiment-and-analysis">Updated Rollout Configuration with Experiment and Analysis</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#explanation">Explanation</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#how-it-works">How it Works</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#template-for-load-testing">Template for Load Testing</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#analysistemplate-for-prometheus-metrics">AnalysisTemplate for Prometheus Metrics</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#fitness-test-for-canary">Fitness Test for Canary</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#update-kustomization-for-prod">Update Kustomization for Prod</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_1"></a>
+    </li>
+        </ul>
+    </li>
+    </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../argo_multi_env_deploy/">Lab K704 - TBA</a>
                   </li>
@@ -287,10 +299,10 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a> &raquo;</li>
-          <li>Kubernetes Essentials for CKA/CKAD &raquo;</li>
-      <li class="breadcrumb-item active">Lab K112 - Ingress</li>
+          <li>Argo Advanced &raquo;</li>
+      <li class="breadcrumb-item active">Lab K704 - Experiments and Analysis</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/ingress.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/argo_adv_prom_exp_analysis.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -298,230 +310,304 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="lab-k201-application-routing-with-ingress-controllers">Lab K201 - Application Routing with Ingress Controllers</h1>
-<h2 id="pre-requisites">Pre Requisites</h2>
-<ul>
-<li>Ingress controller such as Nginx, Trafeik needs to be deployed before creating ingress resources.</li>
-<li>On GCE, ingress controller runs on the master. On all other installations, it needs to be deployed, either as a deployment, or a daemonset. In addition, a service needs to be created for ingress.</li>
-<li>Daemonset will run ingress on each node. Deployment will just create a highly available setup, which can then be exposed on specific nodes using ExternalIPs configuration in the service.</li>
-</ul>
-<h2 id="launch-ingress-controller">Launch Ingress Controller</h2>
-<p>An ingress controller needs to be created in order to serve the ingress requests.  As part of this lab you are going to use <a href="https://traefik.io/">Traefik</a> as the ingress controller. Its a fast and lightweight ingress controller and also comes with great documentation and support.  </p>
-<pre><code class="language-bash">
+                <h1 id="analysis-and-experiments">Analysis and Experiments</h1>
+<h2 id="setup-metrics-server">Setup Metrics Server</h2>
+<p>If you try to pull monitoring information using the following commands</p>
+<pre><code>kubectl top pod
 
-+----+----+--+            
-| ingress    |            
-| controller |            
-+----+-------+            
-
-
+kubectl top node
 </code></pre>
-<p>You are going to setup ingress controller using helm. Assuming helm is already installed, begin adding the repository to install traefik as a ingress controller from:</p>
-<pre><code>helm repo add traefik https://helm.traefik.io/traefik
-helm repo update
-
+<p>it does not show it, rather gives you a error message similar to</p>
+<p>[output]</p>
+<pre><code>Error from server (NotFound): the server could not find the requested resource (get services http:heapster:)
 </code></pre>
-<p>Pull Traffic Chart</p>
-<pre><code>helm pull  --untar traefik/traefik
-cd traefik
-</code></pre>
-<p>Create a  new file  <code>my.values.yaml</code> with the following contents</p>
-<pre><code>ports:
-  traefik:
-    port: 9000
-    expose: true
-    exposedPort: 9000
-    nodePort: 30300
-    protocol: TCP
-  web:
-    port: 8000
-    expose: true
-    exposedPort: 80
-    nodePort: 30400
-    protocol: TCP
-service:
-  enabled: true
-  single: true
-  type: NodePort
-</code></pre>
-<p>Source :  <a href="https://gist.github.com/initcron/f8099b32b456cb04e2e64263eaf9abfb">traefik deployment customization spec · GitHub</a></p>
-<p>Apply with the custom values file created as above,</p>
-<pre><code>kubectl create ns traefik
-helm install traefik --namespace=traefik --values=my.values.yaml .
-
+<p>Even though the error mentions heapster, its replaced with metrics server by default now.</p>
+<p>Deploy metric server with the following commands,</p>
+<pre><code>cd ~
+git clone https://github.com/schoolofdevops/metrics-server.git
+kubectl apply -k metrics-server/manifests/overlays/release
 </code></pre>
 <p>Validate</p>
-<pre><code>helm list -A
-kubectl get all -n traefik
+<pre><code>kubectl get deploy,pods -n kube-system --selector='k8s-app=metrics-server'
 </code></pre>
-<p>Use the following URIs to access Traefik and Traefik Dashboard ,</p>
+<p>You could validate again with</p>
+<pre><code>kubectl top pod
+
+kubectl top node
+</code></pre>
+<p>where expected output should be similar to,</p>
+<pre><code>kubectl top node
+
+NAME                 CPU(cores)   CPU%   MEMORY(bytes)   MEMORY%
+kind-control-plane   123m         6%     688Mi           17%
+kind-worker          39m          1%     498Mi           12%
+kind-worker2         31m          1%     422Mi           10%
+</code></pre>
+<p>If you see a similar output, monitoring is now been setup.</p>
+<h2 id="deploy-prometheus-and-grafana">Deploy Prometheus and Grafana</h2>
+<p>Set up repository</p>
+<pre><code>helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
+</code></pre>
+<p>Install Prometheus and Grafana as</p>
+<pre><code>helm upgrade --install prom -n monitoring \
+  prometheus-community/kube-prometheus-stack \
+  --create-namespace \
+  --set grafana.service.type=NodePort \
+  --set grafana.service.nodePort=30400 \
+  --set prometheus.prometheusSpec.podMonitorSelectorNilUsesHelmValues=false \
+  --set prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues=false
+</code></pre>
+<h3 id="redeploy-nginx-ingress-controller">Redeploy Nginx Ingress Controller</h3>
+<p>Re deploy nginx ingress controller with helm, this time enabling the exposing the metrics which can then be scraped/collected by prometheus.</p>
+<pre><code>helm upgrade --install ingress-nginx ingress-nginx \
+  --repo https://kubernetes.github.io/ingress-nginx \
+  --namespace ingress-nginx --create-namespace \
+  --set controller.metrics.enabled=true \
+  --set controller.metrics.serviceMonitor.enabled=true --set \ controller.metrics.serviceMonitor.additionalLabels.release=&quot;prometheus&quot; \
+  --set controller.hostPort.enabled=true \
+  --set controller.hostPort.ports.http=80 \
+  --set controller.hostPort.ports.https=443 \
+  --set controller.service.type=NodePort \
+  --set-string controller.nodeSelector.&quot;kubernetes\.io/os&quot;=linux \
+  --set-string controller.nodeSelector.ingress-ready=&quot;true&quot;
+
+</code></pre>
+<h3 id="setup-grafana-dashboard-for-nginx-ingress-controller">Setup Grafana Dashboard for Nginx Ingress Controller</h3>
+<p>Now, login to grafana and import custom dashboard for Nginx Ingress as</p>
 <ul>
-<li>Traefik Web :  http://xx.xx.xx.xx:30400 (you may see 404 page not found error, which is okay and expected here).</li>
-<li>Traefik Dashboard :  http://xx.xx.xx.xx:30300/dashboard/  (training slash “/“ is a must)  (you are expected to a nice looking see Traefik dashboard here).</li>
+<li>Left menu (hover over +) -&gt; Dashboard</li>
+<li>Click "Import"</li>
+<li>Enter the copy pasted json from <a href="https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/grafana/dashboards/nginx.json">https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/grafana/dashboards/nginx.json</a></li>
+<li>Click Import JSON</li>
+<li>Select the Prometheus data source</li>
+<li>Click "Import"</li>
 </ul>
-<p><code>replace xx.xx.xx.xx with the external IP used earlier</code></p>
-<p><img alt="Traefik" src="../images/traefik01.png" /></p>
-<h2 id="set-up-named-based-routing-for-vote-app">Set up Named Based Routing for Vote App</h2>
-<p>We will direct all our request to the ingress controller now, but with differnt hostname e.g. <strong>vote.example.com</strong> or <strong>results.example.com</strong>. And it should direct to the correct service based on the host name.</p>
-<p>In order to achieve this you, as a user would create a <strong>ingress</strong> object with a set of rules,</p>
-<pre><code class="language-bash">
-
-+----+----+--+            
-| ingress    |            
-| controller |            
-+----+-------+            
-     |              +-----+----+
-     +---watch----&gt; | ingress  | &lt;------- user
-                    +----------+
-
-</code></pre>
-<p><code>file: vote-ing.yaml</code></p>
-<pre><code>---
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+<p>⠀
+It may look similar to this, with possibly less data initially
+<img alt="" src="../images/grafana-01.png" /></p>
+<p>However, if you see some metric coming in, your setup with Nginx Ingress and Promethus Integration is working ! You may pat your back at this time :)</p>
+<hr />
+<h3 id="updated-rollout-configuration-with-experiment-and-analysis">Updated Rollout Configuration with Experiment and Analysis</h3>
+<p>File: <code>/prod/rollout.yaml</code></p>
+<pre><code>apiVersion: argoproj.io/v1alpha1
+kind: Rollout
 metadata:
   name: vote
-  namespace: instavote
-  annotations:
-    kubernetes.io/ingress.class: traefik
-    traefik.ingress.kubernetes.io/rule-type: PathPrefixStrip
 spec:
-  rules:
-  - host: vote.example.com
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: vote
-            port:
-              number: 80  
+  replicas: 5
+  strategy:
+    blueGreen: null
+    canary:
+      canaryService: vote-preview
+      stableService: vote
+      steps:
+      - setCanaryScale:
+          replicas: 2
+      - experiment:
+          duration: 3m
+          templates:
+          - name: canary
+            specRef: canary
+            service:
+              name: experiment
+          analyses:
+            - name: fitness-test
+              templateName: canary-fitness-test
+      - setWeight: 20
+      - pause:
+          duration: 10s
+      - setWeight: 40
+      - pause:
+          duration: 10s
+      - setWeight: 60
+      - analysis:
+          templates:
+          - templateName: loadtest
+          - templateName: latency
+      - setWeight: 80
+      - pause:
+          duration: 10s
+      - setWeight: 100
+      trafficRouting:
+        nginx:
+          stableIngress: vote
+          additionalIngressAnnotations:
+            canary-by-header: X-Canary
+            canary-by-header-value: siege
 </code></pre>
-<p>And apply</p>
-<pre><code>kubectl get ing
-kubectl apply -f vote-ing.yaml --dry-run
-kubectl apply -f vote-ing.yaml
-</code></pre>
-<p>Since the ingress controller  is constantly monitoring for the ingress objects, the moment it detects, it connects with traefik and creates a rule as follows.</p>
-<pre><code class="language-bash">
-                    +----------+
-     +--create----&gt; | traefik  |
-     |              |  rules   |
-     |              +----------+
-+----+----+--+            ^
-| ingress    |            :
-| controller |            :
-+----+-------+            :
-     |              +-----+----+
-     +---watch----&gt; | ingress  | &lt;------- user
-                    +----------+
-
-</code></pre>
-<p>where,</p>
-<ul>
-<li>A user creates a ingress object with the rules. This could be a named based or a path based routing.</li>
-<li>An ingress controller, in this example traefik constantly monitors for ingress objects. The moment it detects one, it creates a rule and adds it to the traefik load balancer. This rule maps to the ingress specs.</li>
-</ul>
-<p>You could now see the rule added to ingress controller,</p>
-<p><img alt="Traefik with Ingress Rules" src="../images/traefik02.png" /></p>
-<p>Where,</p>
+<h4 id="explanation">Explanation</h4>
 <ul>
 <li>
-<p><strong>vote.example.com</strong> is  added as frontend. This frontends point to  service <strong>vote</strong>.</p>
+<p><strong>Rollout Configuration</strong>:</p>
 </li>
 <li>
-<p>respective backend also appear on the right hand side of the screen, mapping to each of the service.</p>
+<p>The rollout strategy includes canary steps with set weights and pauses.  </p>
 </li>
+<li>Each canary step includes an experiment with a specified duration (e.g., 3 minutes).  </li>
+<li>The experiment step runs a experimental replicaset and launches a fitness test to  validate if the new version looks okay.  </li>
+<li>
+<p>After 60% traffic is shifted to canary, a load test is lauched along with analysis from prometheus to check if the new version will perform okay with the load.  </p>
+</li>
+<li>
+<p><strong>Analysis Templates</strong>:</p>
+</li>
+<li>
+<p>Defines a templates for running various tests and analyses.    </p>
+</li>
+<li>The <code>loadtest</code> container runs the load testing script against the canary service (<code>vote-preview</code>).  </li>
+<li>The <code>fitness-test</code> job runs a test to validate if the new version is fit for deployment.  </li>
+<li>the <code>latency</code> analysis fetches latency metrics from Prometheus and checks if the application is responding in acceptable time frame even with load conditions.  </li>
 </ul>
-<h2 id="add-local-dns">Add Local DNS</h2>
-<p>You have created the ingress rules based on hostnames e.g.  <strong>vote.example.com</strong> and <strong>results.example.com</strong>. In order for you to be able to access those, there has to be a dns entry pointing to your nodes, which are running traefik.</p>
-<pre><code class="language-bash">
-  vote.example.com     -------+                        +----- vote:81
-                              |     +-------------+    |
-                              |     |   ingress   |    |
-                              +===&gt; |   node:80   | ===+
-                              |     +-------------+    |
-                              |                        |
-  results.example.com  -------+                        +----- results:82
-
-</code></pre>
-<p>To achieve this you need to either,</p>
+<p>⠀</p>
+<h4 id="how-it-works">How it Works</h4>
 <ul>
-<li>Create a DNS entry, provided you own the domain and have access to the dns management console.</li>
-<li>Create a local <strong>hosts</strong> file entry. On unix systems its in <code>/etc/hosts</code> file. On windows its at <code>C:\Windows\System32\drivers\etc\hosts</code>. You need admin access to edit this file.</li>
+<li>At each setWeight step, traffic is gradually shifted to the canary version.  </li>
+<li>The analysis step includes both the load test and the metric analysis.  </li>
+<li>The experiment runs for 3 minutes, during which the fitness test is conducted.  </li>
+<li>Simultaneously with load test , the analysis template checks Prometheus metrics to ensure the canary is performing correctly.  </li>
+<li>If the analysis detects errors beyond the acceptable threshold, the rollout will trigger a rollback.  </li>
+<li>If the canary passes the load test and analysis, the rollout proceeds to the next step.  </li>
 </ul>
-<p>For example, on a linux or osx, you could edit it as,</p>
-<pre><code>sudo vim /etc/hosts
-</code></pre>
-<p>And add an entry such as ,</p>
-<pre><code>xxx.xxx.xxx.xxx vote.example.com results.example.com  kube-ops-view.example.org
-</code></pre>
-<p>where,</p>
-<ul>
-<li>xxx.xxx.xxx.xxx is the actual IP address of one of the nodes running traefik.</li>
-</ul>
-<p>And then access the app urls using http://vote.example.com or http://results.example.com</p>
-<p><img alt="Name Based Routing" src="../images/domain-name.png" /></p>
-<h2 id="add-another-web-application-with-ingress">Add another  Web Application with Ingress</h2>
-<pre><code>kubectl create deployment nginx --image=nginx
-kubectl create service clusterip nginx --tcp=80
-</code></pre>
-<p>Add ingress rule</p>
-<p><code>file: web-ing.yaml</code></p>
-<pre><code>---
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+<p>⠀
+By configuring the experiment and analysis to run in parallel, you can ensure comprehensive testing and validation of the canary version, enabling automatic rollback if any issues are detected.</p>
+<h3 id="template-for-load-testing">Template for Load Testing</h3>
+<p>File <code>prod/loadtest-analysistemplate.yaml</code></p>
+<pre><code>apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
 metadata:
-  name: web
-  namespace: instavote
-  annotations:
-    kubernetes.io/ingress.class: traefik
-    traefik.ingress.kubernetes.io/rule-type: PathPrefixStrip
+  name: loadtest
 spec:
-  rules:
-  - host: web.example.com
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: nginx
-            port:
-              number: 80
+  metrics:
+  - name: loadtest-vote
+    provider:
+      job:
+        spec:
+          template:
+            spec:
+              containers:
+              - name: siege
+                image: schoolofdevops/loadtest:v1
+                command:
+                  - siege
+                  - &quot;--concurrent=2&quot;
+                  - &quot;--benchmark&quot;
+                  - &quot;--time=5m&quot;
+                  - &quot;--header='X-Canary: siege'&quot;
+                  - &quot;http://vote.example.com&quot;
+              restartPolicy: Never
+              hostAliases:
+              - ip: &quot;xx.xx.xx.xx&quot;
+                hostnames:
+                - &quot;vote.example.com&quot;
+          backoffLimit: 4
 </code></pre>
-<p>Source: <a href="https://gist.github.com/initcron/469b8d975c1c41a8423eb19ee2fd9c0f">Ingress for Web App · GitHub</a></p>
-<p>And update hosts file with new route as  ,</p>
-<pre><code>xxx.xxx.xxx.xxx vote.example.com web.example.com results.example.com kube-ops-view.example.org
+<p>where,
+* replace <code>xx.xx.xx.xx</code> with internal IP Address of <code>worker</code> node. Find out by using</p>
+<pre><code>kubectl get nodes -o wide
 </code></pre>
-<p>Visit  http://web.example.com:30400 to see your request being routed to nginx web page.  </p>
-<h2 id="mini-project-configure-ingress-for-result-app">Mini Project : Configure  Ingress  for Result App</h2>
-<p>Now that you have added the ingress rule for the vote app, follow the same method and add one for the result app as well which is running in the same namespace.</p>
-<p>The final validation would be, when you access or http://result.example.com you should see it pointing to the result app.</p>
-<h3 id="reading-resources">Reading Resources</h3>
-<ul>
-<li><a href="https://docs.traefik.io/user-guide/kubernetes/">Trafeik's Guide to Kubernetes Ingress Controller</a></li>
-<li><a href="https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/">Annotations</a></li>
-<li><a href="https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/">DaemonSets</a></li>
-</ul>
-<p><strong>References</strong></p>
-<ul>
-<li><a href="http://www.htaccesstools.com/htpasswd-generator/">Online htpasswd generator</a></li>
-</ul>
-<p><strong>Keywords</strong></p>
-<ul>
-<li>trafeik on kubernetes</li>
-<li>kubernetes ingress</li>
-<li>kubernetes annotations</li>
-<li>daemonsets</li>
-</ul>
+<p>[sample output]</p>
+<pre><code>NAME                 STATUS   ROLES           AGE     VERSION   INTERNAL-IP   EXTERNAL-IP   OS-IMAGE                         KERNEL-VERSION     CONTAINER-RUNTIME
+kind-control-plane   Ready    control-plane   2d23h   v1.30.0   172.18.0.2    &lt;none&gt;        Debian GNU/Linux 12 (bookworm)   6.8.0-31-generic   containerd://1.7.15
+kind-worker          Ready    &lt;none&gt;          2d23h   v1.30.0   172.18.0.4    &lt;none&gt;        Debian GNU/Linux 12 (bookworm)   6.8.0-31-generic   containerd://1.7.15
+kind-worker2         Ready    &lt;none&gt;          2d23h   v1.30.0   172.18.0.3    &lt;none&gt;        Debian GNU/Linux 12 (bookworm)   6.8.0-31-generic   containerd://1.7.15
+</code></pre>
+<p>From this output, you are going to use <code>172.18.0.4</code> in the configuration above.</p>
+<h3 id="analysistemplate-for-prometheus-metrics">AnalysisTemplate for Prometheus Metrics</h3>
+<p>File : <code>prod/latency-analysistemplate.yaml</code></p>
+<pre><code>apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: latency
+spec:
+  metrics:
+  - name: nginx-latency-ms
+    initialDelay: 1m
+    interval: 1m
+    failureLimit: 2
+    count: 4
+    successCondition: result &lt; 50.0
+    failureCondition: result &gt;= 50.0
+    provider:
+      prometheus:
+        address: http://prom-kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090
+        query: |
+          scalar(
+            1000 * histogram_quantile(0.99,
+              sum(
+                rate(
+                  nginx_ingress_controller_request_duration_seconds_bucket{ingress=&quot;vote&quot;, exported_namespace=&quot;prod&quot;}[1m]
+                )
+              ) by (le)
+            )
+          )
+</code></pre>
+<h3 id="fitness-test-for-canary">Fitness Test for Canary</h3>
+<p>File: <code>prod/fitness-analysistemplate.yaml</code></p>
+<pre><code>apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: canary-fitness-test
+spec:
+  metrics:
+  - name: canary-fitness
+    interval: 30s
+    count: 3
+    successCondition: result == &quot;true&quot;
+    failureLimit: 1
+    provider:
+      job:
+        spec:
+          template:
+            spec:
+              containers:
+              - name: fitness-test
+                image: curlimages/curl
+                command: [&quot;/bin/sh&quot;, &quot;-c&quot;]
+                args:
+                - |
+                  FITNESS_RESULT=&quot;false&quot;
+                  CANARY_SERVICE_URL=&quot;http://vote-preview&quot;
+
+                  # Perform the fitness test
+                  RESPONSE=$(curl -s $CANARY_SERVICE_URL)
+
+                  # Check if the response contains the expected string
+                  if [[ &quot;$RESPONSE&quot; == *&quot;Processed by container ID&quot;* ]]; then
+                    FITNESS_RESULT=&quot;true&quot;
+                  fi
+
+                  # Return the fitness test result
+                  echo $FITNESS_RESULT
+              restartPolicy: Never
+          backoffLimit: 1
+</code></pre>
+<h3 id="update-kustomization-for-prod">Update Kustomization for Prod</h3>
+<p>File : <code>prod/kustomization.yaml</code></p>
+<pre><code>apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- ../base
+- ingress.yaml
+- fitness-analysistemplate.yaml
+- latency-analysistemplate.yaml
+- loadtest-analysistemplate.yaml
+</code></pre>
+<p>apply</p>
+<pre><code>kustomize build prod
+kubectl apply -k prod
+</code></pre>
+<p>watch the rollout using</p>
+<pre><code>kubectl argo rollouts get rollout  vote
+</code></pre>
+<h3 id="_1"></h3>
+<hr />
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../kubernetes-configuration-management-configmaps-secrets/" class="btn btn-neutral float-left" title="Lab K110 - ConfigMaps & Secrets"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../helm/" class="btn btn-neutral float-right" title="Lab K113 - HELM Package Manager">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../argo_adv_sync/" class="btn btn-neutral float-left" title="Lab K703 - Advanced Sync Strategues"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../argo_multi_env_deploy/" class="btn btn-neutral float-right" title="Lab K704 - TBA">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -549,10 +635,10 @@ spec:
         </span>
     
     
-      <span><a href="../kubernetes-configuration-management-configmaps-secrets/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../argo_adv_sync/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../helm/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../argo_multi_env_deploy/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

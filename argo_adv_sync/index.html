@@ -3,18 +3,18 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/ingress/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/argo_adv_sync/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Lab K112 - Ingress - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <title>Lab K703 - Advanced Sync Strategues - Kubernetes Tutorial with CKA/CKAD Prep</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Lab K112 - Ingress";
-        var mkdocs_page_input_path = "ingress.md";
-        var mkdocs_page_url = "/ingress/";
+        var mkdocs_page_name = "Lab K703 - Advanced Sync Strategues";
+        var mkdocs_page_input_path = "argo_adv_sync.md";
+        var mkdocs_page_url = "/argo_adv_sync/";
       </script>
     
     <!--[if lt IE 9]>
@@ -65,7 +65,7 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Kubernetes Essentials for CKA/CKAD</span></p>
-              <ul class="current">
+              <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../kind_create_cluster/">Lab K101 - Install Kubernetes with KIND</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../kubernetes_quickdive/">Lab K102 - Kubernetes Quickdive</a>
@@ -84,25 +84,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../kubernetes-configuration-management-configmaps-secrets/">Lab K110 - ConfigMaps & Secrets</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K112 - Ingress</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#pre-requisites">Pre Requisites</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#launch-ingress-controller">Launch Ingress Controller</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#set-up-named-based-routing-for-vote-app">Set up Named Based Routing for Vote App</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#add-local-dns">Add Local DNS</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#add-another-web-application-with-ingress">Add another  Web Application with Ingress</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#mini-project-configure-ingress-for-result-app">Mini Project : Configure  Ingress  for Result App</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#reading-resources">Reading Resources</a>
-    </li>
-        </ul>
-    </li>
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../ingress/">Lab K112 - Ingress</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../helm/">Lab K113 - HELM Package Manager</a>
                   </li>
@@ -228,12 +210,28 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Argo Advanced</span></p>
-              <ul>
+              <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../argo_adv_setup/">Lab K701 - Setup CI/CD with GHA and Argo</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../argo_multi_tenant/">Lab K702 - Building Multi-Tenant Deployment System</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../argo_adv_sync/">Lab K703 - Advanced Sync Strategues</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K703 - Advanced Sync Strategues</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#app-of-apps-deployment">App of Apps Deployment</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#general-section">General Section</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#source-section">Source Section:</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#destination-section">Destination Section:</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#using-argo-hooks-to-create-waves">Using Argo Hooks to create Waves</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#using-helm-hooks-to-create-waves">Using Helm Hooks to create  Waves</a>
+    </li>
+    </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../argo_adv_prom_exp_analysis/">Lab K704 - Experiments and Analysis</a>
                   </li>
@@ -287,10 +285,10 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a> &raquo;</li>
-          <li>Kubernetes Essentials for CKA/CKAD &raquo;</li>
-      <li class="breadcrumb-item active">Lab K112 - Ingress</li>
+          <li>Argo Advanced &raquo;</li>
+      <li class="breadcrumb-item active">Lab K703 - Advanced Sync Strategues</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/ingress.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/argo_adv_sync.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -298,230 +296,169 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="lab-k201-application-routing-with-ingress-controllers">Lab K201 - Application Routing with Ingress Controllers</h1>
-<h2 id="pre-requisites">Pre Requisites</h2>
+                <h1 id="testing-advanced-sync-strategies">Testing Advanced Sync Strategies</h1>
+<p>Start by reading the articles on </p>
 <ul>
-<li>Ingress controller such as Nginx, Trafeik needs to be deployed before creating ingress resources.</li>
-<li>On GCE, ingress controller runs on the master. On all other installations, it needs to be deployed, either as a deployment, or a daemonset. In addition, a service needs to be created for ingress.</li>
-<li>Daemonset will run ingress on each node. Deployment will just create a highly available setup, which can then be exposed on specific nodes using ExternalIPs configuration in the service.</li>
+<li>Advanced Sync Strategies: <a href="https://kubernetes-tutorial.schoolofdevops.com/articles/argo_adv_sync_strategies/">ArgoCD Advanced Sync Strategies - Kubernetes Tutorial with CKA/CKAD Prep</a></li>
+<li>ArgoCD Sync Policies and Options: <a href="https://kubernetes-tutorial.schoolofdevops.com/articles/argo_sync_options/">ArgoCD Sync Options - Kubernetes Tutorial with CKA/CKAD Prep</a></li>
 </ul>
-<h2 id="launch-ingress-controller">Launch Ingress Controller</h2>
-<p>An ingress controller needs to be created in order to serve the ingress requests.  As part of this lab you are going to use <a href="https://traefik.io/">Traefik</a> as the ingress controller. Its a fast and lightweight ingress controller and also comes with great documentation and support.  </p>
-<pre><code class="language-bash">
-
-+----+----+--+            
-| ingress    |            
-| controller |            
-+----+-------+            
-
-
-</code></pre>
-<p>You are going to setup ingress controller using helm. Assuming helm is already installed, begin adding the repository to install traefik as a ingress controller from:</p>
-<pre><code>helm repo add traefik https://helm.traefik.io/traefik
-helm repo update
-
-</code></pre>
-<p>Pull Traffic Chart</p>
-<pre><code>helm pull  --untar traefik/traefik
-cd traefik
-</code></pre>
-<p>Create a  new file  <code>my.values.yaml</code> with the following contents</p>
-<pre><code>ports:
-  traefik:
-    port: 9000
-    expose: true
-    exposedPort: 9000
-    nodePort: 30300
-    protocol: TCP
-  web:
-    port: 8000
-    expose: true
-    exposedPort: 80
-    nodePort: 30400
-    protocol: TCP
-service:
-  enabled: true
-  single: true
-  type: NodePort
-</code></pre>
-<p>Source :  <a href="https://gist.github.com/initcron/f8099b32b456cb04e2e64263eaf9abfb">traefik deployment customization spec · GitHub</a></p>
-<p>Apply with the custom values file created as above,</p>
-<pre><code>kubectl create ns traefik
-helm install traefik --namespace=traefik --values=my.values.yaml .
-
-</code></pre>
-<p>Validate</p>
-<pre><code>helm list -A
-kubectl get all -n traefik
-</code></pre>
-<p>Use the following URIs to access Traefik and Traefik Dashboard ,</p>
+<p>To test the sync waves, lets setup the example app repository using app of apps pattern. </p>
+<h2 id="app-of-apps-deployment">App of Apps Deployment</h2>
+<p>Start by examining the example apps repo at (<a href="https://github.com/argoproj/argocd-example-apps">argoproj/argocd-example-apps: Example Apps to Demonstrate Argo CD</a>)</p>
+<p>Create a new App of Apps with ArgoCD </p>
+<h3 id="general-section">General Section</h3>
 <ul>
-<li>Traefik Web :  http://xx.xx.xx.xx:30400 (you may see 404 page not found error, which is okay and expected here).</li>
-<li>Traefik Dashboard :  http://xx.xx.xx.xx:30300/dashboard/  (training slash “/“ is a must)  (you are expected to a nice looking see Traefik dashboard here).</li>
+<li>Application Name : <code>app-of-apps</code></li>
+<li>Project : <code>default</code></li>
+<li>Sync Policy : <code>manual</code></li>
+<li>Set Delete Finalizer :  <code>checked</code> 
+<img alt="" src="../images/argo/62.png" /></li>
 </ul>
-<p><code>replace xx.xx.xx.xx with the external IP used earlier</code></p>
-<p><img alt="Traefik" src="../images/traefik01.png" /></p>
-<h2 id="set-up-named-based-routing-for-vote-app">Set up Named Based Routing for Vote App</h2>
-<p>We will direct all our request to the ingress controller now, but with differnt hostname e.g. <strong>vote.example.com</strong> or <strong>results.example.com</strong>. And it should direct to the correct service based on the host name.</p>
-<p>In order to achieve this you, as a user would create a <strong>ingress</strong> object with a set of rules,</p>
-<pre><code class="language-bash">
-
-+----+----+--+            
-| ingress    |            
-| controller |            
-+----+-------+            
-     |              +-----+----+
-     +---watch----&gt; | ingress  | &lt;------- user
-                    +----------+
-
+<h3 id="source-section">Source Section:</h3>
+<ul>
+<li>Repository URL : https://github.com/argoproj/argocd-example-apps.git</li>
+<li>Revision: <code>HEAD</code> </li>
+<li>Path: <code>apps</code>
+<img alt="" src="../images/argo/63.png" /></li>
+</ul>
+<h3 id="destination-section">Destination Section:</h3>
+<ul>
+<li>Cluster URL :  https://kubernetes.default.svc (default from dropdown)</li>
+<li>Namespace : <code>argocd</code>
+<img alt="" src="../images/argo/64.png" /></li>
+</ul>
+<p>Create the app and then manually <code>SYNC</code> it. When </p>
+<p><img alt="" src="../images/argo/65.png" /></p>
+<p>Once you sync it, you shall see it creates a group of apps. This is the app of apps pattern.   All these apps are added to argocd namespace. </p>
+<p>You could validate it from CLI as, </p>
+<pre><code>kubectl get apps -n argocd
 </code></pre>
-<p><code>file: vote-ing.yaml</code></p>
+<p>[Expected Output]</p>
+<pre><code>NAME                  SYNC STATUS   HEALTH STATUS
+app-of-apps           Synced        Healthy
+helm-guestbook        OutOfSync     Missing
+helm-hooks            OutOfSync     Missing
+kustomize-guestbook   OutOfSync     Missing
+sync-waves            OutOfSync     Missing
+</code></pre>
+<pre><code>kubectl get namespace
+</code></pre>
+<p>[Expected Output]</p>
+<pre><code>
+NAME                  STATUS   AGE
+helm-guestbook        Active   62s
+helm-hooks            Active   62s
+kube-system           Active   34h
+kustomize-guestbook   Active   62s
+sync-waves            Active   62s
+</code></pre>
+<p>These are the namespaces created by this app of app deployment. In addition you would see your existing namespaces too. </p>
+<h2 id="using-argo-hooks-to-create-waves">Using Argo Hooks to create Waves</h2>
+<p>Examine the sync wave manifest here : <a href="https://github.com/argoproj/argocd-example-apps/tree/master/sync-waves">argocd-example-apps/sync-waves at master · argoproj/argocd-example-apps</a></p>
+<p>Sample code snippets which define the 
+* PreSync Hook
+* Sync Hook
+  * sync-wave : 0/1/2/3</p>
 <pre><code>---
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+apiVersion: batch/v1
+kind: Job
 metadata:
-  name: vote
-  namespace: instavote
+  generateName: upgrade-sql-schema
   annotations:
-    kubernetes.io/ingress.class: traefik
-    traefik.ingress.kubernetes.io/rule-type: PathPrefixStrip
-spec:
-  rules:
-  - host: vote.example.com
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: vote
-            port:
-              number: 80  
+    argocd.argoproj.io/hook: PreSync
 </code></pre>
-<p>And apply</p>
-<pre><code>kubectl get ing
-kubectl apply -f vote-ing.yaml --dry-run
-kubectl apply -f vote-ing.yaml
+<pre><code>apiVersion: batch/v1
+kind: Job
+metadata:
+  name: maint-page-up
+  annotations:
+    argocd.argoproj.io/hook: Sync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+    argocd.argoproj.io/sync-wave: &quot;1&quot;
 </code></pre>
-<p>Since the ingress controller  is constantly monitoring for the ingress objects, the moment it detects, it connects with traefik and creates a rule as follows.</p>
-<pre><code class="language-bash">
-                    +----------+
-     +--create----&gt; | traefik  |
-     |              |  rules   |
-     |              +----------+
-+----+----+--+            ^
-| ingress    |            :
-| controller |            :
-+----+-------+            :
-     |              +-----+----+
-     +---watch----&gt; | ingress  | &lt;------- user
-                    +----------+
+<pre><code>apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: frontend
+  annotations:
+    argocd.argoproj.io/sync-wave: &quot;2&quot;
+</code></pre>
+<pre><code>apiVersion: batch/v1
+kind: Job
+metadata:
+  name: maint-page-down
+  annotations:
+    argocd.argoproj.io/hook: Sync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+    argocd.argoproj.io/sync-wave: &quot;3&quot;
+</code></pre>
+<p>start watching for pods  in <code>sync-waves</code> namespace </p>
+<pre><code>watch kubectl get pods -n sync-waves
+</code></pre>
+<p>Select sync wave app from ArgoCD and sync it manually.  </p>
+<p>You will see it syncing in a certain sequence based on the config in the manifest. 
+<img alt="" src="../images/argo/66.png" /></p>
+<p>You could also observe on the CLI which shows you as the resources are creates/synced</p>
+<pre><code>Every 2.0s: kubectl get pods -n sync-waves                                dkr-01: Mon Feb 24 16:34:00 2025
+
+NAME                                                     READY   STATUS      RESTARTS   AGE
+pod/backend-c2j4t                                        1/1     Running     0          4m4s
+pod/frontend-c6k25                                       1/1     Running     0          3m53s
+pod/maint-page-down-llhsl                                0/1     Completed   0          3m49s
+pod/maint-page-up-cmqlq                                  0/1     Completed   0          4m
+pod/upgrade-sql-schema4773b9f-presync-1740414585-4jzdn   0/1     Completed   0          4m15s
 
 </code></pre>
-<p>where,</p>
-<ul>
-<li>A user creates a ingress object with the rules. This could be a named based or a path based routing.</li>
-<li>An ingress controller, in this example traefik constantly monitors for ingress objects. The moment it detects one, it creates a rule and adds it to the traefik load balancer. This rule maps to the ingress specs.</li>
-</ul>
-<p>You could now see the rule added to ingress controller,</p>
-<p><img alt="Traefik with Ingress Rules" src="../images/traefik02.png" /></p>
-<p>Where,</p>
-<ul>
-<li>
-<p><strong>vote.example.com</strong> is  added as frontend. This frontends point to  service <strong>vote</strong>.</p>
-</li>
-<li>
-<p>respective backend also appear on the right hand side of the screen, mapping to each of the service.</p>
-</li>
-</ul>
-<h2 id="add-local-dns">Add Local DNS</h2>
-<p>You have created the ingress rules based on hostnames e.g.  <strong>vote.example.com</strong> and <strong>results.example.com</strong>. In order for you to be able to access those, there has to be a dns entry pointing to your nodes, which are running traefik.</p>
-<pre><code class="language-bash">
-  vote.example.com     -------+                        +----- vote:81
-                              |     +-------------+    |
-                              |     |   ingress   |    |
-                              +===&gt; |   node:80   | ===+
-                              |     +-------------+    |
-                              |                        |
-  results.example.com  -------+                        +----- results:82
-
+<h2 id="using-helm-hooks-to-create-waves">Using Helm Hooks to create  Waves</h2>
+<p>Examine the helm hooks <a href="https://github.com/argoproj/argocd-example-apps/tree/master/helm-hooks">argocd-example-apps/helm-hooks at master · argoproj/argocd-example-apps</a></p>
+<p>Sample code with 
+* helm hooks
+* pre and post install hooks
+* hook weights </p>
+<pre><code>apiVersion: batch/v1
+kind: Job
+metadata:
+  generateName: upgrade-sql-schema
+  annotations:
+    helm.sh/hook: pre-install
+    helm.sh/hook-weight: &quot;-2&quot;
 </code></pre>
-<p>To achieve this you need to either,</p>
-<ul>
-<li>Create a DNS entry, provided you own the domain and have access to the dns management console.</li>
-<li>Create a local <strong>hosts</strong> file entry. On unix systems its in <code>/etc/hosts</code> file. On windows its at <code>C:\Windows\System32\drivers\etc\hosts</code>. You need admin access to edit this file.</li>
-</ul>
-<p>For example, on a linux or osx, you could edit it as,</p>
-<pre><code>sudo vim /etc/hosts
-</code></pre>
-<p>And add an entry such as ,</p>
-<pre><code>xxx.xxx.xxx.xxx vote.example.com results.example.com  kube-ops-view.example.org
-</code></pre>
-<p>where,</p>
-<ul>
-<li>xxx.xxx.xxx.xxx is the actual IP address of one of the nodes running traefik.</li>
-</ul>
-<p>And then access the app urls using http://vote.example.com or http://results.example.com</p>
-<p><img alt="Name Based Routing" src="../images/domain-name.png" /></p>
-<h2 id="add-another-web-application-with-ingress">Add another  Web Application with Ingress</h2>
-<pre><code>kubectl create deployment nginx --image=nginx
-kubectl create service clusterip nginx --tcp=80
-</code></pre>
-<p>Add ingress rule</p>
-<p><code>file: web-ing.yaml</code></p>
 <pre><code>---
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+apiVersion: batch/v1
+kind: Job
 metadata:
-  name: web
-  namespace: instavote
+  name: maint-page-up
   annotations:
-    kubernetes.io/ingress.class: traefik
-    traefik.ingress.kubernetes.io/rule-type: PathPrefixStrip
-spec:
-  rules:
-  - host: web.example.com
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: nginx
-            port:
-              number: 80
+    helm.sh/hook: pre-install
+    helm.sh/hook-delete-policy: before-hook-creation
+    helm.sh/hook-weight: &quot;-1&quot;
 </code></pre>
-<p>Source: <a href="https://gist.github.com/initcron/469b8d975c1c41a8423eb19ee2fd9c0f">Ingress for Web App · GitHub</a></p>
-<p>And update hosts file with new route as  ,</p>
-<pre><code>xxx.xxx.xxx.xxx vote.example.com web.example.com results.example.com kube-ops-view.example.org
+<pre><code>---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  annotations:
+    helm.sh/hook-weight: &quot;2&quot;
 </code></pre>
-<p>Visit  http://web.example.com:30400 to see your request being routed to nginx web page.  </p>
-<h2 id="mini-project-configure-ingress-for-result-app">Mini Project : Configure  Ingress  for Result App</h2>
-<p>Now that you have added the ingress rule for the vote app, follow the same method and add one for the result app as well which is running in the same namespace.</p>
-<p>The final validation would be, when you access or http://result.example.com you should see it pointing to the result app.</p>
-<h3 id="reading-resources">Reading Resources</h3>
-<ul>
-<li><a href="https://docs.traefik.io/user-guide/kubernetes/">Trafeik's Guide to Kubernetes Ingress Controller</a></li>
-<li><a href="https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/">Annotations</a></li>
-<li><a href="https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/">DaemonSets</a></li>
-</ul>
-<p><strong>References</strong></p>
-<ul>
-<li><a href="http://www.htaccesstools.com/htpasswd-generator/">Online htpasswd generator</a></li>
-</ul>
-<p><strong>Keywords</strong></p>
-<ul>
-<li>trafeik on kubernetes</li>
-<li>kubernetes ingress</li>
-<li>kubernetes annotations</li>
-<li>daemonsets</li>
-</ul>
+<pre><code>---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: maint-page-down
+  annotations:
+    helm.sh/hook: post-install
+    helm.sh/hook-delete-policy: before-hook-creation
+</code></pre>
+<p>Sync the <code>helm-hooks</code>  app to examine how it woks.  You will notrice that it helps you achieve the same result as with the <code>sync-waves</code> with argo. </p>
+<p>Once you are done experimenting with these examples, clean up everything by removing the <code>app-of-apps</code> application that you created with ArgoCD, which will also clean up the child apps and all the resources created by it.  </p>
+<h1 id="coursesargolabsadv">courses/argo/labs/adv</h1>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../kubernetes-configuration-management-configmaps-secrets/" class="btn btn-neutral float-left" title="Lab K110 - ConfigMaps & Secrets"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../helm/" class="btn btn-neutral float-right" title="Lab K113 - HELM Package Manager">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../argo_multi_tenant/" class="btn btn-neutral float-left" title="Lab K702 - Building Multi-Tenant Deployment System"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../argo_adv_prom_exp_analysis/" class="btn btn-neutral float-right" title="Lab K704 - Experiments and Analysis">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -549,10 +486,10 @@ spec:
         </span>
     
     
-      <span><a href="../kubernetes-configuration-management-configmaps-secrets/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../argo_multi_tenant/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../helm/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../argo_adv_prom_exp_analysis/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
