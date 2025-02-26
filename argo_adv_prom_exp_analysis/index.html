@@ -469,7 +469,7 @@ It may look similar to this, with possibly less data initially
 <p>In this section, we will configure canary rollout configurations with experiments and analysis using ArgoCD. We will set up a canary deployment strategy, define experiments for testing, and analyze the results to ensure the stability and performance of our applications before fully rolling them out to production.</p>
 <p>Experiments and analysis are crucial components of the canary deployment strategy. Experiments involve running a temporary version of the application alongside the stable version to observe its behavior under real-world conditions. Analysis, on the other hand, involves collecting and evaluating metrics from these experiments to determine if the new version meets the desired performance and stability criteria. The purpose of these steps is to ensure that any issues are detected early, allowing for automatic rollbacks if necessary, thus minimizing the risk of deploying faulty updates to production.</p>
 <p>Lets first update the canary rollout configuration to include experiments and analysis. </p>
-<p>Since we are using helm charts to deploy our application, we will need to update the relevant files in initcron-gitops repo. </p>
+<p>Since we are using helm charts to deploy our application, we will need to update the relevant files in <code>instavote-gitops</code> repo. </p>
 <p>File: <code>instavote-gitops/charts/vote/env/prod.yaml</code></p>
 <pre><code>canary:
   steps:
