@@ -231,6 +231,8 @@
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#redeploy-nginx-ingress-controller">Redeploy Nginx Ingress Controller</a>
     </li>
+    <li class="toctree-l3"><a class="reference internal" href="#add-local-dns-for-vote-app">Add Local DNS for Vote App</a>
+    </li>
     <li class="toctree-l3"><a class="reference internal" href="#setup-grafana-dashboard-for-nginx-ingress-controller">Setup Grafana Dashboard for Nginx Ingress Controller</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#configure-canary-rollout-configuration-with-experiment-and-analysis">Configure Canary Rollout Configuration with Experiment and Analysis</a>
@@ -450,6 +452,41 @@ Pass: prom-operator
   --set-string controller.nodeSelector.ingress-ready=&quot;true&quot;
 
 </code></pre>
+<h3 id="add-local-dns-for-vote-app">Add Local DNS for Vote App</h3>
+<p>As part of app deployment, you have created the ingress rules based on hostnames e.g.  <strong>vote.example.com</strong>. You could validate this by running the following command</p>
+<pre><code>kubectl get ingress -n instavote-prod
+</code></pre>
+<p>In order for you to be able to access this app from browser using hostname, there has to be a dns entry pointing to your nodes, which is running as nginx (exposed via nodeport).</p>
+<pre><code class="language-bash">
+  vote.example.com     -------+                        +----- vote:80
+                              |     +-------------+    |  (namespace= prod)
+                              |     |   ingress   |    |
+                              +===&gt; |   node:80   | ===+
+                              |     +-------------+    |
+                              |                        |  (namespace= xyz)
+   xyz.example.com     -------+                        +----- xyz:80
+
+</code></pre>
+<p>To achieve this you need to either,</p>
+<ul>
+<li>Create a DNS entry, provided you own the domain and have access to the dns management console.</li>
+<li>Create a local <strong>hosts</strong> file entry. On unix systems its in <code>/etc/hosts</code> file. On windows its at <code>C:\Windows\System32\drivers\etc\hosts</code>. You need admin access to edit this file.</li>
+</ul>
+<p>For example, on a linux or osx, you could edit it as,</p>
+<pre><code>sudo vim /etc/hosts
+</code></pre>
+<p>And add an entry such as ,</p>
+<pre><code>xxx.xxx.xxx.xxx vote.example.com 
+</code></pre>
+<p>where,</p>
+<ul>
+<li>xxx.xxx.xxx.xxx is the actual IP address of one of the nodes running traefik.</li>
+</ul>
+<p>e.g with KIND based environment </p>
+<pre><code>127.0.0.01 vote.example.com 
+</code></pre>
+<p>And then access the app urls using http://vote.example.com </p>
+<p><img alt="Name Based Routing" src="../images/domain-name.png" /></p>
 <h3 id="setup-grafana-dashboard-for-nginx-ingress-controller">Setup Grafana Dashboard for Nginx Ingress Controller</h3>
 <p>Now, login to grafana and import custom dashboard for Nginx Ingress as</p>
 <ul>
