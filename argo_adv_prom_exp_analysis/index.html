@@ -219,17 +219,9 @@
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K704 - Experiments and Analysis</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#prepwork">Prepwork</a>
+    </li>
     <li class="toctree-l2"><a class="reference internal" href="#setup-argocd-extension-for-rollout-visualization">Setup ArgoCD Extension for Rollout Visualization</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#step-1-save-the-patch-to-a-file">Step 1: Save the Patch to a File</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#step-2-apply-the-patch">Step 2: Apply the Patch</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#step-3-restart-the-argocd-server">Step 3: Restart the ArgoCD Server</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#step-4-verify-the-deployment">Step 4: Verify the Deployment</a>
-    </li>
-        </ul>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#setup-metrics-server">Setup Metrics Server</a>
     </li>
@@ -239,27 +231,29 @@
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#setup-grafana-dashboard-for-nginx-ingress-controller">Setup Grafana Dashboard for Nginx Ingress Controller</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#updated-rollout-configuration-with-experiment-and-analysis">Updated Rollout Configuration with Experiment and Analysis</a>
+    <li class="toctree-l3"><a class="reference internal" href="#configure-canary-rollout-configuration-with-experiment-and-analysis">Configure Canary Rollout Configuration with Experiment and Analysis</a>
         <ul>
     <li class="toctree-l4"><a class="reference internal" href="#explanation">Explanation</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#how-it-works">How it Works</a>
     </li>
-        </ul>
+    <li class="toctree-l4"><a class="reference internal" href="#1-fitness-test-experiment-for-canary">1. Fitness Test Experiment for Canary</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#template-for-load-testing">Template for Load Testing</a>
+    <li class="toctree-l4"><a class="reference internal" href="#2-analysis-template-for-load-testing">2. Analysis Template for Load Testing</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#analysistemplate-for-prometheus-metrics">AnalysisTemplate for Prometheus Metrics</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#fitness-test-for-canary">Fitness Test for Canary</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#update-helm-for-prod">Update HELM for Prod</a>
+    <li class="toctree-l4"><a class="reference internal" href="#3-analysistemplate-with-latecy-metrics-from-prometheus">3. AnalysisTemplate with Latecy Metrics from Prometheus</a>
     </li>
         </ul>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#cleaning-up">Cleaning Up</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#summary">Summary</a>
     </li>
     </ul>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../argo_multi_env_deploy/">Lab K704 - TBA</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_kargo/">Lab K704 - Kargo</a>
                   </li>
                   <li class="toctree-l1"><a class="" href="../argo_workflow_examples.md">Lab K705 - TBA</a>
                   </li>
@@ -321,9 +315,22 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="analysis-and-experiments">Analysis and Experiments</h1>
+<p>In this lab, we aim to explore advanced deployment strategies using ArgoCD and Prometheus. We will set up and configure ArgoCD to visualize rollouts, deploy a metrics server for monitoring, and integrate Prometheus and Grafana for sophisticated monitoring and analysis. Additionally, we will implement canary deployments with experiments and analysis to ensure the stability and performance of our applications before fully rolling them out to production. This comprehensive approach will help us achieve reliable and efficient continuous delivery in our Kubernetes environment.</p>
+<h2 id="prepwork">Prepwork</h2>
+<p>Delete the previous appset and clean up the application deployments using, </p>
+<pre><code>kubectl delete appset instavote -n argocd 
+</code></pre>
+<p>Reconfigure the appset to launch only <code>vote</code> app in prod.  <a href="https://gist.githubusercontent.com/initcron/a5928b1fc4fad138045d88135faf0e44/raw/0e4bc43e3ee4c79c5c7075a03f34c01441fa6376/instavote-appset-vote-prod.yaml">You could use this code as reference</a></p>
+<pre><code>wget -c https://gist.githubusercontent.com/initcron/a5928b1fc4fad138045d88135faf0e44/raw/0e4bc43e3ee4c79c5c7075a03f34c01441fa6376/instavote-appset-vote-prod.yaml
+
+kubectl apply -f instavote-appset-vote-prod.yaml
+</code></pre>
+<p>validate </p>
+<pre><code>kubectl get appset,app -n argocd    
+</code></pre>
 <h2 id="setup-argocd-extension-for-rollout-visualization">Setup ArgoCD Extension for Rollout Visualization</h2>
 <p>To apply the ArgoCD server patch to install the Argo Rollouts extension, follow these steps:</p>
-<h3 id="step-1-save-the-patch-to-a-file"><strong>Step 1: Save the Patch to a File</strong></h3>
+<p><strong>Step 1: Save the Patch to a File</strong></p>
 <p>Create a new YAML file, e.g., <code>argocd-rollouts-extension-patch.yaml</code>, and add the following content:</p>
 <pre><code class="language-yaml">apiVersion: apps/v1
 kind: Deployment
@@ -353,22 +360,25 @@ spec:
         - name: extensions
           emptyDir: {}
 </code></pre>
-<h3 id="step-2-apply-the-patch"><strong>Step 2: Apply the Patch</strong></h3>
+<p><strong>Step 2: Apply the Patch</strong></p>
+<p>You could add the rollout extenstion so that you could view the progress of canary/blue/green deployments right from ArgoCD UI.</p>
 <p>Run the following command to apply the patch to the <code>argocd-server</code> deployment:</p>
 <pre><code class="language-bash">kubectl patch deployment argocd-server -n argocd --patch-file argocd-rollouts-extension-patch.yaml
 </code></pre>
-<h3 id="step-3-restart-the-argocd-server"><strong>Step 3: Restart the ArgoCD Server</strong></h3>
+<p><strong>Step 3: Restart the ArgoCD Server</strong></p>
 <p>After applying the patch, restart the ArgoCD server to ensure changes take effect:</p>
 <pre><code class="language-bash">kubectl rollout restart deployment argocd-server -n argocd
 </code></pre>
-<h3 id="step-4-verify-the-deployment"><strong>Step 4: Verify the Deployment</strong></h3>
-<p>Check if the <code>argocd-server</code> deployment includes the new <code>initContainers</code> section:</p>
+<p><strong>Step 4: Verify the Deployment</strong>
+Check if the <code>argocd-server</code> deployment includes the new <code>initContainers</code> section:</p>
 <pre><code class="language-bash">kubectl get deployment argocd-server -n argocd -o yaml | grep -A 10 &quot;initContainers:&quot;
 </code></pre>
 <p>To validate, try accessing your <strong>ArgoCD UI</strong>, navigate to an application, and you should see the <strong>"Rollout" tab</strong> under the app details. 🚀</p>
 <p><img alt="" src="../images/argo/67.png" />
 <img alt="" src="../images/argo/68.png" /></p>
+<hr />
 <h2 id="setup-metrics-server">Setup Metrics Server</h2>
+<p>Its importantt to have metrics server to get the essential pod and node monitoring data. </p>
 <p>If you try to pull monitoring information using the following commands</p>
 <pre><code>kubectl top pod
 
@@ -402,7 +412,8 @@ kind-worker2         31m          1%     422Mi           10%
 </code></pre>
 <p>If you see a similar output, monitoring is now been setup.</p>
 <h2 id="deploy-prometheus-and-grafana">Deploy Prometheus and Grafana</h2>
-<p>Set up repository</p>
+<p>To further setup sophisticated monitoring, we will deploy Prometheus and Grafana.</p>
+<p>Begin by setting up the helm repository</p>
 <pre><code>helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 helm repo update
 </code></pre>
@@ -423,7 +434,7 @@ Pass: prom-operator
 <p>First, uninstall nginx ingress conroller as,</p>
 <pre><code>helm un ingress-nginx -n ingress-nginx
 </code></pre>
-<p>Re deploy nginx ingress controller with helm, this time enabling the exposing the metrics which can then be scraped/collected by prometheus.</p>
+<p>Re deploy nginx ingress controller with helm, this time enabling the exposing the metrics which can then be scraped/collected by prometheus. This will automatically integrate nginx with prometheus.</p>
 <pre><code>helm upgrade --install ingress-nginx ingress-nginx \
   --repo https://kubernetes.github.io/ingress-nginx \
   --namespace ingress-nginx --create-namespace \
@@ -452,7 +463,11 @@ It may look similar to this, with possibly less data initially
 <img alt="" src="../images/grafana-01.png" /></p>
 <p>However, if you see some metric coming in, your setup with Nginx Ingress and Promethus Integration is working ! You may pat your back at this time :)</p>
 <hr />
-<h3 id="updated-rollout-configuration-with-experiment-and-analysis">Updated Rollout Configuration with Experiment and Analysis</h3>
+<h3 id="configure-canary-rollout-configuration-with-experiment-and-analysis">Configure Canary Rollout Configuration with Experiment and Analysis</h3>
+<p>In this section, we will configure canary rollout configurations with experiments and analysis using ArgoCD. We will set up a canary deployment strategy, define experiments for testing, and analyze the results to ensure the stability and performance of our applications before fully rolling them out to production.</p>
+<p>Experiments and analysis are crucial components of the canary deployment strategy. Experiments involve running a temporary version of the application alongside the stable version to observe its behavior under real-world conditions. Analysis, on the other hand, involves collecting and evaluating metrics from these experiments to determine if the new version meets the desired performance and stability criteria. The purpose of these steps is to ensure that any issues are detected early, allowing for automatic rollbacks if necessary, thus minimizing the risk of deploying faulty updates to production.</p>
+<p>Lets first update the canary rollout configuration to include experiments and analysis. </p>
+<p>Since we are using helm charts to deploy our application, we will need to update the relevant files in initcron-gitops repo. </p>
 <p>File: <code>instavote-gitops/charts/vote/env/prod.yaml</code></p>
 <pre><code>canary:
   steps:
@@ -461,7 +476,7 @@ It may look similar to this, with possibly less data initially
     - experiment:
         duration: 3m
         templates:
-        - name: canary
+        - name: fitness
           specRef: canary
           service:
             name: experiment
@@ -519,7 +534,49 @@ It may look similar to this, with possibly less data initially
 </ul>
 <p>⠀
 By configuring the experiment and analysis to run in parallel, you can ensure comprehensive testing and validation of the canary version, enabling automatic rollback if any issues are detected.</p>
-<h3 id="template-for-load-testing">Template for Load Testing</h3>
+<p>Let's now create the experiment and analysis templates.</p>
+<h4 id="1-fitness-test-experiment-for-canary">1. Fitness Test Experiment for Canary</h4>
+<p>File: <code>intstavote-gitops/charts/vote/templates/fitness-analysistemplate.yaml</code></p>
+<pre><code>apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: canary-fitness-test
+spec:
+  metrics:
+  - name: canary-fitness
+    interval: 30s
+    count: 3
+    successCondition: result == &quot;true&quot;
+    failureLimit: 1
+    provider:
+      job:
+        spec:
+          template:
+            spec:
+              containers:
+              - name: fitness-test
+                image: curlimages/curl
+                command: [&quot;/bin/sh&quot;, &quot;-c&quot;]
+                args:
+                - |
+                  FITNESS_RESULT=&quot;false&quot;
+                  CANARY_SERVICE_URL=&quot;http://vote-canary&quot;
+
+                  # Perform the fitness test
+                  RESPONSE=$(curl -s $CANARY_SERVICE_URL)
+
+                  # Check if the response contains the expected string
+                  if [[ &quot;$RESPONSE&quot; == *&quot;Processed by container ID&quot;* ]]; then
+                    FITNESS_RESULT=&quot;true&quot;
+                  fi
+
+                  # Return the fitness test result
+                  echo $FITNESS_RESULT
+              restartPolicy: Never
+          backoffLimit: 1
+</code></pre>
+<p>where, replace <code>CANARY_SERVICE_URL="http://vote-canary"</code> with the actual URL of the canary service.</p>
+<h4 id="2-analysis-template-for-load-testing">2. Analysis Template for Load Testing</h4>
 <p>File <code>intstavote-gitops/charts/vote/templates/loadtest-analysistemplate.yaml</code></p>
 <pre><code>apiVersion: argoproj.io/v1alpha1
 kind: AnalysisTemplate
@@ -561,7 +618,7 @@ kind-worker          Ready    &lt;none&gt;          2d23h   v1.30.0   172.18.0.4
 kind-worker2         Ready    &lt;none&gt;          2d23h   v1.30.0   172.18.0.3    &lt;none&gt;        Debian GNU/Linux 12 (bookworm)   6.8.0-31-generic   containerd://1.7.15
 </code></pre>
 <p>From this output, you are going to use <code>172.18.0.4</code> in the configuration above.</p>
-<h3 id="analysistemplate-for-prometheus-metrics">AnalysisTemplate for Prometheus Metrics</h3>
+<h4 id="3-analysistemplate-with-latecy-metrics-from-prometheus">3. AnalysisTemplate with Latecy Metrics from Prometheus</h4>
 <p>File : <code>intstavote-gitops/charts/vote/templates/latency-analysistemplate.yaml</code></p>
 <pre><code>apiVersion: argoproj.io/v1alpha1
 kind: AnalysisTemplate
@@ -590,48 +647,7 @@ spec:
             )
           )
 </code></pre>
-<h3 id="fitness-test-for-canary">Fitness Test for Canary</h3>
-<p>File: <code>intstavote-gitops/charts/vote/templates/fitness-analysistemplate.yaml</code></p>
-<pre><code>apiVersion: argoproj.io/v1alpha1
-kind: AnalysisTemplate
-metadata:
-  name: canary-fitness-test
-spec:
-  metrics:
-  - name: canary-fitness
-    interval: 30s
-    count: 3
-    successCondition: result == &quot;true&quot;
-    failureLimit: 1
-    provider:
-      job:
-        spec:
-          template:
-            spec:
-              containers:
-              - name: fitness-test
-                image: curlimages/curl
-                command: [&quot;/bin/sh&quot;, &quot;-c&quot;]
-                args:
-                - |
-                  FITNESS_RESULT=&quot;false&quot;
-                  CANARY_SERVICE_URL=&quot;http://vote-canary&quot;
-
-                  # Perform the fitness test
-                  RESPONSE=$(curl -s $CANARY_SERVICE_URL)
-
-                  # Check if the response contains the expected string
-                  if [[ &quot;$RESPONSE&quot; == *&quot;Processed by container ID&quot;* ]]; then
-                    FITNESS_RESULT=&quot;true&quot;
-                  fi
-
-                  # Return the fitness test result
-                  echo $FITNESS_RESULT
-              restartPolicy: Never
-          backoffLimit: 1
-</code></pre>
-<p>where, replace <code>CANARY_SERVICE_URL="http://vote-canary"</code> with the actual URL of the canary service.</p>
-<h3 id="update-helm-for-prod">Update HELM for Prod</h3>
+<h5 id="commit-and-push-the-helm-chart">Commit and push the Helm Chart</h5>
 <p>validate </p>
 <pre><code>helm template vote --values env/prod.yaml .
 </code></pre>
@@ -640,6 +656,7 @@ spec:
 git add *
 git status
 git commit -am &quot;added fitness test and prometheus analysis&quot;
+git push origin main
 
 </code></pre>
 <p>If you are mapping prod to release branch, raise a PR and merge the changes to release branch.</p>
@@ -647,13 +664,37 @@ git commit -am &quot;added fitness test and prometheus analysis&quot;
 <pre><code>kubectl argo rollouts list rollout -A
 watch kubectl argo rollouts get rollout  vote-prod -n instavote-prod
 </code></pre>
-<hr />
+<p>More commands to watch the progressive canary with </p>
+<pre><code>kubectl get ar -A
+kubectl get exp -A
+kubectl get pods,jobs
+</code></pre>
+<p>You could also watch the rollout using the web UI.</p>
+<p><img alt="" src="../images/argo/68.png" /></p>
+<h2 id="cleaning-up">Cleaning Up</h2>
+<p>Once you are done with the lab, you can delete the components created during this lab using the following commands.</p>
+<pre><code># Delete Appsets along with Applications
+kubectl delete appset instavote -n argocd 
+helm uninstall -n monitoring prom  
+
+# From the path where you cloned the repo
+kubectl delete -k metrics-server/manifests/overlays/release
+
+# Uninstall Nginx Ingress Controller
+helm uninstall -n ingress-nginx ingress-nginx
+
+# Delete Argo Image Updater 
+kubectl delete -n argocd -f https://raw.githubusercontent.com/argoproj-labs/argocd-image-updater/stable/manifests/install.yaml
+
+</code></pre>
+<h2 id="summary">Summary</h2>
+<p>In this lab, we explored advanced deployment strategies using ArgoCD and Prometheus. We set up and configured ArgoCD to visualize rollouts, deployed a metrics server for monitoring, and integrated Prometheus and Grafana for sophisticated monitoring and analysis. We implemented canary deployments with experiments and analysis to ensure the stability and performance of our applications before fully rolling them out to production. By leveraging these tools and techniques, we achieved reliable and efficient continuous delivery in our Kubernetes environment, ensuring that any issues are detected early and allowing for automatic rollbacks if necessary. This comprehensive approach helps minimize the risk of deploying faulty updates to production and ensures the overall stability and performance of our applications.</p>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
         <a href="../argo_adv_sync/" class="btn btn-neutral float-left" title="Lab K703 - Advanced Sync Strategues"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../argo_multi_env_deploy/" class="btn btn-neutral float-right" title="Lab K704 - TBA">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../argo_kargo/" class="btn btn-neutral float-right" title="Lab K704 - Kargo">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -684,7 +725,7 @@ watch kubectl argo rollouts get rollout  vote-prod -n instavote-prod
       <span><a href="../argo_adv_sync/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../argo_multi_env_deploy/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../argo_kargo/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
