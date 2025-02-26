@@ -221,20 +221,30 @@
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K704 - Experiments and Analysis</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#prepwork">Prepwork</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#setup-argocd-extension-for-rollout-visualization">Setup ArgoCD Extension for Rollout Visualization</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#setup-metrics-server">Setup Metrics Server</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#deploy-prometheus-and-grafana">Deploy Prometheus and Grafana</a>
+    <li class="toctree-l2"><a class="reference internal" href="#stage-0-prepwork">Stage 0 - Prepwork</a>
         <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#minimize-applicationset-footprint">Minimize ApplicationSet Footprint</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#setup-argocd-extension-for-rollout-visualization">Setup ArgoCD Extension for Rollout Visualization</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#stage-1-setup-monitoring-with-ingress-and-prometheus">Stage 1 - Setup Monitoring with Ingress and Prometheus</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#setup-metrics-server">Setup Metrics Server</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#deploy-prometheus-and-grafana">Deploy Prometheus and Grafana</a>
+    </li>
     <li class="toctree-l3"><a class="reference internal" href="#redeploy-nginx-ingress-controller">Redeploy Nginx Ingress Controller</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#setup-grafana-dashboard-for-nginx-ingress-controller">Setup Grafana Dashboard for Nginx Ingress Controller</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#add-local-dns-to-access-the-vote-app-via-browser">Add Local DNS to access the Vote App via Browser</a>
     </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#stage-2-full-fledged-canary-rollout">Stage 2 - Full Fledged Canary Rollout</a>
+        <ul>
     <li class="toctree-l3"><a class="reference internal" href="#configure-canary-rollout-configuration-with-experiment-and-analysis">Configure Canary Rollout Configuration with Experiment and Analysis</a>
         <ul>
     <li class="toctree-l4"><a class="reference internal" href="#explanation">Explanation</a>
@@ -249,9 +259,9 @@
     </li>
         </ul>
     </li>
-        </ul>
+    <li class="toctree-l3"><a class="reference internal" href="#stage-3-cleaning-up">Stage 3 -  Cleaning Up</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#cleaning-up">Cleaning Up</a>
+        </ul>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#summary">Summary</a>
     </li>
@@ -320,7 +330,10 @@
               
                 <h1 id="analysis-and-experiments">Analysis and Experiments</h1>
 <p>In this lab, we aim to explore advanced deployment strategies using ArgoCD and Prometheus. We will set up and configure ArgoCD to visualize rollouts, deploy a metrics server for monitoring, and integrate Prometheus and Grafana for sophisticated monitoring and analysis. Additionally, we will implement canary deployments with experiments and analysis to ensure the stability and performance of our applications before fully rolling them out to production. This comprehensive approach will help us achieve reliable and efficient continuous delivery in our Kubernetes environment.</p>
-<h2 id="prepwork">Prepwork</h2>
+<h2 id="stage-0-prepwork">Stage 0 - Prepwork</h2>
+<p>As part of the prep work, we will minimize the footprint of the application set by deploying only the <code>vote</code> app in the prod namespace as well as install the argo rollout extenstion so that we could visualize rollouts right from ArgoCD. </p>
+<h3 id="minimize-applicationset-footprint">Minimize ApplicationSet Footprint</h3>
+<p>We will minimize the footprint of the application set by deploying only the <code>vote</code> app in the prod namespace. This is to avoid overloading our lab environment created with KIND with minimal resources.</p>
 <p>Delete the previous appset and clean up the application deployments using, </p>
 <pre><code>kubectl delete appset instavote -n argocd 
 </code></pre>
@@ -332,7 +345,7 @@ kubectl apply -f instavote-appset-vote-prod.yaml
 <p>validate </p>
 <pre><code>kubectl get appset,app -n argocd    
 </code></pre>
-<h2 id="setup-argocd-extension-for-rollout-visualization">Setup ArgoCD Extension for Rollout Visualization</h2>
+<h3 id="setup-argocd-extension-for-rollout-visualization">Setup ArgoCD Extension for Rollout Visualization</h3>
 <p>To apply the ArgoCD server patch to install the Argo Rollouts extension, follow these steps:</p>
 <p><strong>Step 1: Save the Patch to a File</strong></p>
 <p>Create a new YAML file, e.g., <code>argocd-rollouts-extension-patch.yaml</code>, and add the following content:</p>
@@ -381,7 +394,8 @@ Check if the <code>argocd-server</code> deployment includes the new <code>initCo
 <p><img alt="" src="../images/argo/67.png" />
 <img alt="" src="../images/argo/68.png" /></p>
 <hr />
-<h2 id="setup-metrics-server">Setup Metrics Server</h2>
+<h2 id="stage-1-setup-monitoring-with-ingress-and-prometheus">Stage 1 - Setup Monitoring with Ingress and Prometheus</h2>
+<h3 id="setup-metrics-server">Setup Metrics Server</h3>
 <p>Its importantt to have metrics server to get the essential pod and node monitoring data. </p>
 <p>If you try to pull monitoring information using the following commands</p>
 <pre><code>kubectl top pod
@@ -415,7 +429,7 @@ kind-worker          39m          1%     498Mi           12%
 kind-worker2         31m          1%     422Mi           10%
 </code></pre>
 <p>If you see a similar output, monitoring is now been setup.</p>
-<h2 id="deploy-prometheus-and-grafana">Deploy Prometheus and Grafana</h2>
+<h3 id="deploy-prometheus-and-grafana">Deploy Prometheus and Grafana</h3>
 <p>To further setup sophisticated monitoring, we will deploy Prometheus and Grafana.</p>
 <p>Begin by setting up the helm repository</p>
 <pre><code>helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
@@ -503,6 +517,7 @@ It may look similar to this, with possibly less data initially
 <p>And then access the app urls using http://vote.example.com </p>
 <p><img alt="Name Based Routing" src="../images/domain-name.png" /></p>
 <hr />
+<h2 id="stage-2-full-fledged-canary-rollout">Stage 2 - Full Fledged Canary Rollout</h2>
 <h3 id="configure-canary-rollout-configuration-with-experiment-and-analysis">Configure Canary Rollout Configuration with Experiment and Analysis</h3>
 <p>In this section, we will configure canary rollout configurations with experiments and analysis using ArgoCD. We will set up a canary deployment strategy, define experiments for testing, and analyze the results to ensure the stability and performance of our applications before fully rolling them out to production.</p>
 <p>Experiments and analysis are crucial components of the canary deployment strategy. Experiments involve running a temporary version of the application alongside the stable version to observe its behavior under real-world conditions. Analysis, on the other hand, involves collecting and evaluating metrics from these experiments to determine if the new version meets the desired performance and stability criteria. The purpose of these steps is to ensure that any issues are detected early, allowing for automatic rollbacks if necessary, thus minimizing the risk of deploying faulty updates to production.</p>
@@ -711,7 +726,7 @@ kubectl get pods,jobs
 </code></pre>
 <p>You could also watch the rollout using the web UI.</p>
 <p><img alt="" src="../images/argo/68.png" /></p>
-<h2 id="cleaning-up">Cleaning Up</h2>
+<h3 id="stage-3-cleaning-up">Stage 3 -  Cleaning Up</h3>
 <p>Once you are done with the lab, you can delete the components created during this lab using the following commands.</p>
 <pre><code># Delete Appsets along with Applications
 kubectl delete appset instavote -n argocd 
