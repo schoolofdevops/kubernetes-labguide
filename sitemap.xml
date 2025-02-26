@@ -431,6 +431,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>http://kubernetes-tutorial.schoolofdevops.com/articles/argo_lua/</loc>
+         <lastmod>2025-02-26</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/articles/argo_prune_propogation_policy/</loc>
          <lastmod>2025-02-26</lastmod>
          <changefreq>daily</changefreq>

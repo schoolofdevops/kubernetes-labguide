@@ -3,18 +3,18 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/articles/argo_sync_options/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/articles/argo_lua/" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>ArgoCD Sync Options - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <title>Lua Scripting in Argo - Kubernetes Tutorial with CKA/CKAD Prep</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "ArgoCD Sync Options";
-        var mkdocs_page_input_path = "articles/argo_sync_options.md";
-        var mkdocs_page_url = "/articles/argo_sync_options/";
+        var mkdocs_page_name = "Lua Scripting in Argo";
+        var mkdocs_page_input_path = "articles/argo_lua.md";
+        var mkdocs_page_url = "/articles/argo_lua/";
       </script>
     
     <!--[if lt IE 9]>
@@ -198,81 +198,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../argo_resource_lifecycle/">ArgoCD Resource Lifecycle Management</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">ArgoCD Sync Options</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#sync-policy-automatic-vs-manual">Sync Policy: Automatic vs Manual</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#automatic-sync">Automatic Sync</a>
-        <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#prune-resources">PRUNE RESOURCES</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#self-heal">SELF HEAL</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#set-deletion-finalizer">SET DELETION FINALIZER</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#sync-options">Sync Options</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#skip-schema-validation">SKIP SCHEMA VALIDATION</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#prune-last">PRUNE LAST</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#respect-ignore-differences">RESPECT IGNORE DIFFERENCES</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#auto-create-namespace">AUTO-CREATE NAMESPACE</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#apply-out-of-sync-only">APPLY OUT OF SYNC ONLY</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#server-side-apply">SERVER-SIDE APPLY</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#prune-propagation-policy">PRUNE PROPAGATION POLICY</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#replace">REPLACE</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#retry">RETRY</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#best-practices">Best Practices</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#production-environments">Production Environments</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#development-environments">Development Environments</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#performance-optimization">Performance Optimization</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#common-scenarios-and-solutions">Common Scenarios and Solutions</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#scenario-1-stateful-application">Scenario 1: Stateful Application</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#scenario-2-high-scale-environment">Scenario 2: High-Scale Environment</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#scenario-3-critical-production-service">Scenario 3: Critical Production Service</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#troubleshooting-guide">Troubleshooting Guide</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#common-issues-and-solutions">Common Issues and Solutions</a>
-        <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#1-resources-not-pruning">1. Resources Not Pruning</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#2-sync-failures">2. Sync Failures</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#3-performance-issues">3. Performance Issues</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#4-namespace-issues">4. Namespace Issues</a>
-    </li>
-        </ul>
-    </li>
-        </ul>
-    </li>
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_sync_options/">ArgoCD Sync Options</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../argo_serversideapply/">ArgoCD - Server Side Apply</a>
                   </li>
@@ -282,7 +208,29 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../gha_code_explain/">GitHub Actions Code Explainer</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../argo_lua/">Lua Scripting in Argo</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Lua Scripting in Argo</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#1-what-is-lua">1. What is Lua?</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#2-how-is-lua-used-in-argo-workflows">2. How is Lua Used in Argo Workflows?</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#21-lua-expressions-in-workflows">2.1 Lua Expressions in Workflows</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#22-lua-in-script-templates">2.2 Lua in Script Templates</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#3-why-does-argo-use-lua">3. Why Does Argo Use Lua?</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#key-reasons">Key Reasons:</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#4-when-to-use-lua-in-argo">4. When to Use Lua in Argo</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#conclusion">Conclusion</a>
+    </li>
+    </ul>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Argo Advanced</span></p>
@@ -346,9 +294,9 @@
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" aria-label="Docs"></a> &raquo;</li>
           <li>Argo Articles &raquo;</li>
-      <li class="breadcrumb-item active">ArgoCD Sync Options</li>
+      <li class="breadcrumb-item active">Lua Scripting in Argo</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/articles/argo_sync_options.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/articles/argo_lua.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -356,287 +304,75 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="argocd-sync-policies-and-options">ArgoCD Sync Policies and Options</h1>
-<h2 id="sync-policy-automatic-vs-manual">Sync Policy: Automatic vs Manual</h2>
-<h3 id="automatic-sync">Automatic Sync</h3>
-<p>Automatic sync enables continuous deployment by automatically keeping the cluster state in sync with the Git repository.</p>
+                <h1 id="lua-scripting-in-argo"><strong>Lua Scripting in Argo</strong></h1>
+<p>Argo (specifically <strong>Argo Workflows</strong>) supports <strong>Lua scripting</strong> as a way to add flexibility, extensibility, and advanced scripting capabilities to workflow execution. Lua is often used in Argo in the context of expressions and script templates.</p>
+<hr />
+<h2 id="1-what-is-lua"><strong>1. What is Lua?</strong></h2>
+<p>Lua is a <strong>lightweight, high-performance scripting language</strong> commonly used for embedded systems, game engines, and automation. It is known for:
+- <strong>Simplicity &amp; Efficiency</strong>: Small footprint, making it ideal for embedded scripting.
+- <strong>Performance</strong>: Faster execution compared to Python and other scripting languages.
+- <strong>Flexibility</strong>: Can be embedded into larger applications as an extension language.</p>
+<hr />
+<h2 id="2-how-is-lua-used-in-argo-workflows"><strong>2. How is Lua Used in Argo Workflows?</strong></h2>
+<h3 id="21-lua-expressions-in-workflows"><strong>2.1 Lua Expressions in Workflows</strong></h3>
+<p>Argo Workflows allows Lua expressions in places where <strong>conditional logic</strong> or <strong>dynamic values</strong> are needed. This is useful for:
+- <strong>Parameter substitution</strong>: Dynamically modifying workflow parameters.
+- <strong>Conditional Execution</strong>: Controlling task execution flow.
+- <strong>Custom Logic</strong>: Evaluating expressions based on workflow context.</p>
+<p><strong>Example Usage:</strong></p>
+<pre><code class="language-yaml">templates:
+  - name: example
+    steps:
+      - - name: check-condition
+          template: lua-condition
+          when: &quot;{{lua: tonumber(parameters.value) &gt; 10}}&quot;
+</code></pre>
+<p>Here, <code>{{lua: tonumber(parameters.value) &gt; 10}}</code> ensures that the step executes only if <code>value &gt; 10</code>.</p>
+<h3 id="22-lua-in-script-templates"><strong>2.2 Lua in Script Templates</strong></h3>
+<p>Argo supports <strong>Lua as a script language</strong> in <code>ScriptTemplate</code>. This allows running Lua scripts inside the workflow.</p>
+<p><strong>Example Usage:</strong></p>
 <pre><code class="language-yaml">apiVersion: argoproj.io/v1alpha1
-kind: Application
+kind: Workflow
 metadata:
-  name: my-app
+  generateName: lua-script-example-
 spec:
-  syncPolicy:
-    automated: {}  # Basic automatic sync
-    # or with additional options:
-    automated:
-      prune: true     # Auto-delete resources
-      selfHeal: true  # Auto-sync on drift detection
+  entrypoint: lua-script
+  templates:
+    - name: lua-script
+      script:
+        image: alpine
+        command: [lua]
+        source: |
+          print(&quot;Hello from Lua in Argo&quot;)
 </code></pre>
-<h4 id="prune-resources">PRUNE RESOURCES</h4>
-<ul>
-<li>Enables automatic deletion of resources that are no longer defined in Git</li>
-<li><strong>Warning</strong>: Use carefully with stateful applications</li>
-<li>Common use cases:</li>
-<li>Cleaning up deprecated resources</li>
-<li>Maintaining environment consistency</li>
-<li>Preventing resource sprawl</li>
-</ul>
-<h4 id="self-heal">SELF HEAL</h4>
-<ul>
-<li>Automatically syncs when drift is detected between Git and cluster state</li>
-<li>Useful for:</li>
-<li>Preventing manual cluster changes</li>
-<li>Maintaining GitOps compliance</li>
-<li>Recovering from failed manual interventions</li>
-</ul>
-<h3 id="set-deletion-finalizer">SET DELETION FINALIZER</h3>
-<pre><code class="language-yaml">spec:
-  syncPolicy:
-    finalizers:
-    - resources-finalizer.argocd.argoproj.io
-</code></pre>
-<ul>
-<li>Ensures proper cleanup of application resources</li>
-<li>Prevents orphaned resources during application deletion</li>
-<li>Important for:</li>
-<li>Stateful applications</li>
-<li>Resources with dependencies</li>
-<li>Complex multi-resource applications</li>
-</ul>
-<h2 id="sync-options">Sync Options</h2>
-<h3 id="skip-schema-validation">SKIP SCHEMA VALIDATION</h3>
-<pre><code class="language-yaml">spec:
-  syncPolicy:
-    syncOptions:
-    - Validate=false
-</code></pre>
-<ul>
-<li>Bypasses Kubernetes schema validation</li>
-<li>Use cases:</li>
-<li>Custom Resources without registered CRDs</li>
-<li>Legacy applications</li>
-<li>Development/testing scenarios</li>
-<li><strong>Warning</strong>: Can lead to invalid resource states</li>
-</ul>
-<h3 id="prune-last">PRUNE LAST</h3>
-<pre><code class="language-yaml">spec:
-  syncPolicy:
-    syncOptions:
-    - PruneLast=true
-</code></pre>
-<ul>
-<li>Deletes resources only after all other sync operations complete</li>
-<li>Crucial for:</li>
-<li>Database migrations</li>
-<li>Stateful application updates</li>
-<li>Complex dependency chains</li>
-</ul>
-<h3 id="respect-ignore-differences">RESPECT IGNORE DIFFERENCES</h3>
-<pre><code class="language-yaml">spec:
-  syncPolicy:
-    syncOptions:
-    - RespectIgnoreDifferences=true
-</code></pre>
-<ul>
-<li>Honors the ignoreDifferences configuration</li>
-<li>Useful for:</li>
-<li>Fields managed by controllers</li>
-<li>Dynamic or auto-generated values</li>
-<li>Status fields</li>
-</ul>
-<h3 id="auto-create-namespace">AUTO-CREATE NAMESPACE</h3>
-<pre><code class="language-yaml">spec:
-  syncPolicy:
-    syncOptions:
-    - CreateNamespace=true
-</code></pre>
-<ul>
-<li>Automatically creates target namespace if it doesn't exist</li>
-<li>Benefits:</li>
-<li>Simplified application deployment</li>
-<li>Self-contained application definitions</li>
-<li>Reduced manual setup</li>
-</ul>
-<h3 id="apply-out-of-sync-only">APPLY OUT OF SYNC ONLY</h3>
-<pre><code class="language-yaml">spec:
-  syncPolicy:
-    syncOptions:
-    - ApplyOutOfSyncOnly=true
-</code></pre>
-<ul>
-<li>Only syncs resources that differ from desired state</li>
-<li>Advantages:</li>
-<li>Reduced API server load</li>
-<li>Faster sync operations</li>
-<li>Minimized disruption</li>
-</ul>
-<h3 id="server-side-apply">SERVER-SIDE APPLY</h3>
-<pre><code class="language-yaml">spec:
-  syncPolicy:
-    syncOptions:
-    - ServerSideApply=true
-</code></pre>
-<ul>
-<li>Uses server-side apply instead of client-side</li>
-<li>Benefits:</li>
-<li>Better conflict resolution</li>
-<li>More accurate field ownership</li>
-<li>Improved performance for large resources</li>
-</ul>
-<h3 id="prune-propagation-policy">PRUNE PROPAGATION POLICY</h3>
-<pre><code class="language-yaml">spec:
-  syncPolicy:
-    syncOptions:
-    - PrunePropagationPolicy=foreground
-</code></pre>
-<p>Options:
-- <code>foreground</code>: Cascading deletion, waits for dependents
-- <code>background</code>: Async deletion of dependents
-- <code>orphan</code>: Leaves dependent resources untouched</p>
-<p>Use cases:
-- <code>foreground</code>: Most applications (safe default)
-- <code>background</code>: Large applications with many dependents
-- <code>orphan</code>: Preserving shared resources</p>
-<h3 id="replace">REPLACE</h3>
-<pre><code class="language-yaml">spec:
-  syncPolicy:
-    syncOptions:
-    - Replace=true
-</code></pre>
-<ul>
-<li>Forces complete resource replacement instead of patching</li>
-<li>Important for:</li>
-<li>Breaking out of invalid states</li>
-<li>Complete resource recreation</li>
-<li><strong>Warning</strong>: Can cause downtime</li>
-</ul>
-<h3 id="retry">RETRY</h3>
-<pre><code class="language-yaml">spec:
-  syncPolicy:
-    syncOptions:
-    - Retry=true
-</code></pre>
-<ul>
-<li>Automatically retries failed sync operations</li>
-<li>Configurable with:</li>
-<li><code>retry.limit</code>: Maximum retry attempts</li>
-<li><code>retry.backoff.duration</code>: Time between retries</li>
-<li><code>retry.backoff.factor</code>: Exponential backoff factor</li>
-<li><code>retry.backoff.maxDuration</code>: Maximum backoff duration</li>
-</ul>
-<h2 id="best-practices">Best Practices</h2>
-<h3 id="production-environments">Production Environments</h3>
+<p>This example runs a simple Lua script inside a container.</p>
+<hr />
+<h2 id="3-why-does-argo-use-lua"><strong>3. Why Does Argo Use Lua?</strong></h2>
+<h3 id="key-reasons"><strong>Key Reasons:</strong></h3>
 <ol>
-<li>
-<p>Use selective automation:
-   <code>yaml
-   spec:
-     syncPolicy:
-       automated:
-         prune: false     # Prevent automatic deletion
-         selfHeal: true   # Allow drift correction</code></p>
-</li>
-<li>
-<p>Implement safe deletion:
-   ```yaml
-   spec:
-     syncPolicy:
-       syncOptions:</p>
-<ul>
-<li>PruneLast=true</li>
-<li>PrunePropagationPolicy=foreground
-   ```</li>
-</ul>
-</li>
+<li><strong>Lightweight and Fast</strong>: Lua is optimized for speed and low resource usage.</li>
+<li><strong>Embedding Capabilities</strong>: Lua can be easily embedded inside Argo's workflow execution logic.</li>
+<li><strong>Safe Execution</strong>: Argo allows sandboxed Lua execution, ensuring security and predictability.</li>
+<li><strong>Flexible Expression Evaluation</strong>: Lua expressions simplify conditions in workflows without requiring external scripts.</li>
+<li><strong>Alternative to JavaScript or Python</strong>: While Argo supports multiple scripting languages, Lua provides a minimalistic alternative.</li>
 </ol>
-<h3 id="development-environments">Development Environments</h3>
-<ol>
-<li>Enable full automation:
-   ```yaml
-   spec:
-     syncPolicy:
-       automated:
-         prune: true
-         selfHeal: true
-       syncOptions:<ul>
-<li>CreateNamespace=true
-   ```</li>
-</ul>
-</li>
-</ol>
-<h3 id="performance-optimization">Performance Optimization</h3>
-<ol>
-<li>Selective sync:
-   ```yaml
-   spec:
-     syncPolicy:
-       syncOptions:<ul>
-<li>ApplyOutOfSyncOnly=true</li>
-<li>ServerSideApply=true
-   ```</li>
-</ul>
-</li>
-</ol>
-<h2 id="common-scenarios-and-solutions">Common Scenarios and Solutions</h2>
-<h3 id="scenario-1-stateful-application">Scenario 1: Stateful Application</h3>
-<pre><code class="language-yaml">spec:
-  syncPolicy:
-    automated:
-      prune: false
-    syncOptions:
-    - PrunePropagationPolicy=orphan
-    - RespectIgnoreDifferences=true
-</code></pre>
-<h3 id="scenario-2-high-scale-environment">Scenario 2: High-Scale Environment</h3>
-<pre><code class="language-yaml">spec:
-  syncPolicy:
-    syncOptions:
-    - ServerSideApply=true
-    - ApplyOutOfSyncOnly=true
-    - PrunePropagationPolicy=background
-</code></pre>
-<h3 id="scenario-3-critical-production-service">Scenario 3: Critical Production Service</h3>
-<pre><code class="language-yaml">spec:
-  syncPolicy:
-    automated:
-      selfHeal: true
-    syncOptions:
-    - Validate=true
-    - PruneLast=true
-    - Retry=true
-</code></pre>
-<h2 id="troubleshooting-guide">Troubleshooting Guide</h2>
-<h3 id="common-issues-and-solutions">Common Issues and Solutions</h3>
-<h4 id="1-resources-not-pruning">1. <strong>Resources Not Pruning</strong></h4>
+<hr />
+<h2 id="4-when-to-use-lua-in-argo"><strong>4. When to Use Lua in Argo</strong></h2>
 <ul>
-<li>Check prune policy configuration  </li>
-<li>Verify finalizer presence  </li>
-<li>Review propagation policy  </li>
+<li><strong>If you need lightweight inline scripting</strong> for expressions.</li>
+<li><strong>If you want efficient condition evaluation</strong> in workflow steps.</li>
+<li><strong>If you need embedded logic execution</strong> without adding heavy dependencies.</li>
+<li><strong>For simple, fast, and safe automation logic</strong> within workflows.</li>
 </ul>
-<h4 id="2-sync-failures">2. <strong>Sync Failures</strong></h4>
-<ul>
-<li>Enable retry mechanism  </li>
-<li>Check schema validation  </li>
-<li>Review server-side apply conflicts  </li>
-</ul>
-<h4 id="3-performance-issues">3. <strong>Performance Issues</strong></h4>
-<ul>
-<li>Enable ApplyOutOfSyncOnly  </li>
-<li>Use ServerSideApply  </li>
-<li>Review resource batch size  </li>
-</ul>
-<h4 id="4-namespace-issues">4. <strong>Namespace Issues</strong></h4>
-<ul>
-<li>Enable auto-create namespace  </li>
-<li>Check RBAC permissions  </li>
-<li>Verify namespace exists in cluster  </li>
-</ul>
+<hr />
+<h2 id="conclusion"><strong>Conclusion</strong></h2>
+<p>Lua in Argo provides a simple, efficient way to add <strong>expressions, conditions, and inline scripting</strong> to workflows. Its use case is primarily for <strong>dynamic workflow control, lightweight logic execution, and embedded scripting</strong> within Argo’s ecosystem. It is an ideal choice when you need a fast, embedded scripting solution without the overhead of larger languages like Python or JavaScript.</p>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../argo_resource_lifecycle/" class="btn btn-neutral float-left" title="ArgoCD Resource Lifecycle Management"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../argo_serversideapply/" class="btn btn-neutral float-right" title="ArgoCD - Server Side Apply">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../../gha_code_explain/" class="btn btn-neutral float-left" title="GitHub Actions Code Explainer"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../../argo_adv_setup/" class="btn btn-neutral float-right" title="Lab K701 - Setup CI/CD with GHA and Argo">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -664,10 +400,10 @@ spec:
         </span>
     
     
-      <span><a href="../argo_resource_lifecycle/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../../gha_code_explain/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../argo_serversideapply/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../../argo_adv_setup/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
