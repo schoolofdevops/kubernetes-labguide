@@ -253,25 +253,45 @@ kubectl argo rollouts version
 
 Also install Kustomize by following the instructions in [official documentation](https://kubectl.docs.kubernetes.io/installation/kustomize/) here.
 
+### Setup Argo Rollouts Dashboard 
+
+```
+apply -n argo-rollouts -f https://raw.githubusercontent.com/argoproj/argo-rollouts/stable/manifests/dashboard-install.yaml
+```
+
+```
+kubectl patch svc argo-rollouts-dashboard -n argo-rollouts --type='merge' -p '{"spec": {"type": "NodePort", "ports": [{"port": 3100, "targetPort": 3100, "nodePort": 30600}]}}'
+```
+
+Access it using http://NODEIP:30600/rollouts
 
 ## Setup CI Pipeline with GitHub Actions
 
 Fork the [sample repo](https://github.com/sfd226/vote) to get started. 
 
-This repo contains a simple application written in python that allows you to vote, along with Dockerfile,  kubernetes manifests and GitHub Actions workflow to build a Continuous Integration pipeline.
+This repo contains a simple application written in python that allows you to vote, along with Dockerfile,  kubernetes manifests. 
 
-You will find GitHub Actions workflow file in `.github/workflows/ci.yml`Here is a sample code. 
+To build a Continuous Integration Pipeline, you would add the  and GitHub Actions workflow to this repo. Create a GitHub Actions workflow pipeline at `.github/workflows/ci.yml` to setup the CI Process.  Here is a sample code. 
 
 ```
+#.github/workflows/ci.yml
 name: CI
 
 on:
   push:
     branches:
       - main
+    paths-ignore:
+      - 'Dockerfile'
+      - 'Jenkinsfile'
+      - 'chart/**'
   pull_request:
     branches:
       - main
+    paths-ignore:
+      - 'Dockerfile'
+      - 'Jenkinsfile'
+      - 'chart/**'
 
 jobs:
   build:
@@ -325,8 +345,9 @@ jobs:
           docker build -t ${{ secrets.DOCKER_USERNAME }}/vote:$COMMIT_HASH .
           docker push ${{ secrets.DOCKER_USERNAME }}/vote:$COMMIT_HASH
 ```
+Read this guide to understand this code better: [GHA Code Explainer](https://kubernetes-tutorial.schoolofdevops.com/gha_code_explain/)
 
-To build your own CI Pipeline, all you need to do is, fork this repo and add the secret variables in your repository settings so that GitHub Actions can access your DockerHub account.
+To make this work after adding this code,  all you need to do is,  add the secret variables in your repository settings so that GitHub Actions can access your DockerHub account.
 
 ### Adding DockerHub Secrets
 

@@ -21,20 +21,80 @@ This lab guide walks you through setting up a multi-tenant, multi-environment de
 ## Repository Structure
 
 ```
+Three repositories are used in this setup:
+
++--------------------+      +--------------------+      +--------------------+
+|                    |      |                    |      |                    |
+| APPLICATION CODE   |      | GITOPS CODE        |      | PLATFORM CODE      |
+| REPOSITORY         |      | REPOSITORY         |      | REPOSITORY         |
+|                    |      |                    |      |                    |
++--------------------+      +--------------------+      +--------------------+
+|                    |      |                    |      |                    |
+| Purpose:           |      | Purpose:           |      | Purpose:           |
+| - Source code      |      | - K8s manifests    |      | - Cluster config   |
+| - Build configs    |      | - Kustomizations   |      | - Platform tools   |
+| - Tests            |      | - Helm charts      |      | - CI/CD pipelines  |
+| - Dockerfiles      |      |                    |      | - Infra as code    |
+| - App dependencies |      | - Environment vars |      | - Monitoring setup |
+| - Business logic   |      | - Argo Rollouts    |      | - Security configs |
+|                    |      | - Release configs  |      | - Shared services  |
+|                    |      |                    |      |                    |
++--------------------+      +--------------------+      +--------------------+
+        |                           |                           |
+        v                           v                           v
++--------------------+      +--------------------+      +--------------------+
+| CI builds images   |      | Defines how apps   |      | Provisions and     |
+| and pushes to      |----->| are deployed and   |<-----| maintains the     |
+| container registry |      | promoted between   |      | platform itself    |
++--------------------+      | environments       |      +--------------------+
+                            +--------------------+
+
+```
+
+```
+#Platform Repo Structure
+# Source : https://github.com/sfd226/instavote-platform-config
+
+instavote-platform-config/
+├── tenants/
+│   ├── dev/
+│   │   ├── project.yaml                # ArgoCD project definition
+│   │   ├── resource-quota.yaml         # Resource limits
+│   │   └── network-policies.yaml       # Network policies
+│   ├── staging/
+│   │   └── [similar structure as dev]
+│   └── prod/
+│       └── [similar structure as dev]
+├── rbac/
+│   ├── groups/
+│   │   ├── platform-admins.yaml
+│   │   ├── dev-team.yaml
+│   │   └── ops-team.yaml
+│   └── roles/
+│       ├── tenant-admin.yaml
+│       └── tenant-viewer.yaml
+└── applicationsets/
+    └── instavote-apps.yaml           # Application deployment patterns
+```
+
+```
+# Tenant Repo Structure
+# Source : https://github.com/sfd226/instavote-gitops
+
 instavote-gitops/
 ├── charts/
 │   ├── vote/                  # Vote frontend service
 │   │   ├── Chart.yaml
 │   │   ├── values.yaml
 │   │   ├── templates/
-│   │   │   ├── rollout.yaml
-│   │   │   ├── service.yaml
-│   │   │   └── preview-service.yaml
+│   │   │   ├── rollout.yaml        # Argo Rollouts configuration
+│   │   │   ├── service.yaml        # Main service
+│   │   │   └── preview-service.yaml # Preview service for blue/green
 │   │   └── env/
-│   │       ├── dev.yaml
-│   │       ├── staging.yaml
-│   │       └── prod.yaml
-│   └── redis/                 # Redis backend service
+│   │       ├── dev.yaml      # Dev environment values
+│   │       ├── staging.yaml  # Staging environment values
+│   │       └── prod.yaml     # Production environment values
+│   └── redis/                 # Redis service
 │       ├── Chart.yaml
 │       ├── values.yaml
 │       ├── templates/
@@ -44,16 +104,29 @@ instavote-gitops/
 │           ├── dev.yaml
 │           ├── staging.yaml
 │           └── prod.yaml
-├── tenants/
-│   ├── dev/
-│   │   └── project.yaml
-│   ├── staging/
-│   │   └── project.yaml
-│   └── prod/
-│       └── project.yaml
-└── applicationset/
-    └── instavote-apps.yaml
+└── docs/                      # Additional documentation
+    └── architecture.md        # Architecture documentation
 ```
+
+```
+#Application Repo Structure
+# Source : https://github.com/sfd226/vote
+.
+├── Dockerfile
+├── Jenkinsfile
+├── README.md
+├── app.py
+├── requirements.txt
+├── static
+│   └── stylesheets
+│       └── style.css
+└── templates
+    └── index.html
+
+```
+
+
+
 
 ## Lab Steps
 
@@ -62,12 +135,12 @@ instavote-gitops/
 
 #### 1. Repository Setup
 
-Fork the repositories:
-```bash
-# Fork these repositories to your GitHub account
-https://github.com/GITHUB_ORG/instavote-gitops
-https://github.com/GITHUB_ORG/instavote-platform-config
-```
+Fork the repositories: 
+
+  * [Platform Repo](https://github.com/sfd226/instavote-platform-config) 
+  * [GitOps Repo](https://github.com/sfd226/instavote-gitops)  
+
+
 
 Clone your forked repositories:
 ```bash
