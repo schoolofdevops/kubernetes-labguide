@@ -231,9 +231,9 @@
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#redeploy-nginx-ingress-controller">Redeploy Nginx Ingress Controller</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#add-local-dns-for-vote-app">Add Local DNS for Vote App</a>
-    </li>
     <li class="toctree-l3"><a class="reference internal" href="#setup-grafana-dashboard-for-nginx-ingress-controller">Setup Grafana Dashboard for Nginx Ingress Controller</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#add-local-dns-to-access-the-vote-app-via-browser">Add Local DNS to access the Vote App via Browser</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#configure-canary-rollout-configuration-with-experiment-and-analysis">Configure Canary Rollout Configuration with Experiment and Analysis</a>
         <ul>
@@ -452,7 +452,22 @@ Pass: prom-operator
   --set-string controller.nodeSelector.ingress-ready=&quot;true&quot;
 
 </code></pre>
-<h3 id="add-local-dns-for-vote-app">Add Local DNS for Vote App</h3>
+<h3 id="setup-grafana-dashboard-for-nginx-ingress-controller">Setup Grafana Dashboard for Nginx Ingress Controller</h3>
+<p>Now, login to grafana and import custom dashboard for Nginx Ingress as</p>
+<ul>
+<li>Left menu (hover over +) -&gt; Dashboard</li>
+<li>Click New -&gt; Import"</li>
+<li>Enter the copy pasted json from <a href="https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/grafana/dashboards/nginx.json">https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/grafana/dashboards/nginx.json</a></li>
+<li>Click <code>Import JSON / Load</code></li>
+<li>Select the Prometheus data source</li>
+<li>Click "Import"</li>
+</ul>
+<p>⠀
+It may look similar to this, with possibly less data initially
+<img alt="" src="../images/grafana-01.png" /></p>
+<p>However, if you see some metric coming in, your setup with Nginx Ingress and Promethus Integration is working ! You may pat your back at this time :)</p>
+<h3 id="add-local-dns-to-access-the-vote-app-via-browser">Add Local DNS to access the Vote App via Browser</h3>
+<p><code>Note: You have to make this change on your  local laptop/desktop</code></p>
 <p>As part of app deployment, you have created the ingress rules based on hostnames e.g.  <strong>vote.example.com</strong>. You could validate this by running the following command</p>
 <pre><code>kubectl get ingress -n instavote-prod
 </code></pre>
@@ -487,20 +502,6 @@ Pass: prom-operator
 </code></pre>
 <p>And then access the app urls using http://vote.example.com </p>
 <p><img alt="Name Based Routing" src="../images/domain-name.png" /></p>
-<h3 id="setup-grafana-dashboard-for-nginx-ingress-controller">Setup Grafana Dashboard for Nginx Ingress Controller</h3>
-<p>Now, login to grafana and import custom dashboard for Nginx Ingress as</p>
-<ul>
-<li>Left menu (hover over +) -&gt; Dashboard</li>
-<li>Click New -&gt; Import"</li>
-<li>Enter the copy pasted json from <a href="https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/grafana/dashboards/nginx.json">https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/grafana/dashboards/nginx.json</a></li>
-<li>Click <code>Import JSON / Load</code></li>
-<li>Select the Prometheus data source</li>
-<li>Click "Import"</li>
-</ul>
-<p>⠀
-It may look similar to this, with possibly less data initially
-<img alt="" src="../images/grafana-01.png" /></p>
-<p>However, if you see some metric coming in, your setup with Nginx Ingress and Promethus Integration is working ! You may pat your back at this time :)</p>
 <hr />
 <h3 id="configure-canary-rollout-configuration-with-experiment-and-analysis">Configure Canary Rollout Configuration with Experiment and Analysis</h3>
 <p>In this section, we will configure canary rollout configurations with experiments and analysis using ArgoCD. We will set up a canary deployment strategy, define experiments for testing, and analyze the results to ensure the stability and performance of our applications before fully rolling them out to production.</p>
