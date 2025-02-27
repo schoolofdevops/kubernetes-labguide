@@ -497,9 +497,6 @@ docker image build -t ghcr.io/XXXXXX/guestbook:v1.0.3  .
 <p><img alt="" src="../images/argo/74.png" /></p>
 <h2 id="create-simple-promotion-workflow-with-kargo">Create Simple Promotion Workflow with Kargo</h2>
 <p>Fork the kargo-simple repo from <a href="https://github.com/sfd226/kargo-simple">https://github.com/sfd226/kargo-simple</a></p>
-<p>Create a release branch from main branch from GiHub web UI.</p>
-<p><img alt="" src="../images/argo/79.png" /></p>
-<p><code>Create release branch is an important step, without which your deployments  will not work. Make sure 'r' in release is smallcase</code></p>
 <p>Clone it to your local machine  where you have kubernetes and argo setup already. </p>
 <pre><code>git clone https://github.com/XXXXXX/kargo-simple.git
 </code></pre>
@@ -512,6 +509,9 @@ docker image build -t ghcr.io/XXXXXX/guestbook:v1.0.3  .
 <pre><code>git commit -a -m &quot;personalize manifests&quot;
 git push origin main
 </code></pre>
+<p>Create a release branch from main branch from GiHub web UI.</p>
+<p><img alt="" src="../images/argo/79.png" /></p>
+<p><code>Create release branch is an important step, without which your deployments  will not work. Make sure 'r' in release is smallcase</code></p>
 <p>Deploy kargo app </p>
 <pre><code>cd kargo-simple 
 kargo apply -f ./kargo
