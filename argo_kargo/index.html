@@ -231,7 +231,31 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#create-simple-promotion-workflow-with-kargo">Create Simple Promotion Workflow with Kargo</a>
         <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#create-a-argocd-app">Create a ArgoCD app</a>
+    </li>
     <li class="toctree-l3"><a class="reference internal" href="#simulate-promotion-of-the-guestbook-app">Simulate promotion of the guestbook app</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#setup-promotion-workflow">Setup Promotion Workflow</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#how-kargo-promotes-through-stages">How Kargo Promotes Through Stages</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#1-image-detection">1. Image Detection:</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#2-promotion-workflow">2. Promotion Workflow:</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#3-promotion-to-dev">3. Promotion to Dev:</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#4-manual-approval-and-testing">4. Manual Approval and Testing:</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#5-promotion-to-staging">5. Promotion to Staging:</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#6-promotion-to-prod">6. Promotion to Prod:</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#7-commit-changes-to-release-branch">7. Commit Changes to Release Branch:</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#cleaning-up">Cleaning Up</a>
     </li>
         </ul>
     </li>
@@ -473,6 +497,9 @@ docker image build -t ghcr.io/XXXXXX/guestbook:v1.0.3  .
 <p><img alt="" src="../images/argo/74.png" /></p>
 <h2 id="create-simple-promotion-workflow-with-kargo">Create Simple Promotion Workflow with Kargo</h2>
 <p>Fork the kargo-simple repo from <a href="https://github.com/sfd226/kargo-simple">https://github.com/sfd226/kargo-simple</a></p>
+<p>Create a release branch from main branch from GiHub web UI.</p>
+<p><img alt="" src="../images/argo/79.png" /></p>
+<p><code>Create release branch is an important step, without which your deployments  will not work. Make sure 'r' in release is smallcase</code></p>
 <p>Clone it to your local machine  where you have kubernetes and argo setup already. </p>
 <pre><code>git clone https://github.com/XXXXXX/kargo-simple.git
 </code></pre>
@@ -511,32 +538,12 @@ warehouse.kargo.akuity.io/guestbook created
   --password &lt;yourgithubtoken&gt;
 </code></pre>
 <p>As part of the promotion process, Kargo requires privileges to commit changes to your Git repository, as well as the ability to create pull requests. Ensure that the given token has these privileges.</p>
-<p>Create a ArgoCD app </p>
-<pre><code>apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  annotations:
-    kargo.akuity.io/authorized-stage: kargo-simple:dev
-  name: guestbook-dev
-  namespace: argocd
-spec:
-  destination:
-    namespace: guestbook-simple-dev
-    server: https://kubernetes.default.svc
-  project: default
-  source:
-    path: env/dev
-    repoURL: https://github.com/xxxxxx/kargo-simple.git
-    targetRevision: HEAD
+<h4 id="create-a-argocd-app">Create a ArgoCD app</h4>
+<p>Create Argo ApplicationSet to deploy guestbook app in three different environments viz dev, staging and prod using the command below, </p>
+<pre><code>kubectl apply -f argo/guestbook-appset.yaml
 </code></pre>
-<p>where, replace XXXXXX with your github username.</p>
-<p>apply this app to your cluster</p>
-<pre><code>kubectl apply -f guestbook-dev.yaml
-</code></pre>
-<p>validate that the app is deployed to dev namespace</p>
-<pre><code>kubectl get apps -n argocd
-kubectl get pods -n guestbook-simple-dev
-</code></pre>
+<p>You shall see three applications created in Argo CD, with manual sync option, as we will trigger those using promotion workflows created with Kargo. </p>
+<p><img alt="" src="../images/argo/80.png" /></p>
 <h3 id="simulate-promotion-of-the-guestbook-app">Simulate promotion of the guestbook app</h3>
 <p>Switch to guesstbook app repo abd make some change to <code>public/index.html</code></p>
 <p>For example, change the version number in the body tag to somet other number.</p>
@@ -549,11 +556,59 @@ kubectl get pods -n guestbook-simple-dev
 
 </code></pre>
 <p>Build the container image and push it to github container registry.</p>
-<pre><code>docker image build -t ghcr.io/&lt;yourgithubusername&gt;/guestbook:v1.0.3  .
+<pre><code>docker image build -t ghcr.io/&lt;yourgithubusername&gt;/guestbook:v1.0.4  .
 docker push ghcr.io/&lt;yourgithubusername&gt;/guestbook:v1.0.4
 </code></pre>
 <p>Now you should see a new freight available on kargo, which you could promote to dev by clickin on the target icon and selecting "Promote into stage" option. </p>
 <p><img alt="" src="../images/argo/75.png" /></p>
+<p>Once promoted, you would also see the ArgoCD app is deployed to dev namespace from ArgoCD UI.</p>
+<p><img alt="" src="../images/argo/81.png" /></p>
+<p>You could access the guestbook app at http://NODEIP:30100 for dev environment.</p>
+<p><img alt="" src="../images/argo/78.png" /></p>
+<p>Yould could select the box which displays the name of the promotion workflow to see the promotions details </p>
+<h3 id="setup-promotion-workflow">Setup Promotion Workflow</h3>
+<p>Here is an example of how Kargo promotes a new version of the guestbook app through the stages:</p>
+<ol>
+<li><strong>Detect New Image</strong>:</li>
+</ol>
+<pre><code class="language-bash">   docker image build -t ghcr.io/&lt;yourgithubusername&gt;/guestbook:v1.0.4 .
+   docker push ghcr.io/&lt;yourgithubusername&gt;/guestbook:v1.0.4
+</code></pre>
+<p>And you could keep on promoting it through the stages : Dev -&gt; Stage -&gt; Prod</p>
+<p><img alt="" src="../images/argo/77.png" /></p>
+<p>As you promote, you could access the guestbook app at  </p>
+<ul>
+<li>http://NODEIP:30100  for dev environment</li>
+<li>http://NODEIP:30200  for staging environment</li>
+<li>http://NODEIP:30300  for prod environment  </li>
+</ul>
+<h3 id="how-kargo-promotes-through-stages">How Kargo Promotes Through Stages</h3>
+<p>Kargo automates the promotion of applications through different stages (e.g., dev, staging, prod) by detecting new container images and committing changes to the release branch based on the defined promotion workflow. Here's how it works:</p>
+<h5 id="1-image-detection">1. <strong>Image Detection</strong>:</h5>
+<p>Kargo continuously monitors the container registry for new images. When a new image is pushed to the registry, Kargo detects it and creates a new "freight" representing the new version of the application.</p>
+<p><img alt="" src="../images/argo/82.png" /></p>
+<h5 id="2-promotion-workflow">2. <strong>Promotion Workflow</strong>:</h5>
+<p>The promotion workflow defines the stages through which the application must pass. Each stage can have specific criteria and manual approval steps. For example, the workflow might include stages like dev, staging, and prod.</p>
+<h5 id="3-promotion-to-dev">3. <strong>Promotion to Dev</strong>:</h5>
+<p>When a new image is detected, Kargo promotes it to the dev stage. This involves updating the Kubernetes manifests with the new image tag and committing these changes to the release branch in the Git repository. Kargo then triggers the deployment of the updated manifests to the dev environment using ArgoCD.</p>
+<p><img alt="" src="../images/argo/76.png" /></p>
+<h5 id="4-manual-approval-and-testing">4. <strong>Manual Approval and Testing</strong>:</h5>
+<p>After the application is deployed to the dev environment, it undergoes testing and validation. If the tests pass and the application meets the criteria for promotion, a manual approval step may be required to promote the application to the next stage.</p>
+<h5 id="5-promotion-to-staging">5. <strong>Promotion to Staging</strong>:</h5>
+<p>Once approved, Kargo promotes the application to the staging environment by repeating the process of updating the manifests, committing the changes, and triggering the deployment. The application undergoes further testing and validation in the staging environment.</p>
+<p><img alt="" src="../images/argo/83.png" /></p>
+<h5 id="6-promotion-to-prod">6. <strong>Promotion to Prod</strong>:</h5>
+<p>After successful validation in the staging environment, the application is promoted to the prod environment. This final promotion involves the same steps of updating manifests, committing changes, and triggering the deployment.</p>
+<h5 id="7-commit-changes-to-release-branch">7. <strong>Commit Changes to Release Branch</strong>:</h5>
+<p>Throughout the promotion process, Kargo commits changes to the release branch in the Git repository. This ensures that the GitOps workflow is maintained, and the state of the application is always reflected in the Git repository.</p>
+<p><img alt="" src="../images/argo/84.png" /></p>
+<p>By automating the promotion process and integrating with ArgoCD, Kargo ensures that applications are deployed consistently and reliably across different environments. This approach minimizes the risk of manual errors and ensures that only validated and approved versions of the application are promoted to production.</p>
+<h3 id="cleaning-up">Cleaning Up</h3>
+<p>Once you are done with the demo, you could delete the guestbook app deployments along with kargo configurations for it using the following commands.</p>
+<pre><code>kubectl delete -f argo/ 
+
+kargo delete -f kargo/
+</code></pre>
               
             </div>
           </div><footer>
