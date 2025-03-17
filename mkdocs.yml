@@ -29,6 +29,11 @@ nav:
      - Lab K204 - Health Checks: "pods-health-probes.md"
      - Lab K205 - DaemonsSets & CronJobs: "daemonsets_cronsjobs.md"
      - Lab K206 - Statefulsets: "13_redis_statefulset.md"
+  - Advanced Kubernetes: 
+     - Lab K801 - Setting up Kubernetes Cluster: "adv_kubernetes-setup.md"
+     - Lab K802 - Exploring Kubernetes Control Plane: "adv_kubernetes-control-plane.md"
+     - Lab K803 - Setting up Cilium CNI with KIND: "adv_setup_cilium.md"
+     - Lab K804 - Exploring Cilium: "adv_explore_cilium.md"
   - Additional CKA Topics:
      - Lab K301 - Auto Scaling with HPA : "10_kubernetes_autoscaling.md"
      - Lab K302 - Autoscaling on Custom Metric: "custom_autoscaling.md"
@@ -78,10 +83,11 @@ nav:
      - ArgoCD - RETRY Options: "articles/argo_retry_options.md"
      - ArgoCD - Prune Propogation Policy: "articles/argo_prune_propogation_policy.md"
      - GitHub Actions Code Explainer: "gha_code_explain.md"
+     - Lua Scripting in Argo: "articles/argo_lua.md"
   - Argo Advanced:
      - Lab K701 - Setup CI/CD with GHA and Argo: "argo_adv_setup.md"
      - Lab K702 - Building Multi-Tenant Deployment System: "argo_multi_tenant.md"
-     - Lab K703 - Advanced Sync Strategues: "argo_adv_sync.md"
+     - Lab K703 - Advanced Sync Strategies: "argo_adv_sync.md"
      - Lab K704 - Experiments and Analysis: "argo_adv_prom_exp_analysis.md"
      - Lab K704 - Kargo: "argo_kargo.md"
      - Lab K705 - TBA: "argo_workflow_examples.md"

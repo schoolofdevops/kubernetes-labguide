@@ -279,6 +279,13 @@ git push origin main
 ```
 
 
+Create a release branch from main branch from GiHub web UI.
+
+![](images/argo/79.png)
+
+`Create release branch is an important step, without which your deployments  will not work. Make sure 'r' in release is smallcase`
+
+
 Deploy kargo app 
 
 ```
@@ -319,40 +326,17 @@ kargo create credentials github-creds \
 
 As part of the promotion process, Kargo requires privileges to commit changes to your Git repository, as well as the ability to create pull requests. Ensure that the given token has these privileges.
 
-Create a ArgoCD app 
+#### Create a ArgoCD app 
+
+Create Argo ApplicationSet to deploy guestbook app in three different environments viz dev, staging and prod using the command below, 
 
 ```
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  annotations:
-    kargo.akuity.io/authorized-stage: kargo-simple:dev
-  name: guestbook-dev
-  namespace: argocd
-spec:
-  destination:
-    namespace: guestbook-simple-dev
-    server: https://kubernetes.default.svc
-  project: default
-  source:
-    path: env/dev
-    repoURL: https://github.com/xxxxxx/kargo-simple.git
-    targetRevision: HEAD
+kubectl apply -f argo/guestbook-appset.yaml
 ```
 
-where, replace XXXXXX with your github username.
+You shall see three applications created in Argo CD, with manual sync option, as we will trigger those using promotion workflows created with Kargo. 
 
-apply this app to your cluster
-
-```
-kubectl apply -f guestbook-dev.yaml
-```
-
-validate that the app is deployed to dev namespace
-```
-kubectl get apps -n argocd
-kubectl get pods -n guestbook-simple-dev
-```
+![](images/argo/80.png)
 
 
 ### Simulate promotion of the guestbook app 
@@ -373,11 +357,96 @@ For example, change the version number in the body tag to somet other number.
 Build the container image and push it to github container registry.
 
 ```
-docker image build -t ghcr.io/<yourgithubusername>/guestbook:v1.0.3  .
+docker image build -t ghcr.io/<yourgithubusername>/guestbook:v1.0.4  .
 docker push ghcr.io/<yourgithubusername>/guestbook:v1.0.4
 ```
 
 Now you should see a new freight available on kargo, which you could promote to dev by clickin on the target icon and selecting "Promote into stage" option. 
 
 ![](images/argo/75.png)
+
+Once promoted, you would also see the ArgoCD app is deployed to dev namespace from ArgoCD UI.
+
+![](images/argo/81.png)
+
+
+You could access the guestbook app at http://NODEIP:30100 for dev environment.
+
+![](images/argo/78.png)
+
+
+Yould could select the box which displays the name of the promotion workflow to see the promotions details 
+
+
+
+### Setup Promotion Workflow
+
+Here is an example of how Kargo promotes a new version of the guestbook app through the stages:
+
+1. **Detect New Image**:
+```bash
+   docker image build -t ghcr.io/<yourgithubusername>/guestbook:v1.0.4 .
+   docker push ghcr.io/<yourgithubusername>/guestbook:v1.0.4
+```
+
+And you could keep on promoting it through the stages : Dev -> Stage -> Prod
+
+![](images/argo/77.png)
+
+
+As you promote, you could access the guestbook app at  
+
+* http://NODEIP:30100  for dev environment
+* http://NODEIP:30200  for staging environment
+* http://NODEIP:30300  for prod environment  
+  
+
+
+### How Kargo Promotes Through Stages
+
+Kargo automates the promotion of applications through different stages (e.g., dev, staging, prod) by detecting new container images and committing changes to the release branch based on the defined promotion workflow. Here's how it works:
+
+##### 1. **Image Detection**:
+   Kargo continuously monitors the container registry for new images. When a new image is pushed to the registry, Kargo detects it and creates a new "freight" representing the new version of the application.
+
+![](images/argo/82.png)
+
+
+##### 2. **Promotion Workflow**:
+   The promotion workflow defines the stages through which the application must pass. Each stage can have specific criteria and manual approval steps. For example, the workflow might include stages like dev, staging, and prod.
+
+##### 3. **Promotion to Dev**:
+   When a new image is detected, Kargo promotes it to the dev stage. This involves updating the Kubernetes manifests with the new image tag and committing these changes to the release branch in the Git repository. Kargo then triggers the deployment of the updated manifests to the dev environment using ArgoCD.
+
+![](images/argo/76.png)
+
+##### 4. **Manual Approval and Testing**:
+   After the application is deployed to the dev environment, it undergoes testing and validation. If the tests pass and the application meets the criteria for promotion, a manual approval step may be required to promote the application to the next stage.
+
+##### 5. **Promotion to Staging**:
+   Once approved, Kargo promotes the application to the staging environment by repeating the process of updating the manifests, committing the changes, and triggering the deployment. The application undergoes further testing and validation in the staging environment.
+
+![](images/argo/83.png)
+
+##### 6. **Promotion to Prod**:
+   After successful validation in the staging environment, the application is promoted to the prod environment. This final promotion involves the same steps of updating manifests, committing changes, and triggering the deployment.
+
+##### 7. **Commit Changes to Release Branch**:
+   Throughout the promotion process, Kargo commits changes to the release branch in the Git repository. This ensures that the GitOps workflow is maintained, and the state of the application is always reflected in the Git repository.
+
+![](images/argo/84.png)
+
+
+By automating the promotion process and integrating with ArgoCD, Kargo ensures that applications are deployed consistently and reliably across different environments. This approach minimizes the risk of manual errors and ensures that only validated and approved versions of the application are promoted to production.
+
+
+### Cleaning Up 
+
+Once you are done with the demo, you could delete the guestbook app deployments along with kargo configurations for it using the following commands.
+
+```
+kubectl delete -f argo/ 
+
+kargo delete -f kargo/
+```
 

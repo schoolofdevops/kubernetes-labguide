@@ -5,7 +5,13 @@
 In this lab, we aim to explore advanced deployment strategies using ArgoCD and Prometheus. We will set up and configure ArgoCD to visualize rollouts, deploy a metrics server for monitoring, and integrate Prometheus and Grafana for sophisticated monitoring and analysis. Additionally, we will implement canary deployments with experiments and analysis to ensure the stability and performance of our applications before fully rolling them out to production. This comprehensive approach will help us achieve reliable and efficient continuous delivery in our Kubernetes environment.
 
 
-## Prepwork 
+## Stage 0 - Prepwork 
+
+As part of the prep work, we will minimize the footprint of the application set by deploying only the `vote` app in the prod namespace as well as install the argo rollout extenstion so that we could visualize rollouts right from ArgoCD. 
+
+### Minimize ApplicationSet Footprint
+
+We will minimize the footprint of the application set by deploying only the `vote` app in the prod namespace. This is to avoid overloading our lab environment created with KIND with minimal resources.
 
 Delete the previous appset and clean up the application deployments using, 
 
@@ -29,7 +35,8 @@ kubectl get appset,app -n argocd
 ``` 
 
 
-## Setup ArgoCD Extension for Rollout Visualization
+### Setup ArgoCD Extension for Rollout Visualization
+
 
 To apply the ArgoCD server patch to install the Argo Rollouts extension, follow these steps:
 
@@ -100,7 +107,9 @@ To validate, try accessing your **ArgoCD UI**, navigate to an application, and y
 
 ----
 
-## Setup Metrics Server
+## Stage 1 - Setup Monitoring with Ingress and Prometheus
+
+### Setup Metrics Server
 
 Its importantt to have metrics server to get the essential pod and node monitoring data. 
 
@@ -158,7 +167,7 @@ kind-worker2         31m          1%     422Mi           10%
 If you see a similar output, monitoring is now been setup.
 
 
-## Deploy Prometheus and Grafana
+### Deploy Prometheus and Grafana
 
 To further setup sophisticated monitoring, we will deploy Prometheus and Grafana.
 
@@ -232,8 +241,67 @@ It may look similar to this, with possibly less data initially
 
 However, if you see some metric coming in, your setup with Nginx Ingress and Promethus Integration is working ! You may pat your back at this time :)
 
+### Add Local DNS to access the Vote App via Browser 
+
+`Note: You have to make this change on your  local laptop/desktop`
+
+As part of app deployment, you have created the ingress rules based on hostnames e.g.  **vote.example.com**. You could validate this by running the following command
+
+```
+kubectl get ingress -n instavote-prod
+```
+
+In order for you to be able to access this app from browser using hostname, there has to be a dns entry pointing to your nodes, which is running as nginx (exposed via nodeport).
+
+```bash
+
+  vote.example.com     -------+                        +----- vote:80
+                              |     +-------------+    |  (namespace= prod)
+                              |     |   ingress   |    |
+                              +===> |   node:80   | ===+
+                              |     +-------------+    |
+                              |                        |  (namespace= xyz)
+   xyz.example.com     -------+                        +----- xyz:80
+
+```
+
+To achieve this you need to either,
+
+  * Create a DNS entry, provided you own the domain and have access to the dns management console.
+  * Create a local **hosts** file entry. On unix systems its in `/etc/hosts` file. On windows its at `C:\Windows\System32\drivers\etc\hosts`. You need admin access to edit this file.
+
+
+For example, on a linux or osx, you could edit it as,
+
+```
+sudo vim /etc/hosts
+```
+
+And add an entry such as ,
+
+```
+xxx.xxx.xxx.xxx vote.example.com 
+```
+
+where,
+
+  * xxx.xxx.xxx.xxx is the actual IP address of one of the nodes running traefik.
+
+e.g with KIND based environment 
+
+
+```
+127.0.0.01 vote.example.com 
+```
+And then access the app urls using http://vote.example.com 
+
+![Name Based Routing](../images/domain-name.png)
+
+
 
 ----
+
+## Stage 2 - Full Fledged Canary Rollout 
 
 ### Configure Canary Rollout Configuration with Experiment and Analysis
 
@@ -243,7 +311,7 @@ Experiments and analysis are crucial components of the canary deployment strateg
 
 Lets first update the canary rollout configuration to include experiments and analysis. 
 
-Since we are using helm charts to deploy our application, we will need to update the relevant files in initcron-gitops repo. 
+Since we are using helm charts to deploy our application, we will need to update the relevant files in `instavote-gitops` repo. 
 
 File: `instavote-gitops/charts/vote/env/prod.yaml`
 
@@ -482,7 +550,7 @@ You could also watch the rollout using the web UI.
 
 ![](images/argo/68.png)
 
-## Cleaning Up
+### Stage 3 -  Cleaning Up
 
 Once you are done with the lab, you can delete the components created during this lab using the following commands.
 
