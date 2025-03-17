@@ -7,9 +7,6 @@ This document was originally created as  a Lab Guide to go along with the [Kuber
 If you still believe you could learn better and faster by audio visual means, definitely consider subscribing to our course at  [schoolofdevops.com](http://schoolofdevops.com).
 
 
-## Team
+## Author
 
-- Gourav Shah
-- Vijayboopathy
-- Venkat
-- Abhijeet Nirmal
+- [Gourav Shah](https://www.linkedin.com/in/gouravshah) 
