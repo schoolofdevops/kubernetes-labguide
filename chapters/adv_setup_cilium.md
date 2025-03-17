@@ -283,6 +283,12 @@ hubble-ui      NodePort    10.96.200.6     <none>        80:30200/TCP           
 kube-dns       ClusterIP   10.96.0.10      <none>        53/UDP,53/TCP,9153/TCP   4h29m
 ```
 
+To find out your ip use 
+
+```
+curl ifconfig.me
+```
+
 Now you should be able to access hubble UI using `http://IPADDRESS:30200`
 
 ![](images/adv/03.png)

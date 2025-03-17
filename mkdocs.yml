@@ -35,6 +35,8 @@ nav:
      - Lab K803 - Service Networking and Kube Proxy: "adv_service_networking.md"
      - Lab K803 - Setting up Cilium CNI with KIND: "adv_setup_cilium.md"
      - Lab K804 - Exploring Cilium: "adv_explore_cilium.md"
+     - Lab K805 - Controllers and CRDs: "adv_controllers.md"
+     - Lab K806 - Operators: "adv_operators.md"
   - Additional CKA Topics:
      - Lab K301 - Auto Scaling with HPA : "10_kubernetes_autoscaling.md"
      - Lab K302 - Autoscaling on Custom Metric: "custom_autoscaling.md"
