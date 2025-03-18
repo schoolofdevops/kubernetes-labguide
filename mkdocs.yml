@@ -13,6 +13,7 @@ nav:
      - Lab K804 - Exploring Cilium: "adv_explore_cilium.md"
      - Lab K805 - Controllers and CRDs: "adv_controllers.md"
      - Lab K806 - Operators: "adv_operators.md"
+     - Lab K807 - Writing Custom Operator in Go: "adv_operator_go.md"
      - Lab K807 - Launch EKS Cluster: "adv_setup_eks_cluster.md"
      - Lab K808 - Horizontal and Vertical Autoscaling: "adv_eks_autoscaling.md"
   - Docker Essentials for Kubernetes:
