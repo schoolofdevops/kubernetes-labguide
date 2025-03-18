@@ -3,18 +3,18 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/adv_kubernetes-setup/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/adv_setup_eks_cluster/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Lab K801 - Setting up Kubernetes Cluster - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <title>Lab K807 - Launch EKS Cluster - Kubernetes Tutorial with CKA/CKAD Prep</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Lab K801 - Setting up Kubernetes Cluster";
-        var mkdocs_page_input_path = "adv_kubernetes-setup.md";
-        var mkdocs_page_url = "/adv_kubernetes-setup/";
+        var mkdocs_page_name = "Lab K807 - Launch EKS Cluster";
+        var mkdocs_page_input_path = "adv_setup_eks_cluster.md";
+        var mkdocs_page_url = "/adv_setup_eks_cluster/";
       </script>
     
     <!--[if lt IE 9]>
@@ -55,17 +55,7 @@
               </ul>
               <p class="caption"><span class="caption-text">Advanced Kubernetes</span></p>
               <ul class="current">
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K801 - Setting up Kubernetes Cluster</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#install-docker">Install Docker</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#install-kind-and-kubectl">Install KIND and Kubectl</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#setup-kubernetes-cluster-with-kind">Setup Kubernetes Cluster with KIND</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#restarting-and-resetting-the-cluster-skip-for-now">Restarting and Resetting the Cluster (Skip for now)</a>
-    </li>
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../adv_kubernetes-setup/">Lab K801 - Setting up Kubernetes Cluster</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../adv_kubernetes-control-plane/">Lab K802 - Exploring Kubernetes Control Plane</a>
                   </li>
@@ -79,7 +69,49 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../adv_operators/">Lab K806 - Operators</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../adv_setup_eks_cluster/">Lab K807 - Launch EKS Cluster</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K807 - Launch EKS Cluster</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#installing-pre-requisite-tools">Installing Pre-requisite Tools</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#install-eksctl">Install eksctl</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#install-aws-cli">Install aws CLI</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#configure-aws-cli">Configure AWS CLI</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#create-ssh-key-pair">Create SSH key Pair</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#setting-up-eks-cluster-with-eksctl_1">Setting up EKS Cluster with eksctl</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#eksctl">eksctl</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#aws-cli-with-kubectl">aws cli with kubectl</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#create-vpc-with-public-subnets">Create VPC  with Public Subnets</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#to-create-your-vpc">To create your VPC</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#configure-iam-role-for-eks">Configure IAM Role for EKS</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#step-1-create-the-iam-role">Step 1: Create the IAM Role</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#launch-eks-cluster-with-eksctl">Launch EKS Cluster with eksctl</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#setup-visualizer">Setup Visualizer</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#reference">Reference</a>
+    </li>
+    </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../adv_eks_autoscaling/">Lab K808 - Horizontal and Vertical Autoscaling</a>
                   </li>
@@ -303,9 +335,9 @@
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a> &raquo;</li>
           <li>Advanced Kubernetes &raquo;</li>
-      <li class="breadcrumb-item active">Lab K801 - Setting up Kubernetes Cluster</li>
+      <li class="breadcrumb-item active">Lab K807 - Launch EKS Cluster</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/adv_kubernetes-setup.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/adv_setup_eks_cluster.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -313,127 +345,341 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="lab-801-setting-up-kubernetes-cluster-with-kind">Lab 801 - Setting up Kubernetes Cluster with KIND</h1>
-<p>This lab describes the process of how you could quickly create a multi node Kubernetes Envonment using <a href="https://kind.sigs.k8s.io/docs/user/ingress/#ingress-nginx">KIND</a>, which is a simple and quick way to set up a learning environment. Advantage it offers over minikube or docker desktop based kubernetes setup is its a multi node environment closer to the real world setup.  </p>
-<h2 id="install-docker">Install Docker</h2>
-<p>Download and install Docker on a the Ubuntu machine as , </p>
-<pre><code>curl -sSL &quot;https://gist.githubusercontent.com/initcron/cadf5c920e5e7d1cb45803c36b656947/raw/006c02f7714315222f8055381ebb8c5f910c36a5/user-data-docker.sh&quot; | sudo bash
+                <h1 id="setting-up-eks-cluster-with-eksctl">Setting up EKS Cluster with eksctl</h1>
+<p>Author: Gourav Shah 
+Publisher:  School of Devops
+Version : 18.03.2025.01</p>
+<hr />
+<p>This lab is about getting ready to setup a EKS Cluster on AWS. Before you begin, make sure you have a operational AWS Account with access to create IAM Users and access to all relevant services including   </p>
+<ul>
+<li>IAM</li>
+<li>VPC     </li>
+<li>EKS     </li>
+<li>S3   </li>
+<li>EC2      </li>
+</ul>
+<h2 id="installing-pre-requisite-tools">Installing Pre-requisite Tools</h2>
+<h3 id="install-eksctl">Install eksctl</h3>
+<p>If you haven't installed <code>eksctl</code> yet, you can do so by following these instructions:</p>
+<p><strong>macOS/Linux:</strong></p>
+<pre><code>curl --silent --location &quot;https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz&quot; | tar xz -C /tmp
 
+sudo mv /tmp/eksctl /usr/local/bin
 </code></pre>
-<p>validate </p>
-<pre><code>docker version
+<h3 id="install-aws-cli">Install <code>aws</code> CLI</h3>
+<p>Check if aws cli is installed with </p>
+<pre><code>aws --version
 </code></pre>
-<h2 id="install-kind-and-kubectl">Install KIND and Kubectl</h2>
-<p>Install KIND on the Ubuntu machine as ,</p>
-<pre><code># For AMD64 / x86_64
-[ $(uname -m) = x86_64 ] &amp;&amp; curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.27.0/kind-linux-amd64
-# For ARM64
-[ $(uname -m) = aarch64 ] &amp;&amp; curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.27.0/kind-linux-arm64
-chmod +x ./kind
-sudo mv ./kind /usr/local/bin/kind
+<p>If not, Refer to the official documentation to install <code>aws</code> CLI  with os specific instructions from <a href="https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html">Install or update to the latest version of the AWS CLI - AWS Command Line Interface</a></p>
+<h3 id="configure-aws-cli">Configure AWS CLI</h3>
+<p>Login to the AWS Console with the credentials given to you. </p>
+<p>Once you login,visit IAM Console  proceed to create Security Credentials and generate the AWS Access Key + AWS Secret Key pair.  </p>
+<p>Then make sure your AWS CLI is configured with the necessary permissions to create EKS clusters. You can configure it using:</p>
+<pre><code>aws configure
 </code></pre>
-<p>validate </p>
-<pre><code>kind
-kind version
-</code></pre>
-<p>Install kubectl in the same environment as ,</p>
-<pre><code>curl -LO &quot;https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl&quot;
+<p>You'll need your AWS Access Key ID, Secret Access Key, region, and output format. The available output formats are:</p>
+<ol>
+<li><strong>json</strong>: The default output format. Provides the output in JSON format.</li>
+<li><strong>text</strong>: Provides the output in plain text format. This format is useful for simple parsing and readability.</li>
+<li><strong>table</strong>: Provides the output in a readable table format. This format is useful for human readability but less suitable for parsing.</li>
+<li><strong>yaml</strong>: Provides the output in YAML format. This is useful for configurations and other uses where YAML is preferred.</li>
+<li><strong>yaml-stream</strong>: Provides the output in a streaming YAML format, where each document is separated by <code>---</code>. This format is useful for continuous data processing.</li>
+</ol>
+<p>Select region as <code>ap-southeast-1</code> to be consistent with the labs created as part of this course. </p>
+<p>[sample output]</p>
+<pre><code>➜  ~ aws configure
+AWS Access Key ID [****************QSJX]: XXXX
+AWS Secret Access Key [****************P01d]: YYYY
+Default region name [ap-southeast-1]: xx-yyyy-n
+Default output format [None]: table
 
-sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-</code></pre>
-<p>validate </p>
-<pre><code>kubectl 
-kubectl version --client
-</code></pre>
-<h2 id="setup-kubernetes-cluster-with-kind">Setup Kubernetes Cluster with KIND</h2>
-<p>Download  Cluster Configurations and Create  a 3 Node Kubernetes Cluster as</p>
-<pre><code>git clone https://github.com/initcron/k8s-code.git
-cd k8s-code/helper/kind/
-kind create cluster --config kind-three-node-cluster.yaml
-</code></pre>
-<p>Setup context </p>
-<pre><code>kubectl cluster-info --context kind-kind
+where replace `xx-yyyy-n` with the region assigned to you in the status sheet (Google Sheet shared during class).
 
+➜  ~ cat ~/.aws/config
+[default]
+region = xx-yyyy-n
+output = table
 </code></pre>
-<p>Validate</p>
-<pre><code>kubectl get nodes
+<h3 id="create-ssh-key-pair">Create SSH key Pair</h3>
+<p>To create a SSH key pair that you would use to log into the nodes created with EKS,</p>
+<ul>
+<li>Switch to EC2 Service from AWS Console, and make sure you have selected the same region you are going to launch EKS cluster inside e.g. Singapore </li>
+<li>Select <strong>Key Pairs</strong> from left side menu header <strong>Network &amp; Security</strong>. </li>
+<li>Create a key pair of type <strong>RSA</strong> and download a <strong>.pem</strong> or <strong>.ppk</strong> file based on how and from where  you are going to connect. </li>
+</ul>
+<p><img alt="" src="../images/eks/01/06.png" /></p>
+<ul>
+<li>Move the downloaded private key to a safe location and change its permissions. 
+e.g. </li>
+</ul>
+<pre><code>mv ~/Downloads/eks-spore.pem ~/.ssh
+ls -al  ~/.ssh/eks-spore.pem
+chmod 600 ~/.ssh/eks-spore.pem
+ls -al  ~/.ssh/eks-spore.pem
+</code></pre>
+<p>Now that the preparatory setup is done, you could proceed to create a EKS Cluster. </p>
+<h2 id="setting-up-eks-cluster-with-eksctl_1">Setting up EKS Cluster with eksctl</h2>
+<p>While setting up EKS Cluster on AWS, there are two main options that you could consider </p>
+<ul>
+<li>Using <code>eksctl</code> which is a dedicated EKS Cluster Management Tool   </li>
+<li>Using <code>aws</code> CLI along with <code>kubectl</code> which is a more complex approach, but comes with  more control in your hands    </li>
+</ul>
+<p>Both <code>eksctl</code> and the combination of <code>aws cli</code> with <code>kubectl</code> have their advantages and use cases when creating and managing AWS EKS clusters. Here's a comparison to help you decide which approach might be best for your course:</p>
+<h3 id="eksctl"><code>eksctl</code></h3>
+<p><strong>Pros:</strong></p>
+<ol>
+<li><strong>Ease of Use:</strong> <code>eksctl</code> is specifically designed to simplify the creation and management of EKS clusters. It abstracts many of the complexities involved.  </li>
+<li><strong>Quick Setup:</strong> With a single command, you can create a fully functioning EKS cluster.  </li>
+<li><strong>Default Best Practices:</strong> It follows AWS best practices for cluster creation and configuration.  </li>
+<li><strong>Less Code:</strong> Requires fewer commands and less code to manage the cluster.  </li>
+</ol>
+<p>⠀
+<strong>Cons:</strong> </p>
+<ol>
+<li><strong>Less Granular Control:</strong> While it simplifies many tasks, it might abstract away some of the details, giving you less control over specific configurations.  </li>
+<li><strong>Dependency:</strong> Adds an additional dependency that students need to install and manage.  </li>
+</ol>
+<p>⠀</p>
+<h3 id="aws-cli-with-kubectl"><code>aws cli</code> with <code>kubectl</code></h3>
+<p><strong>Pros:</strong></p>
+<ol>
+<li><strong>Granular Control:</strong> Provides more control over the EKS cluster configuration and setup, allowing for fine-tuning and customization.  </li>
+<li><strong>Learning Opportunity:</strong> Teaches students more about the underlying AWS services and Kubernetes configurations.  </li>
+<li><strong>Versatility:</strong> <code>aws cli</code> and <code>kubectl</code> are versatile tools that can be used for a wide range of AWS and Kubernetes operations beyond just cluster creation.  </li>
+</ol>
+<p><strong>Cons:</strong></p>
+<ol>
+<li><strong>Complexity:</strong> Requires more steps and a deeper understanding of AWS and Kubernetes concepts, which might be overwhelming for beginners.  </li>
+<li><strong>More Commands:</strong> Involves writing more commands and scripts, which can be error-prone.  </li>
+</ol>
+<p>As part of this lab, you will take a simpler approach and use <code>eksctl</code> to quickly create a cluster. </p>
+<h2 id="create-vpc-with-public-subnets">Create VPC  with Public Subnets</h2>
+<p>EKS needs a VPC to launch itself in. There are three different options while creating the VPCs as follows </p>
+<ul>
+<li>VPC with Public and Private Subnets </li>
+<li>VPC with only Public Subnets </li>
+<li>VPC with only Private Subnets </li>
+</ul>
+<p>While you would ideally create VPC with public and private subnets so that you could host your applications in private subnets and set up load balancers and ingress controllers in public, as part of this lab guide, you are going to set up VPC with public subnets only.  This is to avoid creation of two NAT Gateways, which would incur additional costs. </p>
+<p>The VPC that you are going to create has three public subnets that are deployed into different Availability Zones in an AWS Region. All nodes are automatically assigned public <code>IPv4</code> addresses and can send and receive internet traffic through an <a href="https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Internet_Gateway.html">internet gateway</a>. A <a href="https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html">security group</a> is deployed that denies all inbound traffic and allows all outbound traffic. The subnets are tagged so that Kubernetes can deploy load balancers to them.</p>
+<p>If you choose to create a VPC with a different configuration, please pick a relevant template from <a href="https://docs.aws.amazon.com/eks/latest/userguide/creating-a-vpc.html">Creating a VPC for your Amazon EKS cluster</a>. 
+⠀</p>
+<h6 id="to-create-your-vpc">To create your VPC</h6>
+<ol>
+<li>
+<p>Open the AWS CloudFormation console at <a href="https://console.aws.amazon.com/cloudformation/">https://console.aws.amazon.com/cloudformation</a>.</p>
+</li>
+<li>
+<p>From the navigation bar, select an AWS Region that supports EKS e.g.  Singapore .</p>
+</li>
+<li>
+<p>Choose <strong>Create stack</strong>, <strong>With new resources (standard)</strong>.</p>
+</li>
+<li>
+<p>From Prepare Temaplte, select <strong>Choose and existing template</strong> and Under <strong>Template source</strong>, select <strong>Amazon S3 URL</strong>.<img alt="" src="../images/eks/02/01.png" /></p>
+</li>
+<li>Paste the following URL into the text area under <strong>Amazon S3 URL</strong> and choose <strong>Next</strong>:</li>
+</ol>
+<pre><code>https://s3.us-west-2.amazonaws.com/amazon-eks/cloudformation/2020-10-29/amazon-eks-vpc-sample.yaml
+</code></pre>
+<ol>
+<li>On the <strong>Specify Details</strong> page, enter the stack name e.g. <code>eks-vpc-01</code> and update parameters if you want to change any, and then choose <strong>Next</strong> and create VPC stack.  <img alt="" src="../images/eks/02/02.png" /></li>
+</ol>
+<p>Note : change <code>eks-vpc-01</code> to a unique name for your VPC. Lets use your sequence number from the status sheet. e.g. eks-vpc-01, eks-vpc-02 .... </p>
+<ol>
+<li>Proceed to <strong>Review and create</strong>  and submit the stack. It takes a few minutes to have the status change from  to</li>
+</ol>
+<p><img alt="" src="../images/eks/02/04.png" /></p>
+<p>once VPC is created, you could verify everything from VPC console.  Also note down the VpcId and SubnetIds from the <strong>Outputs</strong>.</p>
+<p><img alt="" src="../images/eks/02/05.png" /></p>
+<h2 id="configure-iam-role-for-eks">Configure IAM Role for EKS</h2>
+<h3 id="step-1-create-the-iam-role">Step 1: Create the IAM Role</h3>
+<ol>
+<li>
+<p><strong>Open the IAM Console</strong>: Go to the <a href="https://console.aws.amazon.com/iam/">IAM console</a>.</p>
+</li>
+<li>
+<p><strong>Create a Role</strong>:</p>
+</li>
+<li>Click on <code>Roles</code> and then <code>Create role</code>.</li>
+<li>Choose <code>EKS</code> as the service that will use this role.</li>
+<li>Select the <code>EKS - Cluster</code> use case.
+   <img alt="" src="../images/eks/02/06.png" /></li>
+<li>From <strong>Add Permissions</strong> page you will see the following policy already attached:</li>
+<li><code>AmazonEKSClusterPolicy</code> </li>
+<li>
+<p>Select <strong>Next</strong></p>
+</li>
+<li>
+<p>From <strong>Name, review and create page</strong> , provide a Role name e.g. <code>EKSClusterServiceRole</code> and proceed to <strong>Create role</strong>.<br />
+<img alt="" src="../images/eks/02/07.png" /></p>
+</li>
+<li>
+<p>From IAM Console -&gt; Roles search for <code>EKSClusterServiceRole</code> and select it. 
+<img alt="" src="../images/eks/02/08.png" />
+<img alt="" src="../images/eks/02/09.png" /></p>
+</li>
+<li>
+<p>From Permissions tab, Add Permissions dropdown,  </p>
+</li>
+<li>Choose Attach policies.</li>
+<li>
+<p>Search for <code>AmazonEKSVPCResourceController</code> and attach it to the role.</p>
+</li>
+<li>
+<p><strong>Set the Trust Relationship</strong>: Ensure the trust relationship for the role allows EKS to assume the role. The trust policy should look like this:</p>
+</li>
+</ol>
+<pre><code>{
+  &quot;Version&quot;: &quot;2012-10-17&quot;,
+  &quot;Statement&quot;: [
+    {
+      &quot;Effect&quot;: &quot;Allow&quot;,
+      &quot;Principal&quot;: {
+        &quot;Service&quot;: &quot;eks.amazonaws.com&quot;
+      },
+      &quot;Action&quot;: &quot;sts:AssumeRole&quot;
+    }
+  ]
+}
+</code></pre>
+<p>This should already be there. Verify it from the <strong>Trust relationships</strong> tab.<br />
+⠀ </p>
+<p>Note down the role ARN e.g. <code>arn:aws:iam::665496447754:role/EKSClusterServiceRole</code> which you would add to cluster configuration later.  Also note the new policy being added to the role. </p>
+<p><img alt="" src="../images/eks/02/11.png" /></p>
+<h2 id="launch-eks-cluster-with-eksctl">Launch EKS Cluster with eksctl</h2>
+<p>Start with <code>eksctl</code></p>
+<pre><code>eksctl info
+</code></pre>
+<p>Create cluster configurarion as follows. You could refer to <a href="https://eksctl.io/usage/schema/">Config File Schema</a> to explore  more options. </p>
+<p>File:  <code>cluster.yaml</code></p>
+<pre><code>apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: eks-cluster-01 # Replace this with your unique cluster name
+  region: xx-yyy-n # Replace this with your region
+
+vpc:
+  id: &quot;vpc-aaaa&quot; # Replace this with actual VPC id that you created
+  subnets:
+    public:
+      apsoutheast1a:
+        id: subnet-xxxx # replace with actual
+      apsoutheast1b:
+        id: subnet-yyyy  # replace with actual
+      apsoutheast1c:
+        id: subnet-zzzz  # replace with actual
+
+managedNodeGroups:
+  - name: ng-1-workers
+    labels: { role: workers }
+    instanceType: t3.small
+    desiredCapacity: 2
+    maxPodsPerNode: 100
+    minSize: 1
+    maxSize: 4
+    ssh: 
+      allow: true 
+      publicKeyName: xxxx # replace with actual
+    tags:
+      k8s.io/cluster-autoscaler/enabled: &quot;true&quot;
+      k8s.io/cluster-autoscaler/eks-cluster-01: &quot;owned&quot;
+
+iam:
+  withOIDC: true
+  serviceRoleARN: arn:aws:iam::xxxxxxxxx:role/EKSClusterServiceRole # replace with actual
+</code></pre>
+<p>⠀
+Edit this file and  replace  the following with actual values 
+* vpc id 
+* subnets 
+* public key name (listed ssh key on ec2 that you would like to ssh in with)
+* ServiceRoleARN </p>
+<pre><code>eksctl create cluster -f cluster.yaml
 </code></pre>
 <p>[sample output]</p>
-<pre><code>root@demo:~# kubectl get nodes
-NAME                 STATUS   ROLES           AGE   VERSION
-kind-control-plane   Ready    control-plane   89s   v1.32.2
-kind-worker          Ready    &lt;none&gt;          78s   v1.32.2
-kind-worker2         Ready    &lt;none&gt;          78s   v1.32.2
+<pre><code>2024-05-22 14:53:47 [✔]  all EKS cluster resources for &quot;eks-cluster-01&quot; have been created
+2024-05-22 14:53:48 [ℹ]  nodegroup &quot;ng-1-workers&quot; has 1 node(s)
+2024-05-22 14:53:48 [ℹ]  node &quot;ip-192-168-240-31.ap-southeast-1.compute.internal&quot; is ready
+2024-05-22 14:53:48 [ℹ]  waiting for at least 1 node(s) to become ready in &quot;ng-1-workers&quot;
+2024-05-22 14:53:48 [ℹ]  nodegroup &quot;ng-1-workers&quot; has 1 node(s)
+2024-05-22 14:53:48 [ℹ]  node &quot;ip-192-168-240-31.ap-southeast-1.compute.internal&quot; is ready
+2024-05-22 14:53:48 [✔]  created 1 nodegroup(s) in cluster &quot;eks-cluster-01&quot;
+2024-05-22 14:53:48 [✔]  created 0 managed nodegroup(s) in cluster &quot;eks-cluster-01&quot;
+2024-05-22 14:53:49 [ℹ]  kubectl command should work with &quot;/Users/gshah/.kube/config&quot;, try 'kubectl get nodes'
+2024-05-22 14:53:49 [✔]  EKS cluster &quot;eks-cluster-01&quot; in &quot;ap-southeast-1&quot; region is ready
 </code></pre>
-<p>Wait till you see all nodes in Ready state and you have a cluster operational.</p>
-<p>Wait for a couple of minutes and then validate if the pods are up and running.</p>
-<pre><code>kubectl get pods -A 
+<p>validate </p>
+<pre><code>eksctl get cluster
+
+# Replace this with your unique cluster name e.g. eks-cluster-23
+eksctl get nodegroup --cluster eks-cluster-01
+
+kubectl get nodes
+kubectl config get-contexts
+
 </code></pre>
-<p>[sample output]</p>
-<pre><code>NAMESPACE            NAME                                         READY   STATUS    RESTARTS   AGE
-kube-system          coredns-668d6bf9bc-cp95t                     1/1     Running   0          90s
-kube-system          coredns-668d6bf9bc-r2zgr                     1/1     Running   0          90s
-kube-system          etcd-kind-control-plane                      1/1     Running   0          97s
-kube-system          kindnet-6mpsn                                1/1     Running   0          86s
-kube-system          kindnet-d2jmm                                1/1     Running   0          87s
-kube-system          kindnet-pz78j                                1/1     Running   0          90s
-kube-system          kube-apiserver-kind-control-plane            1/1     Running   0          95s
-kube-system          kube-controller-manager-kind-control-plane   1/1     Running   0          95s
-kube-system          kube-proxy-7djmx                             1/1     Running   0          86s
-kube-system          kube-proxy-chgm2                             1/1     Running   0          90s
-kube-system          kube-proxy-x5rxr                             1/1     Running   0          87s
-kube-system          kube-scheduler-kind-control-plane            1/1     Running   0          95s
-local-path-storage   local-path-provisioner-7dc846544d-dvrdh      1/1     Running   0          90s
+<p>check the max number of pods on each node </p>
+<pre><code>kubectl get nodes -o jsonpath='{.items[*].status.capacity.pods}'
+kubectl get nodes -o jsonpath='{.items[*].status.allocatable.pods}'
 </code></pre>
-<p>Setup Visualiser</p>
+<p>Also observe the following resources created 
+* EKS Cluster 
+* Node Group ( EKS Cluster =&gt; Compute)
+* EC2 Instances
+* VPC, Subnets etc. </p>
+<h3 id="setup-visualizer">Setup Visualizer</h3>
 <pre><code>cd ~
 git clone  https://github.com/schoolofdevops/kube-ops-view
 kubectl apply -f kube-ops-view/deploy/
 </code></pre>
 <p>To check whether visualiser has come up, use the following commands,</p>
 <pre><code>kubectl get pods,services
+
 </code></pre>
-<p>[Expected output ]</p>
-<pre><code>[root@bbb-01 ~]# kubectl get pods,services
+<p>[sample output ]</p>
+<pre><code>➜  ~ kubectl get pods,services
 NAME                                 READY   STATUS    RESTARTS   AGE
-pod/kube-ops-view-65466fb5c9-7gwnm   1/1     Running   0          61s
+pod/kube-ops-view-75fddd9cc4-dg9cr   1/1     Running   0          92s
 
 NAME                    TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE
-service/kube-ops-view   NodePort    10.96.54.166   &lt;none&gt;        80:32000/TCP   61s
-service/kubernetes      ClusterIP   10.96.0.1      &lt;none&gt;        443/TCP        4m28s
+service/kube-ops-view   NodePort    10.100.38.21   &lt;none&gt;        80:32000/TCP   92s
 </code></pre>
-<p>Find out the public ip of your host using the following command,</p>
-<pre><code>curl ifconfig.me
+<p>To access the visualizer and other apps exposed with  nodePort, create a new security group and attach it to the instances created with </p>
+<ul>
+<li>From EC2 =&gt; Network &amp; Security =&gt; Security Groups =&gt; Create Security Group </li>
+<li>Provide security group name e.g. <code>NodePort</code></li>
+<li>Select VPC created for EKS </li>
+<li>Add Inbound Rule (do not touch outbound)<ul>
+<li>Custom TCP </li>
+<li>Port range : 30000-32767</li>
+<li>Source : Anywhere IPv4<img alt="" src="../images/eks/02/12.png" /></li>
+<li>Proceed to create security group and note down the id once created e.g. <code>sg-033ad52b6dcc79277</code>
+  <img alt="" src="../images/eks/02/13.png" /></li>
+<li>Add this security group to all nodes (ec2 instances) in the cluster from EC2 =&gt; Actions =&gt; Security =&gt; Change security groups  <img alt="" src="../images/eks/02/14.png" /></li>
+<li>Search and Add security group, <strong>Save</strong>. <img alt="" src="../images/eks/02/15.png" /></li>
+</ul>
+</li>
+</ul>
+<p>Now select the External IP of any of the nodes </p>
+<p>e.g.</p>
+<pre><code>kubectl get nodes -o wide
 </code></pre>
-<p>To access the visualiser, visit  http://IPADDRESS:32000 ( where replace IPADDRESS with the actual IP address of the host noted above).</p>
-<p>You shall see a visualiser similar to the following loaded on the browser.</p>
-<p><img alt="" src="../images/adv/01.png" /></p>
-<p>You could scale it up by adding scale parameter as  <code>http://IPADDRESS:32000/#scale=2.0</code> to the URL.</p>
-<p>If you see this page , Congratulations !! You have the cluster setup.</p>
-<p><code>You are done and can STOP here while doing the first time setup.</code></p>
-<h2 id="restarting-and-resetting-the-cluster-skip-for-now">Restarting and Resetting the Cluster (Skip for now)</h2>
-<p><code>Note: This is a Optional Topic. Skil this during your initial setup lab.</code></p>
-<p>To stop and start the cluster, you could stop and containers created with docker and then start them back</p>
-<pre><code>docker ps
-docker stop kind-control-plane kind-worker kind-worker2
-</code></pre>
-<p>to bring it back again,</p>
-<pre><code>docker start kind-control-plane kind-worker kind-worker2
-</code></pre>
-<p>Even if you restart your system and bring it up using the above command, it should work.</p>
-<p>To reset the cluster (note you will be deleting the existing environment and create fresh one)</p>
-<p>asusming your cluster name is <code>k8slab</code> reset it as :</p>
-<pre><code>kind get clusters
-kind delete cluster --name k8slab
-rm -rf  ~/.kube
-kind create cluster --name k8slab --config kind-three-node-cluster.yaml
-</code></pre>
+<p>and access the visualizer on port 32000 e.g. <code>http://xxxx:32000/#scale=2.0</code></p>
+<p>e.g. 
+<img alt="" src="../images/eks/02/16.png" /></p>
+<h2 id="reference">Reference</h2>
+<ul>
+<li>Creating Cluster with <code>eksctl</code>  <a href="https://eksctl.io/usage/creating-and-managing-clusters/#">Creating and managing clusters</a></li>
+<li>Config File Schema: <a href="https://eksctl.io/usage/schema/">Config File Schema</a></li>
+</ul>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href=".." class="btn btn-neutral float-left" title="Home"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../adv_kubernetes-control-plane/" class="btn btn-neutral float-right" title="Lab K802 - Exploring Kubernetes Control Plane">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../adv_operators/" class="btn btn-neutral float-left" title="Lab K806 - Operators"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../adv_eks_autoscaling/" class="btn btn-neutral float-right" title="Lab K808 - Horizontal and Vertical Autoscaling">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -461,10 +707,10 @@ kind create cluster --name k8slab --config kind-three-node-cluster.yaml
         </span>
     
     
-      <span><a href=".." style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../adv_operators/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../adv_kubernetes-control-plane/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../adv_eks_autoscaling/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
