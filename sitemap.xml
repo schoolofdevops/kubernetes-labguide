@@ -56,6 +56,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>http://kubernetes-tutorial.schoolofdevops.com/adv_operator_go/</loc>
+         <lastmod>2025-03-18</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/adv_operators/</loc>
          <lastmod>2025-03-18</lastmod>
          <changefreq>daily</changefreq>
