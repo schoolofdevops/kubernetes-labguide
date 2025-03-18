@@ -5,6 +5,16 @@ site_description: Complete Kubernetes Tutorial by Example
 google_analytics: ['UA-36802546-16', 'kubernetes-tutorial.schoolofdevops.com']
 nav:
   - Home: "index.md"
+  - Advanced Kubernetes: 
+     - Lab K801 - Setting up Kubernetes Cluster: "adv_kubernetes-setup.md"
+     - Lab K802 - Exploring Kubernetes Control Plane: "adv_kubernetes-control-plane.md"
+     - Lab K803 - Service Networking and Kube Proxy: "adv_service_networking.md"
+     - Lab K803 - Setting up Cilium CNI with KIND: "adv_setup_cilium.md"
+     - Lab K804 - Exploring Cilium: "adv_explore_cilium.md"
+     - Lab K805 - Controllers and CRDs: "adv_controllers.md"
+     - Lab K806 - Operators: "adv_operators.md"
+     - Lab K807 - Launch EKS Cluster: "adv_setup_eks_cluster.md"
+     - Lab K808 - Horizontal and Vertical Autoscaling: "adv_eks_autoscaling.md"
   - Docker Essentials for Kubernetes:
      - Lab D101 - Operating Containers: "operating-docker-containers.md"
      - Lab D102 - Building and Publishing Docker Images: "building-publishing-docker-images.md"
@@ -29,14 +39,6 @@ nav:
      - Lab K204 - Health Checks: "pods-health-probes.md"
      - Lab K205 - DaemonsSets & CronJobs: "daemonsets_cronsjobs.md"
      - Lab K206 - Statefulsets: "13_redis_statefulset.md"
-  - Advanced Kubernetes: 
-     - Lab K801 - Setting up Kubernetes Cluster: "adv_kubernetes-setup.md"
-     - Lab K802 - Exploring Kubernetes Control Plane: "adv_kubernetes-control-plane.md"
-     - Lab K803 - Service Networking and Kube Proxy: "adv_service_networking.md"
-     - Lab K803 - Setting up Cilium CNI with KIND: "adv_setup_cilium.md"
-     - Lab K804 - Exploring Cilium: "adv_explore_cilium.md"
-     - Lab K805 - Controllers and CRDs: "adv_controllers.md"
-     - Lab K806 - Operators: "adv_operators.md"
   - Additional CKA Topics:
      - Lab K301 - Auto Scaling with HPA : "10_kubernetes_autoscaling.md"
      - Lab K302 - Autoscaling on Custom Metric: "custom_autoscaling.md"
