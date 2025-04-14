@@ -103,7 +103,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../kubernetes-dynamic-storage-provisioning/">Lab K108 - Storage</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Lab K109 - Mini Project</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Lab K109 - Mini Project</a>
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#project-description">Project Description</a>
         <ul>
@@ -210,7 +210,7 @@
               </ul>
               <p class="caption"><span class="caption-text">Argo</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../kind_create_cluster/">Lab K601 - Setup Kubernetes Cluster</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../kind_create_cluster/">Lab K101 - Install Kubernetes with KIND</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../argo_rollout_blue_green/">Lab K602 - Blue/Green with Argo Rollouts</a>
                   </li>
@@ -307,8 +307,8 @@
       <div class="wy-nav-content">
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href=".." class="icon icon-home" aria-label="Docs"></a> &raquo;</li>
-          <li>Kubernetes Essentials for CKA/CKAD &raquo;</li>
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Kubernetes Essentials for CKA/CKAD</li>
       <li class="breadcrumb-item active">Lab K109 - Mini Project</li>
     <li class="wy-breadcrumbs-aside">
           <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/kubernetes-sample-project.md" class="icon icon-github"> Edit on GitHub</a>
@@ -373,12 +373,20 @@
 </tbody>
 </table>
 <h3 id="apply-existing-code">Apply existing code</h3>
+<p>If you have not created the deployment for vote app yet, apply it as, </p>
+<pre><code>kubectl apply -f https://gist.githubusercontent.com/initcron/53d53d3d5bf7584e4da69489fbf15209/raw/0245fabc4dcf80a238860f7b315d0005eca4e61a/vote-deploy.yaml
+</code></pre>
+<p>If you have created the deployments and services for vote, redis and deployment for db, just create the db service as, </p>
+<pre><code>cd k8s-code/projects/instavote/dev/
+kubectl apply -f db-svc.yaml
+</code></pre>
+<p>If you have not created anything yet, create the following objects as,</p>
 <pre><code>
 cd k8s-code/projects/instavote/dev/
 
 kubectl config set-context --current --namespace=instavote
 
-kubectl apply -f vote-rs.yaml -f vote-svc.yaml
+kubectl apply -f vote-svc.yaml
 kubectl apply -f redis-deploy.yaml -f redis-svc.yaml
 kubectl apply -f db-deploy.yaml -f db-svc.yaml
 </code></pre>
