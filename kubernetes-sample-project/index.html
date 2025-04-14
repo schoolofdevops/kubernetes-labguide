@@ -373,19 +373,23 @@
 </tbody>
 </table>
 <h3 id="apply-existing-code">Apply existing code</h3>
+<p>Switch to the project directory and create  the namespace for the project as,</p>
+<pre><code>cd k8s-code/projects/instavote/dev/
+
+kubectl config set-context --current --namespace=instavote
+</code></pre>
+<p>validate </p>
+<pre><code>kubectl get ns 
+kubectl config get-contexts 
+</code></pre>
 <p>If you have not created the deployment for vote app yet, apply it as, </p>
 <pre><code>kubectl apply -f https://gist.githubusercontent.com/initcron/53d53d3d5bf7584e4da69489fbf15209/raw/0245fabc4dcf80a238860f7b315d0005eca4e61a/vote-deploy.yaml
 </code></pre>
 <p>If you have created the deployments and services for vote, redis and deployment for db, just create the db service as, </p>
-<pre><code>cd k8s-code/projects/instavote/dev/
-kubectl apply -f db-svc.yaml
+<pre><code>kubectl apply -f db-svc.yaml
 </code></pre>
 <p>If you have not created anything yet, create the following objects as,</p>
 <pre><code>
-cd k8s-code/projects/instavote/dev/
-
-kubectl config set-context --current --namespace=instavote
-
 kubectl apply -f vote-svc.yaml
 kubectl apply -f redis-deploy.yaml -f redis-svc.yaml
 kubectl apply -f db-deploy.yaml -f db-svc.yaml
