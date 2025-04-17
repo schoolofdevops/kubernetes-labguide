@@ -14,8 +14,15 @@ export SAMPLE_HOME="$(pwd)/operator-sample"
 
 **Step 1: Install Go**
 
+Refer to the [official documentation](https://go.dev/doc/install) to install Go on your operating system.
+
+
 ```
-# For Linux wget https://go.dev/dl/go1.21.0.linux-amd64.tar.gz sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.21.0.linux-amd64.tar.gz export PATH=$PATH:/usr/local/go/bin echo 'export PATH=$PATH:/usr/local/go/bin' >> ~/.bashrc
+# For Linux 
+wget -c https://go.dev/dl/go1.24.2.linux-amd64.tar.gz
+sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.24.2.linux-amd64.tar.gz 
+export PATH=$PATH:/usr/local/go/bin 
+echo 'export PATH=$PATH:/usr/local/go/bin' >> ~/.bashrc
 
 go version 
 ```
@@ -23,8 +30,10 @@ go version
 
 **Step 2: Install Operator SDK**
 
+Refer to [official documentation to install Operator SDK](https://sdk.operatorframework.io/docs/installation/) on your operating system.
 
 ```
+# For Linux 
 # Download Operator SDK
 export ARCH=$(case $(uname -m) in x86_64) echo -n amd64 ;; aarch64) echo -n arm64 ;; *) echo -n $(uname -m) ;; esac)
 export OS=$(uname | awk '{print tolower($0)}')

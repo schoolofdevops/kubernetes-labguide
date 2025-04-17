@@ -5,23 +5,12 @@ site_description: Complete Kubernetes Tutorial by Example
 google_analytics: ['UA-36802546-16', 'kubernetes-tutorial.schoolofdevops.com']
 nav:
   - Home: "index.md"
-  - Advanced Kubernetes: 
-     - Lab K801 - Setting up Kubernetes Cluster: "adv_kubernetes-setup.md"
-     - Lab K802 - Exploring Kubernetes Control Plane: "adv_kubernetes-control-plane.md"
-     - Lab K803 - Service Networking and Kube Proxy: "adv_service_networking.md"
-     - Lab K803 - Setting up Cilium CNI with KIND: "adv_setup_cilium.md"
-     - Lab K804 - Exploring Cilium: "adv_explore_cilium.md"
-     - Lab K805 - Controllers and CRDs: "adv_controllers.md"
-     - Lab K806 - Operators: "adv_operators.md"
-     - Lab K807 - Writing Custom Operator in Go: "adv_operator_go.md"
-     - Lab K807 - Launch EKS Cluster: "adv_setup_eks_cluster.md"
-     - Lab K808 - Horizontal and Vertical Autoscaling: "adv_eks_autoscaling.md"
   - Docker Essentials for Kubernetes:
      - Lab D101 - Operating Containers: "operating-docker-containers.md"
      - Lab D102 - Building and Publishing Docker Images: "building-publishing-docker-images.md"
      - Lab D103 - Docker Networking: "docker-networking.md"
      - Lab D104 - Docker Volumes: "docker-volumes.md"
-  - Kubernetes Essentials for CKA/CKAD:
+  - Kubernetes Essentials:
      - Lab K101 - Install Kubernetes with KIND: "kind_create_cluster.md"
      - Lab K102 - Kubernetes Quickdive: "kubernetes_quickdive.md"
      - Lab K103 - Pods: "create-and-deploy-kubernetes-pods.md"
@@ -35,6 +24,18 @@ nav:
      - Lab K113 - HELM Package Manager: "helm.md"
      - Lab K114 - Writing HELM Charts: "helm_charts.md"
      - Lab K115 - Publishing HELM Charts: "helm_charts_publish.md"
+     - Lab K116 - Writing Single HELM Chart: "helm_charts_single.md"
+  - Advanced Kubernetes: 
+     - Lab K801 - Setting up Kubernetes Cluster: "adv_kubernetes-setup.md"
+     - Lab K802 - Exploring Kubernetes Control Plane: "adv_kubernetes-control-plane.md"
+     - Lab K803 - Service Networking and Kube Proxy: "adv_service_networking.md"
+     - Lab K803 - Setting up Cilium CNI with KIND: "adv_setup_cilium.md"
+     - Lab K804 - Exploring Cilium: "adv_explore_cilium.md"
+     - Lab K805 - Controllers and CRDs: "adv_controllers.md"
+     - Lab K806 - Operators: "adv_operators.md"
+     - Lab K807 - Writing Custom Operator in Go: "adv_operator_go.md"
+     - Lab K807 - Launch EKS Cluster: "adv_setup_eks_cluster.md"
+     - Lab K808 - Horizontal and Vertical Autoscaling: "adv_eks_autoscaling.md"
   - Additional CKAD Topics:
      - Lab K201 - Advanced Pod Design: "advanced_pod_design.md"
      - Lab K204 - Health Checks: "pods-health-probes.md"

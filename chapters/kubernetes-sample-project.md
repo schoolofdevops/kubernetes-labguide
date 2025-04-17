@@ -29,13 +29,39 @@ Following table depicts the state of readiness of the above services.
 
 ### Apply existing code
 
-```
+Switch to the project directory and create  the namespace for the project as,
 
+```
 cd k8s-code/projects/instavote/dev/
 
 kubectl config set-context --current --namespace=instavote
+```
 
-kubectl apply -f vote-rs.yaml -f vote-svc.yaml
+validate 
+
+```
+kubectl get ns 
+kubectl config get-contexts 
+```
+
+If you have not created the deployment for vote app yet, apply it as, 
+
+```
+kubectl apply -f https://gist.githubusercontent.com/initcron/53d53d3d5bf7584e4da69489fbf15209/raw/0245fabc4dcf80a238860f7b315d0005eca4e61a/vote-deploy.yaml
+```
+
+If you have created the deployments and services for vote, redis and deployment for db, just create the db service as, 
+
+```
+kubectl apply -f db-svc.yaml
+```
+
+
+If you have not created anything yet, create the following objects as,
+
+```
+
+kubectl apply -f vote-svc.yaml
 kubectl apply -f redis-deploy.yaml -f redis-svc.yaml
 kubectl apply -f db-deploy.yaml -f db-svc.yaml
 ```
