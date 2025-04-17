@@ -316,7 +316,12 @@ export SAMPLE_HOME=&quot;$(pwd)/operator-sample&quot;
 
 </code></pre>
 <p><strong>Step 1: Install Go</strong></p>
-<pre><code># For Linux wget https://go.dev/dl/go1.21.0.linux-amd64.tar.gz sudo rm -rf /usr/local/go &amp;&amp; sudo tar -C /usr/local -xzf go1.21.0.linux-amd64.tar.gz export PATH=$PATH:/usr/local/go/bin echo 'export PATH=$PATH:/usr/local/go/bin' &gt;&gt; ~/.bashrc
+<p>Refer to the <a href="https://go.dev/doc/install">official documentation</a> to install Go on your operating system.</p>
+<pre><code># For Linux 
+wget -c https://go.dev/dl/go1.24.2.linux-amd64.tar.gz
+sudo rm -rf /usr/local/go &amp;&amp; sudo tar -C /usr/local -xzf go1.24.2.linux-amd64.tar.gz 
+export PATH=$PATH:/usr/local/go/bin 
+echo 'export PATH=$PATH:/usr/local/go/bin' &gt;&gt; ~/.bashrc
 
 go version 
 </code></pre>
