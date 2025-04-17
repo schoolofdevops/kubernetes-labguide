@@ -326,7 +326,9 @@ echo 'export PATH=$PATH:/usr/local/go/bin' &gt;&gt; ~/.bashrc
 go version 
 </code></pre>
 <p><strong>Step 2: Install Operator SDK</strong></p>
-<pre><code># Download Operator SDK
+<p>Refer to <a href="https://sdk.operatorframework.io/docs/installation/">official documentation to install Operator SDK</a> on your operating system.</p>
+<pre><code># For Linux 
+# Download Operator SDK
 export ARCH=$(case $(uname -m) in x86_64) echo -n amd64 ;; aarch64) echo -n arm64 ;; *) echo -n $(uname -m) ;; esac)
 export OS=$(uname | awk '{print tolower($0)}')
 export OPERATOR_SDK_DL_URL=https://github.com/operator-framework/operator-sdk/releases/download/v1.28.0
