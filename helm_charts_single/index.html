@@ -3,18 +3,18 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/minikube/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/helm_charts_single/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Single node k8s cluster with Minikube - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <title>Lab K116 - Writing Single HELM Chart - Kubernetes Tutorial with CKA/CKAD Prep</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Single node k8s cluster with Minikube";
-        var mkdocs_page_input_path = "minikube.md";
-        var mkdocs_page_url = "/minikube/";
+        var mkdocs_page_name = "Lab K116 - Writing Single HELM Chart";
+        var mkdocs_page_input_path = "helm_charts_single.md";
+        var mkdocs_page_url = "/helm_charts_single/";
       </script>
     
     <!--[if lt IE 9]>
@@ -65,7 +65,7 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Kubernetes Essentials</span></p>
-              <ul>
+              <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../kind_create_cluster/">Lab K101 - Install Kubernetes with KIND</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../kubernetes_quickdive/">Lab K102 - Kubernetes Quickdive</a>
@@ -92,7 +92,19 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../helm_charts_publish/">Lab K115 - Publishing HELM Charts</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../helm_charts_single/">Lab K116 - Writing Single HELM Chart</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Lab K116 - Writing Single HELM Chart</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#part-i-generating-a-chart-with-one-service">Part I - Generating a Chart with One Service</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#setting-up-multi-environemnt-deployment-with-helm">Setting up Multi Environemnt Deployment with HELM</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#part-iii-overriding-values-rollbacks">Part III : Overriding Values, Rollbacks</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#exercise">Exercise</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Advanced Kubernetes</span></p>
@@ -296,9 +308,10 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
-      <li class="breadcrumb-item active">Single node k8s cluster with Minikube</li>
+          <li class="breadcrumb-item">Kubernetes Essentials</li>
+      <li class="breadcrumb-item active">Lab K116 - Writing Single HELM Chart</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/minikube.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/helm_charts_single.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -306,71 +319,156 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="single-node-k8s-cluster-with-minikube">Single node k8s cluster with Minikube</h1>
-<p>Minikube offers one of the easiest zero to dev experience
-to setup a single node kubernetes cluster. Its also the ideal way
-to create a local dev environment to test kubernetes code on.</p>
-<p>This document explains how to setup and work with single node kubernetes cluster with minikube.</p>
-<h2 id="install-minikube">Install Minikube</h2>
-<p>Instructions to install minikube may vary based on the operating system and choice of the hypervisor.
-<a href="https://kubernetes.io/docs/tasks/tools/install-minikube/">This is the official document</a> which explains how to install minikube.</p>
-<h2 id="start-all-in-one-single-node-cluster-with-minikube">Start all in one single node cluster with minikube</h2>
-<pre><code>minikube status
-</code></pre>
-<p>[output]</p>
-<pre><code>minikube:
-cluster:
-kubectl:
-</code></pre>
-<pre><code>minikube start
-</code></pre>
-<p>[output]</p>
-<pre><code>Starting local Kubernetes v1.8.0 cluster...
-Starting VM...
-Getting VM IP address...
-Moving files into cluster...
-Setting up certs...
-Connecting to cluster...
-Setting up kubeconfig...
-Starting cluster components...
-Kubectl is now configured to use the cluster.
-Loading cached images from config file.
-</code></pre>
-<pre><code>minikube status
+                <h1 id="building-your-own-helm-charts">Building your own Helm Charts</h1>
+<p>If you have not installed helm yet, do so by using</p>
+<pre><code>curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 |  bash 
+
+helm
 
 </code></pre>
-<p>[output]</p>
-<pre><code>minikube: Running
-cluster: Running
-kubectl: Correctly Configured: pointing to minikube-vm at 192.168.99.100
+<h2 id="part-i-generating-a-chart-with-one-service">Part I - Generating a Chart with One Service</h2>
+<p>Create a namespace and switch to it</p>
+<pre><code>kubectl create namespace dev
+kubectl config set-context --current --namespace=dev
+kubectl config get-contexts
 </code></pre>
-<h4 id="launch-a-kubernetes-dashboard">Launch a kubernetes dashboard</h4>
-<pre><code>minikube dashboard
+<p>Generate a helm chart scaffold and change into the directory created to create a copy of values.yaml</p>
+<pre><code>cd ~
+helm create instavote
+cd instavote/
+cp values.yaml values.dev.yaml 
 </code></pre>
-<h4 id="setting-up-docker-environment">Setting up docker environment</h4>
-<pre><code>minikube docker-env
-export DOCKER_TLS_VERIFY=&quot;1&quot;
-export DOCKER_HOST=&quot;tcp://192.168.99.100:2376&quot;
-export DOCKER_CERT_PATH=&quot;/Users/gouravshah/.minikube/certs&quot;
-export DOCKER_API_VERSION=&quot;1.23&quot;
-# Run this command to configure your shell:
-# eval $(minikube docker-env)
+<p>Edit <code>values.dev.yaml</code>  to  update replicaCount, image and tag as</p>
+<pre><code>
+replicaCount: 3
+image: 
+  repository: schoolofdevops/vote 
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion. 
+  tag: &quot;v5&quot; 
 </code></pre>
-<p>Run the command given above,
-e.g.</p>
-<pre><code>eval $(minikube docker-env)
+<p>Update service type to Node Port</p>
+<pre><code>service:
+  type: NodePort
+  port: 80
+  nodePort: 30300
 </code></pre>
-<p>Now your docker client should be able to connect with the minikube cluster</p>
-<pre><code>docker ps
+<p>Also update the <code>service.yaml</code> template with the additional property for <code>nodePort</code> defined as ,</p>
+<p>File : <code>service.yaml</code></p>
+<pre><code>apiVersion: v1
+kind: Service
+metadata:
+  name: vote
+  labels:
+    {{- include &quot;instavote.labels&quot; . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+      nodePort: {{ .Values.service.nodePort }}
+  selector:
+    {{- include &quot;instavote.selectorLabels&quot; . | nindent 4 }}
 </code></pre>
-<h3 id="additional-commands">Additional Commands</h3>
-<pre><code>minikube ip
-minikube get-k8s-versions
-minikube logs
+<p>Install this chart with helm to deploy the <code>vote</code> service as:</p>
+<pre><code>helm install instavote -n dev --values=values.dev.yaml  . --dry-run
+helm install instavote -n dev --values=values.dev.yaml  .
 </code></pre>
+<p>Validate with</p>
+<pre><code>helm list -A
+kubectl get all
+</code></pre>
+<h2 id="setting-up-multi-environemnt-deployment-with-helm">Setting up Multi Environemnt Deployment with HELM</h2>
+<p>Copy over the values.dev.yaml file to values.staging.yaml</p>
+<pre><code>cp values.dev.yaml values.staging.yaml
+</code></pre>
+<p>Update the properties in values.staging.yaml as, </p>
+<pre><code>
+replicaCount: 4 
+image: 
+  repository: schoolofdevops/vote 
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion. 
+  tag: &quot;v4&quot; 
+
+</code></pre>
+<p>Update service type to Node Port</p>
+<pre><code>service:
+  type: NodePort
+  port: 80
+  nodePort: 30400
+</code></pre>
+<p>Create a namespace for staging as </p>
+<pre><code>kubectl create namespace staging
+</code></pre>
+<p>Install this chart with helm to deploy the <code>vote</code> service as:</p>
+<pre><code>helm install instavote -n staging --values=values.staging.yaml  . --dry-run
+helm install instavote -n staging --values=values.staging.yaml  .
+</code></pre>
+<p>Validate with</p>
+<pre><code>helm list -A
+kubectl get all -n staging 
+</code></pre>
+<h2 id="part-iii-overriding-values-rollbacks">Part III : Overriding Values, Rollbacks</h2>
+<p>Lets learn how to override values from the command line. To do so, lets add one property</p>
+<p>File : <code>templates/vote/deployment.yaml</code></p>
+<pre><code>containers:
+  - name: vote
+    env:
+      - name: OPTION_A
+        value: {{ .Values.vote.options.A }}
+      - name: OPTION_B
+        value: {{ .Values.vote.options.B }}
+</code></pre>
+<p>This will read from values file and set those as environmnt variables. Lets set the default values.</p>
+<p>File:  <code>values.dev.yaml</code></p>
+<pre><code>vote:
+  replicaCount: 2
+
+  options:
+    A: MacOS
+    B: Windows
+
+</code></pre>
+<p>now upgrade the release as</p>
+<pre><code>helm upgrade  instavote -n dev --values=values.dev.yaml  .
+</code></pre>
+<p>Check the application to see the default values being visible.</p>
+<p>You could override the values from the command line as</p>
+<pre><code>helm upgrade instavote --values values.dev.yaml --set vote.options.A=Green --set vote.options.B=Yellow .
+</code></pre>
+<p>check the web app now</p>
+<p>try one more time</p>
+<pre><code>helm upgrade instavote --values values.dev.yaml --set vote.options.A=Orange --set vote.options.B=Blue .
+</code></pre>
+<p>you should see the values change every time.</p>
+<p>Check the release now</p>
+<pre><code>helm list -A
+
+</code></pre>
+<p>[sample output]</p>
+<pre><code>NAME        NAMESPACE   REVISION    UPDATED                                 STATUS      CHART           APP VERSION
+instavote   dev            7        2024-05-14 03:31:34.717912894 +0000 UTC deployed    instavote-0.1.0 1.16.0
+</code></pre>
+<p>try rolling back a version</p>
+<p>e.g.</p>
+<pre><code>helm rollback instavote
+</code></pre>
+<p>you could also go back to a specific version using the revision number as  </p>
+<pre><code>helm rollback instavote xx
+</code></pre>
+<p>where replace <code>xx</code> with the revision number you wish to roll back to.</p>
+<h3 id="exercise">Exercise</h3>
+<p>Now that you have deployed vote and redis, go ahead and add the code to deploy  worker, db and result as well.</p>
               
             </div>
           </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../helm_charts_publish/" class="btn btn-neutral float-left" title="Lab K115 - Publishing HELM Charts"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../adv_kubernetes-setup/" class="btn btn-neutral float-right" title="Lab K801 - Setting up Kubernetes Cluster">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
 
   <hr/>
 
@@ -397,6 +495,10 @@ minikube logs
         </span>
     
     
+      <span><a href="../helm_charts_publish/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../adv_kubernetes-setup/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
