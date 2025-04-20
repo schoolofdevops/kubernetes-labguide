@@ -466,9 +466,113 @@ e.g.
 <pre><code>you could also go back to a specific version using the revision number as  
 
 </code></pre>
-<p>helm rollback instavote xx
+<p>helm rollback instavote xx</p>
+<pre><code>
+where replace `xx` with the revision number you wish to roll back to.
+
+
+## Adding Redis Service  
+
+Lets add a second service by creating a new chart structure, where we will have our main chart for application and a subchart for vote and redis.
+
+
+</code></pre>
+<p>cd ~
+mv instavote vote 
+mkdir instavote 
+mv vote instavote/</p>
+<p>cd instavote 
+helm create redis 
+cd redis</p>
+<pre><code>
+Edit values.yaml to update the image and tag as
+
+</code></pre>
+<p>image:
+  repository: redis
+  pullPolicy: IfNotPresent
+  tag: "alpine"</p>
+<pre><code>
+also update the service port as 
+
+</code></pre>
+<p>service:
+  type: ClusterIP
+  port: 6379</p>
+<pre><code>
+Now lets update the main chart to include the redis and vote subcharts
+
+</code></pre>
+<p>cd ..
+mkdir main
+cd main</p>
+<pre><code>
+Add `Chart.yaml` and `values.yaml` files as 
+
+File :  `Chart.yaml`
+
+</code></pre>
+<p>apiVersion: v2
+name: instavote
+description: A Helm chart for Kubernetes</p>
+<p>type: application</p>
+<p>version: 1.0.0</p>
+<p>appVersion: "1.0.0"</p>
+<p>dependencies:
+  - alias: vote
+    name: vote
+    version: "0.1.0"
+    repository: file://../vote
+  - alias: redis
+    name: redis
+    version: "0.1.0"
+    repository: file://../redis</p>
+<pre><code>
+File : `values.dev.yaml`
+
+</code></pre>
+<p>vote:
+  repicaCount: 3
+  image:
+    repository: "schoolofdevops/vote"
+    tag: "v7"
+  service:
+    type: NodePort
+    port: 80
+    nodePort: 30300
+  options:
+    A: "AAA"
+    B: "BBB"</p>
+<p>redis:
+  repicaCount: 1
+  image:
+    repository: "redis"
+    tag: "alpine"
+  service:
+    type: ClusterIP
+    port: 6379</p>
+<pre><code>
+Also rename the chart name for vote as 
+
+File : `instavote/vote/Chart.yaml`
+</code></pre>
+<p>apiVersion: v2
+name: vote
+description: A Helm chart for Kubernetes</p>
+<pre><code>
+Now install the main chart with helm as 
+
+</code></pre>
+<p>helm dependency update
+helm install instavote -n dev --values=values.dev.yaml . --dry-run
+helm install instavote -n dev --values=values.dev.yaml .</p>
+<pre><code>
+validate with
+
+</code></pre>
+<p>helm list -A
+kubectl get all -n dev
 ```</p>
-<p>where replace <code>xx</code> with the revision number you wish to roll back to.</p>
 <h3 id="exercise">Exercise</h3>
 <p>Now that you have deployed vote and redis, go ahead and add the code to deploy  worker, db and result as well.</p>
               
