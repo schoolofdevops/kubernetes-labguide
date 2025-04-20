@@ -100,7 +100,7 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#adding-redis-service">Adding Redis Service</a>
         <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#exercise">Exercise</a>
+    <li class="toctree-l3"><a class="reference internal" href="#exercises">Exercises</a>
     </li>
         </ul>
     </li>
@@ -596,8 +596,11 @@ helm install instavote -n dev --values=values.dev.yaml .
 <pre><code>helm list -A
 kubectl get all -n dev
 </code></pre>
-<h3 id="exercise">Exercise</h3>
-<p>Now that you have deployed vote and redis, go ahead and add the code to deploy  worker, db and result as well.</p>
+<h3 id="exercises">Exercises</h3>
+<ul>
+<li>You will notice that the redis pods are being restarted every few seconds. Can you figure out why and fix it ? Apply the changes with helm.</li>
+<li>Now that you have deployed vote and redis, go ahead and add the code to deploy  worker, db and result as well.</li>
+</ul>
               
             </div>
           </div><footer>
