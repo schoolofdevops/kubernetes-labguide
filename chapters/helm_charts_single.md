@@ -23,7 +23,10 @@ Generate a helm chart scaffold and change into the directory created to create a
 
 ```
 cd ~
-helm create instavote
+mkdir instavote
+cd instavote/
+
+helm create vote
 cd instavote/
 cp values.yaml values.dev.yaml 
 ```
@@ -217,6 +220,124 @@ helm rollback instavote xx
 ```
 
 where replace `xx` with the revision number you wish to roll back to.
+
+
+## Adding Redis Service  
+
+Lets add a second service by creating a new chart structure, where we will have our main chart for application and a subchart for vote and redis.
+
+
+```
+cd ~
+mv instavote vote 
+mkdir instavote 
+mv vote instavote/
+
+cd instavote 
+helm create redis 
+cd redis
+```
+
+Edit values.yaml to update the image and tag as
+
+```
+image:
+  repository: redis
+  pullPolicy: IfNotPresent
+  tag: "alpine"
+```
+
+also update the service port as 
+
+```
+service:
+  type: ClusterIP
+  port: 6379
+```
+
+Now lets update the main chart to include the redis and vote subcharts
+
+```
+cd ..
+mkdir main
+cd main
+```
+
+Add `Chart.yaml` and `values.yaml` files as 
+
+File :  `Chart.yaml`
+
+```
+apiVersion: v2
+name: instavote
+description: A Helm chart for Kubernetes
+
+type: application
+
+version: 1.0.0
+
+appVersion: "1.0.0"
+
+dependencies:
+  - alias: vote
+    name: vote
+    version: "0.1.0"
+    repository: file://../vote
+  - alias: redis
+    name: redis
+    version: "0.1.0"
+    repository: file://../redis
+```
+
+File : `values.dev.yaml`
+
+```
+vote:
+  repicaCount: 3
+  image:
+    repository: "schoolofdevops/vote"
+    tag: "v7"
+  service:
+    type: NodePort
+    port: 80
+    nodePort: 30300
+  options:
+    A: "AAA"
+    B: "BBB"
+
+redis:
+  repicaCount: 1
+  image:
+    repository: "redis"
+    tag: "alpine"
+  service:
+    type: ClusterIP
+    port: 6379
+```
+
+Also rename the chart name for vote as 
+
+File : `instavote/vote/Chart.yaml`
+```
+apiVersion: v2
+name: vote
+description: A Helm chart for Kubernetes
+```
+
+Now install the main chart with helm as 
+
+```
+helm dependency update
+helm install instavote -n dev --values=values.dev.yaml . --dry-run
+helm install instavote -n dev --values=values.dev.yaml .
+```
+
+validate with
+
+```
+helm list -A
+kubectl get all -n dev
+```
 
 
 
