@@ -1,5 +1,11 @@
 # Writing Custom Operators with Go
 
+
+In this lab, we will create a custom operator using Go to manage a custom resource called StaticWebsite. The StaticWebsite custom resource will be used to create a static website using Nginx. It will create a Deployment, Service, and PersistentVolumeClaim (PVC) to host the static website. The operator will watch for changes in the StaticWebsite custom resource and update the Deployment, Service, and PVC accordingly. 
+
+
+## Part 1: Setting up the Environment 
+
 Sample code used in this lab is available at: [Sample Git Repo](https://github.com/advk8s/static-website-operator)
 
 Setup Sample Code 
@@ -47,10 +53,12 @@ sudo mv operator-sdk_${OS}_${ARCH} /usr/local/bin/operator-sdk
 # Verify installation
 operator-sdk version
 
-
 ```
 
-**Step 3: Create a New Operator Project**
+
+## Part 2: Creating a Custom Operator with Go
+
+**Step 1: Create a New Operator Project**
 
 Now let's create the operator project structure with a local module path:
 
@@ -68,7 +76,7 @@ operator-sdk create api --group websites --version v1alpha1 --kind StaticWebsite
 ```
 
 
-**Step 4: Define the Custom Resource Definition**
+**Step 2: Define the Custom Resource Definition**
 
 [Examine the Source Code](https://github.com/advk8s/static-website-operator/blob/main/api/v1alpha1/staticwebsite_types.go)
 
@@ -77,7 +85,7 @@ cp $SAMPLE_HOME/api/v1alpha1/staticwebsite_types.go $PROJECT_HOME/api/v1alpha1/s
 ```
 
 
-**Step 5: Update the Controller**
+**Step 3: Update the Controller**
 
 
 [Examine the Source Code](https://github.com/advk8s/static-website-operator/blob/main/controllers/staticwebsite_controller.go)
@@ -87,7 +95,7 @@ cp $SAMPLE_HOME/controllers/staticwebsite_controller.go $PROJECT_HOME/internal/c
 ```
 
 
-**Step 6: Update the Main.go File**
+**Step 4: Update the Main.go File**
 
 [Examine the Source Code](https://github.com/advk8s/static-website-operator/blob/main/main.go)
 
@@ -96,7 +104,7 @@ cp $SAMPLE_HOME/main.go $PROJECT_HOME/cmd/main.go
 ```
 
 
-**Step 7: Generate the CRD Manifests and Code**
+**Step 5: Generate the CRD Manifests and Code**
 
 ```
 # Check the CRD manifests before generation
@@ -121,7 +129,7 @@ you shall see a new CRD manifest:
 websites.example.com_staticwebsites.yaml
 ```
 
-**Step 8: Build and Load the Operator Image to Kind**
+**Step 6: Build and Load the Operator Image to Kind**
 For local testing with kind, we'll build the operator image and load it directly:
 
 ```
@@ -135,7 +143,7 @@ docker image ls
 kind load docker-image static-website-operator:v0.1.0
 ```
 
-**Step 9: Deploy the Operator to Your Kind Cluster**
+**Step 7: Deploy the Operator to Your Kind Cluster**
 Deploy the operator to your kind cluster:
 
 ```
@@ -153,7 +161,7 @@ You can verify that the operator is running:
 kubectl get pods -n static-website-operator-system
 ```
 
-**Step 10: Create a Sample StaticWebsite Resource**
+**Step 8: Create a Sample StaticWebsite Resource**
 
 Create a Custom Resource Sample at `config/samples/websites_v1alpha1_staticwebsite.yaml
 `
@@ -191,7 +199,7 @@ Create a sample StaticWebsite custom resource using the YAML file we created abo
 kubectl apply -f config/samples/websites_v1alpha1_staticwebsite.yaml
 ```
 
-**Step 11: Verify the Deployment**
+**Step 9: Verify the Deployment**
 Check if the resources were created properly:
 
 ```
@@ -210,8 +218,7 @@ kubectl get pods
 kubectl logs -n static-website-operator-system deployment/static-website-operator-controller-manager -c manager
 ```
 
-
-## Adding New Features to the Operator
+## Part 3: Adding New Features to the Operator
 
 
 Lets now add two new features to the operator:
