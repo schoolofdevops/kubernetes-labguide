@@ -462,20 +462,115 @@ kubectl logs -n static-website-operator-system deployment/static-website-operato
 <li>Add a new field <code>NodePort</code> to the StaticWebsite CRD, defining which the service should be exposed on a NodePort.</li>
 </ol>
 <p><strong>Step 1: Update the CRD</strong></p>
-<p>Update the CRD to include the new shortnames and the new field:</p>
+<p>Update the CRD to include the new shortnames: </p>
 <p>File: <code>api/v1alpha1/staticwebsite_types.go</code></p>
-<pre><code>
+<pre><code>// +kubebuilder:object:root=true
+// +kubebuilder:subresource:status
+// +kubebuilder:printcolumn:name=&quot;Phase&quot;,type=&quot;string&quot;,JSONPath=&quot;.status.phase&quot;
+// +kubebuilder:printcolumn:name=&quot;Replicas&quot;,type=&quot;integer&quot;,JSONPath=&quot;.spec.replicas&quot;
+// +kubebuilder:printcolumn:name=&quot;Available&quot;,type=&quot;integer&quot;,JSONPath=&quot;.status.availableReplicas&quot;
+// +kubebuilder:printcolumn:name=&quot;URL&quot;,type=&quot;string&quot;,JSONPath=&quot;.status.url&quot;
+// +kubebuilder:printcolumn:name=&quot;Age&quot;,type=&quot;date&quot;,JSONPath=&quot;.metadata.creationTimestamp&quot;
+// +kubebuilder:resource:shortName=sw;sws
+
+</code></pre>
+<p>Its the last line that you see above that you have to add </p>
+<p>Also upadte the CRD to accept the new field:</p>
+<pre><code>// StaticWebsiteSpec defines the desired state of StaticWebsite
+type StaticWebsiteSpec struct {
+    // Image is the container image for the static website
+    // +kubebuilder:validation:Required
+    Image string `json:&quot;image&quot;`
+    // Replicas is the number of replicas to deploy
+    // +kubebuilder:validation:Minimum=1
+    // +kubebuilder:default=1
+    Replicas int32 `json:&quot;replicas,omitempty&quot;`
+    // Resources defines the resource requirements for the container
+    // +optional
+    Resources ResourceRequirements `json:&quot;resources,omitempty&quot;`
+    // Storage defines the storage configuration for the website content
+    // +optional
+    Storage *StorageSpec `json:&quot;storage,omitempty&quot;`
+    // NodePort specifies the NodePort to expose the service on
+    // +optional
+    // +kubebuilder:validation:Minimum=30000
+    // +kubebuilder:validation:Maximum=32767
+    NodePort *int32 `json:&quot;nodePort,omitempty&quot;`
+}
 </code></pre>
 <p>Update the controller to handle the new field:</p>
 <p>File: <code>controllers/staticwebsite_controller.go</code></p>
-<pre><code></code></pre>
+<pre><code>// serviceForWebsite returns a website Service object
+func (r *StaticWebsiteReconciler) serviceForWebsite(website *websitesv1alpha1.StaticWebsite) *corev1.Service {
+        labels := map[string]string{
+                &quot;app&quot;:        &quot;staticwebsite&quot;,
+                &quot;controller&quot;: website.Name,
+        }
+
+        serviceType := corev1.ServiceTypeClusterIP
+        servicePort := corev1.ServicePort{
+            Port:       80,
+            TargetPort: intstr.IntOrString{Type: intstr.Int, IntVal: 80},
+            Name:       &quot;http&quot;,
+        }
+
+        logger := log.FromContext(context.Background())
+        logger.Info(&quot;Creating service for website&quot;,
+          &quot;Name&quot;, website.Name,
+          &quot;HasNodePort&quot;, website.Spec.NodePort != nil)
+
+        // If NodePort is specified, set the service type to NodePort and assign the NodePort
+        if website.Spec.NodePort != nil {
+            serviceType = corev1.ServiceTypeNodePort
+            servicePort.NodePort = *website.Spec.NodePort
+        }
+
+        svc := &amp;corev1.Service{
+            ObjectMeta: metav1.ObjectMeta{
+                Name:      website.Name,
+                Namespace: website.Namespace,
+            },
+            Spec: corev1.ServiceSpec{
+                Type:     serviceType,
+                Selector: labels,
+                Ports:    []corev1.ServicePort{servicePort},
+            },
+        }
+
+        // Set the owner reference for garbage collection
+        controllerutil.SetControllerReference(website, svc, r.Scheme)
+        return svc
+}
+</code></pre>
+<p>Also in the same controller, update the status URL in the Reconcile function to include NodePort information when applicable:</p>
+<pre><code>        // Update the status
+        if found.Status.ReadyReplicas &gt; 0 &amp;&amp; website.Status.Phase != &quot;Running&quot; {
+                website.Status.Phase = &quot;Running&quot;
+                website.Status.AvailableReplicas = found.Status.ReadyReplicas
+
+                // Update URL based on whether NodePort is used
+                if website.Spec.NodePort != nil {
+                    website.Status.URL = fmt.Sprintf(&quot;http://&lt;node-ip&gt;:%d&quot;, *website.Spec.NodePort)
+                } else {
+                    website.Status.URL = fmt.Sprintf(&quot;http://%s.%s.svc.cluster.local&quot;, website.Name, website.Namespace)
+                }
+
+                if err := r.Status().Update(ctx, website); err != nil {
+                        logger.Error(err, &quot;Failed to update StaticWebsite status&quot;)
+                        return ctrl.Result{}, err
+                }
+        } else if found.Status.ReadyReplicas != website.Status.AvailableReplicas {
+          ...
+          ...
+          rest of the code 
+</code></pre>
 <p>Rebuild the controller and deploy as</p>
 <pre><code>make generate
 make manifests
-make docker-build IMG=static-website-operator:v0.5.0
-kind load docker-image static-website-operator:v0.5.0
+make docker-build IMG=static-website-operator:v0.2.0
+kind load docker-image static-website-operator:v0.2.0
 make install
-make deploy IMG=static-website-operator:v0.5.0
+make deploy IMG=static-website-operator:v0.2.0
 </code></pre>
 <p>Validate the shortnames as </p>
 <pre><code>kubectl api-resources
@@ -483,9 +578,34 @@ make deploy IMG=static-website-operator:v0.5.0
 kubectl get sw
 kubectl get sws
 </code></pre>
-<p>Update the sample resource to include the new field:</p>
+<p>Update the sample resource to include the new <code>nodePort</code> field:</p>
 <p>File: <code>config/samples/websites_v1alpha1_staticwebsite.yaml</code></p>
-<pre><code>
+<pre><code>apiVersion: websites.example.com/v1alpha1
+kind: StaticWebsite
+metadata:
+  name: sample-website
+spec:
+  image: nginx:alpine
+  replicas: 2
+  resources:
+    limits:
+      cpu: &quot;200m&quot;
+      memory: &quot;256Mi&quot;
+    requests:
+      cpu: &quot;100m&quot;
+      memory: &quot;128Mi&quot;
+  storage:
+    size: &quot;1Gi&quot;
+    storageClassName: &quot;standard&quot;  # Use the default storage class in your cluster
+    mountPath: &quot;/usr/share/nginx/html&quot;
+  nodePort: 30400
+</code></pre>
+<p>Delete the previous version and create a new instance of static website as, </p>
+<pre><code>kubectl delete  -f config/samples/websites_v1alpha1_staticwebsite.yaml
+kubectl apply -f config/samples/websites_v1alpha1_staticwebsite.yaml
+</code></pre>
+<p>validate </p>
+<pre><code>kubectl get sw,deploy,svc,pvc
 </code></pre>
               
             </div>
