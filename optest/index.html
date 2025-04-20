@@ -58,6 +58,10 @@
                   <li class="toctree-l1 current"><a class="reference internal current" href="#">Lab D101 - Operator Test</a>
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#adding-new-features-to-the-operator">Adding New Features to the Operator</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#cleaning-up">Cleaning up</a>
+    </li>
+        </ul>
     </li>
     </ul>
                   </li>
@@ -603,6 +607,13 @@ spec:
 <p>Delete the previous version and create a new instance of static website as, </p>
 <pre><code>kubectl delete  -f config/samples/websites_v1alpha1_staticwebsite.yaml
 kubectl apply -f config/samples/websites_v1alpha1_staticwebsite.yaml
+</code></pre>
+<p>validate </p>
+<pre><code>kubectl get sw,deploy,svc,pvc
+</code></pre>
+<h3 id="cleaning-up">Cleaning up</h3>
+<p>When you are done with the example, you can delete the operator and its resources:</p>
+<pre><code>make undeploy
 </code></pre>
 <p>validate </p>
 <pre><code>kubectl get sw,deploy,svc,pvc
