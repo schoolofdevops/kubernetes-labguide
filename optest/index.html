@@ -371,11 +371,20 @@ operator-sdk create api --group websites --version v1alpha1 --kind StaticWebsite
 <pre><code>cp $SAMPLE_HOME/main.go $PROJECT_HOME/cmd/main.go
 </code></pre>
 <p><strong>Step 7: Generate the CRD Manifests and Code</strong></p>
-<pre><code># Run code generation
+<pre><code># Check the CRD manifests before generation
+ls config/crd
+
+# Run code generation
 make generate
 
 # Update the CRD manifests
 make manifests
+</code></pre>
+<p>Examine the generated manifests:</p>
+<pre><code>ls config/crd/bases/ 
+</code></pre>
+<p>you shall see a new CRD manifest:</p>
+<pre><code>websites.example.com_staticwebsites.yaml
 </code></pre>
 <p><strong>Step 8: Build and Load the Operator Image to Kind</strong>
 For local testing with kind, we'll build the operator image and load it directly:</p>
