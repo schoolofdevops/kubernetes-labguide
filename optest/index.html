@@ -364,11 +364,11 @@ operator-sdk create api --group websites --version v1alpha1 --kind StaticWebsite
 </code></pre>
 <p><strong>Step 5: Update the Controller</strong></p>
 <p><a href="https://github.com/advk8s/static-website-operator/blob/main/controllers/staticwebsite_controller.go">Examine the Source Code</a></p>
-<pre><code>cp $SAMPLE_HOME/controllers/staticwebsite_controller.go $PROJECT_HOME/controllers/staticwebsite_controller.go
+<pre><code>cp $SAMPLE_HOME/controllers/staticwebsite_controller.go $PROJECT_HOME/internal/controller/staticwebsite_controller.go
 </code></pre>
 <p><strong>Step 6: Update the Main.go File</strong></p>
 <p><a href="https://github.com/advk8s/static-website-operator/blob/main/main.go">Examine the Source Code</a></p>
-<pre><code>cp $SAMPLE_HOME/main.go $PROJECT_HOME/main.go
+<pre><code>cp $SAMPLE_HOME/main.go $PROJECT_HOME/cmd/main.go
 </code></pre>
 <p><strong>Step 7: Generate the CRD Manifests and Code</strong></p>
 <pre><code># Run code generation
