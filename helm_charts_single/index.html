@@ -540,6 +540,41 @@ redis:
     type: ClusterIP
     port: 6379
 </code></pre>
+<p>At this time the code should look like this </p>
+<pre><code>.
+├── main
+│   ├── Chart.yaml
+│   └── values.dev.yaml
+├── redis
+│   ├── Chart.yaml
+│   ├── charts
+│   ├── templates
+│   │   ├── NOTES.txt
+│   │   ├── _helpers.tpl
+│   │   ├── deployment.yaml
+│   │   ├── hpa.yaml
+│   │   ├── ingress.yaml
+│   │   ├── service.yaml
+│   │   ├── serviceaccount.yaml
+│   │   └── tests
+│   │       └── test-connection.yaml
+│   └── values.yaml
+└── vote
+    ├── Chart.yaml
+    ├── charts
+    ├── templates
+    │   ├── NOTES.txt
+    │   ├── _helpers.tpl
+    │   ├── deployment.yaml
+    │   ├── hpa.yaml
+    │   ├── ingress.yaml
+    │   ├── service.yaml
+    │   ├── serviceaccount.yaml
+    │   └── tests
+    │       └── test-connection.yaml
+    ├── values.staging.yaml
+    └── values.yaml
+</code></pre>
 <p>Install/Update depeendencies with </p>
 <pre><code>helm dependency update
 </code></pre>
