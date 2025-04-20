@@ -100,6 +100,8 @@
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#exercises">Exercises</a>
     </li>
+    <li class="toctree-l3"><a class="reference internal" href="#cleaning-up">Cleaning up</a>
+    </li>
         </ul>
     </li>
     </ul>
@@ -599,6 +601,10 @@ kubectl get all -n dev
 <li>You will notice that the redis pods are being restarted every few seconds. Can you figure out why and fix it ? Apply the changes with helm.</li>
 <li>Now that you have deployed vote and redis, go ahead and add the code to deploy  worker, db and result as well.</li>
 </ul>
+<h3 id="cleaning-up">Cleaning up</h3>
+<p>To clean up all the resources, run the following command</p>
+<pre><code>helm uninstall instavote -n dev
+</code></pre>
               
             </div>
           </div><footer>
