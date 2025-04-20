@@ -111,7 +111,11 @@
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="#">Lab K807 - Writing Custom Operator in Go</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#adding-new-features-to-the-operator">Adding New Features to the Operator</a>
+    <li class="toctree-l2"><a class="reference internal" href="#part-1-setting-up-the-environment">Part 1: Setting up the Environment</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#part-2-creating-a-custom-operator-with-go">Part 2: Creating a Custom Operator with Go</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#part-3-adding-new-features-to-the-operator">Part 3: Adding New Features to the Operator</a>
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#cleaning-up">Cleaning up</a>
     </li>
@@ -314,6 +318,8 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="writing-custom-operators-with-go">Writing Custom Operators with Go</h1>
+<p>In this lab, we will create a custom operator using Go to manage a custom resource called StaticWebsite. The StaticWebsite custom resource will be used to create a static website using Nginx. It will create a Deployment, Service, and PersistentVolumeClaim (PVC) to host the static website. The operator will watch for changes in the StaticWebsite custom resource and update the Deployment, Service, and PVC accordingly. </p>
+<h2 id="part-1-setting-up-the-environment">Part 1: Setting up the Environment</h2>
 <p>Sample code used in this lab is available at: <a href="https://github.com/advk8s/static-website-operator">Sample Git Repo</a></p>
 <p>Setup Sample Code </p>
 <pre><code>cd ~
@@ -347,9 +353,9 @@ sudo mv operator-sdk_${OS}_${ARCH} /usr/local/bin/operator-sdk
 # Verify installation
 operator-sdk version
 
-
 </code></pre>
-<p><strong>Step 3: Create a New Operator Project</strong></p>
+<h2 id="part-2-creating-a-custom-operator-with-go">Part 2: Creating a Custom Operator with Go</h2>
+<p><strong>Step 1: Create a New Operator Project</strong></p>
 <p>Now let's create the operator project structure with a local module path:</p>
 <pre><code># Create a directory for your operator
 mkdir -p $HOME/static-website-operator
@@ -362,19 +368,19 @@ operator-sdk init --domain example.com --repo static-website-operator
 # Create an API and controller
 operator-sdk create api --group websites --version v1alpha1 --kind StaticWebsite --resource --controller
 </code></pre>
-<p><strong>Step 4: Define the Custom Resource Definition</strong></p>
+<p><strong>Step 2: Define the Custom Resource Definition</strong></p>
 <p><a href="https://github.com/advk8s/static-website-operator/blob/main/api/v1alpha1/staticwebsite_types.go">Examine the Source Code</a></p>
 <pre><code>cp $SAMPLE_HOME/api/v1alpha1/staticwebsite_types.go $PROJECT_HOME/api/v1alpha1/staticwebsite_types.go
 </code></pre>
-<p><strong>Step 5: Update the Controller</strong></p>
+<p><strong>Step 3: Update the Controller</strong></p>
 <p><a href="https://github.com/advk8s/static-website-operator/blob/main/controllers/staticwebsite_controller.go">Examine the Source Code</a></p>
 <pre><code>cp $SAMPLE_HOME/controllers/staticwebsite_controller.go $PROJECT_HOME/internal/controller/staticwebsite_controller.go
 </code></pre>
-<p><strong>Step 6: Update the Main.go File</strong></p>
+<p><strong>Step 4: Update the Main.go File</strong></p>
 <p><a href="https://github.com/advk8s/static-website-operator/blob/main/main.go">Examine the Source Code</a></p>
 <pre><code>cp $SAMPLE_HOME/main.go $PROJECT_HOME/cmd/main.go
 </code></pre>
-<p><strong>Step 7: Generate the CRD Manifests and Code</strong></p>
+<p><strong>Step 5: Generate the CRD Manifests and Code</strong></p>
 <pre><code># Check the CRD manifests before generation
 ls config/crd
 
@@ -390,7 +396,7 @@ make manifests
 <p>you shall see a new CRD manifest:</p>
 <pre><code>websites.example.com_staticwebsites.yaml
 </code></pre>
-<p><strong>Step 8: Build and Load the Operator Image to Kind</strong>
+<p><strong>Step 6: Build and Load the Operator Image to Kind</strong>
 For local testing with kind, we'll build the operator image and load it directly:</p>
 <pre><code># Build the image locally
 make docker-build IMG=static-website-operator:v0.1.0
@@ -401,7 +407,7 @@ docker image ls
 # Load the image into kind
 kind load docker-image static-website-operator:v0.1.0
 </code></pre>
-<p><strong>Step 9: Deploy the Operator to Your Kind Cluster</strong>
+<p><strong>Step 7: Deploy the Operator to Your Kind Cluster</strong>
 Deploy the operator to your kind cluster:</p>
 <pre><code># Install the CRDs into the cluster
 make install
@@ -413,7 +419,7 @@ make deploy IMG=static-website-operator:v0.1.0
 <pre><code># Check the operator namespace
 kubectl get pods -n static-website-operator-system
 </code></pre>
-<p><strong>Step 10: Create a Sample StaticWebsite Resource</strong></p>
+<p><strong>Step 8: Create a Sample StaticWebsite Resource</strong></p>
 <p>Create a Custom Resource Sample at <code>config/samples/websites_v1alpha1_staticwebsite.yaml</code></p>
 <pre><code>apiVersion: websites.example.com/v1alpha1
 kind: StaticWebsite
@@ -441,7 +447,7 @@ spec:
 <pre><code># Apply the sample resource
 kubectl apply -f config/samples/websites_v1alpha1_staticwebsite.yaml
 </code></pre>
-<p><strong>Step 11: Verify the Deployment</strong>
+<p><strong>Step 9: Verify the Deployment</strong>
 Check if the resources were created properly:</p>
 <pre><code># Check the StaticWebsite resource
 kubectl get staticwebsites
@@ -457,7 +463,7 @@ kubectl get pods
 # Check the logs of the operator
 kubectl logs -n static-website-operator-system deployment/static-website-operator-controller-manager -c manager
 </code></pre>
-<h2 id="adding-new-features-to-the-operator">Adding New Features to the Operator</h2>
+<h2 id="part-3-adding-new-features-to-the-operator">Part 3: Adding New Features to the Operator</h2>
 <p>Lets now add two new features to the operator:</p>
 <ol>
 <li>Add two new shortnames to the StaticWebsite CRD ie, <code>sw</code> and <code>sws</code></li>
