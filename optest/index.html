@@ -57,6 +57,8 @@
               <ul class="current">
                   <li class="toctree-l1 current"><a class="reference internal current" href="#">Lab D101 - Operator Test</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#adding-new-features-to-the-operator">Adding New Features to the Operator</a>
+    </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../operating-docker-containers/">Lab D101 - Operating Containers</a>
@@ -430,6 +432,9 @@ spec:
     storageClassName: &quot;standard&quot;  # Use the default storage class in your cluster
     mountPath: &quot;/usr/share/nginx/html&quot;
 </code></pre>
+<p>Open a new terinal and start wathing for the resources which will be created by the operator:</p>
+<pre><code>kubectl get staticwebsites,deploy,svc,pv,pvc
+</code></pre>
 <p>Create a sample StaticWebsite custom resource using the YAML file we created above:</p>
 <pre><code># Apply the sample resource
 kubectl apply -f config/samples/websites_v1alpha1_staticwebsite.yaml
@@ -449,6 +454,38 @@ kubectl get pods
 
 # Check the logs of the operator
 kubectl logs -n static-website-operator-system deployment/static-website-operator-controller-manager -c manager
+</code></pre>
+<h2 id="adding-new-features-to-the-operator">Adding New Features to the Operator</h2>
+<p>Lets now add two new features to the operator:</p>
+<ol>
+<li>Add two new shortnames to the StaticWebsite CRD ie, <code>sw</code> and <code>sws</code></li>
+<li>Add a new field <code>NodePort</code> to the StaticWebsite CRD, defining which the service should be exposed on a NodePort.</li>
+</ol>
+<p><strong>Step 1: Update the CRD</strong></p>
+<p>Update the CRD to include the new shortnames and the new field:</p>
+<p>File: <code>api/v1alpha1/staticwebsite_types.go</code></p>
+<pre><code>
+</code></pre>
+<p>Update the controller to handle the new field:</p>
+<p>File: <code>controllers/staticwebsite_controller.go</code></p>
+<pre><code></code></pre>
+<p>Rebuild the controller and deploy as</p>
+<pre><code>make generate
+make manifests
+make docker-build IMG=static-website-operator:v0.5.0
+kind load docker-image static-website-operator:v0.5.0
+make install
+make deploy IMG=static-website-operator:v0.5.0
+</code></pre>
+<p>Validate the shortnames as </p>
+<pre><code>kubectl api-resources
+
+kubectl get sw
+kubectl get sws
+</code></pre>
+<p>Update the sample resource to include the new field:</p>
+<p>File: <code>config/samples/websites_v1alpha1_staticwebsite.yaml</code></p>
+<pre><code>
 </code></pre>
               
             </div>
