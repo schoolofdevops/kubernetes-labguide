@@ -447,8 +447,8 @@ kubectl get all -n dev
 <pre><code>helm upgrade -n dev vote --set options.A=Green --set options.B=Yellow .
 </code></pre>
 <p>check the web app now</p>
-<p>try one more time</p>
-<pre><code>helm upgrade -n dev vote --set options.A=Orange --set options.B=Blue .
+<p>try one more time, this time with a description</p>
+<pre><code>helm upgrade -n dev vote --set options.A=Orange --set options.B=Blue . --description &quot;Overriding values to Orage and Blue form CLI&quot;
 </code></pre>
 <p>you should see the values change every time.</p>
 <p>Check the release now</p>
@@ -457,8 +457,11 @@ kubectl get all -n dev
 </code></pre>
 <p>[sample output]</p>
 <pre><code>NAME    NAMESPACE   REVISION    UPDATED                                 STATUS      CHART           APP VERSION
-vote    dev         6           2025-04-20 03:42:44.279388435 +0000 UTC deployed    vote-0.1.0      1.16.0
+vote    dev         4           2025-04-20 03:42:44.279388435 +0000 UTC deployed    vote-0.1.0      1.16.0
 vote    staging     1           2025-04-20 03:34:03.00413779 +0000 UTC  deployed    vote-0.1.0      1.16.0
+</code></pre>
+<p>You could also examine the history of the release as</p>
+<pre><code>helm history -n dev vote
 </code></pre>
 <p>try rolling back a version</p>
 <p>e.g.</p>
