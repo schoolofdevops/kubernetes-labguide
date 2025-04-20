@@ -23,17 +23,19 @@ Generate a helm chart scaffold and change into the directory created to create a
 
 ```
 cd ~
-helm create instavote
+mkdir instavote
 cd instavote/
-cp values.yaml values.dev.yaml 
+
+helm create vote
+cd vote/
 ```
 
 
-Edit `values.dev.yaml`  to  update replicaCount, image and tag as
+Edit `values.yaml`  to  update replicaCount, image and tag as
 
 ```
 
-replicaCount: 4 
+replicaCount: 2
 image: 
   repository: schoolofdevops/vote 
   pullPolicy: IfNotPresent
@@ -74,8 +76,8 @@ spec:
 Install this chart with helm to deploy the `vote` service as:
 
 ```
-helm install instavote -n dev --values=values.dev.yaml  . --dry-run
-helm install instavote -n dev --values=values.dev.yaml  .
+helm install -n dev vote  . --dry-run
+helm install -n dev vote .
 ```
 
 Validate with
@@ -85,213 +87,99 @@ helm list -A
 kubectl get all
 ```
 
-## Part II - Adding support for More Microservices
+## Setting up Multi Environemnt Deployment with HELM 
 
+Copy over the values.yaml file to values.staging.yaml
 
-Create copy of the templates so that you could add support for one more service e.g. redis
+```
+cp values.yaml values.staging.yaml
+```
+
+Update the properties in values.staging.yaml as, 
 
 ```
 
-cd templates/
-mkdir vote redis
-mv deployment.yaml  hpa.yaml  ingress.yaml  service.yaml vote/
-cp vote/*.yaml redis/
+replicaCount: 4 
+image: 
+  repository: schoolofdevops/vote 
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion. 
+  tag: "v4" 
+
+```
+
+
+Update service type to Node Port
+```
+service:
+  type: NodePort
+  port: 80
+  nodePort: 30400
 ```
 
 
-You will start editing the templates so that template variables  such as  `Values.replicaCount` will be replaced with  `Values.vote.replicaCount`. Thats the theme you will have to follow from here on.
-
-e.g. this is the exisinng code
+Create a namespace for staging as 
 
 ```
-{{- if not .Values.autoscaling.enabled }}
-replicas: {{ .Values.replicaCount }}
-{{- end }}
+kubectl create namespace staging
 ```
 
-which should be changes to
-```
-
-spec:
-  {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.vote.replicaCount }}
-  {{- end }}
-```
-
-To make it easier, you could use text replacement feature of sed
-
-
+Install this chart with helm to deploy the `vote` service as:
 
 ```
-cd templates/vote/
-sed -i 's/Values./Values.vote./g' deployment.yaml
-sed -i 's/Values./Values.vote./g' service.yaml
+helm install -n staging vote --values=values.staging.yaml . --dry-run
+helm install -n staging vote --values=values.staging.yaml . 
 ```
 
-and then
+Validate with
 
 ```
-cd templates/redis/
-sed -i 's/Values./Values.redis./g' deployment.yaml
-sed -i 's/Values./Values.redis./g' service.yaml
-```
-
-You will also need to change a few things in the deployments and services including, 
-
-  *  change the name in the metadata field for the deplyoments and services for both apps 
-  *  remove nodePort configuration from service spec of redis 
-  *  update the `spec.template.spec.labels` as well as `spec.selectors.labelSelectors` with application specific labels for both apps 
-  *  update the `spec.selectors` and add the same label in the services as well 
-
-
-e.g. 
-
-update 
-
-```
-templates/vote/deployment.yaml
-templates/vote/service.yaml
-```
-
-from
-
-```
-metadata:
-  name: {{ include "instavote.fullname" . }}
-```
-
-to
-
-```
-metadata:
-  name: vote
-```
-
-And similarly in the following files
-
-```
-templates/redis/deployment.yaml
-templates/redis/service.yaml
-```
-
-from
-
-```
-metadata:
-  name: {{ include "instavote.fullname" . }}
-```
-
-to
-
-```
-metadata:
-  name: redis
-```
-
-Also change the selector in `templates/redis/deployment.yaml` along with template labels as, 
-
-```
-  selector:
-    matchLabels:
-      {{- include "instavote.selectorLabels" . | nindent 6 }}
-      app: redis
-  template:
-    metadata:
-      {{- with .Values.redis.podAnnotations }}
-      annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      labels:
-        {{- include "instavote.labels" . | nindent 8 }}
-        {{- with .Values.redis.podLabels }}
-        {{- toYaml . | nindent 8 }}
-        {{- end }}
-        app: redis
-```
-
-and selector spec in `templates/redis/service.yaml` as, 
-
-```
-spec:
-  type: {{ .Values.redis.service.type }}
-  ports:
-    - port: {{ .Values.redis.service.port }}
-      targetPort: http
-      protocol: TCP
-      name: http
-  selector:
-    {{- include "instavote.selectorLabels" . | nindent 4 }}
-    app: redis
-```
-
-
-Now update `instavote/values.yaml` to support multiple services 
-
-  * add `vote` as top level key 
-  * indent all properties so that those become sub properties of key added above i.e.  vote
-  * copy over and create blocks for redis
-
-Use this file as a reference [values.yaml](https://gist.github.com/initcron/51b28ca62b568955516b6ddddcd40f77)
-
-Now go ahead and deploy by  
-
-  * Creating your own copy of values.yaml
-  * Providing values specific to those services
-
-You could download this file with sample values [values.dev.yaml](https://gist.github.com/initcron/67e104f3a2949f20c2da06e19c854faa) using the following command :
-
-```
-wget -c https://gist.githubusercontent.com/initcron/67e104f3a2949f20c2da06e19c854faa/raw/90c7b0c330f133efae43ea71efb1beba314ea451/values.dev.yaml
-```
-
-
-And apply
-```
-helm uninstall instavote
-helm install instavote -n dev --values=values.dev.yaml  .
 helm list -A
-kubectl get all
+kubectl get all -n staging 
 ```
 
-
-
-Validate that vote and redis are running with the values that you provided.
 
 ## Part III : Overriding Values, Rollbacks
 
 Lets learn how to override values from the command line. To do so, lets add one property
 
-File : `templates/vote/deployment.yaml`
+File : `templates/deployment.yaml`
 
 ```
 containers:
   - name: vote
     env:
       - name: OPTION_A
-        value: {{ .Values.vote.options.A }}
+        value: {{ .Values.options.A }}
       - name: OPTION_B
-        value: {{ .Values.vote.options.B }}
+        value: {{ .Values.options.B }}
 ```
 
 This will read from values file and set those as environmnt variables. Lets set the default values.
 
 
 
-File:  `values.dev.yaml`
+File:  `values.yaml`
 ```
-vote:
-  replicaCount: 2
+replicaCount: 2
 
-  options:
-    A: MacOS
-    B: Windows
+options:
+  A: MacOS
+  B: Windows
 
 ```
 
 now upgrade the release as
 
 ```
-helm upgrade  instavote -n dev --values=values.dev.yaml  .
+helm upgrade -n dev vote .
+```
+
+validate 
+
+```
+helm list -A
+kubectl get all -n dev
 ```
 
 Check the application to see the default values being visible.
@@ -299,15 +187,15 @@ Check the application to see the default values being visible.
 You could override the values from the command line as
 
 ```
-helm upgrade instavote --values values.dev.yaml --set vote.options.A=Green --set vote.options.B=Yellow .
+helm upgrade -n dev vote --set options.A=Green --set options.B=Yellow .
 ```
 
 check the web app now
 
-try one more time
+try one more time, this time with a description
 
 ```
-helm upgrade instavote --values values.dev.yaml --set vote.options.A=Orange --set vote.options.B=Blue .
+helm upgrade -n dev vote --set options.A=Orange --set options.B=Blue . --description "Overriding values to Orage and Blue form CLI"
 ```
 
 you should see the values change every time.
@@ -321,8 +209,15 @@ helm list -A
 
 [sample output]
 ```
-NAME     	NAMESPACE 	REVISION	UPDATED                                	STATUS  	CHART          	APP VERSION
-instavote 	dev      	   7       	2024-05-14 03:31:34.717912894 +0000 UTC	deployed	instavote-0.1.0	1.16.0
+NAME  	NAMESPACE  	REVISION	UPDATED                                	STATUS  	CHART        	APP VERSION
+vote  	dev        	4       	2025-04-20 03:42:44.279388435 +0000 UTC	deployed	vote-0.1.0   	1.16.0
+vote  	staging    	1       	2025-04-20 03:34:03.00413779 +0000 UTC 	deployed	vote-0.1.0   	1.16.0
+```
+
+You could also examine the history of the release as
+
+```
+helm history -n dev vote
 ```
 
 try rolling back a version
@@ -330,15 +225,180 @@ try rolling back a version
 e.g.
 
 ```
-helm rollback instavote
+helm rollback vote
 ```
 you could also go back to a specific version using the revision number as  
 
 ```
-helm rollback instavote xx
+helm rollback vote xx
 ```
 
 where replace `xx` with the revision number you wish to roll back to.
+
+
+## Adding Redis Service  
+
+Lets add a second service by creating a new chart structure, where we will have our main chart for application and a subchart for vote and redis.
+
+
+```
+# switch back to instavote directory
+cd instavote 
+helm create redis 
+cd redis
+```
+
+Edit values.yaml to update the image and tag as
+
+```
+image:
+  repository: redis
+  pullPolicy: IfNotPresent
+  tag: "alpine"
+```
+
+also update the service port as 
+
+```
+service:
+  type: ClusterIP
+  port: 6379
+```
+
+Now lets create the main chart for instavote app to include the redis and vote as subcharts
+
+```
+# switch back to instavote directory
+cd instavote 
+mkdir main
+cd main
+```
+
+Add `Chart.yaml` and `values.yaml` files as 
+
+File :  `Chart.yaml`
+
+```
+apiVersion: v2
+name: instavote
+description: A Helm chart for Kubernetes
+
+type: application
+
+version: 1.0.0
+
+appVersion: "1.0.0"
+
+dependencies:
+  - alias: vote
+    name: vote
+    version: "0.1.0"
+    repository: file://../vote
+  - alias: redis
+    name: redis
+    version: "0.1.0"
+    repository: file://../redis
+```
+
+File : `values.dev.yaml`
+
+```
+vote:
+  repicaCount: 3
+  image:
+    repository: "schoolofdevops/vote"
+    tag: "v7"
+  service:
+    type: NodePort
+    port: 80
+    nodePort: 30300
+  options:
+    A: "AAA"
+    B: "BBB"
+
+redis:
+  repicaCount: 1
+  image:
+    repository: "redis"
+    tag: "alpine"
+  service:
+    type: ClusterIP
+    port: 6379
+```
+
+At this time the code should look like this 
+
+``` 
+# instavote chart directory
+.
+├── main
+│   ├── Chart.yaml
+│   └── values.dev.yaml
+├── redis
+│   ├── Chart.yaml
+│   ├── charts
+│   ├── templates
+│   │   ├── NOTES.txt
+│   │   ├── _helpers.tpl
+│   │   ├── deployment.yaml
+│   │   ├── hpa.yaml
+│   │   ├── ingress.yaml
+│   │   ├── service.yaml
+│   │   ├── serviceaccount.yaml
+│   │   └── tests
+│   │       └── test-connection.yaml
+│   └── values.yaml
+└── vote
+    ├── Chart.yaml
+    ├── charts
+    ├── templates
+    │   ├── NOTES.txt
+    │   ├── _helpers.tpl
+    │   ├── deployment.yaml
+    │   ├── hpa.yaml
+    │   ├── ingress.yaml
+    │   ├── service.yaml
+    │   ├── serviceaccount.yaml
+    │   └── tests
+    │       └── test-connection.yaml
+    ├── values.staging.yaml
+    └── values.yaml
+```
+
+
+Install/Update depeendencies with 
+
+```
+helm dependency update
+```
+
+```
+ls
+ls -l charts/
+```
+
+Clean up earlier helm installations if any 
+
+```
+helm list -A 
+helm uninstall vote -n dev
+helm uninstall vote -n staging
+helm list -A
+```
+
+Now install the main chart with helm as 
+
+```
+helm install instavote -n dev --values=values.dev.yaml . --dry-run
+helm install instavote -n dev --values=values.dev.yaml .
+```
+
+validate with
+
+```
+helm list -A
+kubectl get all -n dev
+```
 
 
 

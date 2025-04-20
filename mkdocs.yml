@@ -24,7 +24,6 @@ nav:
      - Lab K113 - HELM Package Manager: "helm.md"
      - Lab K114 - Writing HELM Charts: "helm_charts.md"
      - Lab K115 - Publishing HELM Charts: "helm_charts_publish.md"
-     - Lab K116 - Writing Single HELM Chart: "helm_charts_single.md"
   - Advanced Kubernetes: 
      - Lab K801 - Setting up Kubernetes Cluster: "adv_kubernetes-setup.md"
      - Lab K802 - Exploring Kubernetes Control Plane: "adv_kubernetes-control-plane.md"
