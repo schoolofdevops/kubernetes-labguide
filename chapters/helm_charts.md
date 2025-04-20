@@ -402,5 +402,7 @@ kubectl get all -n dev
 
 
 
-###  Exercise
-Now that you have deployed vote and redis, go ahead and add the code to deploy  worker, db and result as well.
+###  Exercises
+
+  * You will notice that the redis pods are being restarted every few seconds. Can you figure out why and fix it ? Apply the changes with helm.
+  * Now that you have deployed vote and redis, go ahead and add the code to deploy  worker, db and result as well.
