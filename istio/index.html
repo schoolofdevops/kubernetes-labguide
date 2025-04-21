@@ -3,18 +3,18 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/advanced_services/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/istio/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Services - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <title>Lab K809 - Service Mesh with Istio - Kubernetes Tutorial with CKA/CKAD Prep</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Services";
-        var mkdocs_page_input_path = "advanced_services.md";
-        var mkdocs_page_url = "/advanced_services/";
+        var mkdocs_page_name = "Lab K809 - Service Mesh with Istio";
+        var mkdocs_page_input_path = "istio.md";
+        var mkdocs_page_url = "/istio/";
       </script>
     
     <!--[if lt IE 9]>
@@ -94,7 +94,7 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Advanced Kubernetes</span></p>
-              <ul>
+              <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../adv_kubernetes-setup/">Lab K801 - Setting up Kubernetes Cluster</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../adv_kubernetes-control-plane/">Lab K802 - Exploring Kubernetes Control Plane</a>
@@ -115,7 +115,15 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../adv_eks_autoscaling/">Lab K808 - Horizontal and Vertical Autoscaling</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../istio/">Lab K809 - Service Mesh with Istio</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Lab K809 - Service Mesh with Istio</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#observability-with-kiali-prometheus-and-grafana">Observability with Kiali, Prometheus and Grafana</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#load-test">Load Test</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#reference">Reference</a>
+    </li>
+    </ul>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Additional CKAD Topics</span></p>
@@ -296,9 +304,10 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
-      <li class="breadcrumb-item active">Services</li>
+          <li class="breadcrumb-item">Advanced Kubernetes</li>
+      <li class="breadcrumb-item active">Lab K809 - Service Mesh with Istio</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/advanced_services.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/istio.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -306,250 +315,96 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="services">Services</h1>
-<p>Services are a way to expose your backend pods to outside world. Services can also be used for internal networks.</p>
-<h2 id="service-discovery">Service Discovery</h2>
-<p>Whenever we create a service, the kubernetes api server will create a route for that service within the cluster. So you will be able to access the service using the dns entry for that service. Usually the service dns will look like <SVC-NAME.NAMESPACE></p>
-<p>Let us create a service for frontend</p>
-<p><code>File: frontend-svc.yml</code></p>
-<pre><code>apiVersion: v1
-kind: Service
-metadata:
-  name: front-end
-  namespace: instavote
-  labels:
-    app: front-end
-    env: dev
-spec:
-  selector:
-    app: front-end
-  ports:
-    - protocol: TCP
-      port: 8079
+                <h1 id="istio">Istio</h1>
+<p><strong>Install Istio CLI</strong>:</p>
+<pre><code>curl -L https://istio.io/downloadIstio | sh -
+cd istio-*/bin
+export PATH=$PWD:$PATH
 </code></pre>
-<pre><code>kubectl apply -f frontend-svc.yml
-kubectl exec -it front-end-5cbc986f44-dqws2 sh
+<p><strong>Install Istio with a minimal profile</strong> (to keep it light for KIND):</p>
+<pre><code>istioctl install --set profile=demo -y
 
-nslookup front-end.instavote
-
-Name:      front-end.instavote
-Address 1: 10.233.6.236 front-end.instavote.svc.cluster.local
 </code></pre>
-<p>This is achieved by the cluster <strong>dns add-on</strong>. This is how backend of service A consumes service B.</p>
-<h2 id="labels-and-selectors">Labels and Selectors</h2>
-<p>When we create a service, it automatically adds appropriate pods to its backend. How does this happen? This is achieved by a mechanism called <strong>labels and selectors</strong>. We label our pods with keys and values. Our service template has selectors with these keys and values. So when a service is created, it will check for pods running with the same label. If it finds a pod with that label, the pod will be added to endpoint of the service.</p>
-<pre><code>kubectl describe svc front-end
+<p><strong>Enable sidecar injection</strong>:</p>
+<pre><code>kubectl config set-context --current --namespace=defaul
+kubectl label namespace default istio-injection=enabled
 
-Name:              front-end
-Namespace:         instavote
-Labels:            app=front-end
-                   env=dev
-Annotations:       kubectl.kubernetes.io/last-applied-configuration={&quot;apiVersion&quot;:&quot;v1&quot;,&quot;kind&quot;:&quot;Service&quot;,&quot;metadata&quot;:{&quot;annotations&quot;:{},&quot;labels&quot;:{&quot;app&quot;:&quot;front-end&quot;,&quot;env&quot;:&quot;dev&quot;},&quot;name&quot;:&quot;front-end&quot;,&quot;namespace&quot;:&quot;instavote&quot;},&quot;...
-Selector:          app=front-end
-Type:              ClusterIP
-IP:                10.233.6.236
-Port:              &lt;unset&gt;  8079/TCP
-TargetPort:        8079/TCP
-Endpoints:         10.233.71.13:8079
-Session Affinity:  None
-Events:            &lt;none&gt;
 </code></pre>
-<p>Since we have only one pod running with the label <strong>app=front-end</strong>, it is added to the service endpoint list.</p>
-<h2 id="picking-up-the-right-type-of-a-service">Picking up the right type of a service</h2>
-<p>We have four type of services to choose from. Each has a unique use case for which it can be used. Let us see about the types of services below.</p>
-<h3 id="types">Types:</h3>
+<p>Install Gateway CRDs </p>
+<pre><code>kubectl get crd gateways.gateway.networking.k8s.io &amp;&gt; /dev/null || \
+{ kubectl kustomize &quot;github.com/kubernetes-sigs/gateway-api/config/crd?ref=v1.2.1&quot; | kubectl apply -f -; }
+
+</code></pre>
+<p><strong>Deploy sample apps</strong> (e.g., Bookinfo):</p>
+<pre><code>cd ..
+kubectl apply -f samples/bookinfo/platform/kube/bookinfo.yaml
+
+</code></pre>
+<p>Expose App with Kuberneted Gateway </p>
+<pre><code>kubectl apply -f samples/bookinfo/gateway-api/bookinfo-gateway.yaml
+
+</code></pre>
+<p>Change Service to NodePort </p>
+<pre><code>kubectl annotate gateway bookinfo-gateway networking.istio.io/service-type=NodePort -n default --overwrite
+</code></pre>
+<p>Validate </p>
+<pre><code> kubectl get gateway
+</code></pre>
+<p>Access the endpoint using port-forward as </p>
+<pre><code>kubectl patch svc bookinfo-gateway-istio -n default \
+  -p '{&quot;spec&quot;: {&quot;type&quot;: &quot;NodePort&quot;, &quot;ports&quot;: [{&quot;port&quot;: 80, &quot;targetPort&quot;: 80, &quot;nodePort&quot;: 30300, &quot;protocol&quot;: &quot;TCP&quot;, &quot;name&quot;: &quot;http&quot;}]}}'
+</code></pre>
+<p>Open your browser and navigate to <a href="http://localhost:30300/productpage">http://localhost:30300/productpage</a>  to view the Bookinfo application.</p>
+<h3 id="observability-with-kiali-prometheus-and-grafana">Observability with Kiali, Prometheus and Grafana</h3>
+<p>Setup observability  addons including Prometheus, Grafana, Jaeger </p>
+<pre><code>kubectl apply -f samples/addons
+kubectl rollout status deployment/kiali -n istio-system
+
+</code></pre>
+<p>Patch the Observability services with NodePort Configs </p>
+<p><strong>✅ Grafana → NodePort 30500</strong></p>
+<pre><code>kubectl -n istio-system patch svc grafana \
+  -p '{&quot;spec&quot;: {&quot;type&quot;: &quot;NodePort&quot;, &quot;ports&quot;: [{&quot;port&quot;: 3000, &quot;targetPort&quot;: 3000, &quot;nodePort&quot;: 30500}]}}'
+
+</code></pre>
+<p>✅ Kiali → NodePort 30600</p>
+<pre><code>kubectl -n istio-system patch svc kiali \
+  -p '{&quot;spec&quot;: {&quot;type&quot;: &quot;NodePort&quot;, &quot;ports&quot;: [{&quot;port&quot;: 20001, &quot;targetPort&quot;: 20001, &quot;nodePort&quot;: 30600}]}}'
+
+</code></pre>
+<p><strong>✅ Zipkin → NodePort 30700</strong></p>
+<pre><code>kubectl -n istio-system patch svc zipkin \
+  -p '{&quot;spec&quot;: {&quot;type&quot;: &quot;NodePort&quot;, &quot;ports&quot;: [{&quot;port&quot;: 9411, &quot;targetPort&quot;: 9411, &quot;nodePort&quot;: 30700}]}}'
+
+</code></pre>
+<p><strong>✅ Loki → NodePort 30800</strong></p>
+<pre><code>kubectl -n istio-system patch svc loki \
+  -p '{&quot;spec&quot;: {&quot;type&quot;: &quot;NodePort&quot;, &quot;ports&quot;: [{&quot;port&quot;: 3100, &quot;targetPort&quot;: 3100, &quot;nodePort&quot;: 30800}]}}'
+</code></pre>
+<p>Access the observability dashboards at </p>
 <ul>
-<li>ClusterIp<ul>
-<li>Internal network.</li>
-<li>Can not accessed from outside world.</li>
-<li>Best suited for backend services which should not be exposed (ex: DB).</li>
+<li>Grafana </li>
+<li>Kiali </li>
+<li>Zipkin</li>
+<li>Loki</li>
 </ul>
-</li>
-<li>NodePort<ul>
-<li>Can be accessed from outside world.</li>
-<li>NodePort is best suited for development environment(debugging).</li>
-<li>Not suited for production use.</li>
-</ul>
-</li>
-<li>LoadBalancer<ul>
-<li>Normal cloud load balancer.</li>
-<li>Exposes service to outside world.</li>
-</ul>
-</li>
-<li>ExternalName<ul>
-<li>Used for entities which are outside the cluster.</li>
-<li>CNAME record for an external service.</li>
-<li>No ports are defined.</li>
-</ul>
-</li>
-</ul>
-<p>We have one more service configuration, which is not exactly a service type. That is .,
-  * ExternalIP</p>
-<h2 id="cluster-ip-and-dns">Cluster IP and DNS</h2>
-<p>ClusterIP is internal to the cluster. ClusterIP is provided by default. If you do not define the type of the service, then the service is configured with a clusterIP. A typical service type of clusterIP looks like,</p>
-<p><code>File: frontend-svc.yml</code></p>
-<pre><code>apiVersion: v1
-kind: Service
-metadata:
-  name: front-end
-  namespace: instavote
-  labels:
-    app: front-end
-    env: dev
-spec:
-  selector:
-    app: front-end
-  ports:
-    - protocol: TCP
-      port: 8079
-  type: ClusterIP
-</code></pre>
-<h2 id="nodeport">NodePort</h2>
-<p>Exposes a port on node within 30000 to 32767 range. If a service is defined as nodePort, we can access the service on <ANY-NODE-IP:NODEPORT>. Let us change the frontend service type to NodePort and see what happens.</p>
-<p><code>File: frontend-svc.yml</code></p>
-<pre><code>apiVersion: v1
-kind: Service
-metadata:
-  name: front-end
-  namespace: instavote
-  labels:
-    app: front-end
-    env: dev
-spec:
-  selector:
-    app: front-end
-  ports:
-    - protocol: TCP
-      port: 8079
-  type: NodePort
-</code></pre>
-<p>Lets get the node port created for the front-end service.</p>
-<pre><code>kubectl get svc front-end
+<h3 id="load-test">Load Test</h3>
+<pre><code>export GATEWAY_URL=165.22.218.103:30300
 
+for i in $(seq 1 100); do curl -s -o /dev/null &quot;http://$GATEWAY_URL/productpage&quot;; done
 
 </code></pre>
-<p>Visit this node port on any of node's IP. In my case,</p>
-<h2 id="externalip">ExternalIP</h2>
-<p>ExternalIP is not exactly a service type. It can be coupled with any other service type. For example a service with NodePort can be used with ExternalIP as well. Only cache here is, the external IP has to one of the node/master's IP. It is used to route the traffic to one or more cluster nodes.</p>
-<p><code>File: frontend-svc.yml</code></p>
-<pre><code>apiVersion: v1
-kind: Service
-metadata:
-  name: front-end
-  namespace: instavote
-  labels:
-    app: front-end
-    env: dev
-spec:
-  selector:
-    app: front-end
-  ports:
-    - protocol: TCP
-      port: 8079
-  type: NodePort
-  externalIPs:
-  - 10.40.1.26
-  - 10.40.1.11
-</code></pre>
-<p>Lets check how externalIPs works,</p>
-<pre><code>kubectl describe svc front-end
-
-curl 10.40.1.26
-curl 10.40.1.11
-</code></pre>
-<h2 id="loadbalancer">LoadBalancer</h2>
-<p>Service type LoadBalancer is only supported on AWS,GCE,Azure and Openstack. If you have you cluster running on any of these clouds, give it a try. It will create a load balancer for us with a ephemeral IP. We can also specify a loadBalancerIP. Mostly not recommended to use. Using service type LoadBalancer will rise your cloud provider spendings. Think about launching 10 load balancers for 10 different services. Thats where <strong>ingress</strong> come into picture (explained in the later part).</p>
-<pre><code>apiVersion: v1
-kind: Service
-metadata:
-  name: front-end
-  namespace: instavote
-  labels:
-    app: front-end
-    env: dev
-spec:
-  selector:
-    app: front-end
-  ports:
-    - protocol: TCP
-      port: 8079
-  type: LoadBalancer
-</code></pre>
-<h2 id="headless-services-with-endpointsexternal-names">Headless services with Endpoints/External Names</h2>
-<p>Sometimes you may to decouple the services from backend pods. Sometimes you may want to use some external services outside the cluster and want to integrate those external services with the cluster. For these kind of use cases we can use <strong>Headless services</strong>. Let us see an example.</p>
-<p>Let us consider a scenario where you have your redis cluster hosted outside the cluster. Your backend in cluster need to use this redis cluster. In this case, you will create a service with ExternalName, which is nothing but a CNAME record of your redis cluster. This type of services will neither have any ports defined nor have any selectors. But, how do you make sure the backend pods uses this service? For that, you will create a custom endpoint, in which map your service to specific endpoints.</p>
-<p><code>Ex: External Name service</code></p>
-<pre><code>kind: Service
-apiVersion: v1
-metadata:
-  name: redis-aws
-  namespace: instavote
-spec:
-  type: ExternalName
-  externalName: redis.aws.schoolofdevops.com
-</code></pre>
-<p><code>Ex: Endpoints</code></p>
-<pre><code>kind: Endpoints
-apiVersion: v1
-metadata:
-  name: redis-aws
-subsets:
-  - addresses:
-      - ip: 10.40.30.123
-      - ip: 10.40.30.324
-      - ip: 10.40.30.478
-    ports:
-      - port: 9376
-</code></pre>
-<p>These IPs have to be manually managed by the cluster administrator.</p>
-<h2 id="ingress">Ingress</h2>
-<p>Ingress controller is an Kubernetes object that manages external access to the backend services. This is the preferred way of exposing your services.</p>
-<h3 id="ingress-controller">Ingress Controller</h3>
-<p>To use an ingress resource, an ingress controller (ex. nginx, traefik) must be running. This controller has to be deployed manually.</p>
-<p>To create an ingress controller in our cluster, run the following commands,</p>
-<pre><code>kubectl apply -f traefik-rbac.yaml
-kubectl apply -f traefik-deployment.yaml
-</code></pre>
-<p>Check whether the ingress controller is running or not.</p>
-<pre><code>kubectl get pods -n kube-system
-
-[...]
-kubernetes-dashboard-75c5ff6844-r9sk8         1/1       Running   6          3d
-nginx-proxy-node3                             1/1       Running   8          27d
-nginx-proxy-node4                             1/1       Running   7          27d
-traefik-ingress-controller-568dd77566-vk72b   1/1       Running   0          5m
-</code></pre>
-<h3 id="purpose-of-an-ingress">Purpose of an Ingress</h3>
-<p>Ingress can be used for,
-  * Load balancing,
-  * SSL Termination,
-  * Name based virtual hosting.</p>
-<h3 id="types-of-ingress">Types of Ingress</h3>
-<p>Let us see about different implementation of ingress.</p>
-<pre><code>Keep or delete the following(Need to come up with use cases).
-### Single Service Ingress
-
-### Simple fanout Ingress
-
-### Name based virtual hosting
-
-### TLS
-
-### Load Balancer
-</code></pre>
-<h2 id="services-vs-ingress">Services Vs Ingress</h2>
-<ol>
-<li>Service type LoadBalancer</li>
-<li>Service type Nodeport</li>
-</ol>
-<h2 id="creating-service-resources-for-applications-and-backing-services">Creating service resources for applications and backing services</h2>
-<hr />
-<p>Need a demo set up for types: load balancer and external name
-Need input on this: Creating service resources for applications and backing services, Service API specs, Traffic Policy
-Can add some points about scaling of ingress controller (running it as a daemonset on all the nodes)</p>
+<h2 id="reference">Reference</h2>
+<p>Istio Setup : <a href="https://istio.io/latest/docs/setup/getting-started/">Getting Started</a>
+Grafana : <a href="https://istio.io/latest/docs/tasks/observability/metrics/using-istio-dashboard/">Visualizing Metrics with Grafana</a>
+Kiali: <a href="https://istio.io/latest/docs/tasks/observability/kiali/">Visualizing Your Mesh</a></p>
               
             </div>
           </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../adv_eks_autoscaling/" class="btn btn-neutral float-left" title="Lab K808 - Horizontal and Vertical Autoscaling"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../advanced_pod_design/" class="btn btn-neutral float-right" title="Lab K201 - Advanced Pod Design">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
 
   <hr/>
 
@@ -576,6 +431,10 @@ Can add some points about scaling of ingress controller (running it as a daemons
         </span>
     
     
+      <span><a href="../adv_eks_autoscaling/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../advanced_pod_design/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
