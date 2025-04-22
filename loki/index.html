@@ -3,18 +3,18 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/adv_operators/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/loki/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Lab K806 - Operators - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <title>Lab K114 - Adding Log Monitoring with Loki - Kubernetes Tutorial with CKA/CKAD Prep</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Lab K806 - Operators";
-        var mkdocs_page_input_path = "adv_operators.md";
-        var mkdocs_page_url = "/adv_operators/";
+        var mkdocs_page_name = "Lab K114 - Adding Log Monitoring with Loki";
+        var mkdocs_page_input_path = "loki.md";
+        var mkdocs_page_url = "/loki/";
       </script>
     
     <!--[if lt IE 9]>
@@ -65,7 +65,7 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Kubernetes Essentials</span></p>
-              <ul>
+              <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../kind_create_cluster/">Lab K101 - Install Kubernetes with KIND</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../kubernetes_quickdive/">Lab K102 - Kubernetes Quickdive</a>
@@ -88,7 +88,13 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../helm/">Lab K113 - Setup Prometheus and Grafana with HELM</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../loki/">Lab K114 - Adding Log Monitoring with Loki</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Lab K114 - Adding Log Monitoring with Loki</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#deploy-loki">Deploy Loki</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#setup-promtail-to-as-log-forwarder">Setup Promtail to as Log Forwarder</a>
+    </li>
+    </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../helm_charts/">Lab K115 - Writing HELM Charts</a>
                   </li>
@@ -96,7 +102,7 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Advanced Kubernetes</span></p>
-              <ul class="current">
+              <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../adv_kubernetes-setup/">Lab K801 - Setting up Kubernetes Cluster</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../adv_kubernetes-control-plane/">Lab K802 - Exploring Kubernetes Control Plane</a>
@@ -109,37 +115,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../adv_controllers/">Lab K805 - Controllers and CRDs</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Lab K806 - Operators</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#step-1-install-operator-sdk">Step 1: Install Operator SDK</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#step-2-create-the-operator">Step 2: Create the Operator</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#create-a-custom-resource-definition-crd">📌 Create a Custom Resource Definition (CRD)</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#step-3-modify-the-helm-chart-for-nginx">Step 3: Modify the Helm Chart for Nginx</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#step-4-deploy-the-operator">Step 4: Deploy the Operator</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#deploy-the-operator">📌 Deploy the Operator</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#step-5-create-a-custom-resource">🛠 Step 5: Create a Custom Resource</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#step-6-create-the-configmap">🛠 Step 6: Create the ConfigMap</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#step-8-test-dynamic-updates">🛠 Step 8: Test Dynamic Updates</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#step-9-cleanup">🛠 Step 9: Cleanup</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#summary">🚀 Summary</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#whats-next">🔗 What’s Next?</a>
-    </li>
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../adv_operators/">Lab K806 - Operators</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../adv_operator_go/">Lab K807 - Writing Custom Operator in Go</a>
                   </li>
@@ -328,10 +304,10 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
-          <li class="breadcrumb-item">Advanced Kubernetes</li>
-      <li class="breadcrumb-item active">Lab K806 - Operators</li>
+          <li class="breadcrumb-item">Kubernetes Essentials</li>
+      <li class="breadcrumb-item active">Lab K114 - Adding Log Monitoring with Loki</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/adv_operators.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/loki.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -339,220 +315,126 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="operators">Operators</h1>
-<h2 id="step-1-install-operator-sdk">Step 1: Install Operator SDK</h2>
-<p>Since you already have <strong>Docker, KIND, Helm, and kubectl</strong>, let's install <strong>Operator SDK</strong> with the following command </p>
-<pre><code class="language-sh">curl -LO https://github.com/operator-framework/operator-sdk/releases/latest/download/operator-sdk_linux_amd64
-chmod +x operator-sdk_linux_amd64
-sudo mv operator-sdk_linux_amd64 /usr/local/bin/operator-sdk
-</code></pre>
-<p>Verify installation:</p>
-<pre><code class="language-sh">operator-sdk version
-</code></pre>
-<h2 id="step-2-create-the-operator">Step 2: Create the Operator</h2>
-<p>Create a new <strong>Operator project</strong>:</p>
-<pre><code>mkdir static-site-operator
-cd static-site-operator
-</code></pre>
-<p>Initialize the project:</p>
-<pre><code class="language-sh">operator-sdk init --plugins=helm --domain=example.com
-</code></pre>
-<p>Examine the generated files:</p>
-<pre><code>sudo apt install tree
-tree
-</code></pre>
-<h3 id="create-a-custom-resource-definition-crd"><strong>📌 Create a Custom Resource Definition (CRD)</strong></h3>
-<p>We'll call our operator <code>StaticSiteOperator</code>:</p>
-<pre><code class="language-sh">operator-sdk create api --group web --version v1alpha1 --kind StaticSiteOperator
-</code></pre>
-<p>This generates:</p>
-<p>A Custom Resource Definition (CRD) (staticsiteoperators.web.example.com).
-A Helm chart in helm-charts/staticsiteoperator/.</p>
-<h2 id="step-3-modify-the-helm-chart-for-nginx">Step 3: Modify the Helm Chart for Nginx</h2>
-<p>Move into the Helm chart directory:</p>
-<pre><code>cd helm-charts/staticsiteoperator
-</code></pre>
-<p>Edit <code>values.yaml</code> to define Nginx parameters:</p>
-<pre><code>replicaCount: 1
+                <h1 id="setup-log-monitoring-with-loki-and-grafana">Setup Log Monitoring with Loki and Grafana</h1>
+<p>Assumtion is you have already installed Prometheus and Grafana using HELM. </p>
+<h2 id="deploy-loki">Deploy Loki</h2>
+<p>Create a values file </p>
+<p>File: <code>values.yaml</code></p>
+<pre><code>loki:
+  commonConfig:
+    replication_factor: 1
+  schemaConfig:
+    configs:
+      - from: &quot;2024-04-01&quot;
+        store: tsdb
+        object_store: s3
+        schema: v13
+        index:
+          prefix: loki_index_
+          period: 24h
+  pattern_ingester:
+      enabled: true
+  limits_config:
+    allow_structured_metadata: true
+    volume_enabled: true
+  ruler:
+    enable_api: true
 
-image:
-  repository: nginx
-  pullPolicy: IfNotPresent
-  tag: latest
+minio:
+  enabled: true
 
-service:
-  type: NodePort
-  port: 80
-  nodePort: 30400 
+deploymentMode: SingleBinary
+loki:
+  commonConfig:
+    replication_factor: 1
+  schemaConfig:
+    configs:
+      - from: &quot;2024-04-01&quot;
+        store: tsdb
+        object_store: s3
+        schema: v13
+        index:
+          prefix: loki_index_
+          period: 24h
+  pattern_ingester:
+      enabled: true
+  limits_config:
 
-volumeMounts:
-  - name: static-content
-    mountPath: /usr/share/nginx/html
-    readOnly: true
+singleBinary:
+  replicas: 1
 
-volumes:
-  - name: static-content
-    configMap:
-      name: static-site-content
+# Zero out replica counts of other deployment modes
+backend:
+  replicas: 0
+read:
+  replicas: 0
+write:
+  replicas: 0
 
+ingester:
+  replicas: 0
+querier:
+  replicas: 0
+queryFrontend:
+  replicas: 0
+queryScheduler:
+  replicas: 0
+distributor:
+  replicas: 0
+compactor:
+  replicas: 0
+indexGateway:
+  replicas: 0
+bloomCompactor:
+  replicas: 0
+bloomGateway:
+  replicas: 0
 </code></pre>
-<p>Edit <code>templates/deployment.yaml</code> to include volume mounts:</p>
-<p>Replace:</p>
-<pre><code>volumeMounts: []
+<p>Install Loki as </p>
+<pre><code>helm repo add grafana https://grafana.github.io/helm-charts
+helm repo update 
 </code></pre>
-<p>With : </p>
-<pre><code>volumeMounts:
-  - name: static-content
-    mountPath: /usr/share/nginx/html
-    readOnly: true
+<p>Install Loki as </p>
+<pre><code>helm install -n monitoring  loki grafana/loki -f values.yaml
+</code></pre>
+<p>validate </p>
+<pre><code>helm list -n monitoring 
 
+kubectl get all -n monitoring 
 </code></pre>
-<p>And update:</p>
-<pre><code>volumes: []
-</code></pre>
-<p>with</p>
-<pre><code>volumes:
-  - name: static-content
-    configMap:
-      name: static-site-content
-</code></pre>
-<p>Also add the following <code>checksum/config</code> annotation to the deployment:</p>
-<pre><code>      annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-        checksum/config: {{ include (print $.Template.BasePath &quot;/configmap.yaml&quot;) . | sha256sum }}
-
-</code></pre>
-<p>In <code>tempalte/service.yaml</code> add <code>nodePort</code> to the service:</p>
-<pre><code>  ports:
-    - port: {{ .Values.service.port }}
-      targetPort: http
-      protocol: TCP
-      name: http
-      nodePort: {{ .Values.service.nodePort }}
-
-</code></pre>
-<hr />
-<h2 id="step-4-deploy-the-operator">Step 4: Deploy the Operator</h2>
-<p><strong>📌 Install Cert Manager (needed for CRD validation)</strong></p>
-<p>Run:</p>
-<pre><code class="language-sh">kubectl apply -f https://github.com/jetstack/cert-manager/releases/latest/download/cert-manager.yaml
-</code></pre>
-<p>Wait for cert-manager pods to be ready:</p>
-<pre><code class="language-sh">kubectl get pods -n cert-manager
-</code></pre>
-<h3 id="deploy-the-operator"><strong>📌 Deploy the Operator</strong></h3>
-<p>Build the controller image and load it into KIND:</p>
-<pre><code>cd ~/static-site-operator
-make docker-build
-kind load docker-image controller:latest
-</code></pre>
-<p>Edit <code>config/manager/manager.yaml</code> and add <code>imagePullPolicy</code> as : </p>
-<pre><code>      containers:
-      - args:
-          - --leader-elect
-          - --leader-election-id=static-site-operator
-          - --health-probe-bind-address=:8081
-        image: controller:latest
-        imagePullPolicy: IfNotPresent
-</code></pre>
-<p>Run:</p>
-<pre><code class="language-sh">sudo apt install make
-make deploy
-</code></pre>
-<p>Check if it's running:</p>
-<pre><code class="language-sh">kubectl get pods -n static-site-operator-system
-</code></pre>
-<hr />
-<h2 id="step-5-create-a-custom-resource"><strong>🛠 Step 5: Create a Custom Resource</strong></h2>
-<p>Now, let’s <strong>define our Static Site Custom Resource (CR)</strong>.</p>
-<p>Create a file <code>config/samples/web_v1alpha1_staticsiteoperator.yaml</code>:</p>
-<pre><code class="language-yaml">apiVersion: web.example.com/v1alpha1
-kind: StaticSiteOperator
-metadata:
-  name: my-static-site
-spec:
-  replicaCount: 1
-</code></pre>
-<p>Apply it:</p>
-<pre><code class="language-sh">kubectl apply -f config/samples/web_v1alpha1_staticsiteoperator.yaml
-</code></pre>
-<p>Check if the Operator is running:</p>
-<pre><code class="language-sh">kubectl get pods
-</code></pre>
-<hr />
-<h2 id="step-6-create-the-configmap"><strong>🛠 Step 6: Create the ConfigMap</strong></h2>
-<p>This <strong>ConfigMap</strong> contains our <strong>HTML content</strong>:</p>
-<p>File : <code>config/samples/static-site-configmap.yaml</code></p>
-<pre><code class="language-yaml">apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: static-site-content
-data:
-  index.html: |
-    &lt;html&gt;
-    &lt;head&gt;&lt;title&gt;My Static Site&lt;/title&gt;&lt;/head&gt;
-    &lt;body&gt;
-    &lt;h1&gt;Welcome to My Kubernetes Static Site!&lt;/h1&gt;
-    &lt;p&gt;This page is dynamically loaded from a ConfigMap.&lt;/p&gt;
-    &lt;/body&gt;
-    &lt;/html&gt;
-</code></pre>
-<p>Apply it:</p>
-<pre><code class="language-sh">kubectl apply -f config/samples/static-site-configmap.yaml
-</code></pre>
-<p>Find the Service and NodePort:</p>
-<pre><code class="language-sh">kubectl get svc my-static-site-staticsiteoperator
-</code></pre>
-<p>You should see something like:</p>
-<pre><code class="language-sh">NAME                                TYPE       CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE
-my-static-site-staticsiteoperator   NodePort   10.96.92.215   &lt;none&gt;        80:30400/TCP   3m10s
-</code></pre>
-<p>Access the site by opening <strong>http://localhost:30400</strong> in your browser! 🎉</p>
-<hr />
-<h2 id="step-8-test-dynamic-updates"><strong>🛠 Step 8: Test Dynamic Updates</strong></h2>
-<p>To change the <strong>HTML content</strong>:</p>
-<ol>
-<li><strong>Edit the ConfigMap</strong>:
-   <code>sh
-   kubectl edit configmap static-site-content</code></li>
-<li>Modify the HTML and save.</li>
-<li>Restart the pod:
-   <code>sh
-   kubectl delete pod -l app.kubernetes.io/name=nginx</code></li>
-</ol>
-<p>After a few seconds, refresh <strong>http://localhost:30400</strong> and see the update!</p>
-<hr />
-<h2 id="step-9-cleanup"><strong>🛠 Step 9: Cleanup</strong></h2>
-<p>To remove everything:</p>
-<pre><code class="language-sh">make undeploy
-kubectl delete all --all
-</code></pre>
-<hr />
-<h2 id="summary"><strong>🚀 Summary</strong></h2>
+<p>Setup Grafana to connect with Loki </p>
 <ul>
-<li>Installed <strong>Operator SDK</strong>.</li>
-<li>Created a <strong>Helm-based Operator</strong>.</li>
-<li>Used <strong>ConfigMap</strong> for <strong>dynamic updates</strong>.</li>
-<li>Exposed the <strong>Nginx site via NodePort</strong>.</li>
-<li>Successfully updated content <strong>without redeploying the Operator</strong>.</li>
+<li>From Data sources -&gt; Add Data Source   </li>
+<li>Add data source of type = Loki   </li>
+<li>Connection URL = <code>http://loki.monitoring.svc.cluster.local:3100</code>  </li>
+<li>From HTTP Headers, Add Header <code>X-Scope-OrgID : admin</code></li>
 </ul>
-<hr />
-<h2 id="whats-next"><strong>🔗 What’s Next?</strong></h2>
-<ul>
-<li>Add <strong>Secret-based authentication</strong> for protected pages.</li>
-<li>Use <strong>Ingress</strong> instead of NodePort for production use.</li>
-<li>Implement <strong>autoscaling</strong> based on CPU usage.</li>
-</ul>
-<hr />
-<p>🔥 <strong>Congrats! You've built your first Kubernetes Operator!</strong> 🔥<br />
-Let me know if you want more enhancements! 🚀</p>
+<h2 id="setup-promtail-to-as-log-forwarder">Setup Promtail to as Log Forwarder</h2>
+<p>Setup promtail using helm as  </p>
+<pre><code>helm upgrade --install promtail grafana/promtail -n monitoring \
+  --set &quot;loki.serviceName=loki&quot; \
+  --set &quot;loki.servicePort=3100&quot; \
+  --set &quot;config.clients[0].url=http://loki.monitoring.svc.cluster.local:3100/loki/api/v1/push&quot; \
+  --set &quot;config.clients[0].tenant_id=admin&quot;
+</code></pre>
+<p>validate : </p>
+<pre><code>kubect get all -n monitoring 
+</code></pre>
+<p>Once you see everything running, </p>
+<p>Explore the logs using Prometheus =&gt; Drildown =&gt; Logs </p>
+<p>Also install the Loki dashboard for Granfa as </p>
+<p>Go to Grafana → Dashboards → + Import.</p>
+<p>Use this Dashboard ID (example):</p>
+<p>Dashboard ID: 13639 → "Loki - Logs Panel Example"</p>
+<p>Click Load, select your Loki data source, and import.</p>
+<p>You can find more by searching “Loki” at:
+🔗 https://grafana.com/grafana/dashboards</p>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../adv_controllers/" class="btn btn-neutral float-left" title="Lab K805 - Controllers and CRDs"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../adv_operator_go/" class="btn btn-neutral float-right" title="Lab K807 - Writing Custom Operator in Go">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../helm/" class="btn btn-neutral float-left" title="Lab K113 - Setup Prometheus and Grafana with HELM"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../helm_charts/" class="btn btn-neutral float-right" title="Lab K115 - Writing HELM Charts">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -580,10 +462,10 @@ Let me know if you want more enhancements! 🚀</p>
         </span>
     
     
-      <span><a href="../adv_controllers/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../helm/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../adv_operator_go/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../helm_charts/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

@@ -5,14 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/helm_charts/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Lab K114 - Writing HELM Charts - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <title>Lab K115 - Writing HELM Charts - Kubernetes Tutorial with CKA/CKAD Prep</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Lab K114 - Writing HELM Charts";
+        var mkdocs_page_name = "Lab K115 - Writing HELM Charts";
         var mkdocs_page_input_path = "helm_charts.md";
         var mkdocs_page_url = "/helm_charts/";
       </script>
@@ -86,9 +86,11 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../ingress/">Lab K112 - Ingress</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../helm/">Lab K113 - HELM Package Manager</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../helm/">Lab K113 - Setup Prometheus and Grafana with HELM</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Lab K114 - Writing HELM Charts</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../loki/">Lab K114 - Adding Log Monitoring with Loki</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Lab K115 - Writing HELM Charts</a>
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#part-i-generating-a-chart-with-one-service">Part I - Generating a Chart with One Service</a>
     </li>
@@ -106,7 +108,7 @@
     </li>
     </ul>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../helm_charts_publish/">Lab K115 - Publishing HELM Charts</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../helm_charts_publish/">Lab K116 - Publishing HELM Charts</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Advanced Kubernetes</span></p>
@@ -313,7 +315,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
           <li class="breadcrumb-item">Kubernetes Essentials</li>
-      <li class="breadcrumb-item active">Lab K114 - Writing HELM Charts</li>
+      <li class="breadcrumb-item active">Lab K115 - Writing HELM Charts</li>
     <li class="wy-breadcrumbs-aside">
           <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/helm_charts.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
@@ -611,8 +613,8 @@ kubectl get all -n dev
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../helm/" class="btn btn-neutral float-left" title="Lab K113 - HELM Package Manager"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../helm_charts_publish/" class="btn btn-neutral float-right" title="Lab K115 - Publishing HELM Charts">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../loki/" class="btn btn-neutral float-left" title="Lab K114 - Adding Log Monitoring with Loki"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../helm_charts_publish/" class="btn btn-neutral float-right" title="Lab K116 - Publishing HELM Charts">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -640,7 +642,7 @@ kubectl get all -n dev
         </span>
     
     
-      <span><a href="../helm/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../loki/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
       <span><a href="../helm_charts_publish/" style="color: #fcfcfc">Next &raquo;</a></span>
