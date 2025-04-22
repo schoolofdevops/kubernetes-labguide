@@ -35,6 +35,7 @@ nav:
      - Lab K807 - Writing Custom Operator in Go: "adv_operator_go.md"
      - Lab K807 - Launch EKS Cluster: "adv_setup_eks_cluster.md"
      - Lab K808 - Horizontal and Vertical Autoscaling: "adv_eks_autoscaling.md"
+     - Lab K809 - Service Mesh with Istio: "istio.md"
   - Additional CKAD Topics:
      - Lab K201 - Advanced Pod Design: "advanced_pod_design.md"
      - Lab K204 - Health Checks: "pods-health-probes.md"
