@@ -366,9 +366,9 @@ image: 
 <pre><code>apiVersion: v1
 kind: Service
 metadata:
-  name: vote
+  name: {{ include &quot;vote.fullname&quot; . }}
   labels:
-    {{- include &quot;instavote.labels&quot; . | nindent 4 }}
+    {{- include &quot;vote.labels&quot; . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -378,7 +378,7 @@ spec:
       name: http
       nodePort: {{ .Values.service.nodePort }}
   selector:
-    {{- include &quot;instavote.selectorLabels&quot; . | nindent 4 }}
+    {{- include &quot;vote.selectorLabels&quot; . | nindent 4 }}
 </code></pre>
 <p>Install this chart with helm to deploy the <code>vote</code> service as:</p>
 <pre><code>helm install -n dev vote  . --dry-run
