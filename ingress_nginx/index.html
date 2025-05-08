@@ -99,10 +99,6 @@
     <li class="toctree-l2"><a class="reference internal" href="#add-another-web-application-with-ingress">Add another Web Application with Ingress</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#mini-project-configure-ingress-for-result-app">Mini Project : Configure Ingress for Result App</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#reading-resources">Reading Resources</a>
-    </li>
-        </ul>
     </li>
     </ul>
                   </li>
@@ -347,7 +343,7 @@
 
 
 </code></pre>
-<p>You are going to setup ingress controller using helm. Assuming helm is already installed, begin adding the repository to install traefik as a ingress controller from:</p>
+<p>You are going to setup ingress controller using helm. Assuming helm is already installed, begin adding the repository to install nginx as a ingress controller from:</p>
 <p>Install helm to setup Nginx Ingress Controller. To install helm version 3 on Linux or MacOS, you can follow following instructions.</p>
 <pre><code>curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 </code></pre>
@@ -385,7 +381,7 @@ kubectl label node kind-worker ingress-ready=&quot;true&quot;
 <p>This time you should see the label added, and nginx ingress controller running, which can be validated using</p>
 <pre><code>kubectl get pods -n ingress-nginx --watch
 </code></pre>
-<p>Wait for the container for nginx ingress controller to be up. You could also validate by connecting to the IPADDRESS of your node where the cluster is beeng setup on port 80, where you should see <code>**404 Not Found**</code> error. This is the sign that nginx is set up as a ingress controller and looking for a request with hostname/path defined.</p>
+<p>Wait for the container for nginx ingress controller to be up. You could also validate by connecting to the IPADDRESS of your node where the cluster is being setup on port 80, where you should see <code>**404 Not Found**</code> error. This is the sign that nginx is set up as a ingress controller and looking for a request with hostname/path defined.</p>
 <h3 id="add-ingress-rule-with-host-based-routing">Add Ingress Rule with Host based Routing</h3>
 <p>We will direct all our request to the ingress controller now, but with differnt hostname e.g. <strong>vote.example.com</strong> or <strong>results.example.com</strong>. And it should direct to the correct service based on the host name.</p>
 <p>In order to achieve this you, as a user would create a <strong>ingress</strong> object with a set of rules,</p>
@@ -426,10 +422,10 @@ spec:
 kubectl apply -f vote-ing.yaml --dry-run
 kubectl apply -f vote-ing.yaml
 </code></pre>
-<p>Since the ingress controller  is constantly monitoring for the ingress objects, the moment it detects, it connects with traefik and creates a rule as follows.</p>
+<p>Since the ingress controller  is constantly monitoring for the ingress objects, the moment it detects, it connects with nginx and creates a rule as follows.</p>
 <pre><code class="language-bash">
                     +----------+
-     +--create----&gt; | traefik  |
+     +--create----&gt; |  nginx   |
      |              |  rules   |
      |              +----------+
 +----+----+--+            ^
@@ -444,10 +440,8 @@ kubectl apply -f vote-ing.yaml
 <p>where,</p>
 <ul>
 <li>A user creates a ingress object with the rules. This could be a named based or a path based routing.</li>
-<li>An ingress controller, in this example traefik constantly monitors for ingress objects. The moment it detects one, it creates a rule and adds it to the traefik load balancer. This rule maps to the ingress specs.</li>
+<li>An ingress controller, in this example nginx constantly monitors for ingress objects. The moment it detects one, it creates a rule and adds it to the nginx load balancer. This rule maps to the ingress specs.</li>
 </ul>
-<p>You could now see the rule added to ingress controller,</p>
-<p><img alt="Traefik with Ingress Rules" src="../images/traefik02.png" /></p>
 <p>Where,</p>
 <ul>
 <li>
@@ -458,7 +452,7 @@ kubectl apply -f vote-ing.yaml
 </li>
 </ul>
 <h2 id="add-local-dns">Add Local DNS</h2>
-<p>You have created the ingress rules based on hostnames e.g.  <strong>vote.example.com</strong> and <strong>results.example.com</strong>. In order for you to be able to access those, there has to be a dns entry pointing to your nodes, which are running traefik.</p>
+<p>You have created the ingress rules based on hostnames e.g.  <strong>vote.example.com</strong> and <strong>results.example.com</strong>. In order for you to be able to access those, there has to be a dns entry pointing to your nodes, which are running nginx.</p>
 <pre><code class="language-bash">
   vote.example.com     -------+                        +----- vote:81
                               |     +-------------+    |
@@ -466,7 +460,7 @@ kubectl apply -f vote-ing.yaml
                               +===&gt; |   node:80   | ===+
                               |     +-------------+    |
                               |                        |
-  results.example.com  -------+                        +----- results:82
+  result.example.com   -------+                        +----- result:82
 
 </code></pre>
 <p>To achieve this you need to either,</p>
@@ -478,30 +472,28 @@ kubectl apply -f vote-ing.yaml
 <pre><code>sudo vim /etc/hosts
 </code></pre>
 <p>And add an entry such as ,</p>
-<pre><code>xxx.xxx.xxx.xxx vote.example.com results.example.com  kube-ops-view.example.org
+<pre><code>xxx.xxx.xxx.xxx vote.example.com result.example.com  kube-ops-view.example.org
 </code></pre>
 <p>where,</p>
 <ul>
-<li>xxx.xxx.xxx.xxx is the actual IP address of one of the nodes running traefik.</li>
+<li>xxx.xxx.xxx.xxx is the actual IP address of one of the nodes running nginx.</li>
 </ul>
-<p>And then access the app urls using http://vote.example.com or http://results.example.com</p>
+<p>And then access the app url using http://vote.example.com </p>
 <p><img alt="Name Based Routing" src="../images/domain-name.png" /></p>
 <h2 id="add-another-web-application-with-ingress">Add another  Web Application with Ingress</h2>
 <pre><code>kubectl create deployment nginx --image=nginx
 kubectl create service clusterip nginx --tcp=80
 </code></pre>
 <p>Add ingress rule</p>
-<p><code>file: web-ing.yaml</code></p>
+<p><code>file: result-ing.yaml</code></p>
 <pre><code>---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: web
   namespace: instavote
-  annotations:
-    kubernetes.io/ingress.class: traefik
-    traefik.ingress.kubernetes.io/rule-type: PathPrefixStrip
 spec:
+  ingressClassName: nginx
   rules:
   - host: web.example.com
     http:
@@ -514,27 +506,20 @@ spec:
             port:
               number: 80
 </code></pre>
-<p>Source: <a href="https://gist.github.com/initcron/469b8d975c1c41a8423eb19ee2fd9c0f">Ingress for Web App · GitHub</a></p>
 <p>And update hosts file with new route as  ,</p>
-<pre><code>xxx.xxx.xxx.xxx vote.example.com web.example.com results.example.com kube-ops-view.example.org
+<pre><code>xxx.xxx.xxx.xxx vote.example.com web.example.com kube-ops-view.example.org
 </code></pre>
 <p>Visit  http://web.example.com:30400 to see your request being routed to nginx web page.  </p>
 <h2 id="mini-project-configure-ingress-for-result-app">Mini Project : Configure  Ingress  for Result App</h2>
 <p>Now that you have added the ingress rule for the vote app, follow the same method and add one for the result app as well which is running in the same namespace.</p>
 <p>The final validation would be, when you access or http://result.example.com you should see it pointing to the result app.</p>
-<h3 id="reading-resources">Reading Resources</h3>
-<ul>
-<li><a href="https://docs.traefik.io/user-guide/kubernetes/">Trafeik's Guide to Kubernetes Ingress Controller</a></li>
-<li><a href="https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/">Annotations</a></li>
-<li><a href="https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/">DaemonSets</a></li>
-</ul>
 <p><strong>References</strong></p>
 <ul>
 <li><a href="http://www.htaccesstools.com/htpasswd-generator/">Online htpasswd generator</a></li>
 </ul>
 <p><strong>Keywords</strong></p>
 <ul>
-<li>trafeik on kubernetes</li>
+<li>nginx on kubernetes</li>
 <li>kubernetes ingress</li>
 <li>kubernetes annotations</li>
 <li>daemonsets</li>
