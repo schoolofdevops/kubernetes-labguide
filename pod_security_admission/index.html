@@ -3,18 +3,18 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/minikube/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/pod_security_admission/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Single node k8s cluster with Minikube - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <title>Lab K112 - Pod Security Admission - Kubernetes Tutorial with CKA/CKAD Prep</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Single node k8s cluster with Minikube";
-        var mkdocs_page_input_path = "minikube.md";
-        var mkdocs_page_url = "/minikube/";
+        var mkdocs_page_name = "Lab K112 - Pod Security Admission";
+        var mkdocs_page_input_path = "pod_security_admission.md";
+        var mkdocs_page_url = "/pod_security_admission/";
       </script>
     
     <!--[if lt IE 9]>
@@ -145,10 +145,44 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Kubernetes Security</span></p>
-              <ul>
+              <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../rbac_101/">Lab K111 - RBAC Policies</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../pod_security_admission/">Lab K112 - Pod Security Admission</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Lab K112 - Pod Security Admission</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#lab-objective">🧭 Lab Objective</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#prerequisites">📚 Prerequisites</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#step-1-understand-pod-security-levels">🗂️ Step 1: Understand Pod Security Levels</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#step-2-label-namespaces-with-psa-modes">🧪 Step 2: Label Namespaces with PSA Modes</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#create-namespaces">Create Namespaces</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#apply-psa-labels">Apply PSA Labels</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#step-3-test-pod-deployment-in-labeled-namespaces">🧪 Step 3: Test Pod Deployment in Labeled Namespaces</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#create-a-non-compliant-pod-yaml-violates-restricted-policy">Create a Non-Compliant Pod YAML (violates restricted policy)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#try-applying-in-different-namespaces">Try Applying in Different Namespaces</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#step-5-create-a-compliant-pod">🛡️ Step 5: Create a Compliant Pod</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#step-5-fixing-the-compliant-pod-for-restrictedlatest">🔧 Step 5: Fixing the Compliant Pod for restricted:latest</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#step-6-view-psa-labels-and-behavior">🧰 Step 6: View PSA Labels and Behavior</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#cleanup">🧼 Cleanup</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#summary">📘 Summary</a>
+    </li>
+    </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../network_policies/">Lab K113 - Network Policies</a>
                   </li>
@@ -300,9 +334,10 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
-      <li class="breadcrumb-item active">Single node k8s cluster with Minikube</li>
+          <li class="breadcrumb-item">Kubernetes Security</li>
+      <li class="breadcrumb-item active">Lab K112 - Pod Security Admission</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/minikube.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/pod_security_admission.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -310,71 +345,220 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="single-node-k8s-cluster-with-minikube">Single node k8s cluster with Minikube</h1>
-<p>Minikube offers one of the easiest zero to dev experience
-to setup a single node kubernetes cluster. Its also the ideal way
-to create a local dev environment to test kubernetes code on.</p>
-<p>This document explains how to setup and work with single node kubernetes cluster with minikube.</p>
-<h2 id="install-minikube">Install Minikube</h2>
-<p>Instructions to install minikube may vary based on the operating system and choice of the hypervisor.
-<a href="https://kubernetes.io/docs/tasks/tools/install-minikube/">This is the official document</a> which explains how to install minikube.</p>
-<h2 id="start-all-in-one-single-node-cluster-with-minikube">Start all in one single node cluster with minikube</h2>
-<pre><code>minikube status
+                <h1 id="pod-security-admission-psa-in-kubernetes">🧪 Pod Security Admission (PSA) in Kubernetes</h1>
+<h2 id="lab-objective">🧭 Lab Objective</h2>
+<p>By the end of this lab, you'll:</p>
+<ul>
+<li>Understand what PSA is and how it differs from PSP.</li>
+<li>Learn how to configure PSA in your cluster.</li>
+<li>Apply and test different security levels (<code>privileged</code>, <code>baseline</code>, <code>restricted</code>) across namespaces.</li>
+<li>Validate pod behavior based on enforced policies.</li>
+</ul>
+<hr />
+<h2 id="prerequisites">📚 Prerequisites</h2>
+<ul>
+<li>Kubernetes v1.23+ (PSA became stable in v1.25).</li>
+<li><code>kubectl</code> configured with admin access.</li>
+<li>A cluster (KIND or Minikube is fine for labs).</li>
+<li>YAML editing tool (or any editor).</li>
+</ul>
+<hr />
+<h2 id="step-1-understand-pod-security-levels">🗂️ Step 1: Understand Pod Security Levels</h2>
+<p>Kubernetes provides <strong>3 built-in policy levels</strong> under PSA:</p>
+<table>
+<thead>
+<tr>
+<th>Level</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>privileged</code></td>
+<td>Unrestricted pods. Allows all capabilities, similar to running as root.</td>
+</tr>
+<tr>
+<td><code>baseline</code></td>
+<td>Minimally restrictive for common container use cases. Disallows privileged containers.</td>
+</tr>
+<tr>
+<td><code>restricted</code></td>
+<td>Highly secure. Enforces strict security, suitable for production workloads.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="step-2-label-namespaces-with-psa-modes">🧪 Step 2: Label Namespaces with PSA Modes</h2>
+<p>Namespaces can be configured with:</p>
+<ul>
+<li><code>enforce</code>: blocks pods that violate the policy.</li>
+<li><code>audit</code>: logs violations.</li>
+<li><code>warn</code>: sends warnings but allows the pod.</li>
+</ul>
+<h3 id="create-namespaces">Create Namespaces</h3>
+<pre><code class="language-bash">kubectl create ns secure-ns
+kubectl create ns test-ns
 </code></pre>
-<p>[output]</p>
-<pre><code>minikube:
-cluster:
-kubectl:
-</code></pre>
-<pre><code>minikube start
-</code></pre>
-<p>[output]</p>
-<pre><code>Starting local Kubernetes v1.8.0 cluster...
-Starting VM...
-Getting VM IP address...
-Moving files into cluster...
-Setting up certs...
-Connecting to cluster...
-Setting up kubeconfig...
-Starting cluster components...
-Kubectl is now configured to use the cluster.
-Loading cached images from config file.
-</code></pre>
-<pre><code>minikube status
+<h3 id="apply-psa-labels">Apply PSA Labels</h3>
+<pre><code class="language-bash"># Enforce restricted policy
+kubectl label ns secure-ns \
+  pod-security.kubernetes.io/enforce=restricted \
+  pod-security.kubernetes.io/enforce-version=latest
 
+# Warn for baseline policy
+kubectl label ns test-ns \
+  pod-security.kubernetes.io/warn=baseline \
+  pod-security.kubernetes.io/warn-version=latest
 </code></pre>
-<p>[output]</p>
-<pre><code>minikube: Running
-cluster: Running
-kubectl: Correctly Configured: pointing to minikube-vm at 192.168.99.100
+<hr />
+<h2 id="step-3-test-pod-deployment-in-labeled-namespaces">🧪 Step 3: Test Pod Deployment in Labeled Namespaces</h2>
+<h3 id="create-a-non-compliant-pod-yaml-violates-restricted-policy">Create a Non-Compliant Pod YAML (violates restricted policy)</h3>
+<pre><code class="language-yaml"># insecure-pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: insecure-pod
+spec:
+  containers:
+  - name: app
+    image: nginx
+    securityContext:
+      allowPrivilegeEscalation: true
+      capabilities:
+        add: [&quot;NET_ADMIN&quot;]
 </code></pre>
-<h4 id="launch-a-kubernetes-dashboard">Launch a kubernetes dashboard</h4>
-<pre><code>minikube dashboard
+<h3 id="try-applying-in-different-namespaces">Try Applying in Different Namespaces</h3>
+<pre><code class="language-bash">kubectl apply -f insecure-pod.yaml -n test-ns  # Should get warnings
+kubectl apply -f insecure-pod.yaml -n secure-ns  # Should be blocked
 </code></pre>
-<h4 id="setting-up-docker-environment">Setting up docker environment</h4>
-<pre><code>minikube docker-env
-export DOCKER_TLS_VERIFY=&quot;1&quot;
-export DOCKER_HOST=&quot;tcp://192.168.99.100:2376&quot;
-export DOCKER_CERT_PATH=&quot;/Users/gouravshah/.minikube/certs&quot;
-export DOCKER_API_VERSION=&quot;1.23&quot;
-# Run this command to configure your shell:
-# eval $(minikube docker-env)
+<blockquote>
+<p>✅ <code>secure-ns</code> will reject the pod due to <code>restricted</code> enforcement.
+⚠️ <code>test-ns</code> will accept it but emit warnings (check via <code>kubectl events</code>).</p>
+</blockquote>
+<hr />
+<h2 id="step-5-create-a-compliant-pod">🛡️ Step 5: Create a Compliant Pod</h2>
+<pre><code class="language-yaml"># secure-pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: secure-pod
+spec:
+  containers:
+  - name: app
+    image: nginx
+    securityContext:
+      runAsNonRoot: true
+      allowPrivilegeEscalation: false
 </code></pre>
-<p>Run the command given above,
-e.g.</p>
-<pre><code>eval $(minikube docker-env)
+<pre><code class="language-bash">kubectl apply -f secure-pod.yaml -n secure-ns  
 </code></pre>
-<p>Now your docker client should be able to connect with the minikube cluster</p>
-<pre><code>docker ps
+<hr />
+<h2 id="step-5-fixing-the-compliant-pod-for-restrictedlatest">🔧 Step 5: Fixing the Compliant Pod for restricted:latest</h2>
+<p>Here’s what we must fix:</p>
+<p>Capabilities must explicitly drop ALL.</p>
+<p>Seccomp profile must be explicitly set to RuntimeDefault.</p>
+<p>Run as non-root should be specified.</p>
+<pre><code class="language-yaml"># secure-pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: secure-pod
+spec:
+  securityContext:
+    seccompProfile:
+      type: RuntimeDefault
+  containers:
+  - name: app
+    image: nginx
+    securityContext:
+      runAsNonRoot: true
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop: [&quot;ALL&quot;]
 </code></pre>
-<h3 id="additional-commands">Additional Commands</h3>
-<pre><code>minikube ip
-minikube get-k8s-versions
-minikube logs
+<pre><code class="language-bash">kubectl apply -f secure-pod.yaml -n secure-ns  # ✅ Should succeed
 </code></pre>
+<p>🧠 Why These Fields Matter in restricted</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Why It's Required</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>runAsNonRoot</code></td>
+<td>Ensures containers don’t run as UID 0</td>
+</tr>
+<tr>
+<td><code>allowPrivilegeEscalation: false</code></td>
+<td>Blocks escalated privileges even if permitted by image</td>
+</tr>
+<tr>
+<td><code>capabilities.drop: ["ALL"]</code></td>
+<td>Drops all Linux capabilities by default</td>
+</tr>
+<tr>
+<td><code>seccompProfile: RuntimeDefault</code></td>
+<td>Applies the runtime’s default syscall filter to limit kernel attack surface</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="step-6-view-psa-labels-and-behavior">🧰 Step 6: View PSA Labels and Behavior</h2>
+<p>Check labels:</p>
+<pre><code class="language-bash">kubectl get ns --show-labels
+</code></pre>
+<p>Check pod events:</p>
+<pre><code class="language-bash">kubectl get events -n test-ns
+kubectl get events -n secure-ns
+</code></pre>
+<hr />
+<h2 id="cleanup">🧼 Cleanup</h2>
+<pre><code class="language-bash">kubectl delete ns secure-ns test-ns
+</code></pre>
+<hr />
+<h2 id="summary">📘 Summary</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>PSA</th>
+<th>PSP (Deprecated)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Type</td>
+<td>Built-in Admission</td>
+<td>API Resource</td>
+</tr>
+<tr>
+<td>Version</td>
+<td>Stable in v1.25</td>
+<td>Removed in v1.25</td>
+</tr>
+<tr>
+<td>Configuration</td>
+<td>Namespace labels</td>
+<td>Cluster-wide policies</td>
+</tr>
+<tr>
+<td>Use Case</td>
+<td>Gradual enforcement</td>
+<td>Static blocking</td>
+</tr>
+</tbody>
+</table>
+<hr />
               
             </div>
           </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../rbac_101/" class="btn btn-neutral float-left" title="Lab K111 - RBAC Policies"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../network_policies/" class="btn btn-neutral float-right" title="Lab K113 - Network Policies">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
 
   <hr/>
 
@@ -401,6 +585,10 @@ minikube logs
         </span>
     
     
+      <span><a href="../rbac_101/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../network_policies/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

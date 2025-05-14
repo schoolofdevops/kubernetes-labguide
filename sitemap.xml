@@ -411,6 +411,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>http://kubernetes-tutorial.schoolofdevops.com/pod_security_admission/</loc>
+         <lastmod>2025-05-14</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/pods-health-probes/</loc>
          <lastmod>2025-05-14</lastmod>
          <changefreq>daily</changefreq>
