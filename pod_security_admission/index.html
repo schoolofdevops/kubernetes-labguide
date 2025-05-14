@@ -150,13 +150,13 @@
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="#">Lab K112 - Pod Security Admission</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#lab-objective">🧭 Lab Objective</a>
+    <li class="toctree-l2"><a class="reference internal" href="#lab-objective">Lab Objective</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#prerequisites">📚 Prerequisites</a>
+    <li class="toctree-l2"><a class="reference internal" href="#prerequisites">Prerequisites</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#step-1-understand-pod-security-levels">🗂️ Step 1: Understand Pod Security Levels</a>
+    <li class="toctree-l2"><a class="reference internal" href="#step-1-understand-pod-security-levels">Step 1: Understand Pod Security Levels</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#step-2-label-namespaces-with-psa-modes">🧪 Step 2: Label Namespaces with PSA Modes</a>
+    <li class="toctree-l2"><a class="reference internal" href="#step-2-label-namespaces-with-psa-modes">Step 2: Label Namespaces with PSA Modes</a>
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#create-namespaces">Create Namespaces</a>
     </li>
@@ -164,7 +164,7 @@
     </li>
         </ul>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#step-3-test-pod-deployment-in-labeled-namespaces">🧪 Step 3: Test Pod Deployment in Labeled Namespaces</a>
+    <li class="toctree-l2"><a class="reference internal" href="#step-3-test-pod-deployment-in-labeled-namespaces">Step 3: Test Pod Deployment in Labeled Namespaces</a>
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#create-a-non-compliant-pod-yaml-violates-restricted-policy">Create a Non-Compliant Pod YAML (violates restricted policy)</a>
     </li>
@@ -172,15 +172,15 @@
     </li>
         </ul>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#step-5-create-a-compliant-pod">🛡️ Step 5: Create a Compliant Pod</a>
+    <li class="toctree-l2"><a class="reference internal" href="#step-4-create-a-compliant-pod">Step 4: Create a Compliant Pod</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#step-5-fixing-the-compliant-pod-for-restrictedlatest">🔧 Step 5: Fixing the Compliant Pod for restricted:latest</a>
+    <li class="toctree-l2"><a class="reference internal" href="#step-5-fixing-the-compliant-pod-for-restrictedlatest">Step 5: Fixing the Compliant Pod for restricted:latest</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#step-6-view-psa-labels-and-behavior">🧰 Step 6: View PSA Labels and Behavior</a>
+    <li class="toctree-l2"><a class="reference internal" href="#step-6-view-psa-labels-and-behavior">Step 6: View PSA Labels and Behavior</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#cleanup">🧼 Cleanup</a>
+    <li class="toctree-l2"><a class="reference internal" href="#cleanup">Cleanup</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#summary">📘 Summary</a>
+    <li class="toctree-l2"><a class="reference internal" href="#summary">Summary</a>
     </li>
     </ul>
                   </li>
@@ -345,8 +345,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="pod-security-admission-psa-in-kubernetes">🧪 Pod Security Admission (PSA) in Kubernetes</h1>
-<h2 id="lab-objective">🧭 Lab Objective</h2>
+                <h1 id="pod-security-admission-psa-in-kubernetes">Pod Security Admission (PSA) in Kubernetes</h1>
+<h2 id="lab-objective">Lab Objective</h2>
 <p>By the end of this lab, you'll:</p>
 <ul>
 <li>Understand what PSA is and how it differs from PSP.</li>
@@ -355,7 +355,7 @@
 <li>Validate pod behavior based on enforced policies.</li>
 </ul>
 <hr />
-<h2 id="prerequisites">📚 Prerequisites</h2>
+<h2 id="prerequisites">Prerequisites</h2>
 <ul>
 <li>Kubernetes v1.23+ (PSA became stable in v1.25).</li>
 <li><code>kubectl</code> configured with admin access.</li>
@@ -363,7 +363,7 @@
 <li>YAML editing tool (or any editor).</li>
 </ul>
 <hr />
-<h2 id="step-1-understand-pod-security-levels">🗂️ Step 1: Understand Pod Security Levels</h2>
+<h2 id="step-1-understand-pod-security-levels">Step 1: Understand Pod Security Levels</h2>
 <p>Kubernetes provides <strong>3 built-in policy levels</strong> under PSA:</p>
 <table>
 <thead>
@@ -388,7 +388,7 @@
 </tbody>
 </table>
 <hr />
-<h2 id="step-2-label-namespaces-with-psa-modes">🧪 Step 2: Label Namespaces with PSA Modes</h2>
+<h2 id="step-2-label-namespaces-with-psa-modes">Step 2: Label Namespaces with PSA Modes</h2>
 <p>Namespaces can be configured with:</p>
 <ul>
 <li><code>enforce</code>: blocks pods that violate the policy.</li>
@@ -411,7 +411,7 @@ kubectl label ns test-ns \
   pod-security.kubernetes.io/warn-version=latest
 </code></pre>
 <hr />
-<h2 id="step-3-test-pod-deployment-in-labeled-namespaces">🧪 Step 3: Test Pod Deployment in Labeled Namespaces</h2>
+<h2 id="step-3-test-pod-deployment-in-labeled-namespaces">Step 3: Test Pod Deployment in Labeled Namespaces</h2>
 <h3 id="create-a-non-compliant-pod-yaml-violates-restricted-policy">Create a Non-Compliant Pod YAML (violates restricted policy)</h3>
 <pre><code class="language-yaml"># insecure-pod.yaml
 apiVersion: v1
@@ -436,7 +436,7 @@ kubectl apply -f insecure-pod.yaml -n secure-ns  # Should be blocked
 ⚠️ <code>test-ns</code> will accept it but emit warnings (check via <code>kubectl events</code>).</p>
 </blockquote>
 <hr />
-<h2 id="step-5-create-a-compliant-pod">🛡️ Step 5: Create a Compliant Pod</h2>
+<h2 id="step-4-create-a-compliant-pod">Step 4: Create a Compliant Pod</h2>
 <pre><code class="language-yaml"># secure-pod.yaml
 apiVersion: v1
 kind: Pod
@@ -453,7 +453,7 @@ spec:
 <pre><code class="language-bash">kubectl apply -f secure-pod.yaml -n secure-ns  
 </code></pre>
 <hr />
-<h2 id="step-5-fixing-the-compliant-pod-for-restrictedlatest">🔧 Step 5: Fixing the Compliant Pod for restricted:latest</h2>
+<h2 id="step-5-fixing-the-compliant-pod-for-restrictedlatest">Step 5: Fixing the Compliant Pod for restricted:latest</h2>
 <p>Here’s what we must fix:</p>
 <p>Capabilities must explicitly drop ALL.</p>
 <p>Seccomp profile must be explicitly set to RuntimeDefault.</p>
@@ -478,7 +478,7 @@ spec:
 </code></pre>
 <pre><code class="language-bash">kubectl apply -f secure-pod.yaml -n secure-ns  # ✅ Should succeed
 </code></pre>
-<p>🧠 Why These Fields Matter in restricted</p>
+<p>Why These Fields Matter in restricted</p>
 <table>
 <thead>
 <tr>
@@ -506,7 +506,7 @@ spec:
 </tbody>
 </table>
 <hr />
-<h2 id="step-6-view-psa-labels-and-behavior">🧰 Step 6: View PSA Labels and Behavior</h2>
+<h2 id="step-6-view-psa-labels-and-behavior">Step 6: View PSA Labels and Behavior</h2>
 <p>Check labels:</p>
 <pre><code class="language-bash">kubectl get ns --show-labels
 </code></pre>
@@ -515,11 +515,11 @@ spec:
 kubectl get events -n secure-ns
 </code></pre>
 <hr />
-<h2 id="cleanup">🧼 Cleanup</h2>
+<h2 id="cleanup">Cleanup</h2>
 <pre><code class="language-bash">kubectl delete ns secure-ns test-ns
 </code></pre>
 <hr />
-<h2 id="summary">📘 Summary</h2>
+<h2 id="summary">Summary</h2>
 <table>
 <thead>
 <tr>
