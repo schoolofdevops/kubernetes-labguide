@@ -20,7 +20,7 @@ nav:
      - Lab K108 - Storage: "kubernetes-dynamic-storage-provisioning.md"
      - Lab K109 - Mini Project: "kubernetes-sample-project.md"
      - Lab K110 - ConfigMaps & Secrets: "kubernetes-configuration-management-configmaps-secrets.md"
-     - Lab K112 - Ingress: "ingress.md"
+     - Lab K112 - Ingress: "ingress_nginx.md"
      - Lab K113 - Setup Prometheus and Grafana with HELM: "helm.md"
      - Lab K114 - Adding Log Monitoring with Loki: "loki.md"
      - Lab K115 - Writing HELM Charts: "helm_charts.md"

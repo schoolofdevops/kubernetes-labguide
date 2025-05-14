@@ -58,9 +58,9 @@ File : `service.yaml`
 apiVersion: v1
 kind: Service
 metadata:
-  name: vote
+  name: {{ include "vote.fullname" . }}
   labels:
-    {{- include "instavote.labels" . | nindent 4 }}
+    {{- include "vote.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -70,7 +70,7 @@ spec:
       name: http
       nodePort: {{ .Values.service.nodePort }}
   selector:
-    {{- include "instavote.selectorLabels" . | nindent 4 }}
+    {{- include "vote.selectorLabels" . | nindent 4 }}
 ```
 
 Install this chart with helm to deploy the `vote` service as:
