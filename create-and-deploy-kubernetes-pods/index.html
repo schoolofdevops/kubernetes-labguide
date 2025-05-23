@@ -379,17 +379,17 @@ spec:
 <p><strong>Problem Statement:</strong> Create a YAML spec to launch a  pod with one container to run vote application, which matches the following specs.</p>
 <ul>
 <li>pod:<ul>
-<li>metadata:</li>
-<li>name: vote</li>
-<li>labels:<ul>
-<li>app: python</li>
-<li>role: vote</li>
-<li>version: v1</li>
+<li>metadata:  </li>
+<li>name: vote  </li>
+<li>labels:  <ul>
+<li>app: python  </li>
+<li>role: vote  </li>
+<li>version: v1  </li>
 </ul>
 </li>
 </ul>
 </li>
-<li>containers:<ul>
+<li>containers:  <ul>
 <li>name: app</li>
 <li>image: schoolofdevops/vote:v1</li>
 </ul>
@@ -448,7 +448,7 @@ kubectl get pods vote
 <pre><code>
 kubectl logs vote
 
-kubectl exec -it vote  sh
+kubectl exec -it vote -- sh
 
 
 </code></pre>
