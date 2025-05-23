@@ -51,6 +51,7 @@ Validate
 kind get clusters
 kubectl cluster-info --context kind-kind
 kubectl get nodes
+kubectl get pods -A 
 ```
 
 [sample output]
