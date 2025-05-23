@@ -423,7 +423,7 @@ endpoints/vote    10.244.1.30:80,10.244.2.27:80   51m
 </code></pre>
 <p>If you see output similar to above, redis is now setup along with vote and at this time, if you submit the vote, it should go through and show you a check mark. </p>
 <h3 id="exercise-deploy-complete-instavote-app">Exercise - Deploy Complete Instavote App</h3>
-<p>Deploy the services with the following spec to complete this application stack.</p>
+<p>Deploy the additional services with the following spec to complete this application stack.</p>
 <table>
 <thead>
 <tr>
@@ -435,13 +435,6 @@ endpoints/vote    10.244.1.30:80,10.244.2.27:80   51m
 </tr>
 </thead>
 <tbody>
-<tr>
-<td style="text-align: left;">redis</td>
-<td style="text-align: left;">redis:alpine</td>
-<td style="text-align: left;">ClusterIP</td>
-<td style="text-align: left;">6379</td>
-<td style="text-align: left;">N/A</td>
-</tr>
 <tr>
 <td style="text-align: left;">worker</td>
 <td style="text-align: left;">schoolofdevops/worker:latest</td>
