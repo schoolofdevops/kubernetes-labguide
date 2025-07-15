@@ -349,30 +349,38 @@ Version : 22.05.2024.01</p>
 </ul>
 <p>Both <code>eksctl</code> and the combination of <code>aws cli</code> with <code>kubectl</code> have their advantages and use cases when creating and managing AWS EKS clusters. Here's a comparison to help you decide which approach might be best for your course:</p>
 <h3 id="eksctl"><code>eksctl</code></h3>
-<p><strong>Pros:</strong>
-1. <strong>Ease of Use:</strong> <code>eksctl</code> is specifically designed to simplify the creation and management of EKS clusters. It abstracts many of the complexities involved.
-2. <strong>Quick Setup:</strong> With a single command, you can create a fully functioning EKS cluster.
-3. <strong>Default Best Practices:</strong> It follows AWS best practices for cluster creation and configuration.
-4. <strong>Less Code:</strong> Requires fewer commands and less code to manage the cluster.</p>
+<p><strong>Pros:</strong>  </p>
+<ol>
+<li><strong>Ease of Use:</strong> <code>eksctl</code> is specifically designed to simplify the creation and management of EKS clusters. It abstracts many of the complexities involved.  </li>
+<li><strong>Quick Setup:</strong> With a single command, you can create a fully functioning EKS cluster.  </li>
+<li><strong>Default Best Practices:</strong> It follows AWS best practices for cluster creation and configuration.  </li>
+<li><strong>Less Code:</strong> Requires fewer commands and less code to manage the cluster.  </li>
+</ol>
 <p>⠀
-<strong>Cons:</strong>
-1. <strong>Less Granular Control:</strong> While it simplifies many tasks, it might abstract away some of the details, giving you less control over specific configurations.
-2. <strong>Dependency:</strong> Adds an additional dependency that students need to install and manage.</p>
+<strong>Cons:</strong></p>
+<ol>
+<li><strong>Less Granular Control:</strong> While it simplifies many tasks, it might abstract away some of the details, giving you less control over specific configurations.  </li>
+<li><strong>Dependency:</strong> Adds an additional dependency that students need to install and manage.  </li>
+</ol>
 <p>⠀</p>
 <h3 id="aws-cli-with-kubectl"><code>aws cli</code> with <code>kubectl</code></h3>
-<p><strong>Pros:</strong>
-1. <strong>Granular Control:</strong> Provides more control over the EKS cluster configuration and setup, allowing for fine-tuning and customization.
-2. <strong>Learning Opportunity:</strong> Teaches students more about the underlying AWS services and Kubernetes configurations.
-3. <strong>Versatility:</strong> <code>aws cli</code> and <code>kubectl</code> are versatile tools that can be used for a wide range of AWS and Kubernetes operations beyond just cluster creation.
-<strong>Cons:</strong>
-1. <strong>Complexity:</strong> Requires more steps and a deeper understanding of AWS and Kubernetes concepts, which might be overwhelming for beginners.
-2. <strong>More Commands:</strong> Involves writing more commands and scripts, which can be error-prone.</p>
+<p><strong>Pros:</strong></p>
+<ol>
+<li><strong>Granular Control:</strong> Provides more control over the EKS cluster configuration and setup, allowing for fine-tuning and customization.  </li>
+<li><strong>Learning Opportunity:</strong> Teaches students more about the underlying AWS services and Kubernetes configurations.  </li>
+<li><strong>Versatility:</strong> <code>aws cli</code> and <code>kubectl</code> are versatile tools that can be used for a wide range of AWS and Kubernetes operations beyond just cluster creation.  </li>
+</ol>
+<p><strong>Cons:</strong></p>
+<ol>
+<li><strong>Complexity:</strong> Requires more steps and a deeper understanding of AWS and Kubernetes concepts, which might be overwhelming for beginners.  </li>
+<li><strong>More Commands:</strong> Involves writing more commands and scripts, which can be error-prone.  </li>
+</ol>
 <p>As part of this lab, you will take a simpler approach and use <code>eksctl</code> to quickly create a cluster. </p>
 <h2 id="create-vpc-with-public-subnets">Create VPC  with Public Subnets</h2>
 <p>EKS needs a VPC to launch itself in. There are three different options while creating the VPCs as follows </p>
 <ul>
-<li>VPC with Public and Private Subnets </li>
-<li>VPC with only Public Subnets </li>
+<li>VPC with Public and Private Subnets. </li>
+<li>VPC with only Public Subnets  </li>
 <li>VPC with only Private Subnets </li>
 </ul>
 <p>While you would ideally create VPC with public and private subnets so that you could host your applications in private subnets and set up load balancers and ingress controllers in public, as part of this lab guide, you are going to set up VPC with public subnets only.  This is to avoid creation of two NAT Gateways, which would incur additional costs. </p>
@@ -391,16 +399,25 @@ Version : 22.05.2024.01</p>
 <p>Choose <strong>Create stack</strong>, <strong>With new resources (standard)</strong>.</p>
 </li>
 <li>
-<p>From Prepare Temaplte, select <strong>Choose and existing template</strong> and Under <strong>Template source</strong>, select <strong>Amazon S3 URL</strong>.<img alt="" src="../images/eks/02/01.png" /></p>
+<p>From Prepare Temaplte, select <strong>Choose and existing template</strong> and Under <strong>Template source</strong>, select <strong>Amazon S3 URL</strong>.</p>
 </li>
+</ol>
+<p><img alt="" src="../images/eks/02/01.png" /></p>
+<ol>
 <li>Paste the following URL into the text area under <strong>Amazon S3 URL</strong> and choose <strong>Next</strong>:</li>
 </ol>
 <pre><code>https://s3.us-west-2.amazonaws.com/amazon-eks/cloudformation/2020-10-29/amazon-eks-vpc-sample.yaml
 </code></pre>
 <ol>
-<li>On the <strong>Specify Details</strong> page, enter the stack name e.g. <code>eks-vpc-01</code> and update parameters if you want to change any, and then choose <strong>Next</strong> and create VPC stack.  <img alt="" src="../images/eks/02/02.png" /></li>
-<li>Proceed to <strong>Review and create</strong>  and submit the stack. It takes a few minutes to have the status change from  <img alt="" src="../images/eks/02/03.png" /> to<img alt="" src="../images/eks/02/04.png" /></li>
+<li>On the <strong>Specify Details</strong> page, enter the stack name e.g. <code>eks-vpc-01</code> and update parameters if you want to change any, and then choose <strong>Next</strong> and create VPC stack. </li>
 </ol>
+<p><img alt="" src="../images/eks/02/02.png" /></p>
+<ol>
+<li>Proceed to <strong>Review and create</strong>  and submit the stack. It takes a few minutes to have the status change from  </li>
+</ol>
+<p><img alt="" src="../images/eks/02/03.png" /> </p>
+<p>to</p>
+<p><img alt="" src="../images/eks/02/04.png" /></p>
 <p>once VPC is created, you could verify everything from VPC console.  Also note down the VpcId and SubnetIds from the <strong>Outputs</strong>.</p>
 <p><img alt="" src="../images/eks/02/05.png" /></p>
 <h2 id="configure-iam-role-for-eks">Configure IAM Role for EKS</h2>
@@ -414,22 +431,26 @@ Version : 22.05.2024.01</p>
 </li>
 <li>Click on <code>Roles</code> and then <code>Create role</code>.</li>
 <li>Choose <code>EKS</code> as the service that will use this role.</li>
-<li>Select the <code>EKS - Cluster</code> use case.
-   <img alt="" src="../images/eks/02/06.png" /></li>
+<li>Select the <code>EKS - Cluster</code> use case.</li>
+</ol>
+<p><img alt="" src="../images/eks/02/06.png" /></p>
+<ol>
 <li>From <strong>Add Permissions</strong> page you will see the following policy already attached:</li>
 <li><code>AmazonEKSClusterPolicy</code> </li>
 <li>
 <p>Select <strong>Next</strong></p>
 </li>
 <li>
-<p>From <strong>Name, review and create page</strong> , provide a Role name e.g. <code>EKSClusterServiceRole</code> and proceed to <strong>Create role</strong>.<br />
-<img alt="" src="../images/eks/02/07.png" /></p>
+<p>From <strong>Name, review and create page</strong> , provide a Role name e.g. <code>EKSClusterServiceRole</code> and proceed to <strong>Create role</strong>.  </p>
 </li>
-<li>
-<p>From IAM Console -&gt; Roles search for <code>EKSClusterServiceRole</code> and select it. 
-<img alt="" src="../images/eks/02/08.png" />
-<img alt="" src="../images/eks/02/09.png" /></p>
-</li>
+</ol>
+<p><img alt="" src="../images/eks/02/07.png" /></p>
+<ol>
+<li>From IAM Console -&gt; Roles search for <code>EKSClusterServiceRole</code> and select it. </li>
+</ol>
+<p><img alt="" src="../images/eks/02/08.png" /></p>
+<p><img alt="" src="../images/eks/02/09.png" /></p>
+<ol>
 <li>From Permissions tab, Add Permissions dropdown,  </li>
 <li>Choose Attach policies.</li>
 <li>
