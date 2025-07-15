@@ -394,9 +394,9 @@ spec:
 <p>terminal 2</p>
 <pre><code>kubectl get hpa vote --watch
 </code></pre>
-<p>you should see, both hpa and vpa doing complimentary jobs where, 
-* HPA is launching new pods to ensure more requests are being served 
-* VPA is updating the <code>requests</code> spec based on actual metrics </p>
+<p>you should see, both hpa and vpa doing complimentary jobs where,<br />
+  * HPA is launching new pods to ensure more requests are being served. 
+  * VPA is updating the <code>requests</code> spec based on actual metrics. </p>
 <p>You could check the modified request spec by VPA by describing the one of the pods runnnig vote app </p>
 <pre><code>kubectl describe pod vote-xxxx-yyyy
 </code></pre>
