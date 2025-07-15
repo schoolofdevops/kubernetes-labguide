@@ -181,10 +181,6 @@
          <lastmod>2025-07-15</lastmod>
     </url>
     <url>
-         <loc>http://kubernetes-tutorial.schoolofdevops.com/eks-hpa/</loc>
-         <lastmod>2025-07-15</lastmod>
-    </url>
-    <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/eks_cleanup/</loc>
          <lastmod>2025-07-15</lastmod>
     </url>
@@ -198,6 +194,10 @@
     </url>
     <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/eks_deploy_apps/</loc>
+         <lastmod>2025-07-15</lastmod>
+    </url>
+    <url>
+         <loc>http://kubernetes-tutorial.schoolofdevops.com/eks_hpa/</loc>
          <lastmod>2025-07-15</lastmod>
     </url>
     <url>
