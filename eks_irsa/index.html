@@ -197,6 +197,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../eks_cluster_autoscaler/">Lab K507 - EKS Cluster Autoscaler</a>
                   </li>
+                  <li class="toctree-l1"><a class="" href="../eks_hpa.md">Lab K509 - Horizontal Pod Autoscaler</a>
+                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../eks_vpa/">Lab K509 - Verticle Pod Autoscaler</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../eks_monitoring/">Lab K510 - EKS Monitoring</a>
@@ -530,6 +532,12 @@ kubectl get sa -n default
 <li>Delete deployment as</li>
 </ul>
 <pre><code>kubectl delete -f s3checker-all.yaml
+</code></pre>
+<p>Remove IAM Service Account  </p>
+<pre><code>eksctl delete  iamserviceaccount \
+  --name s3-access-sa \
+  --namespace default \
+  --cluster eks-cluster-01
 </code></pre>
 <h3 id="summary">Summary</h3>
 <p>In this tutorial, you learned how to:</p>
