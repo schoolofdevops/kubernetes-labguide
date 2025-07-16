@@ -69,9 +69,10 @@ nav:
      - Lab K505 - Persistent Storage with EBS: "eks_storage.md"
      - Lab K506 - IRSA: "eks_irsa.md"
      - Lab K507 - EKS Cluster Autoscaler: "eks_cluster_autoscaler.md"
-     - Lab K509 - Verticle Pod Autoscaler: "eks_vpa.md"
-     - Lab K510 - EKS Monitoring: "eks_monitoring.md"
-     - Lab K511 - EKS Costs: "eks_costs.md"
+     - Lab K509 - Horizontal Pod Autoscaler: "eks_hpa.md"
+     - Lab K510 - Verticle Pod Autoscaler: "eks_vpa.md"
+     - Lab K511 - EKS Monitoring: "eks_monitoring.md"
+     - Lab K512 - EKS Costs: "eks_costs.md"
      - Lab K599 - EKS Cleanup: "eks_cleanup.md"
   - Argo:
      - Lab K601 - Setup Kubernetes Cluster: "kind_create_cluster.md"

@@ -57,21 +57,20 @@ IAM Roles for Service Accounts (IRSA) provides a way to securely assign AWS IAM 
 
 ```
 
-1. **AWS IAM Role Creation**:
-   * An IAM role (`S3AccessRole`) is created with a policy that allows access to the S3 bucket (`your-s3-bucket-name`).
+1. **AWS IAM Role Creation**:  
+  * An IAM role (`S3AccessRole`) is created with a policy that allows access to the S3 bucket (`your-s3-bucket-name`).
 
-2. **IAM Role Association with EKS Service Account**:
-   * The IAM role is associated with a Kubernetes service account (`s3-access-sa`) in the EKS cluster. This is done using `eksctl` which sets up the necessary trust relationship.
+2. **IAM Role Association with EKS Service Account**:  
+  * The IAM role is associated with a Kubernetes service account (`s3-access-sa`) in the EKS cluster. This is done using `eksctl` which sets up the necessary trust relationship.
 
-3. **EKS Pod Deployment**:
-   * A Kubernetes pod running the Flask application (`schoolofdevops/s3checker:latest`) is deployed in the EKS cluster. This pod uses the service account (`s3-access-sa`) which is annotated with the IAM role.
+3. **EKS Pod Deployment**:  
+  * A Kubernetes pod running the Flask application (`schoolofdevops/s3checker:latest`) is deployed in the EKS cluster. This pod uses the service account (`s3-access-sa`) which is annotated with the IAM role.
 
-4. **IRSA Mechanism**:
+4. **IRSA Mechanism**:  
+  * The pod assumes the IAM role (`S3AccessRole`) through the service account (`s3-access-sa`). This is facilitated by the IRSA mechanism, which uses Kubernetes service account tokens and AWS STS (Security Token Service) to issue temporary credentials to the pod.
 
-   * The pod assumes the IAM role (`S3AccessRole`) through the service account (`s3-access-sa`). This is facilitated by the IRSA mechanism, which uses Kubernetes service account tokens and AWS STS (Security Token Service) to issue temporary credentials to the pod.
-
-5. **Access S3 Bucket**:
-   * The Flask application running inside the pod uses the temporary credentials obtained via IRSA to access the S3 bucket (`your-s3-bucket-name`). The application can list, put, and get objects in the bucket as per the IAM policy.
+5. **Access S3 Bucket**:  
+  * The Flask application running inside the pod uses the temporary credentials obtained via IRSA to access the S3 bucket (`your-s3-bucket-name`). The application can list, put, and get objects in the bucket as per the IAM policy.
 
 ⠀
 By using IRSA, the application running in the EKS pod can securely access AWS resources without embedding long-term AWS credentials in the application code or environment variables. Instead, it leverages temporary credentials that are managed and rotated by AWS.
@@ -159,6 +158,8 @@ Access the application using the external IP of any Node and `30500` port.
 
 Create an IAM policy that grants the necessary permissions to access your S3 bucket.
 
+File : `s3-access-policy.json`
+
 ```
 {
     "Version": "2012-10-17",
@@ -206,6 +207,8 @@ eksctl create iamserviceaccount \
   --override-existing-serviceaccounts
 ```
 
+where, replace `arn:aws:iam::<account-id>:policy/S3AccessPolicy` with actual ARN ofthe IAM Policy `S3AccessPolicy` created above. 
+
 validate
 
 ```
@@ -246,6 +249,14 @@ Now check the application to see if its able to connect to s3 bucket and check t
 kubectl delete -f s3checker-all.yaml
 ```
 
+Remove IAM Service Account  
+
+```
+eksctl delete  iamserviceaccount \
+  --name s3-access-sa \
+  --namespace default \
+  --cluster eks-cluster-01
+```
 
 ### Summary
 

@@ -80,8 +80,9 @@ eksctl get iamserviceaccount --cluster eks-cluster-01
 ```
 
 From EKS Console, 
-* Select cluster 
-* From Add-ons select Get more add-ons 
+
+* Select cluster   
+* From Add-ons select Get more add-ons   
 
 ![](images/eks/03/07.png)
 
