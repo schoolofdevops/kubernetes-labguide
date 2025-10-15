@@ -516,7 +516,7 @@ type StaticWebsiteSpec struct {
 }
 </code></pre>
 <p>Update the controller to handle the new field:</p>
-<p>File: <code>controllers/staticwebsite_controller.go</code></p>
+<p>File: <code>internal/controller/staticwebsite_controller.go</code></p>
 <pre><code>// serviceForWebsite returns a website Service object
 func (r *StaticWebsiteReconciler) serviceForWebsite(website *websitesv1alpha1.StaticWebsite) *corev1.Service {
         labels := map[string]string{
