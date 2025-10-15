@@ -148,7 +148,9 @@
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../rbac_101/">Lab K111 - RBAC Policies</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../network_policies/">Lab K207 - Network Policies</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../pod_security_admission/">Lab K112 - Pod Security Admission</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../network_policies/">Lab K113 - Network Policies</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Additional Topics</span></p>
@@ -197,13 +199,11 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../eks_cluster_autoscaler/">Lab K507 - EKS Cluster Autoscaler</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../eks_hpa/">Lab K509 - Horizontal Pod Autoscaler</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_vpa/">Lab K509 - Verticle Pod Autoscaler</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../eks_vpa/">Lab K510 - Verticle Pod Autoscaler</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_monitoring/">Lab K510 - EKS Monitoring</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../eks_monitoring/">Lab K511 - EKS Monitoring</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../eks_costs/">Lab K512 - EKS Costs</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_costs/">Lab K511 - EKS Costs</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../eks_cleanup/">Lab K599 - EKS Cleanup</a>
                   </li>
@@ -372,30 +372,30 @@
 
 </code></pre>
 <ol>
-<li><strong>AWS IAM Role Creation</strong>:  </li>
+<li><strong>AWS IAM Role Creation</strong>:</li>
 <li>
 <p>An IAM role (<code>S3AccessRole</code>) is created with a policy that allows access to the S3 bucket (<code>your-s3-bucket-name</code>).</p>
 </li>
 <li>
-<p><strong>IAM Role Association with EKS Service Account</strong>:  </p>
+<p><strong>IAM Role Association with EKS Service Account</strong>:</p>
 </li>
 <li>
 <p>The IAM role is associated with a Kubernetes service account (<code>s3-access-sa</code>) in the EKS cluster. This is done using <code>eksctl</code> which sets up the necessary trust relationship.</p>
 </li>
 <li>
-<p><strong>EKS Pod Deployment</strong>:  </p>
+<p><strong>EKS Pod Deployment</strong>:</p>
 </li>
 <li>
 <p>A Kubernetes pod running the Flask application (<code>schoolofdevops/s3checker:latest</code>) is deployed in the EKS cluster. This pod uses the service account (<code>s3-access-sa</code>) which is annotated with the IAM role.</p>
 </li>
 <li>
-<p><strong>IRSA Mechanism</strong>:  </p>
+<p><strong>IRSA Mechanism</strong>:</p>
 </li>
 <li>
 <p>The pod assumes the IAM role (<code>S3AccessRole</code>) through the service account (<code>s3-access-sa</code>). This is facilitated by the IRSA mechanism, which uses Kubernetes service account tokens and AWS STS (Security Token Service) to issue temporary credentials to the pod.</p>
 </li>
 <li>
-<p><strong>Access S3 Bucket</strong>:  </p>
+<p><strong>Access S3 Bucket</strong>:</p>
 </li>
 <li>The Flask application running inside the pod uses the temporary credentials obtained via IRSA to access the S3 bucket (<code>your-s3-bucket-name</code>). The application can list, put, and get objects in the bucket as per the IAM policy.</li>
 </ol>
@@ -469,7 +469,6 @@ spec:
 <p>Access the application using the external IP of any Node and <code>30500</code> port.</p>
 <h3 id="configure-irsa">Configure IRSA</h3>
 <p>Create an IAM policy that grants the necessary permissions to access your S3 bucket.</p>
-<p>File : <code>s3-access-policy.json</code></p>
 <pre><code>{
     &quot;Version&quot;: &quot;2012-10-17&quot;,
     &quot;Statement&quot;: [
@@ -505,7 +504,6 @@ eksctl create iamserviceaccount \
   --approve \
   --override-existing-serviceaccounts
 </code></pre>
-<p>where, replace <code>arn:aws:iam::&lt;account-id&gt;:policy/S3AccessPolicy</code> with actual ARN ofthe IAM Policy <code>S3AccessPolicy</code> created above. </p>
 <p>validate</p>
 <pre><code>eksctl get iamserviceaccount --cluster eks-cluster-01
 kubectl get sa -n default
@@ -532,12 +530,6 @@ kubectl get sa -n default
 <li>Delete deployment as</li>
 </ul>
 <pre><code>kubectl delete -f s3checker-all.yaml
-</code></pre>
-<p>Remove IAM Service Account  </p>
-<pre><code>eksctl delete  iamserviceaccount \
-  --name s3-access-sa \
-  --namespace default \
-  --cluster eks-cluster-01
 </code></pre>
 <h3 id="summary">Summary</h3>
 <p>In this tutorial, you learned how to:</p>

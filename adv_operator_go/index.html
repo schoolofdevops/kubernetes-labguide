@@ -160,7 +160,9 @@
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../rbac_101/">Lab K111 - RBAC Policies</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../network_policies/">Lab K207 - Network Policies</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../pod_security_admission/">Lab K112 - Pod Security Admission</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../network_policies/">Lab K113 - Network Policies</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Additional Topics</span></p>
@@ -201,13 +203,11 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../eks_cluster_autoscaler/">Lab K507 - EKS Cluster Autoscaler</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../eks_hpa/">Lab K509 - Horizontal Pod Autoscaler</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_vpa/">Lab K509 - Verticle Pod Autoscaler</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../eks_vpa/">Lab K510 - Verticle Pod Autoscaler</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_monitoring/">Lab K510 - EKS Monitoring</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../eks_monitoring/">Lab K511 - EKS Monitoring</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../eks_costs/">Lab K512 - EKS Costs</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_costs/">Lab K511 - EKS Costs</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../eks_cleanup/">Lab K599 - EKS Cleanup</a>
                   </li>
@@ -334,6 +334,9 @@ export SAMPLE_HOME=&quot;$(pwd)/operator-sample&quot;
 
 </code></pre>
 <p><strong>Step 1: Install Go</strong></p>
+<p>Install make </p>
+<pre><code>apt install make 
+</code></pre>
 <p>Refer to the <a href="https://go.dev/doc/install">official documentation</a> to install Go on your operating system.</p>
 <pre><code># For Linux 
 wget -c https://go.dev/dl/go1.24.2.linux-amd64.tar.gz

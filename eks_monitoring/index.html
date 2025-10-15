@@ -5,14 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/eks_monitoring/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Lab K511 - EKS Monitoring - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <title>Lab K510 - EKS Monitoring - Kubernetes Tutorial with CKA/CKAD Prep</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Lab K511 - EKS Monitoring";
+        var mkdocs_page_name = "Lab K510 - EKS Monitoring";
         var mkdocs_page_input_path = "eks_monitoring.md";
         var mkdocs_page_url = "/eks_monitoring/";
       </script>
@@ -148,7 +148,9 @@
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../rbac_101/">Lab K111 - RBAC Policies</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../network_policies/">Lab K207 - Network Policies</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../pod_security_admission/">Lab K112 - Pod Security Admission</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../network_policies/">Lab K113 - Network Policies</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Additional Topics</span></p>
@@ -189,11 +191,9 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../eks_cluster_autoscaler/">Lab K507 - EKS Cluster Autoscaler</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../eks_hpa/">Lab K509 - Horizontal Pod Autoscaler</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_vpa/">Lab K509 - Verticle Pod Autoscaler</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../eks_vpa/">Lab K510 - Verticle Pod Autoscaler</a>
-                  </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Lab K511 - EKS Monitoring</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Lab K510 - EKS Monitoring</a>
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#installing-helm-version-3">Installing Helm (version 3)</a>
     </li>
@@ -211,7 +211,7 @@
     </li>
     </ul>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../eks_costs/">Lab K512 - EKS Costs</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_costs/">Lab K511 - EKS Costs</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../eks_cleanup/">Lab K599 - EKS Cleanup</a>
                   </li>
@@ -317,7 +317,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
           <li class="breadcrumb-item">AWS EKS</li>
-      <li class="breadcrumb-item active">Lab K511 - EKS Monitoring</li>
+      <li class="breadcrumb-item active">Lab K510 - EKS Monitoring</li>
     <li class="wy-breadcrumbs-aside">
           <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/eks_monitoring.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
@@ -427,8 +427,8 @@ helm uninstall -n monitoring prom
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../eks_vpa/" class="btn btn-neutral float-left" title="Lab K510 - Verticle Pod Autoscaler"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../eks_costs/" class="btn btn-neutral float-right" title="Lab K512 - EKS Costs">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../eks_vpa/" class="btn btn-neutral float-left" title="Lab K509 - Verticle Pod Autoscaler"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../eks_costs/" class="btn btn-neutral float-right" title="Lab K511 - EKS Costs">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>

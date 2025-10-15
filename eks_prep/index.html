@@ -148,7 +148,9 @@
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../rbac_101/">Lab K111 - RBAC Policies</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../network_policies/">Lab K207 - Network Policies</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../pod_security_admission/">Lab K112 - Pod Security Admission</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../network_policies/">Lab K113 - Network Policies</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Additional Topics</span></p>
@@ -219,13 +221,11 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../eks_cluster_autoscaler/">Lab K507 - EKS Cluster Autoscaler</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../eks_hpa/">Lab K509 - Horizontal Pod Autoscaler</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_vpa/">Lab K509 - Verticle Pod Autoscaler</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../eks_vpa/">Lab K510 - Verticle Pod Autoscaler</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_monitoring/">Lab K510 - EKS Monitoring</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../eks_monitoring/">Lab K511 - EKS Monitoring</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../eks_costs/">Lab K512 - EKS Costs</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_costs/">Lab K511 - EKS Costs</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../eks_cleanup/">Lab K599 - EKS Cleanup</a>
                   </li>
@@ -346,14 +346,12 @@
 Publisher:  School of Devops
 Version : 22.05.2024.01</p>
 <hr />
-<p>This lab is about getting ready to setup a EKS Cluster on AWS. Before you begin, make sure you have a operational AWS Account with access to create IAM Users and access to all relevant services including   </p>
-<ul>
-<li>IAM    </li>
-<li>VPC   </li>
-<li>EKS   </li>
-<li>S3   </li>
-<li>EC2   </li>
-</ul>
+<p>This lab is about getting ready to setup a EKS Cluster on AWS. Before you begin, make sure you have a operational AWS Account with access to create IAM Users and access to all relevant services including <br />
+<em> IAM <br />
+</em> VPC <br />
+<em> EKS <br />
+</em> S3 <br />
+* EC2   </p>
 <h2 id="installing-pre-requisite-tools">Installing Pre-requisite Tools</h2>
 <h3 id="install-eksctl">Install eksctl</h3>
 <p>If you haven't installed <code>eksctl</code> yet, you can do so by following these instructions:</p>
