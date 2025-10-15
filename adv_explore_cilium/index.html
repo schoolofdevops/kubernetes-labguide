@@ -335,7 +335,12 @@
 <li>Fork the application repo <a href="https://github.com/advk8s/instavote-kustomize">advk8s/instavote-kustomize: Deployment Code with Kustomize</a>  to create your own copy. </li>
 </ul>
 <p>Clone the repo </p>
-<pre><code>git clone https://github.com/xxxxxx/instavote-kustomize.git
+<pre><code>
+# Use this if you want to use your own fork
+git clone https://github.com/xxxxxx/instavote-kustomize.git
+
+# Else use this (default repo)
+git clone https://github.com/advk8s/instavote-kustomize.git
 </code></pre>
 <p>where, replace <code>xxxxxx</code> with your own account/org name. </p>
 <pre><code>kubectl create namespace dev
