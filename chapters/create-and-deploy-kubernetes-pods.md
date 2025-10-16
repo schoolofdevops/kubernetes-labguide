@@ -65,13 +65,13 @@ spec:
 **Problem Statement:** Create a YAML spec to launch a  pod with one container to run vote application, which matches the following specs.
 
   * pod:
-    * metadata:
-      * name: vote
-      * labels:
-        * app: python
-        * role: vote
-        * version: v1
-  * containers:
+    * metadata:  
+      * name: vote  
+      * labels:  
+        * app: python  
+        * role: vote  
+        * version: v1  
+  * containers:  
     * name: app
     * image: schoolofdevops/vote:v1
 
@@ -161,7 +161,7 @@ Commands to  **operate** the pod
 
 kubectl logs vote
 
-kubectl exec -it vote  sh
+kubectl exec -it vote -- sh
 
 
 ```

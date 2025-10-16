@@ -56,7 +56,7 @@ The LBC listens to the Ingress resources in the Kubernetes cluster and dynamical
 
 Download IAM Policy
 ```
-curl -O https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.7.2/docs/install/iam_policy.json
+curl -O https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/main/docs/install/iam_policy.json
 ```
 
 Create IAM Policy
@@ -71,7 +71,7 @@ Note the ARN which you will use in the next command.
 
 **Create IAM Role using** eksctl
 
-Replace eks-cluster-01 with the name of your cluster, 111122223333 with your account ID, and then run the command. If your cluster is in the AWS GovCloud (US-East) or AWS GovCloud (US-West) AWS Regions, then replace arn:aws: with arn:aws-us-gov:. 
+Replace eks-cluster-01 with the name of your cluster, 111122223333 with your account ID, and then run the command. If your cluster is in the AWS GovCloud (US-East) or AWS GovCloud (US-West) AWS Regions, then replace arn:aws: with arn:aws-us-gov:.
 
 ```
 eksctl create iamserviceaccount \
@@ -89,6 +89,10 @@ validate
 ```
 eksctl get iamserviceaccount --cluster eks-cluster-01
 ```
+
+You should also see a cloudformation stack created  e.g. `eksctl-eks-cluster-01-addon-iamserviceaccount-kube-system-aws-load-balancer-controller`
+
+
 
 ###### Install AWS Load Balancer Controller using [Helm V3](https://helm.sh/)
 

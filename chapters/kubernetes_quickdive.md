@@ -96,13 +96,64 @@ watch the rolling update  in action
 kubectl rollout status deploy/vote
 ```
 
+### Launching and connecting to Redis 
+
+
+If you try to connect to the frontend vote app (available on port 30300) created above, andtry to submit the vote, it thrown an error. 
+
+Thats because there is no backend service `redis` available. 
+
+You couldcreate a redis service with `clusterip` and the deployment for it using the following commands, 
+
+```
+kubectl create service clusterip redis --tcp=6379
+kubectl create deployment redis --image=redis:alpine
+
+```
+
+
+validate pods, deployment and service for redis is available, and service has discovered the pods as endpoints with, 
+
+```
+kubectl get all,ep
+
+```
+
+[sample output]
+```
+NAME                         READY   STATUS    RESTARTS   AGE
+pod/redis-59bc74f5b5-fgv9m   1/1     Running   0          8m45s
+pod/vote-5cbbf546d8-9c624    1/1     Running   0          41m
+pod/vote-5cbbf546d8-zwg89    1/1     Running   0          39m
+
+NAME            TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+service/redis   ClusterIP   10.96.179.131   <none>        6379/TCP       9m11s
+service/vote    NodePort    10.96.233.140   <none>        80:30300/TCP   51m
+
+NAME                    READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/redis   1/1     1            1           8m45s
+deployment.apps/vote    2/2     2            2           66m
+
+NAME                               DESIRED   CURRENT   READY   AGE
+replicaset.apps/redis-59bc74f5b5   1         1         1       8m45s
+replicaset.apps/vote-5cbbf546d8    2         2         2       41m
+replicaset.apps/vote-75cfd886bc    0         0         0       43m
+replicaset.apps/vote-9c55988f4     0         0         0       66m
+
+NAME              ENDPOINTS                       AGE
+endpoints/redis   10.244.2.33:6379                9m11s
+endpoints/vote    10.244.1.30:80,10.244.2.27:80   51m
+```
+
+If you see output similar to above, redis is now setup along with vote and at this time, if you submit the vote, it should go through and show you a check mark. 
+
+
 ### Exercise - Deploy Complete Instavote App
 
-Deploy the services with the following spec to complete this application stack.
+Deploy the additional services with the following spec to complete this application stack.
 
 | Service Name  | Image     | Service Type     | Service Port   | Node Port   |
 | :------------- | :------------- | :------------- | :------------- | :------------- |
-|  redis      |   redis:alpine     | ClusterIP       | 6379     | N/A     |
 |  worker      |   schoolofdevops/worker:latest     | No Service Needed       | N/A     | N/A     |
 |  db      |   postgres:9.4     | ClusterIP       | 5432     | N/A |
 |  result      |   schoolofdevops/vote-result     | NodePort       | 80     | 30400 |

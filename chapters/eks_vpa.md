@@ -122,9 +122,9 @@ terminal 2
 kubectl get hpa vote --watch
 ```
 
-you should see, both hpa and vpa doing complimentary jobs where, 
-* HPA is launching new pods to ensure more requests are being served 
-* VPA is updating the `requests` spec based on actual metrics 
+you should see, both hpa and vpa doing complimentary jobs where,  
+  * HPA is launching new pods to ensure more requests are being served. 
+  * VPA is updating the `requests` spec based on actual metrics. 
 
 You could check the modified request spec by VPA by describing the one of the pods runnnig vote app 
 
