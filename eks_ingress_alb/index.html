@@ -207,11 +207,13 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../eks_cluster_autoscaler/">Lab K507 - EKS Cluster Autoscaler</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../eks_vpa/">Lab K509 - Verticle Pod Autoscaler</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_hpa/">Lab K509 - Horizontal Pod Autoscaler</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../eks_monitoring/">Lab K510 - EKS Monitoring</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_vpa/">Lab K510 - Verticle Pod Autoscaler</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../eks_costs/">Lab K511 - EKS Costs</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_monitoring/">Lab K511 - EKS Monitoring</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_costs/">Lab K512 - EKS Costs</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../eks_cleanup/">Lab K599 - EKS Cleanup</a>
                   </li>
@@ -375,7 +377,7 @@
 <p>⠀
 The LBC listens to the Ingress resources in the Kubernetes cluster and dynamically updates the ALB configuration in AWS to match the defined routing rules, ensuring seamless traffic management.</p>
 <p>Download IAM Policy</p>
-<pre><code>curl -O https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.7.2/docs/install/iam_policy.json
+<pre><code>curl -O https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/main/docs/install/iam_policy.json
 </code></pre>
 <p>Create IAM Policy</p>
 <pre><code>aws iam create-policy \
@@ -384,7 +386,7 @@ The LBC listens to the Ingress resources in the Kubernetes cluster and dynamical
 </code></pre>
 <p>Note the ARN which you will use in the next command.</p>
 <p><strong>Create IAM Role using</strong> eksctl</p>
-<p>Replace eks-cluster-01 with the name of your cluster, 111122223333 with your account ID, and then run the command. If your cluster is in the AWS GovCloud (US-East) or AWS GovCloud (US-West) AWS Regions, then replace arn:aws: with arn:aws-us-gov:. </p>
+<p>Replace eks-cluster-01 with the name of your cluster, 111122223333 with your account ID, and then run the command. If your cluster is in the AWS GovCloud (US-East) or AWS GovCloud (US-West) AWS Regions, then replace arn:aws: with arn:aws-us-gov:.</p>
 <pre><code>eksctl create iamserviceaccount \
   --cluster=eks-cluster-01 \
   --namespace=kube-system \
@@ -396,6 +398,7 @@ The LBC listens to the Ingress resources in the Kubernetes cluster and dynamical
 <p>validate</p>
 <pre><code>eksctl get iamserviceaccount --cluster eks-cluster-01
 </code></pre>
+<p>You should also see a cloudformation stack created  e.g. <code>eksctl-eks-cluster-01-addon-iamserviceaccount-kube-system-aws-load-balancer-controller</code></p>
 <h6 id="install-aws-load-balancer-controller-using-helm-v3">Install AWS Load Balancer Controller using <a href="https://helm.sh/">Helm V3</a></h6>
 <p>Add and update  <code>eks-charts</code> Helm chart repository. AWS maintains <a href="https://github.com/aws/eks-charts">this repository</a> on GitHub.</p>
 <pre><code>helm repo add eks https://aws.github.io/eks-charts

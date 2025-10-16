@@ -3,18 +3,18 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/cni/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/eks_hpa/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Lab K404 - CNI - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <title>Lab K509 - Horizontal Pod Autoscaler - Kubernetes Tutorial with CKA/CKAD Prep</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Lab K404 - CNI";
-        var mkdocs_page_input_path = "cni.md";
-        var mkdocs_page_url = "/cni/";
+        var mkdocs_page_name = "Lab K509 - Horizontal Pod Autoscaler";
+        var mkdocs_page_input_path = "eks_hpa.md";
+        var mkdocs_page_url = "/eks_hpa/";
       </script>
     
     <!--[if lt IE 9]>
@@ -154,14 +154,14 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Additional Topics</span></p>
-              <ul class="current">
+              <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../install_kubernetes_with_kubeadm/">Lab K400 - Install Kubernetes with Kubeadm</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../configuring_authentication_and_authorization/">Lab K401 - Creating Users, Groups and Authorization</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../vote-deployement_strategies/">Lab K403 - Building Deployment Strategies</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Lab K404 - CNI</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../cni/">Lab K404 - CNI</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../operator/">Lab K404 - Kubernetes Operators</a>
                   </li>
@@ -176,7 +176,7 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">AWS EKS</span></p>
-              <ul>
+              <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../eks_prep/">Lab K501 - EKS Preparatory Setup</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../eks_setup/">Lab K502 - EKS Setup</a>
@@ -191,7 +191,21 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../eks_cluster_autoscaler/">Lab K507 - EKS Cluster Autoscaler</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../eks_hpa/">Lab K509 - Horizontal Pod Autoscaler</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Lab K509 - Horizontal Pod Autoscaler</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#prerequisites">Prerequisites</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#create-a-hpa">Create a HPA</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#launch-a-load-test">Launch a Load Test</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#summary">Summary</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#reading-list">Reading List</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../eks_vpa/">Lab K510 - Verticle Pod Autoscaler</a>
                   </li>
@@ -302,10 +316,10 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
-          <li class="breadcrumb-item">Additional Topics</li>
-      <li class="breadcrumb-item active">Lab K404 - CNI</li>
+          <li class="breadcrumb-item">AWS EKS</li>
+      <li class="breadcrumb-item active">Lab K509 - Horizontal Pod Autoscaler</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/cni.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/eks_hpa.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -313,13 +327,188 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                
+                <h1 id="autoscaling-pods-with-hpa-on-eks">Autoscaling Pods with HPA on EKS</h1>
+<p>With Horizontal Pod Autoscaling, Kubernetes automatically scales the number of pods in a replication controller, deployment or replica set based on observed CPU utilization (or, with alpha support, on some other, application-provided metrics).</p>
+<p>The Horizontal Pod Autoscaler is implemented as a Kubernetes API resource and a controller. The resource determines the behavior of the controller. The controller periodically adjusts the number of replicas in a replication controller or deployment to match the observed average CPU utilization to the target specified by user</p>
+<h3 id="prerequisites">Prerequisites</h3>
+<ul>
+<li><a href="https://github.com/kubernetes-incubator/metrics-server">Metrics Server</a>.
+  This needs to be setup if you are using kubeadm etc.  and replaces <strong>heapster</strong> starting with kubernetes version  1.8.</li>
+<li>Resource Requests and Limits. Defining <a href="https://kubernetes.io/docs/tasks/configure-pod-container/assign-cpu-resource/#specify-a-cpu-request-and-a-cpu-limit">CPU</a>as well as <a href="https://kubernetes.io/docs/tasks/configure-pod-container/assign-memory-resource/">Memory</a> requirements for containers in Pod Spec is a must</li>
+</ul>
+<p>In case of EKS, Metrics Server is already available. </p>
+<p>you could validate it by running the following command </p>
+<pre><code>kubectl top pod
+
+kubectl top node
+</code></pre>
+<p>where expected output should be similar to,</p>
+<pre><code>kubectl top node
+
+NAME                                                 CPU(cores)   CPU(%)   MEMORY(bytes)   MEMORY(%)
+ip-xx.ap-southeast-1.compute.internal   57m          2%       958Mi           67%
+ip-yy.ap-southeast-1.compute.internal   23m          1%       823Mi           57%
+ip-zz.ap-southeast-1.compute.internal     36m          1%       628Mi           44%
+</code></pre>
+<p>If you see a similar output, monitoring is already been setup.</p>
+<h3 id="create-a-hpa">Create a HPA</h3>
+<p>To demonstrate Horizontal Pod Autoscaler we will use a custom docker image based on the php-apache image</p>
+<p><code>file: vote-hpa.yaml</code></p>
+<pre><code>apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: vote
+spec:
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+    - type: ContainerResource
+      containerResource:
+        name: cpu
+        container: vote  # change this as per actual container name
+        target:
+          type: Utilization
+          averageUtilization: 50
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment # change it to Deployment if have created a deployment already
+    name: vote
+  behavior:
+    scaleDown:
+      policies:
+      - type: Pods
+        value: 2
+        periodSeconds: 120
+      - type: Percent
+        value: 25
+        periodSeconds: 120
+      stabilizationWindowSeconds: 60
+    scaleUp:
+      stabilizationWindowSeconds: 45
+      policies:
+      - type: Percent
+        value: 100
+        periodSeconds: 15
+      - type: Pods
+        value: 2
+        periodSeconds: 15
+      selectPolicy: Max
+</code></pre>
+<p>apply</p>
+<pre><code>kubectl apply -f vote-hpa.yaml
+</code></pre>
+<p>Validate</p>
+<pre><code>kubectl get hpa
+</code></pre>
+<p>you should see</p>
+<p>[sample output]</p>
+<pre><code>NAME   REFERENCE         TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+vote   Deployment/vote   2%/50%    2         10        2          12m
+</code></pre>
+<p>If you see <code>unknown/50%</code> under <code>TARGETS</code>, there is a underlying issue that you may need to resolve.  Check if you have defined the resources (rquests, limits) for the containers in the pod.</p>
+<pre><code>kubectl describe hpa vote
+
+kubectl get pod,deploy
+
+
+</code></pre>
+<p>If you have a monitoring system such as grafana, you could also view the graphs for <strong>vote</strong> deployment.</p>
+<p><img alt="Monitoring Deployments with grafana" src="../images/hpa-01.png" /></p>
+<h3 id="launch-a-load-test">Launch a Load Test</h3>
+<p>If you do not have the service for <code>vote</code> app to receive the traffic, create one as</p>
+<pre><code>cd k8s-code/projects/instavote/dev
+kubectl apply -f vote-svc.yaml
+</code></pre>
+<p>Prepare to monitor the autoscaling by opening a new window connected to your cluster and by launching,</p>
+<pre><code>watch 'kubectl top pods;kubectl get pods;  kubectl get hpa ; kubectl get deploy'
+</code></pre>
+<p>Create a Load Test Job as,</p>
+<p><code>file: loadtest-job.yaml</code></p>
+<pre><code>apiVersion: batch/v1
+kind: Job
+metadata:
+  generateName: loadtest
+spec:
+  template:
+    spec:
+      containers:
+      - name: siege
+        image: schoolofdevops/loadtest:v1
+        command: [&quot;siege&quot;,  &quot;--concurrent=1&quot;, &quot;--benchmark&quot;, &quot;--time=4m&quot;, &quot;http://vote&quot;]
+      restartPolicy: Never
+  backoffLimit: 4
+</code></pre>
+<p>and launch it as</p>
+<pre><code>kubectl create -f loadtest-job.yaml
+</code></pre>
+<p>This will launch a one off Job which would run for 4 minutes.  </p>
+<p>To get information about the job</p>
+<pre><code>kubectl get jobs
+kubectl describe  job loadtest-xxx
+
+</code></pre>
+<p>replace loadtest-xxx with actual job name.</p>
+<p>To check the load test output</p>
+<pre><code>kubectl logs  -f loadtest-xxxx
+</code></pre>
+<p>[replace <strong>loadtest-xxxx</strong> with the actual pod id.]</p>
+<p>[Sample Output]</p>
+<pre><code>** SIEGE 3.0.8
+** Preparing 15 concurrent users for battle.
+root@kube-01:~# kubectl logs vote-loadtest-tv6r2 -f
+** SIEGE 3.0.8
+** Preparing 15 concurrent users for battle.
+
+.....
+
+
+Lifting the server siege...      done.
+
+Transactions:              41618 hits
+Availability:              99.98 %
+Elapsed time:             299.13 secs
+Data transferred:         127.05 MB
+Response time:              0.11 secs
+Transaction rate:         139.13 trans/sec
+Throughput:             0.42 MB/sec
+Concurrency:               14.98
+Successful transactions:       41618
+Failed transactions:               8
+Longest transaction:            3.70
+Shortest transaction:           0.00
+
+FILE: /var/log/siege.log
+You can disable this annoying message by editing
+the .siegerc file in your home directory; change
+the directive 'show-logfile' to false.
+</code></pre>
+<p>Now check the job status again,</p>
+<pre><code>kubectl get jobs
+NAME            DESIRED   SUCCESSFUL   AGE
+vote-loadtest   1         1            10m
+
+</code></pre>
+<p>While it is running,</p>
+<ul>
+<li>Keep monitoring for the load on the pod as the job progresses.</li>
+<li>You should see hpa in action as it scales out/in the  vote deployment with the increasing/decreasing load.</li>
+</ul>
+<h5 id="summary">Summary</h5>
+<p>In this lab, you have successful configured and demonstrated dynamic scaling ability of kubernetes using HorizontalPodAutoscaler. You have also learnt about a new <strong>jobs</strong> controller type for running one off or batch jobs.</p>
+<h5 id="reading-list">Reading List</h5>
+<ul>
+<li><a href="https://github.com/kubernetes/community/blob/master/contributors/design-proposals/instrumentation/monitoring_architecture.md">Kubernetes Monitoring Architecture</a></li>
+<li><a href="https://kubernetes.io/docs/tasks/debug-application-cluster/core-metrics-pipeline/">Core Metrics Pipeline</a></li>
+<li><a href="https://github.com/kubernetes-incubator/metrics-server">Metrics Server</a></li>
+<li><a href="https://kubernetes.io/docs/tasks/configure-pod-container/assign-cpu-resource/#specify-a-cpu-request-and-a-cpu-limit">Assigning Resources to Containers and Pods</a></li>
+<li><a href="https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/">Horizontal Pod Autoscaler</a></li>
+</ul>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../vote-deployement_strategies/" class="btn btn-neutral float-left" title="Lab K403 - Building Deployment Strategies"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../operator/" class="btn btn-neutral float-right" title="Lab K404 - Kubernetes Operators">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../eks_cluster_autoscaler/" class="btn btn-neutral float-left" title="Lab K507 - EKS Cluster Autoscaler"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../eks_vpa/" class="btn btn-neutral float-right" title="Lab K510 - Verticle Pod Autoscaler">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -347,10 +536,10 @@
         </span>
     
     
-      <span><a href="../vote-deployement_strategies/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../eks_cluster_autoscaler/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../operator/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../eks_vpa/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

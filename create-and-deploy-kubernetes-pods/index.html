@@ -223,11 +223,13 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../eks_cluster_autoscaler/">Lab K507 - EKS Cluster Autoscaler</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../eks_vpa/">Lab K509 - Verticle Pod Autoscaler</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_hpa/">Lab K509 - Horizontal Pod Autoscaler</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../eks_monitoring/">Lab K510 - EKS Monitoring</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_vpa/">Lab K510 - Verticle Pod Autoscaler</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../eks_costs/">Lab K511 - EKS Costs</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_monitoring/">Lab K511 - EKS Monitoring</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_costs/">Lab K512 - EKS Costs</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../eks_cleanup/">Lab K599 - EKS Cleanup</a>
                   </li>
@@ -381,17 +383,17 @@ spec:
 <p><strong>Problem Statement:</strong> Create a YAML spec to launch a  pod with one container to run vote application, which matches the following specs.</p>
 <ul>
 <li>pod:<ul>
-<li>metadata:</li>
-<li>name: vote</li>
-<li>labels:<ul>
-<li>app: python</li>
-<li>role: vote</li>
-<li>version: v1</li>
+<li>metadata:  </li>
+<li>name: vote  </li>
+<li>labels:  <ul>
+<li>app: python  </li>
+<li>role: vote  </li>
+<li>version: v1  </li>
 </ul>
 </li>
 </ul>
 </li>
-<li>containers:<ul>
+<li>containers:  <ul>
 <li>name: app</li>
 <li>image: schoolofdevops/vote:v1</li>
 </ul>
@@ -450,7 +452,7 @@ kubectl get pods vote
 <pre><code>
 kubectl logs vote
 
-kubectl exec -it vote  sh
+kubectl exec -it vote -- sh
 
 
 </code></pre>
