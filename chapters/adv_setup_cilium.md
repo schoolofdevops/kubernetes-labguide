@@ -7,7 +7,7 @@ To start redoing the cluster, switch to the path from where you setup the KIND e
 ```
 # Switch to kind config path 
 
-cd /root/k8s-code/helper/kind
+cd k8s-code/helper/kind
 
 kind delete cluster --name kind
 

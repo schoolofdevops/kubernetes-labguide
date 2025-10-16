@@ -10,7 +10,12 @@ In this lab, you will explore some of the key features of Cilum and how it works
 
 Clone the repo 
 ```
+
+# Use this if you want to use your own fork
 git clone https://github.com/xxxxxx/instavote-kustomize.git
+
+# Else use this (default repo)
+git clone https://github.com/advk8s/instavote-kustomize.git
 ```
 
 where, replace `xxxxxx` with your own account/org name. 
@@ -31,7 +36,7 @@ kubectl config get-contexts
 
 Examine the code in the `instavote-kustomize` repo that you cloned earlier as 
 ```
-instavote-kustomize
+cd instavote-kustomize
 kubectl apply -k base/
 ```
 

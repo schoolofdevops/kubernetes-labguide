@@ -50,7 +50,8 @@ nav:
      - Lab K305 - Cluster Troubleshooting: "cluster-troubleshooting.md"
   - Kubernetes Security:
      - Lab K111 - RBAC Policies: "rbac_101.md"
-     - Lab K207 - Network Policies: "network_policies.md"
+     - Lab K112 - Pod Security Admission: "pod_security_admission.md"
+     - Lab K113 - Network Policies: "network_policies.md"
   - Additional Topics:
      - Lab K400 - Install Kubernetes with Kubeadm: "install_kubernetes_with_kubeadm.md"
      - Lab K401 - Creating Users, Groups and Authorization: "configuring_authentication_and_authorization.md"

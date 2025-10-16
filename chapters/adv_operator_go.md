@@ -20,6 +20,12 @@ export SAMPLE_HOME="$(pwd)/operator-sample"
 
 **Step 1: Install Go**
 
+Install make 
+
+```
+apt install make 
+```
+
 Refer to the [official documentation](https://go.dev/doc/install) to install Go on your operating system.
 
 
@@ -275,7 +281,7 @@ type StaticWebsiteSpec struct {
 
 Update the controller to handle the new field:
 
-File: `controllers/staticwebsite_controller.go`
+File: `internal/controller/staticwebsite_controller.go`
 
 ```
 // serviceForWebsite returns a website Service object
