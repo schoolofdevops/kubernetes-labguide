@@ -3,18 +3,18 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/advanced_services/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/keda/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Services - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <title>Lab K809 - Event Driven Autosclaing with KEDA - Kubernetes Tutorial with CKA/CKAD Prep</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Services";
-        var mkdocs_page_input_path = "advanced_services.md";
-        var mkdocs_page_url = "/advanced_services/";
+        var mkdocs_page_name = "Lab K809 - Event Driven Autosclaing with KEDA";
+        var mkdocs_page_input_path = "keda.md";
+        var mkdocs_page_url = "/keda/";
       </script>
     
     <!--[if lt IE 9]>
@@ -96,7 +96,7 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Advanced Kubernetes</span></p>
-              <ul>
+              <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../adv_kubernetes-setup/">Lab K801 - Setting up Kubernetes Cluster</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../adv_kubernetes-control-plane/">Lab K802 - Exploring Kubernetes Control Plane</a>
@@ -117,7 +117,21 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../adv_eks_autoscaling/">Lab K808 - Horizontal and Vertical Autoscaling</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../keda/">Lab K809 - Event Driven Autosclaing with KEDA</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Lab K809 - Event Driven Autosclaing with KEDA</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#configure-prometheus">Configure Prometheus</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#setup-nginx-dashboard">Setup Nginx Dashboard</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#setup-keda-for-event-driven-scale-on-prometheus">Setup KEDA (for event-driven scale on Prometheus)</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#keda-scaledobject-prometheus-trigger">KEDA ScaledObject (Prometheus trigger)</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#generate-load-test">Generate Load Test</a>
+    </li>
+    </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../istio/">Lab K810 - Service Mesh with Istio</a>
                   </li>
@@ -304,9 +318,10 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
-      <li class="breadcrumb-item active">Services</li>
+          <li class="breadcrumb-item">Advanced Kubernetes</li>
+      <li class="breadcrumb-item active">Lab K809 - Event Driven Autosclaing with KEDA</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/advanced_services.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/keda.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -314,250 +329,152 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="services">Services</h1>
-<p>Services are a way to expose your backend pods to outside world. Services can also be used for internal networks.</p>
-<h2 id="service-discovery">Service Discovery</h2>
-<p>Whenever we create a service, the kubernetes api server will create a route for that service within the cluster. So you will be able to access the service using the dns entry for that service. Usually the service dns will look like <SVC-NAME.NAMESPACE></p>
-<p>Let us create a service for frontend</p>
-<p><code>File: frontend-svc.yml</code></p>
-<pre><code>apiVersion: v1
-kind: Service
-metadata:
-  name: front-end
-  namespace: instavote
-  labels:
-    app: front-end
-    env: dev
-spec:
-  selector:
-    app: front-end
-  ports:
-    - protocol: TCP
-      port: 8079
-</code></pre>
-<pre><code>kubectl apply -f frontend-svc.yml
-kubectl exec -it front-end-5cbc986f44-dqws2 sh
+                <h1 id="event-driven-auto-scaling-with-keda">Event Driven Auto Scaling with KEDA</h1>
+<h3 id="configure-prometheus">Configure Prometheus</h3>
+<p>Install  Prometheus with Grafana with helm </p>
+<pre><code>helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 
-nslookup front-end.instavote
+helm repo update
 
-Name:      front-end.instavote
-Address 1: 10.233.6.236 front-end.instavote.svc.cluster.local
-</code></pre>
-<p>This is achieved by the cluster <strong>dns add-on</strong>. This is how backend of service A consumes service B.</p>
-<h2 id="labels-and-selectors">Labels and Selectors</h2>
-<p>When we create a service, it automatically adds appropriate pods to its backend. How does this happen? This is achieved by a mechanism called <strong>labels and selectors</strong>. We label our pods with keys and values. Our service template has selectors with these keys and values. So when a service is created, it will check for pods running with the same label. If it finds a pod with that label, the pod will be added to endpoint of the service.</p>
-<pre><code>kubectl describe svc front-end
+helm upgrade --install prom -n monitoring \
+  prometheus-community/kube-prometheus-stack \
+  --create-namespace \
+  --set grafana.service.type=NodePort \
+  --set grafana.service.nodePort=30200 \
+  --set prometheus.service.type=NodePort \
+  --set prometheus.service.nodePort=30300 \
+  --set prometheus.prometheusSpec.podMonitorSelectorNilUsesHelmValues=false \
+  --set prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues=false
 
-Name:              front-end
-Namespace:         instavote
-Labels:            app=front-end
-                   env=dev
-Annotations:       kubectl.kubernetes.io/last-applied-configuration={&quot;apiVersion&quot;:&quot;v1&quot;,&quot;kind&quot;:&quot;Service&quot;,&quot;metadata&quot;:{&quot;annotations&quot;:{},&quot;labels&quot;:{&quot;app&quot;:&quot;front-end&quot;,&quot;env&quot;:&quot;dev&quot;},&quot;name&quot;:&quot;front-end&quot;,&quot;namespace&quot;:&quot;instavote&quot;},&quot;...
-Selector:          app=front-end
-Type:              ClusterIP
-IP:                10.233.6.236
-Port:              &lt;unset&gt;  8079/TCP
-TargetPort:        8079/TCP
-Endpoints:         10.233.71.13:8079
-Session Affinity:  None
-Events:            &lt;none&gt;
+
 </code></pre>
-<p>Since we have only one pod running with the label <strong>app=front-end</strong>, it is added to the service endpoint list.</p>
-<h2 id="picking-up-the-right-type-of-a-service">Picking up the right type of a service</h2>
-<p>We have four type of services to choose from. Each has a unique use case for which it can be used. Let us see about the types of services below.</p>
-<h3 id="types">Types:</h3>
+<p>To connect to Grafana on port 30200 use the following creds <br />
+  * user: admin <br />
+  * pass: prom-operator  </p>
+<p>What this does is starts collecting metrics from services from all the namespaces not just the one in which prometheus is deployed. And it reads the annotations from the pods to figure out where to collect the metrics from.  </p>
+<p>Setup Nginx Ingress with Metrics</p>
+<p>Delete existing nginx ingress controller setup with KIND  </p>
+<pre><code>kubectl delete -f  https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
+</code></pre>
+<p>Re deploy nginx ingress controller with helm, this time enabling the exposing the metrics which can then be scraped/collected by prometheus.</p>
+<pre><code>helm upgrade --install ingress-nginx ingress-nginx \
+  --repo https://kubernetes.github.io/ingress-nginx \
+  --namespace ingress-nginx --create-namespace \
+  --set controller.metrics.enabled=true \
+  --set controller.metrics.serviceMonitor.enabled=true --set \ controller.metrics.serviceMonitor.additionalLabels.release=&quot;prometheus&quot; \
+  --set controller.hostPort.enabled=true \
+  --set controller.hostPort.ports.http=80 \
+  --set controller.hostPort.ports.https=443 \
+  --set-string controller.nodeSelector.&quot;kubernetes\.io/os&quot;=linux \
+  --set-string controller.nodeSelector.ingress-ready=&quot;true&quot;
+
+</code></pre>
+<h2 id="setup-nginx-dashboard">Setup Nginx Dashboard</h2>
+<p>Now, login to grafana and import custom dashboard for Nginx Ingress as</p>
 <ul>
-<li>ClusterIp<ul>
-<li>Internal network.</li>
-<li>Can not accessed from outside world.</li>
-<li>Best suited for backend services which should not be exposed (ex: DB).</li>
+<li>Left menu (hover over +) -&gt; Dashboard</li>
+<li>Click "Import"</li>
+<li>Enter the copy pasted json from <a href="https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/grafana/dashboards/nginx.json">https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/grafana/dashboards/nginx.json</a></li>
+<li>Click Import JSON</li>
+<li>Select the Prometheus data source</li>
+<li>Click "Import"</li>
 </ul>
-</li>
-<li>NodePort<ul>
-<li>Can be accessed from outside world.</li>
-<li>NodePort is best suited for development environment(debugging).</li>
-<li>Not suited for production use.</li>
-</ul>
-</li>
-<li>LoadBalancer<ul>
-<li>Normal cloud load balancer.</li>
-<li>Exposes service to outside world.</li>
-</ul>
-</li>
-<li>ExternalName<ul>
-<li>Used for entities which are outside the cluster.</li>
-<li>CNAME record for an external service.</li>
-<li>No ports are defined.</li>
-</ul>
-</li>
-</ul>
-<p>We have one more service configuration, which is not exactly a service type. That is .,
-  * ExternalIP</p>
-<h2 id="cluster-ip-and-dns">Cluster IP and DNS</h2>
-<p>ClusterIP is internal to the cluster. ClusterIP is provided by default. If you do not define the type of the service, then the service is configured with a clusterIP. A typical service type of clusterIP looks like,</p>
-<p><code>File: frontend-svc.yml</code></p>
-<pre><code>apiVersion: v1
-kind: Service
+<p>In a few minutes, you should see data trickling in to Nginx graphs. </p>
+<h2 id="setup-keda-for-event-driven-scale-on-prometheus">Setup KEDA (for event-driven scale on Prometheus)</h2>
+<p>Install KEDA as </p>
+<pre><code>helm repo add kedacore https://kedacore.github.io/charts
+helm repo update
+
+helm install keda kedacore/keda \
+  --namespace keda \
+  --create-namespace
+</code></pre>
+<p>validate </p>
+<pre><code>kubectl get all -n keda
+</code></pre>
+<h3 id="keda-scaledobject-prometheus-trigger">KEDA ScaledObject (Prometheus trigger)</h3>
+<p>Scale <strong>Chat API</strong> when <strong>RPS &gt; 1 per replica</strong> (same signal as HPA external metric).
+Point KEDA to Prometheus from kube-prometheus-stack.</p>
+<p><code>keda-scaledobject-vote.yaml</code></p>
+<pre><code>apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
 metadata:
-  name: front-end
-  namespace: instavote
-  labels:
-    app: front-end
-    env: dev
+  name: vote
+  namespace: default
 spec:
-  selector:
-    app: front-end
-  ports:
-    - protocol: TCP
-      port: 8079
-  type: ClusterIP
+  scaleTargetRef:
+    name: vote
+  minReplicaCount: 1
+  maxReplicaCount: 8
+  cooldownPeriod: 60
+  triggers:
+    - type: prometheus
+      metadata:
+        # Use full cluster DNS for Prometheus service (adjust namespace/name if different)
+        serverAddress: http://prom-kube-prometheus-stack-prometheus.monitoring.svc:9090
+        metricName: nginx_rps_vote
+        threshold: &quot;400&quot;
+        query: |
+          round(
+            sum(
+              irate(nginx_ingress_controller_requests{
+                controller_pod=~&quot;.*&quot;,
+                controller_class=~&quot;.*&quot;,
+                controller_namespace=~&quot;.*&quot;,
+                exported_namespace=~&quot;.*&quot;,
+                ingress=&quot;vote&quot;
+              }[2m])
+            ),
+            0.001
+          )
 </code></pre>
-<h2 id="nodeport">NodePort</h2>
-<p>Exposes a port on node within 30000 to 32767 range. If a service is defined as nodePort, we can access the service on <ANY-NODE-IP:NODEPORT>. Let us change the frontend service type to NodePort and see what happens.</p>
-<p><code>File: frontend-svc.yml</code></p>
-<pre><code>apiVersion: v1
-kind: Service
+<p>Apply:</p>
+<pre><code>kubectl apply -f keda-scaledobject-vote.yaml
+kubectl  get scaledobject
+</code></pre>
+<h2 id="generate-load-test">Generate Load Test</h2>
+<p>now create a new load test config</p>
+<p>File:  <code>loadtest-ing-job.yaml</code></p>
+<pre><code>apiVersion: batch/v1
+kind: Job
 metadata:
-  name: front-end
-  namespace: instavote
-  labels:
-    app: front-end
-    env: dev
+  generateName: loadtest-ing
 spec:
-  selector:
-    app: front-end
-  ports:
-    - protocol: TCP
-      port: 8079
-  type: NodePort
+  template:
+    spec:
+      containers:
+      - name: siege
+        image: schoolofdevops/loadtest:v1
+        command: [&quot;siege&quot;, &quot;--concurrent=2&quot;, &quot;--benchmark&quot;, &quot;--time=4m&quot;, &quot;http://vote.example.com&quot;]
+      restartPolicy: Never
+      hostAliases:
+      - ip: &quot;ww.xx.yy.zz&quot;
+        hostnames:
+        - &quot;vote.example.com&quot;
+  backoffLimit: 4
 </code></pre>
-<p>Lets get the node port created for the front-end service.</p>
-<pre><code>kubectl get svc front-end
-
-
+<p>where, replace <code>ww.xx.yy.zz</code> with the INTERNAL-IP address of the node which runs ingress which you can find using</p>
+<pre><code>kubectl get nodes -o wide
 </code></pre>
-<p>Visit this node port on any of node's IP. In my case,</p>
-<h2 id="externalip">ExternalIP</h2>
-<p>ExternalIP is not exactly a service type. It can be coupled with any other service type. For example a service with NodePort can be used with ExternalIP as well. Only cache here is, the external IP has to one of the node/master's IP. It is used to route the traffic to one or more cluster nodes.</p>
-<p><code>File: frontend-svc.yml</code></p>
-<pre><code>apiVersion: v1
-kind: Service
-metadata:
-  name: front-end
-  namespace: instavote
-  labels:
-    app: front-end
-    env: dev
-spec:
-  selector:
-    app: front-end
-  ports:
-    - protocol: TCP
-      port: 8079
-  type: NodePort
-  externalIPs:
-  - 10.40.1.26
-  - 10.40.1.11
+<pre><code>NAME                 STATUS   ROLES           AGE   VERSION   INTERNAL-IP   EXTERNAL-IP   OS-IMAGE                         KERNEL-VERSION     CONTAINER-RUNTIME
+kube-control-plane   Ready    control-plane   47h   v1.29.2   172.18.0.2    &lt;none&gt;        Debian GNU/Linux 12 (bookworm)   6.8.0-31-generic   containerd://1.7.13
+kube-worker          Ready    &lt;none&gt;          47h   v1.29.2   172.18.0.3    &lt;none&gt;        Debian GNU/Linux 12 (bookworm)   6.8.0-31-generic   containerd://1.7.13
+kube-worker2         Ready    &lt;none&gt;          47h   v1.29.2   172.18.0.4    &lt;none&gt;        Debian GNU/Linux 12 (bookworm)   6.8.0-31-generic   containerd://1.7.13
 </code></pre>
-<p>Lets check how externalIPs works,</p>
-<pre><code>kubectl describe svc front-end
-
-curl 10.40.1.26
-curl 10.40.1.11
+<p>in the above example, <code>kube-worker</code> is the node where ingress is running which has and ip address of <code>172.18.0.3</code>. Thats what should be used in the load test config.</p>
+<p>Finally create an instance of this job as,</p>
+<pre><code>kubectl create -f loadtest-ing-job.yaml
 </code></pre>
-<h2 id="loadbalancer">LoadBalancer</h2>
-<p>Service type LoadBalancer is only supported on AWS,GCE,Azure and Openstack. If you have you cluster running on any of these clouds, give it a try. It will create a load balancer for us with a ephemeral IP. We can also specify a loadBalancerIP. Mostly not recommended to use. Using service type LoadBalancer will rise your cloud provider spendings. Think about launching 10 load balancers for 10 different services. Thats where <strong>ingress</strong> come into picture (explained in the later part).</p>
-<pre><code>apiVersion: v1
-kind: Service
-metadata:
-  name: front-end
-  namespace: instavote
-  labels:
-    app: front-end
-    env: dev
-spec:
-  selector:
-    app: front-end
-  ports:
-    - protocol: TCP
-      port: 8079
-  type: LoadBalancer
+<p>and now watch the scaling</p>
+<pre><code>watch 'kubectl top pods; kubectl get hpa,scaledobject'
 </code></pre>
-<h2 id="headless-services-with-endpointsexternal-names">Headless services with Endpoints/External Names</h2>
-<p>Sometimes you may to decouple the services from backend pods. Sometimes you may want to use some external services outside the cluster and want to integrate those external services with the cluster. For these kind of use cases we can use <strong>Headless services</strong>. Let us see an example.</p>
-<p>Let us consider a scenario where you have your redis cluster hosted outside the cluster. Your backend in cluster need to use this redis cluster. In this case, you will create a service with ExternalName, which is nothing but a CNAME record of your redis cluster. This type of services will neither have any ports defined nor have any selectors. But, how do you make sure the backend pods uses this service? For that, you will create a custom endpoint, in which map your service to specific endpoints.</p>
-<p><code>Ex: External Name service</code></p>
-<pre><code>kind: Service
-apiVersion: v1
-metadata:
-  name: redis-aws
-  namespace: instavote
-spec:
-  type: ExternalName
-  externalName: redis.aws.schoolofdevops.com
-</code></pre>
-<p><code>Ex: Endpoints</code></p>
-<pre><code>kind: Endpoints
-apiVersion: v1
-metadata:
-  name: redis-aws
-subsets:
-  - addresses:
-      - ip: 10.40.30.123
-      - ip: 10.40.30.324
-      - ip: 10.40.30.478
-    ports:
-      - port: 9376
-</code></pre>
-<p>These IPs have to be manually managed by the cluster administrator.</p>
-<h2 id="ingress">Ingress</h2>
-<p>Ingress controller is an Kubernetes object that manages external access to the backend services. This is the preferred way of exposing your services.</p>
-<h3 id="ingress-controller">Ingress Controller</h3>
-<p>To use an ingress resource, an ingress controller (ex. nginx, traefik) must be running. This controller has to be deployed manually.</p>
-<p>To create an ingress controller in our cluster, run the following commands,</p>
-<pre><code>kubectl apply -f traefik-rbac.yaml
-kubectl apply -f traefik-deployment.yaml
-</code></pre>
-<p>Check whether the ingress controller is running or not.</p>
-<pre><code>kubectl get pods -n kube-system
-
-[...]
-kubernetes-dashboard-75c5ff6844-r9sk8         1/1       Running   6          3d
-nginx-proxy-node3                             1/1       Running   8          27d
-nginx-proxy-node4                             1/1       Running   7          27d
-traefik-ingress-controller-568dd77566-vk72b   1/1       Running   0          5m
-</code></pre>
-<h3 id="purpose-of-an-ingress">Purpose of an Ingress</h3>
-<p>Ingress can be used for,
-  * Load balancing,
-  * SSL Termination,
-  * Name based virtual hosting.</p>
-<h3 id="types-of-ingress">Types of Ingress</h3>
-<p>Let us see about different implementation of ingress.</p>
-<pre><code>Keep or delete the following(Need to come up with use cases).
-### Single Service Ingress
-
-### Simple fanout Ingress
-
-### Name based virtual hosting
-
-### TLS
-
-### Load Balancer
-</code></pre>
-<h2 id="services-vs-ingress">Services Vs Ingress</h2>
-<ol>
-<li>Service type LoadBalancer</li>
-<li>Service type Nodeport</li>
-</ol>
-<h2 id="creating-service-resources-for-applications-and-backing-services">Creating service resources for applications and backing services</h2>
-<hr />
-<p>Need a demo set up for types: load balancer and external name
-Need input on this: Creating service resources for applications and backing services, Service API specs, Traffic Policy
-Can add some points about scaling of ingress controller (running it as a daemonset on all the nodes)</p>
               
             </div>
           </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../adv_eks_autoscaling/" class="btn btn-neutral float-left" title="Lab K808 - Horizontal and Vertical Autoscaling"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../istio/" class="btn btn-neutral float-right" title="Lab K810 - Service Mesh with Istio">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
 
   <hr/>
 
@@ -584,6 +501,10 @@ Can add some points about scaling of ingress controller (running it as a daemons
         </span>
     
     
+      <span><a href="../adv_eks_autoscaling/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../istio/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
