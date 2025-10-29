@@ -87,7 +87,7 @@ helm list -A
 kubectl get all
 ```
 
-## Setting up Multi Environemnt Deployment with HELM 
+## Part II: Setting up Multi Environemnt Deployment with HELM 
 
 Copy over the values.yaml file to values.staging.yaml
 
@@ -236,7 +236,7 @@ helm rollback vote xx
 where replace `xx` with the revision number you wish to roll back to.
 
 
-## Adding Redis Service  
+## Part IV: Adding Redis Service  
 
 Lets add a second service by creating a new chart structure, where we will have our main chart for application and a subchart for vote and redis.
 
@@ -263,6 +263,17 @@ also update the service port as
 service:
   type: ClusterIP
   port: 6379
+```
+
+and replace the health probes to use `tcpSocket` instead of `httpGet`
+
+```
+livenessProbe:
+  tcpSocket:
+    port: 6379
+readinessProbe:
+  tcpSocket:
+    port: 6379
 ```
 
 Now lets create the main chart for instavote app to include the redis and vote as subcharts

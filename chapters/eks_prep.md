@@ -7,11 +7,12 @@ Version : 22.05.2024.01
 
 
 This lab is about getting ready to setup a EKS Cluster on AWS. Before you begin, make sure you have a operational AWS Account with access to create IAM Users and access to all relevant services including   
-* IAM   
-* VPC   
-* EKS   
-* S3   
-* EC2   
+
+  * IAM    
+  * VPC   
+  * EKS   
+  * S3   
+  * EC2   
 
 ## Installing Pre-requisite Tools 
 
