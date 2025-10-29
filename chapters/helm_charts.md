@@ -315,7 +315,7 @@ File : `values.dev.yaml`
 
 ```
 vote:
-  repicaCount: 3
+  replicaCount: 3
   image:
     repository: "schoolofdevops/vote"
     tag: "v7"
