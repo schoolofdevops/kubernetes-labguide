@@ -94,11 +94,11 @@
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#part-i-generating-a-chart-with-one-service">Part I - Generating a Chart with One Service</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#setting-up-multi-environemnt-deployment-with-helm">Setting up Multi Environemnt Deployment with HELM</a>
+    <li class="toctree-l2"><a class="reference internal" href="#part-ii-setting-up-multi-environemnt-deployment-with-helm">Part II: Setting up Multi Environemnt Deployment with HELM</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#part-iii-overriding-values-rollbacks">Part III : Overriding Values, Rollbacks</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#adding-redis-service">Adding Redis Service</a>
+    <li class="toctree-l2"><a class="reference internal" href="#part-iv-adding-redis-service">Part IV: Adding Redis Service</a>
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#exercises">Exercises</a>
     </li>
@@ -394,7 +394,7 @@ helm install -n dev vote .
 <pre><code>helm list -A
 kubectl get all
 </code></pre>
-<h2 id="setting-up-multi-environemnt-deployment-with-helm">Setting up Multi Environemnt Deployment with HELM</h2>
+<h2 id="part-ii-setting-up-multi-environemnt-deployment-with-helm">Part II: Setting up Multi Environemnt Deployment with HELM</h2>
 <p>Copy over the values.yaml file to values.staging.yaml</p>
 <pre><code>cp values.yaml values.staging.yaml
 </code></pre>
@@ -481,7 +481,7 @@ vote    staging     1           2025-04-20 03:34:03.00413779 +0000 UTC  deployed
 <pre><code>helm rollback vote xx
 </code></pre>
 <p>where replace <code>xx</code> with the revision number you wish to roll back to.</p>
-<h2 id="adding-redis-service">Adding Redis Service</h2>
+<h2 id="part-iv-adding-redis-service">Part IV: Adding Redis Service</h2>
 <p>Lets add a second service by creating a new chart structure, where we will have our main chart for application and a subchart for vote and redis.</p>
 <pre><code># switch back to instavote directory
 cd instavote 
@@ -498,6 +498,14 @@ cd redis
 <pre><code>service:
   type: ClusterIP
   port: 6379
+</code></pre>
+<p>and replace the health probes to use <code>tcpSocket</code> instead of <code>httpGet</code></p>
+<pre><code>livenessProbe:
+  tcpSocket:
+    port: 6379
+readinessProbe:
+  tcpSocket:
+    port: 6379
 </code></pre>
 <p>Now lets create the main chart for instavote app to include the redis and vote as subcharts</p>
 <pre><code># switch back to instavote directory
