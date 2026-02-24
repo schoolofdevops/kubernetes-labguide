@@ -66,7 +66,7 @@ metadata:
     argocd-image-updater.argoproj.io/write-back-method: git:secret:argocd/git-creds
     argocd-image-updater.argoproj.io/write-back-target: "kustomization:../base"
 ```
-Source: [Mark Staging App for Automatic Image Updates from Argo](https://gist.github.com/initcron/ddf79cb9ba9ca940a1263150b586ec60)
+Source: [Mark Staging App for Automatic Image Updates from Argo](https://gist.github.com/gouravjshah/ddf79cb9ba9ca940a1263150b586ec60)
 
 Where,
 

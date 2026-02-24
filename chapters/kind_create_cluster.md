@@ -40,7 +40,7 @@ kind
 Download  Cluster Configurations and Create  a 3 Node Kubernetes Cluster as
 
 ```
-git clone https://github.com/initcron/k8s-code.git
+git clone https://github.com/gouravjshah/k8s-code.git
 cd k8s-code/helper/kind/
 kind create cluster --config kind-three-node-cluster.yaml
 ```

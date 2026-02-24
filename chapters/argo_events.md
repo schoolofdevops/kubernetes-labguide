@@ -75,12 +75,12 @@ apply
 kubectl apply -f webook-eventsource.yaml
 ```
 
-Check the Argo Workflow for Vote CI Pipeline converted into a [Workflow Template](https://gist.githubusercontent.com/initcron/c1704b560909f424e66062d86af9ff5c/raw/f7c5f73605a732d358a93854bc2da652113de494/vote-ci-template.yaml).
+Check the Argo Workflow for Vote CI Pipeline converted into a [Workflow Template](https://gist.githubusercontent.com/gouravjshah/c1704b560909f424e66062d86af9ff5c/raw/f7c5f73605a732d358a93854bc2da652113de494/vote-ci-template.yaml).
 
 Create workflow template using this code as
 
 ```
-kubectl apply -f https://gist.githubusercontent.com/initcron/c1704b560909f424e66062d86af9ff5c/raw/f7c5f73605a732d358a93854bc2da652113de494/vote-ci-template.yaml
+kubectl apply -f https://gist.githubusercontent.com/gouravjshah/c1704b560909f424e66062d86af9ff5c/raw/f7c5f73605a732d358a93854bc2da652113de494/vote-ci-template.yaml
 
 ```
 

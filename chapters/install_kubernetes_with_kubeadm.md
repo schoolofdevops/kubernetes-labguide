@@ -153,5 +153,5 @@ Before we proceed further, please checkout the code from the following git repo.
 
 `run this on the host where you have configured kubectl`
 ```
-git clone https://github.com/initcron/k8s-code.git
+git clone https://github.com/gouravjshah/k8s-code.git
 ```

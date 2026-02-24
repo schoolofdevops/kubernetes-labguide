@@ -215,7 +215,7 @@ After the Pod networks is installled, We can install another add-on service whic
 
 Installing Dashboard:
 ```
-kubectl apply -f https://gist.githubusercontent.com/initcron/32ff89394c881414ea7ef7f4d3a1d499/raw/baffda78ffdcaf8ece87a76fb2bb3fd767820a3f/kube-dashboard.yaml
+kubectl apply -f https://gist.githubusercontent.com/gouravjshah/32ff89394c881414ea7ef7f4d3a1d499/raw/baffda78ffdcaf8ece87a76fb2bb3fd767820a3f/kube-dashboard.yaml
 
 ```
 This will create a pod for the Kubernetes Dashboard.

@@ -14,7 +14,7 @@ In this project , you would write definitions for deploying the [instavote appli
 
 ## Project Specs
 
-* Clone the code with `git clone https://github.com/initcron/k8s-code.git` and switch to `k8s-code/projects/instavote/dev` path.
+* Clone the code with `git clone https://github.com/gouravjshah/k8s-code.git` and switch to `k8s-code/projects/instavote/dev` path.
 * Apply the deployment and service code for the applications marked as ready
 * Complete the code for deployments and services marked as TODO
 * Apply the definitions that you have completed

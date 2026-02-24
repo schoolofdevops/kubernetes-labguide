@@ -3,12 +3,12 @@
 If you have not installed helm yet, do so by using
 
 ```
-curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 |  bash 
+curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 |  bash
 
 helm
 
 ```
- 
+
 ## Part I - Generating a Chart with One Service
 
 Create a namespace and switch to it
@@ -31,16 +31,16 @@ cd vote/
 ```
 
 
-Edit `values.yaml`  to  update replicaCount, image and tag as
+Edit `values.yaml`  to  update replicaCount, image and tag as
 
 ```
 
 replicaCount: 2
-image: 
-  repository: schoolofdevops/vote 
+image:
+  repository: schoolofdevops/vote
   pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion. 
-  tag: "v5" 
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "v5"
 ```
 
 Update service type to Node Port
@@ -87,7 +87,7 @@ helm list -A
 kubectl get all
 ```
 
-## Part II: Setting up Multi Environemnt Deployment with HELM 
+## Part II: Setting up Multi Environemnt Deployment with HELM
 
 Copy over the values.yaml file to values.staging.yaml
 
@@ -95,16 +95,16 @@ Copy over the values.yaml file to values.staging.yaml
 cp values.yaml values.staging.yaml
 ```
 
-Update the properties in values.staging.yaml as, 
+Update the properties in values.staging.yaml as,
 
 ```
 
-replicaCount: 4 
-image: 
-  repository: schoolofdevops/vote 
+replicaCount: 4
+image:
+  repository: schoolofdevops/vote
   pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion. 
-  tag: "v4" 
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "v4"
 
 ```
 
@@ -118,7 +118,7 @@ service:
 ```
 
 
-Create a namespace for staging as 
+Create a namespace for staging as
 
 ```
 kubectl create namespace staging
@@ -128,14 +128,14 @@ Install this chart with helm to deploy the `vote` service as:
 
 ```
 helm install -n staging vote --values=values.staging.yaml . --dry-run
-helm install -n staging vote --values=values.staging.yaml . 
+helm install -n staging vote --values=values.staging.yaml .
 ```
 
 Validate with
 
 ```
 helm list -A
-kubectl get all -n staging 
+kubectl get all -n staging
 ```
 
 
@@ -175,7 +175,7 @@ now upgrade the release as
 helm upgrade -n dev vote .
 ```
 
-validate 
+validate
 
 ```
 helm list -A
@@ -227,7 +227,7 @@ e.g.
 ```
 helm rollback vote
 ```
-you could also go back to a specific version using the revision number as  
+you could also go back to a specific version using the revision number as
 
 ```
 helm rollback vote xx
@@ -236,15 +236,15 @@ helm rollback vote xx
 where replace `xx` with the revision number you wish to roll back to.
 
 
-## Part IV: Adding Redis Service  
+## Part IV: Adding Redis Service
 
 Lets add a second service by creating a new chart structure, where we will have our main chart for application and a subchart for vote and redis.
 
 
 ```
 # switch back to instavote directory
-cd instavote 
-helm create redis 
+cd instavote
+helm create redis
 cd redis
 ```
 
@@ -257,7 +257,7 @@ image:
   tag: "alpine"
 ```
 
-also update the service port as 
+also update the service port as
 
 ```
 service:
@@ -280,12 +280,12 @@ Now lets create the main chart for instavote app to include the redis and vote a
 
 ```
 # switch back to instavote directory
-cd instavote 
+cd instavote
 mkdir main
 cd main
 ```
 
-Add `Chart.yaml` and `values.yaml` files as 
+Add `Chart.yaml` and `values.yaml` files as
 
 File :  `Chart.yaml`
 
@@ -337,47 +337,47 @@ redis:
     port: 6379
 ```
 
-At this time the code should look like this 
+At this time the code should look like this
 
-``` 
+```
 # instavote chart directory
 .
 ├── main
-│   ├── Chart.yaml
-│   └── values.dev.yaml
+│   ├── Chart.yaml
+│   └── values.dev.yaml
 ├── redis
-│   ├── Chart.yaml
-│   ├── charts
-│   ├── templates
-│   │   ├── NOTES.txt
-│   │   ├── _helpers.tpl
-│   │   ├── deployment.yaml
-│   │   ├── hpa.yaml
-│   │   ├── ingress.yaml
-│   │   ├── service.yaml
-│   │   ├── serviceaccount.yaml
-│   │   └── tests
-│   │       └── test-connection.yaml
-│   └── values.yaml
+│   ├── Chart.yaml
+│   ├── charts
+│   ├── templates
+│   │   ├── NOTES.txt
+│   │   ├── _helpers.tpl
+│   │   ├── deployment.yaml
+│   │   ├── hpa.yaml
+│   │   ├── ingress.yaml
+│   │   ├── service.yaml
+│   │   ├── serviceaccount.yaml
+│   │   └── tests
+│   │       └── test-connection.yaml
+│   └── values.yaml
 └── vote
     ├── Chart.yaml
     ├── charts
     ├── templates
-    │   ├── NOTES.txt
-    │   ├── _helpers.tpl
-    │   ├── deployment.yaml
-    │   ├── hpa.yaml
-    │   ├── ingress.yaml
-    │   ├── service.yaml
-    │   ├── serviceaccount.yaml
-    │   └── tests
-    │       └── test-connection.yaml
+    │   ├── NOTES.txt
+    │   ├── _helpers.tpl
+    │   ├── deployment.yaml
+    │   ├── hpa.yaml
+    │   ├── ingress.yaml
+    │   ├── service.yaml
+    │   ├── serviceaccount.yaml
+    │   └── tests
+    │       └── test-connection.yaml
     ├── values.staging.yaml
     └── values.yaml
 ```
 
 
-Install/Update depeendencies with 
+Install/Update depeendencies with
 
 ```
 helm dependency update
@@ -388,16 +388,16 @@ ls
 ls -l charts/
 ```
 
-Clean up earlier helm installations if any 
+Clean up earlier helm installations if any
 
 ```
-helm list -A 
+helm list -A
 helm uninstall vote -n dev
 helm uninstall vote -n staging
 helm list -A
 ```
 
-Now install the main chart with helm as 
+Now install the main chart with helm as
 
 ```
 helm install instavote -n dev --values=values.dev.yaml . --dry-run
@@ -416,9 +416,9 @@ kubectl get all -n dev
 ###  Exercises
 
   * You will notice that the redis pods are being restarted every few seconds. Can you figure out why and fix it ? Apply the changes with helm.
-  * Now that you have deployed vote and redis, go ahead and add the code to deploy  worker, db and result as well.
+  * Now that you have deployed vote and redis, go ahead and add the code to deploy  worker, db and result as well.
 
-### Cleaning up 
+### Cleaning up
 
 To clean up all the resources, run the following command
 

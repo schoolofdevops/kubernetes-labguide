@@ -60,7 +60,7 @@ service:
   single: true
   type: NodePort
 ```
-Source :  [traefik deployment customization spec · GitHub](https://gist.github.com/initcron/f8099b32b456cb04e2e64263eaf9abfb)
+Source :  [traefik deployment customization spec · GitHub](https://gist.github.com/gouravjshah/f8099b32b456cb04e2e64263eaf9abfb)
 
 
 Apply with the custom values file created as above,
@@ -256,7 +256,7 @@ spec:
             port:
               number: 80
 ```
-Source: [Ingress for Web App · GitHub](https://gist.github.com/initcron/469b8d975c1c41a8423eb19ee2fd9c0f)
+Source: [Ingress for Web App · GitHub](https://gist.github.com/gouravjshah/469b8d975c1c41a8423eb19ee2fd9c0f)
 
 And update hosts file with new route as  ,
 
