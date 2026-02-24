@@ -329,7 +329,7 @@
 <p>This lab describes the process of how you could quickly create a multi node Kubernetes Envonment using <a href="https://kind.sigs.k8s.io/docs/user/ingress/#ingress-nginx">KIND</a>, which is a simple and quick way to set up a learning environment. Advantage it offers over minikube or docker desktop based kubernetes setup is its a multi node environment closer to the real world setup.  </p>
 <h2 id="install-docker">Install Docker</h2>
 <p>Download and install Docker on a the Ubuntu machine as , </p>
-<pre><code>curl -sSL &quot;https://gist.githubusercontent.com/initcron/cadf5c920e5e7d1cb45803c36b656947/raw/006c02f7714315222f8055381ebb8c5f910c36a5/user-data-docker.sh&quot; | sudo bash
+<pre><code>curl -sSL &quot;https://gist.githubusercontent.com/gouravjshah/cadf5c920e5e7d1cb45803c36b656947/raw/006c02f7714315222f8055381ebb8c5f910c36a5/user-data-docker.sh&quot; | sudo bash
 
 </code></pre>
 <p>validate </p>
@@ -359,7 +359,7 @@ kubectl version --client
 </code></pre>
 <h2 id="setup-kubernetes-cluster-with-kind">Setup Kubernetes Cluster with KIND</h2>
 <p>Download  Cluster Configurations and Create  a 3 Node Kubernetes Cluster as</p>
-<pre><code>git clone https://github.com/initcron/k8s-code.git
+<pre><code>git clone https://github.com/gouravjshah/k8s-code.git
 cd k8s-code/helper/kind/
 kind create cluster --config kind-three-node-cluster.yaml
 </code></pre>
