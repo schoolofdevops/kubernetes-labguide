@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/keda/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Lab K809 - Event Driven Autosclaing with KEDA - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Lab K809 - Event Driven Autosclaing with KEDA";
+        var mkdocs_page_input_path = "keda.md";
+        var mkdocs_page_url = "/keda/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+      <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+        ga('create', "UA-36802546-16", "kubernetes-tutorial.schoolofdevops.com");
+        ga('send', 'pageview');
+      </script>
+    
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> Kubernetes Tutorial with CKA/CKAD Prep
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Docker Essentials for Kubernetes</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../operating-docker-containers/">Lab D101 - Operating Containers</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../building-publishing-docker-images/">Lab D102 - Building and Publishing Docker Images</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../docker-networking/">Lab D103 - Docker Networking</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../docker-volumes/">Lab D104 - Docker Volumes</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Kubernetes Essentials</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../kind_create_cluster/">Lab K101 - Install Kubernetes with KIND</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../kubernetes_quickdive/">Lab K102 - Kubernetes Quickdive</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../create-and-deploy-kubernetes-pods/">Lab K103 - Pods</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../kubernetes-replicasets-howto/">Lab K104 - Namespaces and ReplicaSets</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../kubernetes-service-networking/">Lab K105 - Service Networking</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../kubernetes-rollouts-rollbacks-deployments/">Lab K107 - Deployments</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../kubernetes-dynamic-storage-provisioning/">Lab K108 - Storage</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../kubernetes-sample-project/">Lab K109 - Mini Project</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../kubernetes-configuration-management-configmaps-secrets/">Lab K110 - ConfigMaps & Secrets</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../ingress_nginx/">Lab K112 - Ingress</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../helm/">Lab K113 - Setup Prometheus and Grafana with HELM</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../loki/">Lab K114 - Adding Log Monitoring with Loki</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../helm_charts/">Lab K115 - Writing HELM Charts</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../helm_charts_publish/">Lab K116 - Publishing HELM Charts</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Advanced Kubernetes</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../adv_kubernetes-setup/">Lab K801 - Setting up Kubernetes Cluster</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../adv_kubernetes-control-plane/">Lab K802 - Exploring Kubernetes Control Plane</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../adv_service_networking/">Lab K803 - Service Networking and Kube Proxy</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../adv_setup_cilium/">Lab K803 - Setting up Cilium CNI with KIND</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../adv_explore_cilium/">Lab K804 - Exploring Cilium</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../adv_controllers/">Lab K805 - Controllers and CRDs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../adv_operators/">Lab K806 - Operators</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../adv_operator_go/">Lab K807 - Writing Custom Operator in Go</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../adv_setup_eks_cluster/">Lab K807 - Launch EKS Cluster</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../adv_eks_autoscaling/">Lab K808 - Horizontal and Vertical Autoscaling</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Lab K809 - Event Driven Autosclaing with KEDA</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#configure-prometheus">Configure Prometheus</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#setup-nginx-dashboard">Setup Nginx Dashboard</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#setup-keda-for-event-driven-scale-on-prometheus">Setup KEDA (for event-driven scale on Prometheus)</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#keda-scaledobject-prometheus-trigger">KEDA ScaledObject (Prometheus trigger)</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#generate-load-test">Generate Load Test</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../istio/">Lab K810 - Service Mesh with Istio</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Additional CKAD Topics</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../advanced_pod_design/">Lab K201 - Advanced Pod Design</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../pods-health-probes/">Lab K204 - Health Checks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../daemonsets_cronsjobs/">Lab K205 - DaemonsSets & CronJobs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../13_redis_statefulset/">Lab K206 - Statefulsets</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Additional CKA Topics</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../10_kubernetes_autoscaling/">Lab K301 - Auto Scaling with HPA</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../custom_autoscaling/">Lab K302 - Autoscaling on Custom Metric</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../advanced_pod_scheduling/">Lab K303 - Advanced Pod Scheduling</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../cluster-administration/">Lab K304 - Cluster Administration</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../cluster-troubleshooting/">Lab K305 - Cluster Troubleshooting</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Kubernetes Security</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../rbac_101/">Lab K111 - RBAC Policies</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../pod_security_admission/">Lab K112 - Pod Security Admission</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../network_policies/">Lab K113 - Network Policies</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Additional Topics</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../install_kubernetes_with_kubeadm/">Lab K400 - Install Kubernetes with Kubeadm</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../configuring_authentication_and_authorization/">Lab K401 - Creating Users, Groups and Authorization</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../vote-deployement_strategies/">Lab K403 - Building Deployment Strategies</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../cni/">Lab K404 - CNI</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../operator/">Lab K404 - Kubernetes Operators</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../12_troubleshooting/">Troubleshooting Tips</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../logging/">Logging</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">AWS and Kubernetes</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../aws_ack_demo/">Lab K405 - AWS Controller for Kubernetes</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">AWS EKS</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_prep/">Lab K501 - EKS Preparatory Setup</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_setup/">Lab K502 - EKS Setup</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_deploy_apps/">Lab K503 - Deploy Apps on EKS</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_ingress_alb/">Lab K504 - Ingress with ALB</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_storage/">Lab K505 - Persistent Storage with EBS</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_irsa/">Lab K506 - IRSA</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_cluster_autoscaler/">Lab K507 - EKS Cluster Autoscaler</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_hpa/">Lab K509 - Horizontal Pod Autoscaler</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_vpa/">Lab K510 - Verticle Pod Autoscaler</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_monitoring/">Lab K511 - EKS Monitoring</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_costs/">Lab K512 - EKS Costs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_cleanup/">Lab K599 - EKS Cleanup</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Argo</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../kind_create_cluster/">Lab K101 - Install Kubernetes with KIND</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_rollout_blue_green/">Lab K602 - Blue/Green with Argo Rollouts</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_rollout_canary/">Lab K603 - Canary with Argo Rollouts</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_multi_env_deploy/">Lab K604 - ArgoCD</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_workflow_examples/">Lab K605 - Argo Workflow Examples</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_workflow_ci/">Lab K606 - CI Pipeline with Argo Workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_events/">Lab K607 - Argo Events</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_iamge_updater/">Lab K608 - Argo Image Updater</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_experiments_analysis/">Lab K609 - Experiments and Analysis</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Argo Articles</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../articles/argo_adv_sync_strategies/">ArgoCD Advanced Sync Strategies</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../articles/argo_resource_lifecycle/">ArgoCD Resource Lifecycle Management</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../articles/argo_sync_options/">ArgoCD Sync Options</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../articles/argo_serversideapply/">ArgoCD - Server Side Apply</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../articles/argo_retry_options/">ArgoCD - RETRY Options</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../articles/argo_prune_propogation_policy/">ArgoCD - Prune Propogation Policy</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../gha_code_explain/">GitHub Actions Code Explainer</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../articles/argo_lua/">Lua Scripting in Argo</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Argo Advanced</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_adv_setup/">Lab K701 - Setup CI/CD with GHA and Argo</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_multi_tenant/">Lab K702 - Building Multi-Tenant Deployment System</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_adv_sync/">Lab K703 - Advanced Sync Strategies</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_adv_prom_exp_analysis/">Lab K704 - Experiments and Analysis</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_kargo/">Lab K704 - Kargo</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_workflow_examples/">Lab K605 - Argo Workflow Examples</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Exercises</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../xer-001-pods/">XER001 - Pods</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../xer-002-rs/">XER002 - ReplicaSets</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../adv-k8s-project/">XER003 - Deploy Instavote Stack</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Web Quests</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../wq001-cni/">KWQ001 - CNI Web Quest</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../wq002-security/">KWQ001 - Kubernetes Security Web Quest</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../wq003-ingress/">KWQ003 - Ingress Web Quest</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../wq004-monitoring/">KWQ004 - Monitoring Web Quest</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../wq005-controllers/">KWQ005 - Controllers Web Quest</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../wq006-persistentvolume/">KWQ006 - Persistent Data Web Quest</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../wq007-maintenance/">KWQ007 - Cluster Maintenance Web Quest</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">References</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../rbac-resource-group-mapping/">RBAC apiGroups to Resource Mapping</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">Kubernetes Tutorial with CKA/CKAD Prep</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Advanced Kubernetes</li>
+      <li class="breadcrumb-item active">Lab K809 - Event Driven Autosclaing with KEDA</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/keda.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="event-driven-auto-scaling-with-keda">Event Driven Auto Scaling with KEDA</h1>
+<h3 id="configure-prometheus">Configure Prometheus</h3>
+<p>Install  Prometheus with Grafana with helm </p>
+<pre><code>helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+
+helm repo update
+
+helm upgrade --install prom -n monitoring \
+  prometheus-community/kube-prometheus-stack \
+  --create-namespace \
+  --set grafana.service.type=NodePort \
+  --set grafana.service.nodePort=30200 \
+  --set prometheus.service.type=NodePort \
+  --set prometheus.service.nodePort=30300 \
+  --set prometheus.prometheusSpec.podMonitorSelectorNilUsesHelmValues=false \
+  --set prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues=false
+
+
+</code></pre>
+<p>To connect to Grafana on port 30200 use the following creds <br />
+  * user: admin <br />
+  * pass: prom-operator  </p>
+<p>What this does is starts collecting metrics from services from all the namespaces not just the one in which prometheus is deployed. And it reads the annotations from the pods to figure out where to collect the metrics from.  </p>
+<p>Setup Nginx Ingress with Metrics</p>
+<p>Delete existing nginx ingress controller setup with KIND  </p>
+<pre><code>kubectl delete -f  https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
+</code></pre>
+<p>Re deploy nginx ingress controller with helm, this time enabling the exposing the metrics which can then be scraped/collected by prometheus.</p>
+<pre><code>helm upgrade --install ingress-nginx ingress-nginx \
+  --repo https://kubernetes.github.io/ingress-nginx \
+  --namespace ingress-nginx --create-namespace \
+  --set controller.metrics.enabled=true \
+  --set controller.metrics.serviceMonitor.enabled=true --set \ controller.metrics.serviceMonitor.additionalLabels.release=&quot;prometheus&quot; \
+  --set controller.hostPort.enabled=true \
+  --set controller.hostPort.ports.http=80 \
+  --set controller.hostPort.ports.https=443 \
+  --set-string controller.nodeSelector.&quot;kubernetes\.io/os&quot;=linux \
+  --set-string controller.nodeSelector.ingress-ready=&quot;true&quot;
+
+</code></pre>
+<h2 id="setup-nginx-dashboard">Setup Nginx Dashboard</h2>
+<p>Now, login to grafana and import custom dashboard for Nginx Ingress as</p>
+<ul>
+<li>Left menu (hover over +) -&gt; Dashboard</li>
+<li>Click "Import"</li>
+<li>Enter the copy pasted json from <a href="https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/grafana/dashboards/nginx.json">https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/grafana/dashboards/nginx.json</a></li>
+<li>Click Import JSON</li>
+<li>Select the Prometheus data source</li>
+<li>Click "Import"</li>
+</ul>
+<p>In a few minutes, you should see data trickling in to Nginx graphs. </p>
+<h2 id="setup-keda-for-event-driven-scale-on-prometheus">Setup KEDA (for event-driven scale on Prometheus)</h2>
+<p>Install KEDA as </p>
+<pre><code>helm repo add kedacore https://kedacore.github.io/charts
+helm repo update
+
+helm install keda kedacore/keda \
+  --namespace keda \
+  --create-namespace
+</code></pre>
+<p>validate </p>
+<pre><code>kubectl get all -n keda
+</code></pre>
+<h3 id="keda-scaledobject-prometheus-trigger">KEDA ScaledObject (Prometheus trigger)</h3>
+<p>Scale <strong>Chat API</strong> when <strong>RPS &gt; 1 per replica</strong> (same signal as HPA external metric).
+Point KEDA to Prometheus from kube-prometheus-stack.</p>
+<p><code>keda-scaledobject-vote.yaml</code></p>
+<pre><code>apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: vote
+  namespace: default
+spec:
+  scaleTargetRef:
+    name: vote
+  minReplicaCount: 1
+  maxReplicaCount: 8
+  cooldownPeriod: 60
+  triggers:
+    - type: prometheus
+      metadata:
+        # Use full cluster DNS for Prometheus service (adjust namespace/name if different)
+        serverAddress: http://prom-kube-prometheus-stack-prometheus.monitoring.svc:9090
+        metricName: nginx_rps_vote
+        threshold: &quot;400&quot;
+        query: |
+          round(
+            sum(
+              irate(nginx_ingress_controller_requests{
+                controller_pod=~&quot;.*&quot;,
+                controller_class=~&quot;.*&quot;,
+                controller_namespace=~&quot;.*&quot;,
+                exported_namespace=~&quot;.*&quot;,
+                ingress=&quot;vote&quot;
+              }[2m])
+            ),
+            0.001
+          )
+</code></pre>
+<p>Apply:</p>
+<pre><code>kubectl apply -f keda-scaledobject-vote.yaml
+kubectl  get scaledobject
+</code></pre>
+<h2 id="generate-load-test">Generate Load Test</h2>
+<p>now create a new load test config</p>
+<p>File:  <code>loadtest-ing-job.yaml</code></p>
+<pre><code>apiVersion: batch/v1
+kind: Job
+metadata:
+  generateName: loadtest-ing
+spec:
+  template:
+    spec:
+      containers:
+      - name: siege
+        image: schoolofdevops/loadtest:v1
+        command: [&quot;siege&quot;, &quot;--concurrent=2&quot;, &quot;--benchmark&quot;, &quot;--time=4m&quot;, &quot;http://vote.example.com&quot;]
+      restartPolicy: Never
+      hostAliases:
+      - ip: &quot;ww.xx.yy.zz&quot;
+        hostnames:
+        - &quot;vote.example.com&quot;
+  backoffLimit: 4
+</code></pre>
+<p>where, replace <code>ww.xx.yy.zz</code> with the INTERNAL-IP address of the node which runs ingress which you can find using</p>
+<pre><code>kubectl get nodes -o wide
+</code></pre>
+<pre><code>NAME                 STATUS   ROLES           AGE   VERSION   INTERNAL-IP   EXTERNAL-IP   OS-IMAGE                         KERNEL-VERSION     CONTAINER-RUNTIME
+kube-control-plane   Ready    control-plane   47h   v1.29.2   172.18.0.2    &lt;none&gt;        Debian GNU/Linux 12 (bookworm)   6.8.0-31-generic   containerd://1.7.13
+kube-worker          Ready    &lt;none&gt;          47h   v1.29.2   172.18.0.3    &lt;none&gt;        Debian GNU/Linux 12 (bookworm)   6.8.0-31-generic   containerd://1.7.13
+kube-worker2         Ready    &lt;none&gt;          47h   v1.29.2   172.18.0.4    &lt;none&gt;        Debian GNU/Linux 12 (bookworm)   6.8.0-31-generic   containerd://1.7.13
+</code></pre>
+<p>in the above example, <code>kube-worker</code> is the node where ingress is running which has and ip address of <code>172.18.0.3</code>. Thats what should be used in the load test config.</p>
+<p>Finally create an instance of this job as,</p>
+<pre><code>kubectl create -f loadtest-ing-job.yaml
+</code></pre>
+<p>and now watch the scaling</p>
+<pre><code>watch 'kubectl top pods; kubectl get hpa,scaledobject'
+</code></pre>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../adv_eks_autoscaling/" class="btn btn-neutral float-left" title="Lab K808 - Horizontal and Vertical Autoscaling"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../istio/" class="btn btn-neutral float-right" title="Lab K810 - Service Mesh with Istio">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+      <p>Copyright @ 2017-2020 Gourav Shah, School of Devops. Some rights reserved. License CC BY-NC-SA</p>
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../adv_eks_autoscaling/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../istio/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

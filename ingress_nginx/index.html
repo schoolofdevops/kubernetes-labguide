@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/ingress_nginx/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Lab K112 - Ingress - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Lab K112 - Ingress";
+        var mkdocs_page_input_path = "ingress_nginx.md";
+        var mkdocs_page_url = "/ingress_nginx/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+      <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+        ga('create', "UA-36802546-16", "kubernetes-tutorial.schoolofdevops.com");
+        ga('send', 'pageview');
+      </script>
+    
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> Kubernetes Tutorial with CKA/CKAD Prep
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Docker Essentials for Kubernetes</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../operating-docker-containers/">Lab D101 - Operating Containers</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../building-publishing-docker-images/">Lab D102 - Building and Publishing Docker Images</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../docker-networking/">Lab D103 - Docker Networking</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../docker-volumes/">Lab D104 - Docker Volumes</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Kubernetes Essentials</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../kind_create_cluster/">Lab K101 - Install Kubernetes with KIND</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../kubernetes_quickdive/">Lab K102 - Kubernetes Quickdive</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../create-and-deploy-kubernetes-pods/">Lab K103 - Pods</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../kubernetes-replicasets-howto/">Lab K104 - Namespaces and ReplicaSets</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../kubernetes-service-networking/">Lab K105 - Service Networking</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../kubernetes-rollouts-rollbacks-deployments/">Lab K107 - Deployments</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../kubernetes-dynamic-storage-provisioning/">Lab K108 - Storage</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../kubernetes-sample-project/">Lab K109 - Mini Project</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../kubernetes-configuration-management-configmaps-secrets/">Lab K110 - ConfigMaps & Secrets</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Lab K112 - Ingress</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#pre-requisites">Pre Requisites</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#getting-ready-to-add-traffic-management-set-up-nginx-ingress-controller">Getting Ready to add Traffic Management - Set up Nginx Ingress Controller</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#add-ingress-rule-with-host-based-routing">Add Ingress Rule with Host based Routing</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#add-local-dns">Add Local DNS</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#add-another-web-application-with-ingress">Add another Web Application with Ingress</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#mini-project-configure-ingress-for-result-app">Mini Project : Configure Ingress for Result App</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../helm/">Lab K113 - Setup Prometheus and Grafana with HELM</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../loki/">Lab K114 - Adding Log Monitoring with Loki</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../helm_charts/">Lab K115 - Writing HELM Charts</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../helm_charts_publish/">Lab K116 - Publishing HELM Charts</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Advanced Kubernetes</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../adv_kubernetes-setup/">Lab K801 - Setting up Kubernetes Cluster</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../adv_kubernetes-control-plane/">Lab K802 - Exploring Kubernetes Control Plane</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../adv_service_networking/">Lab K803 - Service Networking and Kube Proxy</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../adv_setup_cilium/">Lab K803 - Setting up Cilium CNI with KIND</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../adv_explore_cilium/">Lab K804 - Exploring Cilium</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../adv_controllers/">Lab K805 - Controllers and CRDs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../adv_operators/">Lab K806 - Operators</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../adv_operator_go/">Lab K807 - Writing Custom Operator in Go</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../adv_setup_eks_cluster/">Lab K807 - Launch EKS Cluster</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../adv_eks_autoscaling/">Lab K808 - Horizontal and Vertical Autoscaling</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../keda/">Lab K809 - Event Driven Autosclaing with KEDA</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../istio/">Lab K810 - Service Mesh with Istio</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Additional CKAD Topics</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../advanced_pod_design/">Lab K201 - Advanced Pod Design</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../pods-health-probes/">Lab K204 - Health Checks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../daemonsets_cronsjobs/">Lab K205 - DaemonsSets & CronJobs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../13_redis_statefulset/">Lab K206 - Statefulsets</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Additional CKA Topics</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../10_kubernetes_autoscaling/">Lab K301 - Auto Scaling with HPA</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../custom_autoscaling/">Lab K302 - Autoscaling on Custom Metric</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../advanced_pod_scheduling/">Lab K303 - Advanced Pod Scheduling</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../cluster-administration/">Lab K304 - Cluster Administration</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../cluster-troubleshooting/">Lab K305 - Cluster Troubleshooting</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Kubernetes Security</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../rbac_101/">Lab K111 - RBAC Policies</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../pod_security_admission/">Lab K112 - Pod Security Admission</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../network_policies/">Lab K113 - Network Policies</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Additional Topics</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../install_kubernetes_with_kubeadm/">Lab K400 - Install Kubernetes with Kubeadm</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../configuring_authentication_and_authorization/">Lab K401 - Creating Users, Groups and Authorization</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../vote-deployement_strategies/">Lab K403 - Building Deployment Strategies</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../cni/">Lab K404 - CNI</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../operator/">Lab K404 - Kubernetes Operators</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../12_troubleshooting/">Troubleshooting Tips</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../logging/">Logging</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">AWS and Kubernetes</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../aws_ack_demo/">Lab K405 - AWS Controller for Kubernetes</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">AWS EKS</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_prep/">Lab K501 - EKS Preparatory Setup</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_setup/">Lab K502 - EKS Setup</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_deploy_apps/">Lab K503 - Deploy Apps on EKS</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_ingress_alb/">Lab K504 - Ingress with ALB</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_storage/">Lab K505 - Persistent Storage with EBS</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_irsa/">Lab K506 - IRSA</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_cluster_autoscaler/">Lab K507 - EKS Cluster Autoscaler</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_hpa/">Lab K509 - Horizontal Pod Autoscaler</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_vpa/">Lab K510 - Verticle Pod Autoscaler</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_monitoring/">Lab K511 - EKS Monitoring</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_costs/">Lab K512 - EKS Costs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_cleanup/">Lab K599 - EKS Cleanup</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Argo</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../kind_create_cluster/">Lab K101 - Install Kubernetes with KIND</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_rollout_blue_green/">Lab K602 - Blue/Green with Argo Rollouts</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_rollout_canary/">Lab K603 - Canary with Argo Rollouts</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_multi_env_deploy/">Lab K604 - ArgoCD</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_workflow_examples/">Lab K605 - Argo Workflow Examples</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_workflow_ci/">Lab K606 - CI Pipeline with Argo Workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_events/">Lab K607 - Argo Events</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_iamge_updater/">Lab K608 - Argo Image Updater</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_experiments_analysis/">Lab K609 - Experiments and Analysis</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Argo Articles</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../articles/argo_adv_sync_strategies/">ArgoCD Advanced Sync Strategies</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../articles/argo_resource_lifecycle/">ArgoCD Resource Lifecycle Management</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../articles/argo_sync_options/">ArgoCD Sync Options</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../articles/argo_serversideapply/">ArgoCD - Server Side Apply</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../articles/argo_retry_options/">ArgoCD - RETRY Options</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../articles/argo_prune_propogation_policy/">ArgoCD - Prune Propogation Policy</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../gha_code_explain/">GitHub Actions Code Explainer</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../articles/argo_lua/">Lua Scripting in Argo</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Argo Advanced</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_adv_setup/">Lab K701 - Setup CI/CD with GHA and Argo</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_multi_tenant/">Lab K702 - Building Multi-Tenant Deployment System</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_adv_sync/">Lab K703 - Advanced Sync Strategies</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_adv_prom_exp_analysis/">Lab K704 - Experiments and Analysis</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_kargo/">Lab K704 - Kargo</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_workflow_examples/">Lab K605 - Argo Workflow Examples</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Exercises</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../xer-001-pods/">XER001 - Pods</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../xer-002-rs/">XER002 - ReplicaSets</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../adv-k8s-project/">XER003 - Deploy Instavote Stack</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Web Quests</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../wq001-cni/">KWQ001 - CNI Web Quest</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../wq002-security/">KWQ001 - Kubernetes Security Web Quest</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../wq003-ingress/">KWQ003 - Ingress Web Quest</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../wq004-monitoring/">KWQ004 - Monitoring Web Quest</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../wq005-controllers/">KWQ005 - Controllers Web Quest</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../wq006-persistentvolume/">KWQ006 - Persistent Data Web Quest</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../wq007-maintenance/">KWQ007 - Cluster Maintenance Web Quest</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">References</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../rbac-resource-group-mapping/">RBAC apiGroups to Resource Mapping</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">Kubernetes Tutorial with CKA/CKAD Prep</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Kubernetes Essentials</li>
+      <li class="breadcrumb-item active">Lab K112 - Ingress</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/ingress_nginx.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="application-routing-with-ingress-controllers">Application Routing with Ingress Controllers</h1>
+<h2 id="pre-requisites">Pre Requisites</h2>
+<ul>
+<li>Ingress controller such as Nginx, Trafeik needs to be deployed before creating ingress resources.</li>
+<li>On GCE, ingress controller runs on the master. On all other installations, it needs to be deployed, either as a deployment, or a daemonset. In addition, a service needs to be created for ingress.</li>
+<li>Daemonset will run ingress on each node. Deployment will just create a highly available setup, which can then be exposed on specific nodes using ExternalIPs configuration in the service.</li>
+</ul>
+<h2 id="getting-ready-to-add-traffic-management-set-up-nginx-ingress-controller">Getting Ready to add Traffic Management - Set up Nginx Ingress Controller</h2>
+<p>An ingress controller needs to be created in order to serve the ingress requests.  As part of this lab you are going to use Nginx as the ingress controller. Its a fast and lightweight ingress controller and also comes with great documentation and support.  </p>
+<pre><code class="language-bash">
+
++----+----+--+            
+| ingress    |            
+| controller |            
++----+-------+            
+
+
+</code></pre>
+<p>You are going to setup ingress controller using helm. Assuming helm is already installed, begin adding the repository to install nginx as a ingress controller from:</p>
+<p>Install helm to setup Nginx Ingress Controller. To install helm version 3 on Linux or MacOS, you can follow following instructions.</p>
+<pre><code>curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+</code></pre>
+<p>You could further refer to <a href="https://helm.sh/docs/intro/install/">Official HELM Install Instructions</a> for alternative options.</p>
+<p>Verify the installtion is successful,</p>
+<pre><code>helm --help
+helm version
+</code></pre>
+<p>Launch Nginx Ingress controller using helm as :</p>
+<pre><code>helm upgrade --install ingress-nginx ingress-nginx \
+  --repo https://kubernetes.github.io/ingress-nginx \
+  --namespace ingress-nginx --create-namespace \
+  --set controller.hostPort.enabled=true \
+  --set controller.service.type=NodePort \
+  --set controller.hostPort.ports.http=80 \
+  --set-string controller.nodeSelector.&quot;kubernetes\.io/os&quot;=linux \
+  --set-string controller.nodeSelector.ingress-ready=&quot;true&quot;
+
+</code></pre>
+<p>Check the pod for Nginx Ingress, if its running</p>
+<pre><code>kubectl get pods -n ingress-nginx
+</code></pre>
+<p>You may see the pod in pending state. Check why its pending by describing it.</p>
+<p>Once you describe, you will see that its pending because it has a <code>nodeSelector</code> defined which is looking for a node with label set to <code>ingress-ready="true"</code>.</p>
+<p>Check the label on the current nodes</p>
+<pre><code>kubectl get nodes --show-labels
+</code></pre>
+<p>Add this lable to first  of the worker nodes as</p>
+<pre><code>
+kubectl label node kind-worker ingress-ready=&quot;true&quot;
+</code></pre>
+<p>validate</p>
+<pre><code>kubectl get nodes --show-labels
+</code></pre>
+<p>This time you should see the label added, and nginx ingress controller running, which can be validated using</p>
+<pre><code>kubectl get pods -n ingress-nginx --watch
+</code></pre>
+<p>Wait for the container for nginx ingress controller to be up. You could also validate by connecting to the IPADDRESS of your node where the cluster is being setup on port 80, where you should see <code>**404 Not Found**</code> error. This is the sign that nginx is set up as a ingress controller and looking for a request with hostname/path defined.</p>
+<h3 id="add-ingress-rule-with-host-based-routing">Add Ingress Rule with Host based Routing</h3>
+<p>We will direct all our request to the ingress controller now, but with differnt hostname e.g. <strong>vote.example.com</strong> or <strong>results.example.com</strong>. And it should direct to the correct service based on the host name.</p>
+<p>In order to achieve this you, as a user would create a <strong>ingress</strong> object with a set of rules,</p>
+<pre><code class="language-bash">
+
++----+----+--+            
+| ingress    |            
+| controller |            
++----+-------+            
+     |              +-----+----+
+     +---watch----&gt; | ingress  | &lt;------- user
+                    +----------+
+
+</code></pre>
+<p>File : <code>vote-ing.yaml</code></p>
+<pre><code>---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: vote
+  namespace: instavote
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: vote.example.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: vote
+            port:
+              number: 80
+</code></pre>
+<p>And apply</p>
+<pre><code>kubectl get ing
+kubectl apply -f vote-ing.yaml --dry-run
+kubectl apply -f vote-ing.yaml
+</code></pre>
+<p>Since the ingress controller  is constantly monitoring for the ingress objects, the moment it detects, it connects with nginx and creates a rule as follows.</p>
+<pre><code class="language-bash">
+                    +----------+
+     +--create----&gt; |  nginx   |
+     |              |  rules   |
+     |              +----------+
++----+----+--+            ^
+| ingress    |            :
+| controller |            :
++----+-------+            :
+     |              +-----+----+
+     +---watch----&gt; | ingress  | &lt;------- user
+                    +----------+
+
+</code></pre>
+<p>where,</p>
+<ul>
+<li>A user creates a ingress object with the rules. This could be a named based or a path based routing.</li>
+<li>An ingress controller, in this example nginx constantly monitors for ingress objects. The moment it detects one, it creates a rule and adds it to the nginx load balancer. This rule maps to the ingress specs.</li>
+</ul>
+<p>Where,</p>
+<ul>
+<li>
+<p><strong>vote.example.com</strong> is  added as frontend. This frontends point to  service <strong>vote</strong>.</p>
+</li>
+<li>
+<p>respective backend also appear on the right hand side of the screen, mapping to each of the service.</p>
+</li>
+</ul>
+<h2 id="add-local-dns">Add Local DNS</h2>
+<p>You have created the ingress rules based on hostnames e.g.  <strong>vote.example.com</strong> and <strong>results.example.com</strong>. In order for you to be able to access those, there has to be a dns entry pointing to your nodes, which are running nginx.</p>
+<pre><code class="language-bash">
+  vote.example.com     -------+                        +----- vote:81
+                              |     +-------------+    |
+                              |     |   ingress   |    |
+                              +===&gt; |   node:80   | ===+
+                              |     +-------------+    |
+                              |                        |
+  result.example.com   -------+                        +----- result:82
+
+</code></pre>
+<p>To achieve this you need to either,</p>
+<ul>
+<li>Create a DNS entry, provided you own the domain and have access to the dns management console.</li>
+<li>Create a local <strong>hosts</strong> file entry. On unix systems its in <code>/etc/hosts</code> file. On windows its at <code>C:\Windows\System32\drivers\etc\hosts</code>. You need admin access to edit this file.</li>
+</ul>
+<p>For example, on a linux or osx, you could edit it as,</p>
+<pre><code>sudo vim /etc/hosts
+</code></pre>
+<p>And add an entry such as ,</p>
+<pre><code>xxx.xxx.xxx.xxx vote.example.com result.example.com  kube-ops-view.example.org
+</code></pre>
+<p>where,</p>
+<ul>
+<li>xxx.xxx.xxx.xxx is the actual IP address of one of the nodes running nginx.</li>
+</ul>
+<p>And then access the app url using http://vote.example.com </p>
+<p><img alt="Name Based Routing" src="../images/domain-name.png" /></p>
+<h2 id="add-another-web-application-with-ingress">Add another  Web Application with Ingress</h2>
+<pre><code>kubectl create deployment nginx --image=nginx
+kubectl create service clusterip nginx --tcp=80
+</code></pre>
+<p>Add ingress rule</p>
+<p><code>file: result-ing.yaml</code></p>
+<pre><code>---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: web
+  namespace: instavote
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: web.example.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: nginx
+            port:
+              number: 80
+</code></pre>
+<p>And update hosts file with new route as  ,</p>
+<pre><code>xxx.xxx.xxx.xxx vote.example.com web.example.com kube-ops-view.example.org
+</code></pre>
+<p>Visit  http://web.example.com:30400 to see your request being routed to nginx web page.  </p>
+<h2 id="mini-project-configure-ingress-for-result-app">Mini Project : Configure  Ingress  for Result App</h2>
+<p>Now that you have added the ingress rule for the vote app, follow the same method and add one for the result app as well which is running in the same namespace.</p>
+<p>The final validation would be, when you access or http://result.example.com you should see it pointing to the result app.</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="http://www.htaccesstools.com/htpasswd-generator/">Online htpasswd generator</a></li>
+</ul>
+<p><strong>Keywords</strong></p>
+<ul>
+<li>nginx on kubernetes</li>
+<li>kubernetes ingress</li>
+<li>kubernetes annotations</li>
+<li>daemonsets</li>
+</ul>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../kubernetes-configuration-management-configmaps-secrets/" class="btn btn-neutral float-left" title="Lab K110 - ConfigMaps & Secrets"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../helm/" class="btn btn-neutral float-right" title="Lab K113 - Setup Prometheus and Grafana with HELM">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+      <p>Copyright @ 2017-2020 Gourav Shah, School of Devops. Some rights reserved. License CC BY-NC-SA</p>
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../kubernetes-configuration-management-configmaps-secrets/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../helm/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

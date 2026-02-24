@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/adv_setup_eks_cluster/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Lab K807 - Launch EKS Cluster - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Lab K807 - Launch EKS Cluster";
+        var mkdocs_page_input_path = "adv_setup_eks_cluster.md";
+        var mkdocs_page_url = "/adv_setup_eks_cluster/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+      <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+        ga('create', "UA-36802546-16", "kubernetes-tutorial.schoolofdevops.com");
+        ga('send', 'pageview');
+      </script>
+    
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> Kubernetes Tutorial with CKA/CKAD Prep
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Docker Essentials for Kubernetes</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../operating-docker-containers/">Lab D101 - Operating Containers</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../building-publishing-docker-images/">Lab D102 - Building and Publishing Docker Images</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../docker-networking/">Lab D103 - Docker Networking</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../docker-volumes/">Lab D104 - Docker Volumes</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Kubernetes Essentials</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../kind_create_cluster/">Lab K101 - Install Kubernetes with KIND</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../kubernetes_quickdive/">Lab K102 - Kubernetes Quickdive</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../create-and-deploy-kubernetes-pods/">Lab K103 - Pods</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../kubernetes-replicasets-howto/">Lab K104 - Namespaces and ReplicaSets</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../kubernetes-service-networking/">Lab K105 - Service Networking</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../kubernetes-rollouts-rollbacks-deployments/">Lab K107 - Deployments</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../kubernetes-dynamic-storage-provisioning/">Lab K108 - Storage</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../kubernetes-sample-project/">Lab K109 - Mini Project</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../kubernetes-configuration-management-configmaps-secrets/">Lab K110 - ConfigMaps & Secrets</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../ingress_nginx/">Lab K112 - Ingress</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../helm/">Lab K113 - Setup Prometheus and Grafana with HELM</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../loki/">Lab K114 - Adding Log Monitoring with Loki</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../helm_charts/">Lab K115 - Writing HELM Charts</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../helm_charts_publish/">Lab K116 - Publishing HELM Charts</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Advanced Kubernetes</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../adv_kubernetes-setup/">Lab K801 - Setting up Kubernetes Cluster</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../adv_kubernetes-control-plane/">Lab K802 - Exploring Kubernetes Control Plane</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../adv_service_networking/">Lab K803 - Service Networking and Kube Proxy</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../adv_setup_cilium/">Lab K803 - Setting up Cilium CNI with KIND</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../adv_explore_cilium/">Lab K804 - Exploring Cilium</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../adv_controllers/">Lab K805 - Controllers and CRDs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../adv_operators/">Lab K806 - Operators</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../adv_operator_go/">Lab K807 - Writing Custom Operator in Go</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Lab K807 - Launch EKS Cluster</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#installing-pre-requisite-tools">Installing Pre-requisite Tools</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#install-eksctl">Install eksctl</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#install-aws-cli">Install aws CLI</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#configure-aws-cli">Configure AWS CLI</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#create-ssh-key-pair">Create SSH key Pair</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#setting-up-eks-cluster-with-eksctl_1">Setting up EKS Cluster with eksctl</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#eksctl">eksctl</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#aws-cli-with-kubectl">aws cli with kubectl</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#create-vpc-with-public-subnets">Create VPC with Public Subnets</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#to-create-your-vpc">To create your VPC</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#configure-iam-role-for-eks">Configure IAM Role for EKS</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#step-1-create-the-iam-role">Step 1: Create the IAM Role</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#launch-eks-cluster-with-eksctl">Launch EKS Cluster with eksctl</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#setup-visualizer">Setup Visualizer</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#reference">Reference</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../adv_eks_autoscaling/">Lab K808 - Horizontal and Vertical Autoscaling</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../keda/">Lab K809 - Event Driven Autosclaing with KEDA</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../istio/">Lab K810 - Service Mesh with Istio</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Additional CKAD Topics</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../advanced_pod_design/">Lab K201 - Advanced Pod Design</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../pods-health-probes/">Lab K204 - Health Checks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../daemonsets_cronsjobs/">Lab K205 - DaemonsSets & CronJobs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../13_redis_statefulset/">Lab K206 - Statefulsets</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Additional CKA Topics</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../10_kubernetes_autoscaling/">Lab K301 - Auto Scaling with HPA</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../custom_autoscaling/">Lab K302 - Autoscaling on Custom Metric</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../advanced_pod_scheduling/">Lab K303 - Advanced Pod Scheduling</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../cluster-administration/">Lab K304 - Cluster Administration</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../cluster-troubleshooting/">Lab K305 - Cluster Troubleshooting</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Kubernetes Security</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../rbac_101/">Lab K111 - RBAC Policies</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../pod_security_admission/">Lab K112 - Pod Security Admission</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../network_policies/">Lab K113 - Network Policies</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Additional Topics</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../install_kubernetes_with_kubeadm/">Lab K400 - Install Kubernetes with Kubeadm</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../configuring_authentication_and_authorization/">Lab K401 - Creating Users, Groups and Authorization</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../vote-deployement_strategies/">Lab K403 - Building Deployment Strategies</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../cni/">Lab K404 - CNI</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../operator/">Lab K404 - Kubernetes Operators</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../12_troubleshooting/">Troubleshooting Tips</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../logging/">Logging</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">AWS and Kubernetes</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../aws_ack_demo/">Lab K405 - AWS Controller for Kubernetes</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">AWS EKS</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_prep/">Lab K501 - EKS Preparatory Setup</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_setup/">Lab K502 - EKS Setup</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_deploy_apps/">Lab K503 - Deploy Apps on EKS</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_ingress_alb/">Lab K504 - Ingress with ALB</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_storage/">Lab K505 - Persistent Storage with EBS</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_irsa/">Lab K506 - IRSA</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_cluster_autoscaler/">Lab K507 - EKS Cluster Autoscaler</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_hpa/">Lab K509 - Horizontal Pod Autoscaler</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_vpa/">Lab K510 - Verticle Pod Autoscaler</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_monitoring/">Lab K511 - EKS Monitoring</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_costs/">Lab K512 - EKS Costs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_cleanup/">Lab K599 - EKS Cleanup</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Argo</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../kind_create_cluster/">Lab K101 - Install Kubernetes with KIND</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_rollout_blue_green/">Lab K602 - Blue/Green with Argo Rollouts</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_rollout_canary/">Lab K603 - Canary with Argo Rollouts</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_multi_env_deploy/">Lab K604 - ArgoCD</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_workflow_examples/">Lab K605 - Argo Workflow Examples</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_workflow_ci/">Lab K606 - CI Pipeline with Argo Workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_events/">Lab K607 - Argo Events</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_iamge_updater/">Lab K608 - Argo Image Updater</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_experiments_analysis/">Lab K609 - Experiments and Analysis</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Argo Articles</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../articles/argo_adv_sync_strategies/">ArgoCD Advanced Sync Strategies</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../articles/argo_resource_lifecycle/">ArgoCD Resource Lifecycle Management</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../articles/argo_sync_options/">ArgoCD Sync Options</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../articles/argo_serversideapply/">ArgoCD - Server Side Apply</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../articles/argo_retry_options/">ArgoCD - RETRY Options</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../articles/argo_prune_propogation_policy/">ArgoCD - Prune Propogation Policy</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../gha_code_explain/">GitHub Actions Code Explainer</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../articles/argo_lua/">Lua Scripting in Argo</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Argo Advanced</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_adv_setup/">Lab K701 - Setup CI/CD with GHA and Argo</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_multi_tenant/">Lab K702 - Building Multi-Tenant Deployment System</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_adv_sync/">Lab K703 - Advanced Sync Strategies</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_adv_prom_exp_analysis/">Lab K704 - Experiments and Analysis</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_kargo/">Lab K704 - Kargo</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_workflow_examples/">Lab K605 - Argo Workflow Examples</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Exercises</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../xer-001-pods/">XER001 - Pods</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../xer-002-rs/">XER002 - ReplicaSets</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../adv-k8s-project/">XER003 - Deploy Instavote Stack</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Web Quests</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../wq001-cni/">KWQ001 - CNI Web Quest</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../wq002-security/">KWQ001 - Kubernetes Security Web Quest</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../wq003-ingress/">KWQ003 - Ingress Web Quest</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../wq004-monitoring/">KWQ004 - Monitoring Web Quest</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../wq005-controllers/">KWQ005 - Controllers Web Quest</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../wq006-persistentvolume/">KWQ006 - Persistent Data Web Quest</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../wq007-maintenance/">KWQ007 - Cluster Maintenance Web Quest</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">References</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../rbac-resource-group-mapping/">RBAC apiGroups to Resource Mapping</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">Kubernetes Tutorial with CKA/CKAD Prep</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Advanced Kubernetes</li>
+      <li class="breadcrumb-item active">Lab K807 - Launch EKS Cluster</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/adv_setup_eks_cluster.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="setting-up-eks-cluster-with-eksctl">Setting up EKS Cluster with eksctl</h1>
+<p>Author: Gourav Shah 
+Publisher:  School of Devops
+Version : 18.03.2025.01</p>
+<hr />
+<p>This lab is about getting ready to setup a EKS Cluster on AWS. Before you begin, make sure you have a operational AWS Account with access to create IAM Users and access to all relevant services including   </p>
+<ul>
+<li>IAM</li>
+<li>VPC     </li>
+<li>EKS     </li>
+<li>S3   </li>
+<li>EC2      </li>
+</ul>
+<h2 id="installing-pre-requisite-tools">Installing Pre-requisite Tools</h2>
+<h3 id="install-eksctl">Install eksctl</h3>
+<p>If you haven't installed <code>eksctl</code> yet, you can do so by following these instructions:</p>
+<p><strong>macOS/Linux:</strong></p>
+<pre><code>curl --silent --location &quot;https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz&quot; | tar xz -C /tmp
+
+sudo mv /tmp/eksctl /usr/local/bin
+</code></pre>
+<h3 id="install-aws-cli">Install <code>aws</code> CLI</h3>
+<p>Check if aws cli is installed with </p>
+<pre><code>aws --version
+</code></pre>
+<p>If not, Refer to the official documentation to install <code>aws</code> CLI  with os specific instructions from <a href="https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html">Install or update to the latest version of the AWS CLI - AWS Command Line Interface</a></p>
+<h3 id="configure-aws-cli">Configure AWS CLI</h3>
+<p>Login to the AWS Console with the credentials given to you. </p>
+<p>Once you login,visit IAM Console  proceed to create Security Credentials and generate the AWS Access Key + AWS Secret Key pair.  </p>
+<p>Then make sure your AWS CLI is configured with the necessary permissions to create EKS clusters. You can configure it using:</p>
+<pre><code>aws configure
+</code></pre>
+<p>You'll need your AWS Access Key ID, Secret Access Key, region, and output format. The available output formats are:</p>
+<ol>
+<li><strong>json</strong>: The default output format. Provides the output in JSON format.</li>
+<li><strong>text</strong>: Provides the output in plain text format. This format is useful for simple parsing and readability.</li>
+<li><strong>table</strong>: Provides the output in a readable table format. This format is useful for human readability but less suitable for parsing.</li>
+<li><strong>yaml</strong>: Provides the output in YAML format. This is useful for configurations and other uses where YAML is preferred.</li>
+<li><strong>yaml-stream</strong>: Provides the output in a streaming YAML format, where each document is separated by <code>---</code>. This format is useful for continuous data processing.</li>
+</ol>
+<p>Select region as <code>ap-southeast-1</code> to be consistent with the labs created as part of this course. </p>
+<p>[sample output]</p>
+<pre><code>➜  ~ aws configure
+AWS Access Key ID [****************QSJX]: XXXX
+AWS Secret Access Key [****************P01d]: YYYY
+Default region name [ap-southeast-1]: xx-yyyy-n
+Default output format [None]: table
+
+where replace `xx-yyyy-n` with the region assigned to you in the status sheet (Google Sheet shared during class).
+
+➜  ~ cat ~/.aws/config
+[default]
+region = xx-yyyy-n
+output = table
+</code></pre>
+<h3 id="create-ssh-key-pair">Create SSH key Pair</h3>
+<p>To create a SSH key pair that you would use to log into the nodes created with EKS,</p>
+<ul>
+<li>Switch to EC2 Service from AWS Console, and make sure you have selected the same region you are going to launch EKS cluster inside e.g. Singapore </li>
+<li>Select <strong>Key Pairs</strong> from left side menu header <strong>Network &amp; Security</strong>. </li>
+<li>Create a key pair of type <strong>RSA</strong> and download a <strong>.pem</strong> or <strong>.ppk</strong> file based on how and from where  you are going to connect. </li>
+</ul>
+<p><img alt="" src="../images/eks/01/06.png" /></p>
+<ul>
+<li>Move the downloaded private key to a safe location and change its permissions. 
+e.g. </li>
+</ul>
+<pre><code>mv ~/Downloads/eks-spore.pem ~/.ssh
+ls -al  ~/.ssh/eks-spore.pem
+chmod 600 ~/.ssh/eks-spore.pem
+ls -al  ~/.ssh/eks-spore.pem
+</code></pre>
+<p>Now that the preparatory setup is done, you could proceed to create a EKS Cluster. </p>
+<h2 id="setting-up-eks-cluster-with-eksctl_1">Setting up EKS Cluster with eksctl</h2>
+<p>While setting up EKS Cluster on AWS, there are two main options that you could consider </p>
+<ul>
+<li>Using <code>eksctl</code> which is a dedicated EKS Cluster Management Tool   </li>
+<li>Using <code>aws</code> CLI along with <code>kubectl</code> which is a more complex approach, but comes with  more control in your hands    </li>
+</ul>
+<p>Both <code>eksctl</code> and the combination of <code>aws cli</code> with <code>kubectl</code> have their advantages and use cases when creating and managing AWS EKS clusters. Here's a comparison to help you decide which approach might be best for your course:</p>
+<h3 id="eksctl"><code>eksctl</code></h3>
+<p><strong>Pros:</strong></p>
+<ol>
+<li><strong>Ease of Use:</strong> <code>eksctl</code> is specifically designed to simplify the creation and management of EKS clusters. It abstracts many of the complexities involved.  </li>
+<li><strong>Quick Setup:</strong> With a single command, you can create a fully functioning EKS cluster.  </li>
+<li><strong>Default Best Practices:</strong> It follows AWS best practices for cluster creation and configuration.  </li>
+<li><strong>Less Code:</strong> Requires fewer commands and less code to manage the cluster.  </li>
+</ol>
+<p>⠀
+<strong>Cons:</strong> </p>
+<ol>
+<li><strong>Less Granular Control:</strong> While it simplifies many tasks, it might abstract away some of the details, giving you less control over specific configurations.  </li>
+<li><strong>Dependency:</strong> Adds an additional dependency that students need to install and manage.  </li>
+</ol>
+<p>⠀</p>
+<h3 id="aws-cli-with-kubectl"><code>aws cli</code> with <code>kubectl</code></h3>
+<p><strong>Pros:</strong></p>
+<ol>
+<li><strong>Granular Control:</strong> Provides more control over the EKS cluster configuration and setup, allowing for fine-tuning and customization.  </li>
+<li><strong>Learning Opportunity:</strong> Teaches students more about the underlying AWS services and Kubernetes configurations.  </li>
+<li><strong>Versatility:</strong> <code>aws cli</code> and <code>kubectl</code> are versatile tools that can be used for a wide range of AWS and Kubernetes operations beyond just cluster creation.  </li>
+</ol>
+<p><strong>Cons:</strong></p>
+<ol>
+<li><strong>Complexity:</strong> Requires more steps and a deeper understanding of AWS and Kubernetes concepts, which might be overwhelming for beginners.  </li>
+<li><strong>More Commands:</strong> Involves writing more commands and scripts, which can be error-prone.  </li>
+</ol>
+<p>As part of this lab, you will take a simpler approach and use <code>eksctl</code> to quickly create a cluster. </p>
+<h2 id="create-vpc-with-public-subnets">Create VPC  with Public Subnets</h2>
+<p>EKS needs a VPC to launch itself in. There are three different options while creating the VPCs as follows </p>
+<ul>
+<li>VPC with Public and Private Subnets </li>
+<li>VPC with only Public Subnets </li>
+<li>VPC with only Private Subnets </li>
+</ul>
+<p>While you would ideally create VPC with public and private subnets so that you could host your applications in private subnets and set up load balancers and ingress controllers in public, as part of this lab guide, you are going to set up VPC with public subnets only.  This is to avoid creation of two NAT Gateways, which would incur additional costs. </p>
+<p>The VPC that you are going to create has three public subnets that are deployed into different Availability Zones in an AWS Region. All nodes are automatically assigned public <code>IPv4</code> addresses and can send and receive internet traffic through an <a href="https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Internet_Gateway.html">internet gateway</a>. A <a href="https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html">security group</a> is deployed that denies all inbound traffic and allows all outbound traffic. The subnets are tagged so that Kubernetes can deploy load balancers to them.</p>
+<p>If you choose to create a VPC with a different configuration, please pick a relevant template from <a href="https://docs.aws.amazon.com/eks/latest/userguide/creating-a-vpc.html">Creating a VPC for your Amazon EKS cluster</a>. 
+⠀</p>
+<h6 id="to-create-your-vpc">To create your VPC</h6>
+<ol>
+<li>
+<p>Open the AWS CloudFormation console at <a href="https://console.aws.amazon.com/cloudformation/">https://console.aws.amazon.com/cloudformation</a>.</p>
+</li>
+<li>
+<p>From the navigation bar, select an AWS Region that supports EKS e.g.  Singapore .</p>
+</li>
+<li>
+<p>Choose <strong>Create stack</strong>, <strong>With new resources (standard)</strong>.</p>
+</li>
+<li>
+<p>From Prepare Temaplte, select <strong>Choose and existing template</strong> and Under <strong>Template source</strong>, select <strong>Amazon S3 URL</strong>.<img alt="" src="../images/eks/02/01.png" /></p>
+</li>
+<li>Paste the following URL into the text area under <strong>Amazon S3 URL</strong> and choose <strong>Next</strong>:</li>
+</ol>
+<pre><code>https://s3.us-west-2.amazonaws.com/amazon-eks/cloudformation/2020-10-29/amazon-eks-vpc-sample.yaml
+</code></pre>
+<ol>
+<li>On the <strong>Specify Details</strong> page, enter the stack name e.g. <code>eks-vpc-01</code> and update parameters if you want to change any, and then choose <strong>Next</strong> and create VPC stack.  <img alt="" src="../images/eks/02/02.png" /></li>
+</ol>
+<p>Note : change <code>eks-vpc-01</code> to a unique name for your VPC. Lets use your sequence number from the status sheet. e.g. eks-vpc-01, eks-vpc-02 .... </p>
+<ol>
+<li>Proceed to <strong>Review and create</strong>  and submit the stack. It takes a few minutes to have the status change from  to</li>
+</ol>
+<p><img alt="" src="../images/eks/02/04.png" /></p>
+<p>once VPC is created, you could verify everything from VPC console.  Also note down the VpcId and SubnetIds from the <strong>Outputs</strong>.</p>
+<p><img alt="" src="../images/eks/02/05.png" /></p>
+<h2 id="configure-iam-role-for-eks">Configure IAM Role for EKS</h2>
+<h3 id="step-1-create-the-iam-role">Step 1: Create the IAM Role</h3>
+<ol>
+<li>
+<p><strong>Open the IAM Console</strong>: Go to the <a href="https://console.aws.amazon.com/iam/">IAM console</a>.</p>
+</li>
+<li>
+<p><strong>Create a Role</strong>:</p>
+</li>
+<li>Click on <code>Roles</code> and then <code>Create role</code>.</li>
+<li>Choose <code>EKS</code> as the service that will use this role.</li>
+<li>Select the <code>EKS - Cluster</code> use case.
+   <img alt="" src="../images/eks/02/06.png" /></li>
+<li>From <strong>Add Permissions</strong> page you will see the following policy already attached:</li>
+<li><code>AmazonEKSClusterPolicy</code> </li>
+<li>
+<p>Select <strong>Next</strong></p>
+</li>
+<li>
+<p>From <strong>Name, review and create page</strong> , provide a Role name e.g. <code>EKSClusterServiceRole</code> and proceed to <strong>Create role</strong>.<br />
+<img alt="" src="../images/eks/02/07.png" /></p>
+</li>
+<li>
+<p>From IAM Console -&gt; Roles search for <code>EKSClusterServiceRole</code> and select it. 
+<img alt="" src="../images/eks/02/08.png" />
+<img alt="" src="../images/eks/02/09.png" /></p>
+</li>
+<li>
+<p>From Permissions tab, Add Permissions dropdown,  </p>
+</li>
+<li>Choose Attach policies.</li>
+<li>
+<p>Search for <code>AmazonEKSVPCResourceController</code> and attach it to the role.</p>
+</li>
+<li>
+<p><strong>Set the Trust Relationship</strong>: Ensure the trust relationship for the role allows EKS to assume the role. The trust policy should look like this:</p>
+</li>
+</ol>
+<pre><code>{
+  &quot;Version&quot;: &quot;2012-10-17&quot;,
+  &quot;Statement&quot;: [
+    {
+      &quot;Effect&quot;: &quot;Allow&quot;,
+      &quot;Principal&quot;: {
+        &quot;Service&quot;: &quot;eks.amazonaws.com&quot;
+      },
+      &quot;Action&quot;: &quot;sts:AssumeRole&quot;
+    }
+  ]
+}
+</code></pre>
+<p>This should already be there. Verify it from the <strong>Trust relationships</strong> tab.<br />
+⠀ </p>
+<p>Note down the role ARN e.g. <code>arn:aws:iam::665496447754:role/EKSClusterServiceRole</code> which you would add to cluster configuration later.  Also note the new policy being added to the role. </p>
+<p><img alt="" src="../images/eks/02/11.png" /></p>
+<h2 id="launch-eks-cluster-with-eksctl">Launch EKS Cluster with eksctl</h2>
+<p>Start with <code>eksctl</code></p>
+<pre><code>eksctl info
+</code></pre>
+<p>Create cluster configurarion as follows. You could refer to <a href="https://eksctl.io/usage/schema/">Config File Schema</a> to explore  more options. </p>
+<p>File:  <code>cluster.yaml</code></p>
+<pre><code>apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: eks-cluster-01 # Replace this with your unique cluster name
+  region: xx-yyy-n # Replace this with your region
+
+vpc:
+  id: &quot;vpc-aaaa&quot; # Replace this with actual VPC id that you created
+  subnets:
+    public:
+      apsoutheast1a:
+        id: subnet-xxxx # replace with actual
+      apsoutheast1b:
+        id: subnet-yyyy  # replace with actual
+      apsoutheast1c:
+        id: subnet-zzzz  # replace with actual
+
+managedNodeGroups:
+  - name: ng-1-workers
+    labels: { role: workers }
+    instanceType: t3.small
+    desiredCapacity: 2
+    maxPodsPerNode: 100
+    minSize: 1
+    maxSize: 4
+    ssh: 
+      allow: true 
+      publicKeyName: xxxx # replace with actual
+    tags:
+      k8s.io/cluster-autoscaler/enabled: &quot;true&quot;
+      k8s.io/cluster-autoscaler/eks-cluster-01: &quot;owned&quot;
+
+iam:
+  withOIDC: true
+  serviceRoleARN: arn:aws:iam::xxxxxxxxx:role/EKSClusterServiceRole # replace with actual
+</code></pre>
+<p>⠀
+Edit this file and  replace  the following with actual values 
+* vpc id 
+* subnets 
+* public key name (listed ssh key on ec2 that you would like to ssh in with)
+* ServiceRoleARN </p>
+<pre><code>eksctl create cluster -f cluster.yaml
+</code></pre>
+<p>[sample output]</p>
+<pre><code>2024-05-22 14:53:47 [✔]  all EKS cluster resources for &quot;eks-cluster-01&quot; have been created
+2024-05-22 14:53:48 [ℹ]  nodegroup &quot;ng-1-workers&quot; has 1 node(s)
+2024-05-22 14:53:48 [ℹ]  node &quot;ip-192-168-240-31.ap-southeast-1.compute.internal&quot; is ready
+2024-05-22 14:53:48 [ℹ]  waiting for at least 1 node(s) to become ready in &quot;ng-1-workers&quot;
+2024-05-22 14:53:48 [ℹ]  nodegroup &quot;ng-1-workers&quot; has 1 node(s)
+2024-05-22 14:53:48 [ℹ]  node &quot;ip-192-168-240-31.ap-southeast-1.compute.internal&quot; is ready
+2024-05-22 14:53:48 [✔]  created 1 nodegroup(s) in cluster &quot;eks-cluster-01&quot;
+2024-05-22 14:53:48 [✔]  created 0 managed nodegroup(s) in cluster &quot;eks-cluster-01&quot;
+2024-05-22 14:53:49 [ℹ]  kubectl command should work with &quot;/Users/gshah/.kube/config&quot;, try 'kubectl get nodes'
+2024-05-22 14:53:49 [✔]  EKS cluster &quot;eks-cluster-01&quot; in &quot;ap-southeast-1&quot; region is ready
+</code></pre>
+<p>validate </p>
+<pre><code>eksctl get cluster
+
+# Replace this with your unique cluster name e.g. eks-cluster-23
+eksctl get nodegroup --cluster eks-cluster-01
+
+kubectl get nodes
+kubectl config get-contexts
+
+</code></pre>
+<p>check the max number of pods on each node </p>
+<pre><code>kubectl get nodes -o jsonpath='{.items[*].status.capacity.pods}'
+kubectl get nodes -o jsonpath='{.items[*].status.allocatable.pods}'
+</code></pre>
+<p>Also observe the following resources created 
+* EKS Cluster 
+* Node Group ( EKS Cluster =&gt; Compute)
+* EC2 Instances
+* VPC, Subnets etc. </p>
+<h3 id="setup-visualizer">Setup Visualizer</h3>
+<pre><code>cd ~
+git clone  https://github.com/schoolofdevops/kube-ops-view
+kubectl apply -f kube-ops-view/deploy/
+</code></pre>
+<p>To check whether visualiser has come up, use the following commands,</p>
+<pre><code>kubectl get pods,services
+
+</code></pre>
+<p>[sample output ]</p>
+<pre><code>➜  ~ kubectl get pods,services
+NAME                                 READY   STATUS    RESTARTS   AGE
+pod/kube-ops-view-75fddd9cc4-dg9cr   1/1     Running   0          92s
+
+NAME                    TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE
+service/kube-ops-view   NodePort    10.100.38.21   &lt;none&gt;        80:32000/TCP   92s
+</code></pre>
+<p>To access the visualizer and other apps exposed with  nodePort, create a new security group and attach it to the instances created with </p>
+<ul>
+<li>From EC2 =&gt; Network &amp; Security =&gt; Security Groups =&gt; Create Security Group </li>
+<li>Provide security group name e.g. <code>NodePort</code></li>
+<li>Select VPC created for EKS </li>
+<li>Add Inbound Rule (do not touch outbound)<ul>
+<li>Custom TCP </li>
+<li>Port range : 30000-32767</li>
+<li>Source : Anywhere IPv4<img alt="" src="../images/eks/02/12.png" /></li>
+<li>Proceed to create security group and note down the id once created e.g. <code>sg-033ad52b6dcc79277</code>
+  <img alt="" src="../images/eks/02/13.png" /></li>
+<li>Add this security group to all nodes (ec2 instances) in the cluster from EC2 =&gt; Actions =&gt; Security =&gt; Change security groups  <img alt="" src="../images/eks/02/14.png" /></li>
+<li>Search and Add security group, <strong>Save</strong>. <img alt="" src="../images/eks/02/15.png" /></li>
+</ul>
+</li>
+</ul>
+<p>Now select the External IP of any of the nodes </p>
+<p>e.g.</p>
+<pre><code>kubectl get nodes -o wide
+</code></pre>
+<p>and access the visualizer on port 32000 e.g. <code>http://xxxx:32000/#scale=2.0</code></p>
+<p>e.g. 
+<img alt="" src="../images/eks/02/16.png" /></p>
+<h2 id="reference">Reference</h2>
+<ul>
+<li>Creating Cluster with <code>eksctl</code>  <a href="https://eksctl.io/usage/creating-and-managing-clusters/#">Creating and managing clusters</a></li>
+<li>Config File Schema: <a href="https://eksctl.io/usage/schema/">Config File Schema</a></li>
+</ul>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../adv_operator_go/" class="btn btn-neutral float-left" title="Lab K807 - Writing Custom Operator in Go"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../adv_eks_autoscaling/" class="btn btn-neutral float-right" title="Lab K808 - Horizontal and Vertical Autoscaling">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+      <p>Copyright @ 2017-2020 Gourav Shah, School of Devops. Some rights reserved. License CC BY-NC-SA</p>
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../adv_operator_go/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../adv_eks_autoscaling/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
