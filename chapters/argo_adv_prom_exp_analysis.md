@@ -19,11 +19,11 @@ Delete the previous appset and clean up the application deployments using,
 kubectl delete appset instavote -n argocd 
 ```
 
-Reconfigure the appset to launch only `vote` app in prod.  [You could use this code as reference](https://gist.githubusercontent.com/initcron/a5928b1fc4fad138045d88135faf0e44/raw/0e4bc43e3ee4c79c5c7075a03f34c01441fa6376/instavote-appset-vote-prod.yaml)
+Reconfigure the appset to launch only `vote` app in prod.  [You could use this code as reference](https://gist.githubusercontent.com/gouravjshah/a5928b1fc4fad138045d88135faf0e44/raw/0e4bc43e3ee4c79c5c7075a03f34c01441fa6376/instavote-appset-vote-prod.yaml)
 
 
 ```
-wget -c https://gist.githubusercontent.com/initcron/a5928b1fc4fad138045d88135faf0e44/raw/0e4bc43e3ee4c79c5c7075a03f34c01441fa6376/instavote-appset-vote-prod.yaml
+wget -c https://gist.githubusercontent.com/gouravjshah/a5928b1fc4fad138045d88135faf0e44/raw/0e4bc43e3ee4c79c5c7075a03f34c01441fa6376/instavote-appset-vote-prod.yaml
 
 kubectl apply -f instavote-appset-vote-prod.yaml
 ```

@@ -7,7 +7,7 @@ This lab describes the process of how you could quickly create a multi node Kube
 Download and install Docker on a the Ubuntu machine as , 
 
 ```
-curl -sSL "https://gist.githubusercontent.com/initcron/cadf5c920e5e7d1cb45803c36b656947/raw/006c02f7714315222f8055381ebb8c5f910c36a5/user-data-docker.sh" | sudo bash
+curl -sSL "https://gist.githubusercontent.com/gouravjshah/cadf5c920e5e7d1cb45803c36b656947/raw/006c02f7714315222f8055381ebb8c5f910c36a5/user-data-docker.sh" | sudo bash
 
 ```
 
@@ -57,7 +57,7 @@ kubectl version --client
 Download  Cluster Configurations and Create  a 3 Node Kubernetes Cluster as
 
 ```
-git clone https://github.com/initcron/k8s-code.git
+git clone https://github.com/gouravjshah/k8s-code.git
 cd k8s-code/helper/kind/
 kind create cluster --config kind-three-node-cluster.yaml
 ```

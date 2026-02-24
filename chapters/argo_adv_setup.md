@@ -44,7 +44,7 @@ kind
 Download  Cluster Configurations and Create  a 3 Node Kubernetes Cluster as
 
 ```
-git clone https://github.com/initcron/k8s-code.git
+git clone https://github.com/gouravjshah/k8s-code.git
 cd k8s-code/helper/kind/
 kind create cluster --config kind-three-node-cluster.yaml
 ```
@@ -165,7 +165,7 @@ kubectl -n argocd patch secret argocd-secret \
   }}'
 
 ```
-Source: [reset-argo-password.sh](https://gist.github.com/initcron/09d8b6c70d527b5e8894472efa83a895)
+Source: [reset-argo-password.sh](https://gist.github.com/gouravjshah/09d8b6c70d527b5e8894472efa83a895)
 Reference: [argo-cd/faq.md at master · argoproj/argo-cd · GitHub](https://github.com/argoproj/argo-cd/blob/master/docs/faq.md#i-forgot-the-admin-password-how-do-i-reset-it)
 
 ```
@@ -177,7 +177,7 @@ kubectl patch svc argocd-server -n argocd --patch \
   '{"spec": { "type": "NodePort", "ports": [ { "nodePort": 32100, "port": 443, "protocol": "TCP", "targetPort": 8080 } ] } }'
 
 ```
-source: [patch_argo_svc.sh](https://gist.github.com/initcron/a14fe418b8a7325e3ed5ecebf6fadb53)
+source: [patch_argo_svc.sh](https://gist.github.com/gouravjshah/a14fe418b8a7325e3ed5ecebf6fadb53)
 
 ```
 kubectl get svc -n argocd

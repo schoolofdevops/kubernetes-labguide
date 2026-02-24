@@ -47,7 +47,7 @@ kubectl config get-contexts
 If you have not created the deployment for vote app yet, apply it as, 
 
 ```
-kubectl apply -f https://gist.githubusercontent.com/initcron/53d53d3d5bf7584e4da69489fbf15209/raw/0245fabc4dcf80a238860f7b315d0005eca4e61a/vote-deploy.yaml
+kubectl apply -f https://gist.githubusercontent.com/gouravjshah/53d53d3d5bf7584e4da69489fbf15209/raw/0245fabc4dcf80a238860f7b315d0005eca4e61a/vote-deploy.yaml
 ```
 
 If you have created the deployments and services for vote, redis and deployment for db, just create the db service as, 

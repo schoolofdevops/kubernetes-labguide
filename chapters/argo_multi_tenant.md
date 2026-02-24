@@ -415,10 +415,10 @@ kubectl logs -n argocd -l app.kubernetes.io/name=argocd-applicationset-controlle
 time="2025-02-23T14:19:55Z" level=info msg="created Application" app=argocd/vote-staging applicationset=argocd/instavote
 time="2025-02-23T14:19:55Z" level=info msg="created Application" app=argocd/vote-prod applicationset=argocd/instavote
 time="2025-02-23T14:19:55Z" level=info msg="end reconcile in 152.613578ms" applicationset=argocd/instavote requeueAfter=3m0s
-time="2025-02-23T14:19:55Z" level=info msg="applications result from the repo service" allPaths="[charts charts/redis charts/redis/env charts/redis/templates charts/redis/templates/tests charts/vote charts/vote/env charts/vote/templates]" pathParamPrefix= repoURL="https://github.com/initcron/instavote-gitops" revision=HEAD total=8
+time="2025-02-23T14:19:55Z" level=info msg="applications result from the repo service" allPaths="[charts charts/redis charts/redis/env charts/redis/templates charts/redis/templates/tests charts/vote charts/vote/env charts/vote/templates]" pathParamPrefix= repoURL="https://github.com/gouravjshah/instavote-gitops" revision=HEAD total=8
 time="2025-02-23T14:19:55Z" level=info msg="generated 6 applications" applicationset=argocd/instavote
 time="2025-02-23T14:19:55Z" level=info msg="end reconcile in 190.512675ms" applicationset=argocd/instavote requeueAfter=3m0s
-time="2025-02-23T14:19:55Z" level=info msg="applications result from the repo service" allPaths="[charts charts/redis charts/redis/env charts/redis/templates charts/redis/templates/tests charts/vote charts/vote/env charts/vote/templates]" pathParamPrefix= repoURL="https://github.com/initcron/instavote-gitops" revision=HEAD total=8
+time="2025-02-23T14:19:55Z" level=info msg="applications result from the repo service" allPaths="[charts charts/redis charts/redis/env charts/redis/templates charts/redis/templates/tests charts/vote charts/vote/env charts/vote/templates]" pathParamPrefix= repoURL="https://github.com/gouravjshah/instavote-gitops" revision=HEAD total=8
 time="2025-02-23T14:19:55Z" level=info msg="generated 6 applications" applicationset=argocd/instavote
 time="2025-02-23T14:19:55Z" level=info msg="end reconcile in 99.411667ms" applicationset=argocd/instavote requeueAfter=3m0s
 time="2025-02-23T14:20:09Z" level=info msg="Alloc=10928 TotalAlloc=108116 Sys=30805 NumGC=262 Goroutines=97"
