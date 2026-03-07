@@ -213,6 +213,9 @@ spec:
       image: postgres:9.4
       ports:
         - containerPort: 5432
+      env:
+        - name: "POSTGRES_PASSWORD"
+          value: "somepassword"
       volumeMounts:
       - name: db-data
         mountPath: /var/lib/postgresql/data
