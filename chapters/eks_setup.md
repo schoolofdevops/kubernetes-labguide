@@ -236,6 +236,7 @@ validate
 eksctl get cluster
 eksctl get nodegroup --cluster eks-cluster-01
 
+aws eks update-kubeconfig --name eks-cluster-01 --region ap-southeast-1
 kubectl get nodes
 kubectl config get-contexts
 
