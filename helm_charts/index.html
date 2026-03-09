@@ -333,7 +333,7 @@
               
                 <h1 id="building-your-own-helm-charts">Building your own Helm Charts</h1>
 <p>If you have not installed helm yet, do so by using</p>
-<pre><code>curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 |  bash
+<pre><code>curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 |  bash 
 
 helm
 
@@ -352,14 +352,14 @@ cd instavote/
 helm create vote
 cd vote/
 </code></pre>
-<p>Edit <code>values.yaml</code>  to  update replicaCount, image and tag as</p>
+<p>Edit <code>values.yaml</code>  to  update replicaCount, image and tag as</p>
 <pre><code>
 replicaCount: 2
-image:
-  repository: schoolofdevops/vote
+image: 
+  repository: schoolofdevops/vote 
   pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: &quot;v5&quot;
+  # Overrides the image tag whose default is the chart appVersion. 
+  tag: &quot;v5&quot; 
 </code></pre>
 <p>Update service type to Node Port</p>
 <pre><code>service:
@@ -398,14 +398,14 @@ kubectl get all
 <p>Copy over the values.yaml file to values.staging.yaml</p>
 <pre><code>cp values.yaml values.staging.yaml
 </code></pre>
-<p>Update the properties in values.staging.yaml as,</p>
+<p>Update the properties in values.staging.yaml as, </p>
 <pre><code>
-replicaCount: 4
-image:
-  repository: schoolofdevops/vote
+replicaCount: 4 
+image: 
+  repository: schoolofdevops/vote 
   pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: &quot;v4&quot;
+  # Overrides the image tag whose default is the chart appVersion. 
+  tag: &quot;v4&quot; 
 
 </code></pre>
 <p>Update service type to Node Port</p>
@@ -414,16 +414,16 @@ image:
   port: 80
   nodePort: 30400
 </code></pre>
-<p>Create a namespace for staging as</p>
+<p>Create a namespace for staging as </p>
 <pre><code>kubectl create namespace staging
 </code></pre>
 <p>Install this chart with helm to deploy the <code>vote</code> service as:</p>
 <pre><code>helm install -n staging vote --values=values.staging.yaml . --dry-run
-helm install -n staging vote --values=values.staging.yaml .
+helm install -n staging vote --values=values.staging.yaml . 
 </code></pre>
 <p>Validate with</p>
 <pre><code>helm list -A
-kubectl get all -n staging
+kubectl get all -n staging 
 </code></pre>
 <h2 id="part-iii-overriding-values-rollbacks">Part III : Overriding Values, Rollbacks</h2>
 <p>Lets learn how to override values from the command line. To do so, lets add one property</p>
@@ -448,7 +448,7 @@ options:
 <p>now upgrade the release as</p>
 <pre><code>helm upgrade -n dev vote .
 </code></pre>
-<p>validate</p>
+<p>validate </p>
 <pre><code>helm list -A
 kubectl get all -n dev
 </code></pre>
@@ -477,15 +477,15 @@ vote    staging     1           2025-04-20 03:34:03.00413779 +0000 UTC  deployed
 <p>e.g.</p>
 <pre><code>helm rollback vote
 </code></pre>
-<p>you could also go back to a specific version using the revision number as</p>
+<p>you could also go back to a specific version using the revision number as  </p>
 <pre><code>helm rollback vote xx
 </code></pre>
 <p>where replace <code>xx</code> with the revision number you wish to roll back to.</p>
 <h2 id="part-iv-adding-redis-service">Part IV: Adding Redis Service</h2>
 <p>Lets add a second service by creating a new chart structure, where we will have our main chart for application and a subchart for vote and redis.</p>
 <pre><code># switch back to instavote directory
-cd instavote
-helm create redis
+cd instavote 
+helm create redis 
 cd redis
 </code></pre>
 <p>Edit values.yaml to update the image and tag as</p>
@@ -494,7 +494,7 @@ cd redis
   pullPolicy: IfNotPresent
   tag: &quot;alpine&quot;
 </code></pre>
-<p>also update the service port as</p>
+<p>also update the service port as </p>
 <pre><code>service:
   type: ClusterIP
   port: 6379
@@ -509,11 +509,11 @@ readinessProbe:
 </code></pre>
 <p>Now lets create the main chart for instavote app to include the redis and vote as subcharts</p>
 <pre><code># switch back to instavote directory
-cd instavote
+cd instavote 
 mkdir main
 cd main
 </code></pre>
-<p>Add <code>Chart.yaml</code> and <code>values.yaml</code> files as</p>
+<p>Add <code>Chart.yaml</code> and <code>values.yaml</code> files as </p>
 <p>File :  <code>Chart.yaml</code></p>
 <pre><code>apiVersion: v2
 name: instavote
@@ -558,55 +558,55 @@ redis:
     type: ClusterIP
     port: 6379
 </code></pre>
-<p>At this time the code should look like this</p>
+<p>At this time the code should look like this </p>
 <pre><code># instavote chart directory
 .
 ├── main
-│   ├── Chart.yaml
-│   └── values.dev.yaml
+│   ├── Chart.yaml
+│   └── values.dev.yaml
 ├── redis
-│   ├── Chart.yaml
-│   ├── charts
-│   ├── templates
-│   │   ├── NOTES.txt
-│   │   ├── _helpers.tpl
-│   │   ├── deployment.yaml
-│   │   ├── hpa.yaml
-│   │   ├── ingress.yaml
-│   │   ├── service.yaml
-│   │   ├── serviceaccount.yaml
-│   │   └── tests
-│   │       └── test-connection.yaml
-│   └── values.yaml
+│   ├── Chart.yaml
+│   ├── charts
+│   ├── templates
+│   │   ├── NOTES.txt
+│   │   ├── _helpers.tpl
+│   │   ├── deployment.yaml
+│   │   ├── hpa.yaml
+│   │   ├── ingress.yaml
+│   │   ├── service.yaml
+│   │   ├── serviceaccount.yaml
+│   │   └── tests
+│   │       └── test-connection.yaml
+│   └── values.yaml
 └── vote
     ├── Chart.yaml
     ├── charts
     ├── templates
-    │   ├── NOTES.txt
-    │   ├── _helpers.tpl
-    │   ├── deployment.yaml
-    │   ├── hpa.yaml
-    │   ├── ingress.yaml
-    │   ├── service.yaml
-    │   ├── serviceaccount.yaml
-    │   └── tests
-    │       └── test-connection.yaml
+    │   ├── NOTES.txt
+    │   ├── _helpers.tpl
+    │   ├── deployment.yaml
+    │   ├── hpa.yaml
+    │   ├── ingress.yaml
+    │   ├── service.yaml
+    │   ├── serviceaccount.yaml
+    │   └── tests
+    │       └── test-connection.yaml
     ├── values.staging.yaml
     └── values.yaml
 </code></pre>
-<p>Install/Update depeendencies with</p>
+<p>Install/Update depeendencies with </p>
 <pre><code>helm dependency update
 </code></pre>
 <pre><code>ls
 ls -l charts/
 </code></pre>
-<p>Clean up earlier helm installations if any</p>
-<pre><code>helm list -A
+<p>Clean up earlier helm installations if any </p>
+<pre><code>helm list -A 
 helm uninstall vote -n dev
 helm uninstall vote -n staging
 helm list -A
 </code></pre>
-<p>Now install the main chart with helm as</p>
+<p>Now install the main chart with helm as </p>
 <pre><code>helm install instavote -n dev --values=values.dev.yaml . --dry-run
 helm install instavote -n dev --values=values.dev.yaml .
 </code></pre>
@@ -617,7 +617,7 @@ kubectl get all -n dev
 <h3 id="exercises">Exercises</h3>
 <ul>
 <li>You will notice that the redis pods are being restarted every few seconds. Can you figure out why and fix it ? Apply the changes with helm.</li>
-<li>Now that you have deployed vote and redis, go ahead and add the code to deploy  worker, db and result as well.</li>
+<li>Now that you have deployed vote and redis, go ahead and add the code to deploy  worker, db and result as well.</li>
 </ul>
 <h3 id="cleaning-up">Cleaning up</h3>
 <p>To clean up all the resources, run the following command</p>

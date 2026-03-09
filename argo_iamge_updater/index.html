@@ -369,7 +369,7 @@ kubectl describe application -n argocd vote-staging
     argocd-image-updater.argoproj.io/write-back-method: git:secret:argocd/git-creds
     argocd-image-updater.argoproj.io/write-back-target: &quot;kustomization:../base&quot;
 </code></pre>
-<p>Source: <a href="https://gist.github.com/gouravjshah/ddf79cb9ba9ca940a1263150b586ec60">Mark Staging App for Automatic Image Updates from Argo</a></p>
+<p>Source: <a href="https://gist.github.com/initcron/ddf79cb9ba9ca940a1263150b586ec60">Mark Staging App for Automatic Image Updates from Argo</a></p>
 <p>Where,</p>
 <ul>
 <li>Replace <code>xxxxxx/vote</code> with your own repo in the <code>argocd-image-updater.argoproj.io/image-list</code> annotation.  </li>

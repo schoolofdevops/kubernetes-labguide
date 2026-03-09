@@ -356,7 +356,7 @@ kubectl -n argocd patch secret argocd-secret \
   }}'
 
 </code></pre>
-<p>Source: <a href="https://gist.github.com/gouravjshah/09d8b6c70d527b5e8894472efa83a895">reset-argo-password.sh</a>
+<p>Source: <a href="https://gist.github.com/initcron/09d8b6c70d527b5e8894472efa83a895">reset-argo-password.sh</a>
 Reference: <a href="https://github.com/argoproj/argo-cd/blob/master/docs/faq.md#i-forgot-the-admin-password-how-do-i-reset-it">argo-cd/faq.md at master · argoproj/argo-cd · GitHub</a></p>
 <pre><code>kubectl get all -n argocd
 </code></pre>
@@ -364,7 +364,7 @@ Reference: <a href="https://github.com/argoproj/argo-cd/blob/master/docs/faq.md#
   '{&quot;spec&quot;: { &quot;type&quot;: &quot;NodePort&quot;, &quot;ports&quot;: [ { &quot;nodePort&quot;: 32100, &quot;port&quot;: 443, &quot;protocol&quot;: &quot;TCP&quot;, &quot;targetPort&quot;: 8080 } ] } }'
 
 </code></pre>
-<p>source: <a href="https://gist.github.com/gouravjshah/a14fe418b8a7325e3ed5ecebf6fadb53">patch_argo_svc.sh</a></p>
+<p>source: <a href="https://gist.github.com/initcron/a14fe418b8a7325e3ed5ecebf6fadb53">patch_argo_svc.sh</a></p>
 <pre><code>kubectl get svc -n argocd
 </code></pre>
 <p>Find out the IP address for one of the nodes. One way to do so is to run the following command,</p>
