@@ -1,5 +1,7 @@
 # Costs Monitoring with Kubecost
 
+## Remember this add-on currently is not supported for the latest EKS k8s version of 1.34 and 1.33.
+
 
   Visit [Kubecost](https://aws.amazon.com/marketplace/pp/prodview-asiz4x22pm2n2?sr=0-1&ref_=beagle&applicationId=AWSMPContessa) from AWS Marketplace.  
 
