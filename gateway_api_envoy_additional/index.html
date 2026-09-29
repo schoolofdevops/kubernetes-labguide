@@ -3,18 +3,18 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/gateway_api_envoy/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/gateway_api_envoy_additional/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Lab K117 - Application Routing with Gateway API - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <title>Application Routing with Gateway API and Envoy - Kubernetes Tutorial with CKA/CKAD Prep</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Lab K117 - Application Routing with Gateway API";
-        var mkdocs_page_input_path = "gateway_api_envoy.md";
-        var mkdocs_page_url = "/gateway_api_envoy/";
+        var mkdocs_page_name = "Application Routing with Gateway API and Envoy";
+        var mkdocs_page_input_path = "gateway_api_envoy_additional.md";
+        var mkdocs_page_url = "/gateway_api_envoy_additional/";
       </script>
     
     <!--[if lt IE 9]>
@@ -65,7 +65,7 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Kubernetes Essentials</span></p>
-              <ul class="current">
+              <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../kind_create_cluster/">Lab K101 - Install Kubernetes with KIND</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../kubernetes_quickdive/">Lab K102 - Kubernetes Quickdive</a>
@@ -86,15 +86,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../ingress_nginx/">Lab K112 - Ingress</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Lab K117 - Application Routing with Gateway API</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#what-will-you-learn">What will you learn</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#pre-requisites">Pre Requisites</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#three-objects-three-owners">Three objects, three owners</a>
-    </li>
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../gateway_api_envoy/">Lab K117 - Application Routing with Gateway API</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../helm/">Lab K113 - Setup Prometheus and Grafana with HELM</a>
                   </li>
@@ -314,10 +306,9 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
-          <li class="breadcrumb-item">Kubernetes Essentials</li>
-      <li class="breadcrumb-item active">Lab K117 - Application Routing with Gateway API</li>
+      <li class="breadcrumb-item active">Application Routing with Gateway API and Envoy</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/gateway_api_envoy.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/gateway_api_envoy_additional.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -738,7 +729,224 @@ for p in / /vote /result; do printf &quot;%-8s -&gt; &quot; &quot;$p&quot;; curl
 </code></pre>
 <p>Open <code>http://localhost:30200/vote</code> and <code>http://localhost:30200/result</code> in your browser. Two applications, one entry point, one port.</p>
 <p><code>filters</code> is the part worth pausing on. With nginx Ingress the same rewrite was an annotation, spelled differently on every controller and portable to none of them. Here it is a typed field in the API, validated by the API server, and it reads the same on any conformant implementation.</p>
-<p>[TODO: Additional Labs]</p>
+<h2 id="read-the-status-do-not-guess">Read the status, do not guess</h2>
+<p>Every Gateway API object reports what the controller decided about it.</p>
+<pre><code>kubectl describe httproute instavote -n instavote
+</code></pre>
+<p>[ Expected output ]</p>
+<pre><code>Status:
+  Parents:
+    Conditions:
+      Message:               Route is accepted
+      Reason:                Accepted
+      Status:                True
+      Type:                  Accepted
+      Message:               Resolved all the Object references for the Route
+      Reason:                ResolvedRefs
+      Status:                True
+      Type:                  ResolvedRefs
+    Controller Name:         gateway.envoyproxy.io/gatewayclass-controller
+    Parent Ref:
+      Kind:       Gateway
+      Name:       instavote-gw
+      Namespace:  gateway-infra
+</code></pre>
+<p>Two separate questions are being answered here. <strong>Accepted</strong> says the Gateway let this route attach. <strong>ResolvedRefs</strong> says every backend the route points at actually exists.</p>
+<p>Now break it on purpose. Change the result backend to a service name which does not exist,</p>
+<pre><code>sed 's/name: result$/name: results/' instavote-route.yaml | kubectl apply -f -
+kubectl describe httproute instavote -n instavote
+</code></pre>
+<p>[ Expected output ]</p>
+<pre><code>      Message:               Failed to process route rule 1 backendRef 0: service instavote/results not found.
+      Reason:                BackendNotFound
+      Status:                False
+      Type:                  ResolvedRefs
+</code></pre>
+<p>And from outside,</p>
+<pre><code>curl -s -i http://localhost:30200/result | head -3
+</code></pre>
+<pre><code>HTTP/1.1 500 Internal Server Error
+date: Tue, 29 Sep 2026 03:54:33 GMT
+content-length: 0
+</code></pre>
+<p><code>Observe</code> - the route is still <strong>Accepted</strong>, because attaching to the Gateway worked fine. Only <strong>ResolvedRefs</strong> flipped. A 500 at the edge with a healthy looking route is almost always a name that does not resolve.</p>
+<p>Put it back,</p>
+<pre><code>kubectl apply -f instavote-route.yaml
+</code></pre>
+<h3 id="the-routing-checklist">The routing checklist</h3>
+<p>When a request does not arrive, walk this from the top. Four of the five usual failures sit below where people start looking.</p>
+<ul>
+<li>Is the Pod <code>Ready</code>? Not ready means not routed.</li>
+<li>Does the EndpointSlice list any address at all?</li>
+<li>Does the Service <code>targetPort</code> match the container port?</li>
+<li>Does the route's path match what the client actually sent?</li>
+<li>Does the app expect <code>/</code> when the route hands it <code>/vote</code>?</li>
+</ul>
+<h1 id="part-ii-splitting-traffic">PART II - Splitting Traffic</h1>
+<p>Everything so far, Ingress could have done. This part is where the two APIs part company. You are going to release a second version of the vote app, send yourself to it with a header, and then let a small slice of real traffic reach it.</p>
+<h2 id="deploy-a-second-version">Deploy a second version</h2>
+<p>The running <code>vote</code> deployment uses <code>schoolofdevops/vote:v2</code>, which asks Emacs vs Vi. You will deploy <code>v5</code> alongside it, which asks a different question, so you can tell the two apart from the page itself.</p>
+<p><code>file: vote-beta-deploy.yaml</code></p>
+<pre><code>---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vote-beta
+  namespace: instavote
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      role: vote-beta
+  template:
+    metadata:
+      labels:
+        app: python
+        role: vote-beta
+        version: v5
+    spec:
+      containers:
+        - name: app
+          image: schoolofdevops/vote:v5
+          ports:
+            - containerPort: 80
+              protocol: TCP
+</code></pre>
+<p><code>file: vote-beta-svc.yaml</code></p>
+<pre><code>---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vote-beta
+  namespace: instavote
+spec:
+  type: ClusterIP
+  selector:
+    role: vote-beta
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+</code></pre>
+<pre><code>kubectl apply -f vote-beta-deploy.yaml -f vote-beta-svc.yaml
+kubectl rollout status deployment/vote-beta -n instavote
+</code></pre>
+<p>[ Expected output ]</p>
+<pre><code>deployment &quot;vote-beta&quot; successfully rolled out
+</code></pre>
+<p>Note the label <code>role: vote-beta</code>. The existing <code>vote</code> Service selects <code>role: vote</code>, so the new pods can not accidentally join it. Two deployments, two Services, one route about to decide between them.</p>
+<h2 id="route-on-a-request-header">Route on a request header</h2>
+<p>Add a rule which matches the same path, plus a header. Put it <strong>first</strong>, so it reads in the order it is evaluated.</p>
+<p><code>file: instavote-route.yaml</code></p>
+<pre><code>[...]
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /vote
+          headers:
+            - name: x-beta
+              value: &quot;true&quot;
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /
+      backendRefs:
+        - name: vote-beta
+          port: 80
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /vote
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /
+      backendRefs:
+        - name: vote
+          port: 80
+[...]
+</code></pre>
+<p><code>path and headers sit under the same match - both conditions must hold for the rule to fire.</code></p>
+<p>Apply and compare two requests which differ only by one header,</p>
+<pre><code>kubectl apply -f instavote-route.yaml
+
+curl -s http://localhost:30200/vote | grep -i &quot;&lt;title&gt;&quot;
+curl -s -H &quot;x-beta: true&quot; http://localhost:30200/vote | grep -i &quot;&lt;title&gt;&quot;
+</code></pre>
+<p>[ Expected output ]</p>
+<pre><code>    &lt;title&gt;Emacs vs Vi!&lt;/title&gt;
+    &lt;title&gt;Amazon Echo vs Google Home!&lt;/title&gt;
+</code></pre>
+<p>That is a beta channel, in six lines of YAML, with no annotation and no controller specific syntax. Your team ships the new version, sets the header in their browser with an extension, and everyone else keeps seeing the old one.</p>
+<h2 id="release-a-canary-by-weight">Release a canary by weight</h2>
+<p>Header matching is for people who opt in. A canary is for traffic which did not opt in to anything. Give the plain <code>/vote</code> rule two backends and weights.</p>
+<p><code>file: instavote-route.yaml</code></p>
+<pre><code>[...]
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /vote
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /
+      backendRefs:
+        - name: vote
+          port: 80
+          weight: 90
+        - name: vote-beta
+          port: 80
+          weight: 10
+[...]
+</code></pre>
+<p>Apply, then send fifty requests and count which version answered,</p>
+<pre><code>kubectl apply -f instavote-route.yaml
+
+for i in $(seq 1 50); do
+  curl -s http://localhost:30200/vote | grep -om1 &quot;Emacs vs Vi\|Amazon Echo vs Google Home&quot;
+done | sort | uniq -c
+</code></pre>
+<p>[ Expected output ]</p>
+<pre><code>   6 Amazon Echo vs Google Home
+  44 Emacs vs Vi
+</code></pre>
+<p>Roughly one request in ten reached the new version. Weights are not percentages, they are shares - <code>90</code> and <code>10</code> behave the same as <code>9</code> and <code>1</code>, and the same as <code>900</code> and <code>100</code>.</p>
+<p><code>Observe</code> - change the weights to 50 and 50, re-apply, and run the loop again. How close to an even split do you get in fifty requests? Why is it never exactly half? Now roll the canary forward by moving the weights to 0 and 100, and notice that no deployment was touched and no pod restarted.</p>
+<h4 id="exercise">Exercise</h4>
+<p>Using what you just learned, extend the route,</p>
+<ul>
+<li>Add a <code>RequestHeaderModifier</code> filter to the <code>/result</code> rule which adds a header <code>x-served-by: gateway</code> to every request going to the result app. Confirm it arrived by reading the result pod's logs.</li>
+<li>Split <code>/vote</code> evenly between <code>vote</code> and <code>vote-beta</code>, then take <code>vote-beta</code> down to zero replicas without editing the route. What does the browser show, and what does <code>kubectl describe httproute</code> say? Which of the five checklist items would have caught it?</li>
+</ul>
+<h4 id="what-gateway-api-does-not-give-you">What Gateway API does not give you</h4>
+<ul>
+<li>It stops at the edge. Traffic between your pods - vote to redis, worker to db - is untouched by any of this. Encrypting that is a service mesh, not a Gateway.</li>
+<li>It issues no certificates. The Gateway names a TLS Secret, something else has to create and renew it, usually cert-manager.</li>
+<li>It creates no DNS records. The Gateway gets an address, publishing that address as a name is still ExternalDNS or your DNS console.</li>
+<li>Conformance varies. Core fields such as path and header matching work everywhere, but extended fields may be unimplemented on another controller. Check the conformance report before assuming a field is portable.</li>
+<li>More Gateways is not better. One shared Gateway with many routes attached is the point of the design. A Gateway per application recreates the per service load balancer bill you were trying to escape.</li>
+</ul>
+<h2 id="cleanup">Cleanup</h2>
+<p>Remove what this lab created,</p>
+<pre><code>kubectl delete -f instavote-route.yaml
+kubectl delete -f vote-beta-deploy.yaml -f vote-beta-svc.yaml
+kubectl delete -f instavote-gateway.yaml
+kubectl delete namespace gateway-infra
+kubectl delete -f gateway-class.yaml
+kubectl delete -f envoy-nodeport.yaml
+helm uninstall eg -n envoy-gateway-system
+</code></pre>
+<p><code>the result Service stays</code> - the result app needs it regardless of how traffic reaches the cluster.</p>
+<p>Uninstalling the chart leaves the Gateway API CRDs behind on purpose, so that other controllers using them keep working. Remove them only if you are sure nothing else needs them,</p>
+<pre><code>kubectl get crd | grep gateway.networking
+</code></pre>
 <h4 id="summary">Summary</h4>
 <p>You now have the whole north-south path in your hands. A GatewayClass naming the controller, a Gateway owned by the platform side holding the listener, and an HTTPRoute owned by the app team doing the routing - path matching, path rewriting, header matching and weighted release, all as typed fields rather than annotations. You also know where to look when a request does not arrive, which is the route's own status before anything else.</p>
 <p>What you have not touched is the traffic between the pods. vote still calls redis, worker still calls db, and none of that goes anywhere near the Gateway. In the next lab you are going to look at that side of the network, where policy and identity live.</p>
@@ -775,10 +983,6 @@ for p in / /vote /result; do printf &quot;%-8s -&gt; &quot; &quot;$p&quot;; curl
               
             </div>
           </div><footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../ingress_nginx/" class="btn btn-neutral float-left" title="Lab K112 - Ingress"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../helm/" class="btn btn-neutral float-right" title="Lab K113 - Setup Prometheus and Grafana with HELM">Next <span class="icon icon-circle-arrow-right"></span></a>
-    </div>
 
   <hr/>
 
@@ -805,10 +1009,6 @@ for p in / /vote /result; do printf &quot;%-8s -&gt; &quot; &quot;$p&quot;; curl
         </span>
     
     
-      <span><a href="../ingress_nginx/" style="color: #fcfcfc">&laquo; Previous</a></span>
-    
-    
-      <span><a href="../helm/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
