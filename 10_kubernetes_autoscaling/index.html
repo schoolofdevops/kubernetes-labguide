@@ -146,6 +146,8 @@
     <li class="toctree-l2"><a class="reference internal" href="#create-a-hpa">Create a HPA</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#launch-a-load-test">Launch a Load Test</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#scaling-apps-vertically-with-vpa">Scaling Apps Vertically with VPA</a>
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#summary">Summary</a>
     </li>
@@ -518,8 +520,76 @@ vote-loadtest   1         1            10m
 <li>Keep monitoring for the load on the pod as the job progresses.</li>
 <li>You should see hpa in action as it scales out/in the  vote deployment with the increasing/decreasing load.</li>
 </ul>
+<h2 id="scaling-apps-vertically-with-vpa">Scaling Apps Vertically with VPA</h2>
+<p>Before you begin, ensure OpenSSL is installed and is up to date on your system. </p>
+<p>Clone the <a href="https://github.com/kubernetes/autoscaler">kubernetes/autoscaler</a> GitHub repository and switch to path where VPA manifests are, </p>
+<pre><code>git clone https://github.com/kubernetes/autoscaler.git
+cd autoscaler/vertical-pod-autoscaler/ 
+
+</code></pre>
+<p>deploy VPA as </p>
+<pre><code>./hack/vpa-up.sh
+</code></pre>
+<p>Create a VPA Policy </p>
+<p>File: <code>vote-vpa.yaml</code></p>
+<pre><code>---
+apiVersion: &quot;autoscaling.k8s.io/v1&quot;
+kind: VerticalPodAutoscaler
+metadata:
+  name: vote
+  labels:
+    role: vote
+spec:
+  # recommenders field can be unset when using the default recommender.
+  # When using an alternative recommender, the alternative recommender's name
+  # can be specified as the following in a list.
+  # recommenders:
+  #   - name: 'alternative'
+  targetRef:
+    apiVersion: &quot;apps/v1&quot;
+    kind: Deployment
+    name: vote
+  updatePolicy:
+    updateMode: &quot;Off&quot;
+  resourcePolicy:
+    containerPolicies:
+      - containerName: '*'
+        minAllowed:
+          cpu: 50m
+          memory: 64Mi
+        maxAllowed:
+          cpu: 500
+          memory: 512Mi
+        controlledResources: [&quot;cpu&quot;, &quot;memory&quot;]
+</code></pre>
+<p>apply </p>
+<pre><code>kubectl apply -f vote-vpa.yaml
+</code></pre>
+<p>watch </p>
+<pre><code>kubectl get vpa vote --watch
+
+</code></pre>
+<p>[sample output]</p>
+<pre><code>NAME   MODE   CPU   MEM     PROVIDED   AGE
+vote   Off                              5s
+vote   Off    50m   250Mi   True        2m34s
+</code></pre>
+<p>Launch load test job again</p>
+<pre><code>kubectl create -f loadtest-job.yaml
+</code></pre>
+<p>This will launch a one off Job which would run for 4 minutes.</p>
+<p>keep watching the following in differnt windows </p>
+<p>terminal  1 </p>
+<pre><code>kubectl get vpa vote --watch
+</code></pre>
+<p>terminal 2</p>
+<pre><code>kubectl get hpa vote --watch
+</code></pre>
+<p>you should see, both hpa and vpa doing complimentary jobs where, 
+* HPA is launching new pods to ensure more requests are being served 
+* VPA is recommending the <code>requests</code> spec based on actual metrics </p>
 <h5 id="summary">Summary</h5>
-<p>In this lab, you have successful configured and demonstrated dynamic scaling ability of kubernetes using HorizontalPodAutoscaler. You have also learnt about a new <strong>jobs</strong> controller type for running one off or batch jobs.</p>
+<p>In this lab, you have successful configured and demonstrated dynamic scaling ability of kubernetes using HorizontalPodAutoscaler and VerticalPodAutoscaler together. You have also learnt about a new <strong>jobs</strong> controller type for running one off or batch jobs.</p>
 <h5 id="reading-list">Reading List</h5>
 <ul>
 <li><a href="https://github.com/kubernetes/community/blob/master/contributors/design-proposals/instrumentation/monitoring_architecture.md">Kubernetes Monitoring Architecture</a></li>
