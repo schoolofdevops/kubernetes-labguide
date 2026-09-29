@@ -296,6 +296,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>http://kubernetes-tutorial.schoolofdevops.com/gateway_api_envoy/</loc>
+         <lastmod>2026-09-29</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>http://kubernetes-tutorial.schoolofdevops.com/gha_code_explain/</loc>
          <lastmod>2026-09-29</lastmod>
          <changefreq>daily</changefreq>

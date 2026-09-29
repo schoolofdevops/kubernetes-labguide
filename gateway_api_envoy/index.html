@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gourav Shah" /><link rel="canonical" href="http://kubernetes-tutorial.schoolofdevops.com/gateway_api_envoy/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Lab K117 - Application Routing with Gateway API - Kubernetes Tutorial with CKA/CKAD Prep</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Lab K117 - Application Routing with Gateway API";
+        var mkdocs_page_input_path = "gateway_api_envoy.md";
+        var mkdocs_page_url = "/gateway_api_envoy/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+      <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+        ga('create', "UA-36802546-16", "kubernetes-tutorial.schoolofdevops.com");
+        ga('send', 'pageview');
+      </script>
+    
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> Kubernetes Tutorial with CKA/CKAD Prep
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Docker Essentials for Kubernetes</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../operating-docker-containers/">Lab D101 - Operating Containers</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../building-publishing-docker-images/">Lab D102 - Building and Publishing Docker Images</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../docker-networking/">Lab D103 - Docker Networking</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../docker-volumes/">Lab D104 - Docker Volumes</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Kubernetes Essentials</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../kind_create_cluster/">Lab K101 - Install Kubernetes with KIND</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../kubernetes_quickdive/">Lab K102 - Kubernetes Quickdive</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../create-and-deploy-kubernetes-pods/">Lab K103 - Pods</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../kubernetes-replicasets-howto/">Lab K104 - Namespaces and ReplicaSets</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../kubernetes-service-networking/">Lab K105 - Service Networking</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../kubernetes-rollouts-rollbacks-deployments/">Lab K107 - Deployments</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../kubernetes-dynamic-storage-provisioning/">Lab K108 - Storage</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../kubernetes-sample-project/">Lab K109 - Mini Project</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../kubernetes-configuration-management-configmaps-secrets/">Lab K110 - ConfigMaps & Secrets</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../ingress_nginx/">Lab K112 - Ingress</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Lab K117 - Application Routing with Gateway API</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#what-will-you-learn">What will you learn</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#pre-requisites">Pre Requisites</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#three-objects-three-owners">Three objects, three owners</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../helm/">Lab K113 - Setup Prometheus and Grafana with HELM</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../loki/">Lab K114 - Adding Log Monitoring with Loki</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../helm_charts/">Lab K115 - Writing HELM Charts</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../helm_charts_publish/">Lab K116 - Publishing HELM Charts</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Advanced Kubernetes</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../adv_kubernetes-setup/">Lab K801 - Setting up Kubernetes Cluster</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../adv_kubernetes-control-plane/">Lab K802 - Exploring Kubernetes Control Plane</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../adv_service_networking/">Lab K803 - Service Networking and Kube Proxy</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../adv_setup_cilium/">Lab K803 - Setting up Cilium CNI with KIND</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../adv_explore_cilium/">Lab K804 - Exploring Cilium</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../adv_controllers/">Lab K805 - Controllers and CRDs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../adv_operators/">Lab K806 - Operators</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../adv_operator_go/">Lab K807 - Writing Custom Operator in Go</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../adv_setup_eks_cluster/">Lab K807 - Launch EKS Cluster</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../adv_eks_autoscaling/">Lab K808 - Horizontal and Vertical Autoscaling</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../keda/">Lab K809 - Event Driven Autosclaing with KEDA</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../istio/">Lab K810 - Service Mesh with Istio</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Additional CKAD Topics</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../advanced_pod_design/">Lab K201 - Advanced Pod Design</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../pods-health-probes/">Lab K204 - Health Checks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../daemonsets_cronsjobs/">Lab K205 - DaemonsSets & CronJobs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../13_redis_statefulset/">Lab K206 - Statefulsets</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Additional CKA Topics</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../10_kubernetes_autoscaling/">Lab K301 - Auto Scaling with HPA</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../custom_autoscaling/">Lab K302 - Autoscaling on Custom Metric</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../advanced_pod_scheduling/">Lab K303 - Advanced Pod Scheduling</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../cluster-administration/">Lab K304 - Cluster Administration</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../cluster-troubleshooting/">Lab K305 - Cluster Troubleshooting</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Kubernetes Security</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../rbac_101/">Lab K111 - RBAC Policies</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../pod_security_admission/">Lab K112 - Pod Security Admission</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../network_policies/">Lab K113 - Network Policies</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Additional Topics</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../install_kubernetes_with_kubeadm/">Lab K400 - Install Kubernetes with Kubeadm</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../configuring_authentication_and_authorization/">Lab K401 - Creating Users, Groups and Authorization</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../vote-deployement_strategies/">Lab K403 - Building Deployment Strategies</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../cni/">Lab K404 - CNI</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../operator/">Lab K404 - Kubernetes Operators</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../12_troubleshooting/">Troubleshooting Tips</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../logging/">Logging</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">AWS and Kubernetes</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../aws_ack_demo/">Lab K405 - AWS Controller for Kubernetes</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">AWS EKS</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_prep/">Lab K501 - EKS Preparatory Setup</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_setup/">Lab K502 - EKS Setup</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_deploy_apps/">Lab K503 - Deploy Apps on EKS</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_ingress_alb/">Lab K504 - Ingress with ALB</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_storage/">Lab K505 - Persistent Storage with EBS</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_irsa/">Lab K506 - IRSA</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_cluster_autoscaler/">Lab K507 - EKS Cluster Autoscaler</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_hpa/">Lab K509 - Horizontal Pod Autoscaler</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_vpa/">Lab K510 - Verticle Pod Autoscaler</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_monitoring/">Lab K511 - EKS Monitoring</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_costs/">Lab K512 - EKS Costs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../eks_cleanup/">Lab K599 - EKS Cleanup</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Argo</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../kind_create_cluster/">Lab K101 - Install Kubernetes with KIND</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_rollout_blue_green/">Lab K602 - Blue/Green with Argo Rollouts</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_rollout_canary/">Lab K603 - Canary with Argo Rollouts</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_multi_env_deploy/">Lab K604 - ArgoCD</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_workflow_examples/">Lab K605 - Argo Workflow Examples</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_workflow_ci/">Lab K606 - CI Pipeline with Argo Workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_events/">Lab K607 - Argo Events</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_iamge_updater/">Lab K608 - Argo Image Updater</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_experiments_analysis/">Lab K609 - Experiments and Analysis</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Argo Articles</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../articles/argo_adv_sync_strategies/">ArgoCD Advanced Sync Strategies</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../articles/argo_resource_lifecycle/">ArgoCD Resource Lifecycle Management</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../articles/argo_sync_options/">ArgoCD Sync Options</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../articles/argo_serversideapply/">ArgoCD - Server Side Apply</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../articles/argo_retry_options/">ArgoCD - RETRY Options</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../articles/argo_prune_propogation_policy/">ArgoCD - Prune Propogation Policy</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../gha_code_explain/">GitHub Actions Code Explainer</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../articles/argo_lua/">Lua Scripting in Argo</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Argo Advanced</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_adv_setup/">Lab K701 - Setup CI/CD with GHA and Argo</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_multi_tenant/">Lab K702 - Building Multi-Tenant Deployment System</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_adv_sync/">Lab K703 - Advanced Sync Strategies</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_adv_prom_exp_analysis/">Lab K704 - Experiments and Analysis</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_kargo/">Lab K704 - Kargo</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../argo_workflow_examples/">Lab K605 - Argo Workflow Examples</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Exercises</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../xer-001-pods/">XER001 - Pods</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../xer-002-rs/">XER002 - ReplicaSets</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../adv-k8s-project/">XER003 - Deploy Instavote Stack</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Web Quests</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../wq001-cni/">KWQ001 - CNI Web Quest</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../wq002-security/">KWQ001 - Kubernetes Security Web Quest</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../wq003-ingress/">KWQ003 - Ingress Web Quest</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../wq004-monitoring/">KWQ004 - Monitoring Web Quest</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../wq005-controllers/">KWQ005 - Controllers Web Quest</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../wq006-persistentvolume/">KWQ006 - Persistent Data Web Quest</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../wq007-maintenance/">KWQ007 - Cluster Maintenance Web Quest</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">References</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../rbac-resource-group-mapping/">RBAC apiGroups to Resource Mapping</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">Kubernetes Tutorial with CKA/CKAD Prep</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Kubernetes Essentials</li>
+      <li class="breadcrumb-item active">Lab K117 - Application Routing with Gateway API</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide/edit/master/chapters/gateway_api_envoy.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="application-routing-with-gateway-api-and-envoy">Application Routing with Gateway API and Envoy</h1>
+<p>In the previous lab you exposed applications with an <strong>Ingress</strong> controller. Ingress does two things well, host routing and path routing, and everything beyond that became a vendor annotation. This time you are going to route the same instavote application with the <strong>Gateway API</strong>, using <strong>Envoy Gateway</strong> as the controller, and you will do things which the Ingress spec simply can not express - matching on a request header, and splitting traffic by weight.</p>
+<h2 id="what-will-you-learn">What will you learn</h2>
+<ul>
+<li>Setting up Envoy Gateway as a Gateway API controller</li>
+<li>Creating the three Gateway API objects - GatewayClass, Gateway and HTTPRoute</li>
+<li>Path based routing, and rewriting the path before it reaches the app</li>
+<li>Reading route status to troubleshoot, instead of guessing</li>
+<li>Matching requests on a header</li>
+<li>Releasing a canary by splitting traffic 90/10</li>
+</ul>
+<h2 id="pre-requisites">Pre Requisites</h2>
+<ul>
+<li>A 3 node KIND cluster, created as described in <code>Lab K101 - Install Kubernetes with KIND</code>.</li>
+<li>The instavote application deployed in the <code>instavote</code> namespace, with <code>vote</code>, <code>result</code> and <code>redis</code> deployments running.</li>
+<li><code>helm</code> version 3 installed.</li>
+<li>Node port <code>30200</code> free on the host, and mapped by your KIND config.</li>
+</ul>
+<p>Validate before you begin,</p>
+<pre><code>kubectl get nodes
+kubectl get deploy -n instavote
+helm version --short
+</code></pre>
+<h2 id="three-objects-three-owners">Three objects, three owners</h2>
+<p>With Ingress, one YAML file held the platform team's TLS configuration and the app team's routing rules together. Gateway API cuts the same job along the line where teams actually divide.</p>
+<pre><code class="language-bash">
+   infra provider        cluster operator          app developer
+        |                      |                        |
+        v                      v                        v
+  +-------------+        +-----------+          +-------------+
+  | GatewayClass| &lt;----- |  Gateway  | &lt;------- |  HTTPRoute  |
+  +-------------+        +-----------+          +-------------+
+   which                  a real listener        hosts, paths,
+   implementation         port, protocol, TLS    headers, backends
+   installed once         this gets an IP        lives with the app
+
+</code></pre>
+<p>where,</p>
+<ul>
+<li><strong>GatewayClass</strong> names the controller which will do the work. You install it once for the whole cluster.</li>
+<li><strong>Gateway</strong> is a real listener - a port, a protocol, and the rules for who is allowed to attach to it. This is the object which gets an address.</li>
+<li><strong>HTTPRoute</strong> carries the routing rules. It lives in the application's own namespace, and attaches itself to a Gateway.</li>
+</ul>
+<p>Many HTTPRoutes may attach to one Gateway, even from different namespaces. The Gateway decides which namespaces are allowed in, so nothing sneaks on to the listener.</p>
+<h1 id="part-i-routing-traffic-with-gateway-api">PART I - Routing Traffic with Gateway API</h1>
+<h2 id="set-up-envoy-gateway">Set up Envoy Gateway</h2>
+<p>Envoy Gateway is the Gateway API controller you are going to use. Envoy is the proxy which moves the traffic, Envoy Gateway is the controller which configures it from Kubernetes objects.</p>
+<p>To <strong>install</strong> it along with the Gateway API CRDs,</p>
+<pre><code>helm install eg oci://docker.io/envoyproxy/gateway-helm \
+  --version v1.9.2 \
+  -n envoy-gateway-system --create-namespace
+</code></pre>
+<p>[ Expected output ]</p>
+<pre><code>**************************************************************************
+*** PLEASE BE PATIENT: Envoy Gateway may take a few minutes to install ***
+**************************************************************************
+
+Envoy Gateway is an open source project for managing Envoy Proxy as a standalone or Kubernetes-based application gateway.
+
+Thank you for installing Envoy Gateway! 🎉
+
+Your release is named: eg. 🎉
+
+Your release is in namespace: envoy-gateway-system. 🎉
+</code></pre>
+<p>The chart brings the Gateway API custom resource definitions with it. Check what you now have,</p>
+<pre><code>kubectl get crd | grep gateway.networking
+</code></pre>
+<p>[ Expected output ]</p>
+<pre><code>backendtlspolicies.gateway.networking.k8s.io          2026-09-29T03:43:15Z
+gatewayclasses.gateway.networking.k8s.io              2026-09-29T03:43:15Z
+gateways.gateway.networking.k8s.io                    2026-09-29T03:43:15Z
+grpcroutes.gateway.networking.k8s.io                  2026-09-29T03:43:15Z
+httproutes.gateway.networking.k8s.io                  2026-09-29T03:43:20Z
+listenersets.gateway.networking.k8s.io                2026-09-29T03:43:15Z
+referencegrants.gateway.networking.k8s.io             2026-09-29T03:43:15Z
+tcproutes.gateway.networking.k8s.io                   2026-09-29T03:43:15Z
+tlsroutes.gateway.networking.k8s.io                   2026-09-29T03:43:15Z
+udproutes.gateway.networking.k8s.io                   2026-09-29T03:43:15Z
+</code></pre>
+<p>Notice that <code>grpcroutes</code>, <code>tcproutes</code> and <code>udproutes</code> are there as well. Ingress only ever spoke HTTP.</p>
+<p>Wait for the controller to come up,</p>
+<pre><code>kubectl get pods -n envoy-gateway-system
+</code></pre>
+<p>[ Expected output ]</p>
+<pre><code>NAME                             READY   STATUS      RESTARTS   AGE
+eg-gateway-helm-certgen-4v26j    0/1     Completed   0          69s
+envoy-gateway-8656bcc8b4-lg8qn   1/1     Running     0          26s
+</code></pre>
+<p>Now check whether a GatewayClass exists,</p>
+<pre><code>kubectl get gatewayclass
+</code></pre>
+<pre><code>No resources found
+</code></pre>
+<p><code>Observe</code> - the controller is running, but nothing yet tells the cluster to use it. That is the GatewayClass, and you write it yourself.</p>
+<h2 id="tell-envoy-where-to-listen">Tell Envoy where to listen</h2>
+<p>Before the GatewayClass, one piece of housekeeping. By default Envoy Gateway asks for a <code>LoadBalancer</code> Service, and on KIND there is no cloud load balancer to give it an address. You are going to pin it to a <strong>NodePort</strong> instead.</p>
+<p><code>file: envoy-nodeport.yaml</code></p>
+<pre><code>---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: EnvoyProxy
+metadata:
+  name: envoy-nodeport
+  namespace: envoy-gateway-system
+spec:
+  provider:
+    type: Kubernetes
+    kubernetes:
+      envoyService:
+        type: NodePort
+        externalTrafficPolicy: Cluster
+        patch:
+          type: StrategicMerge
+          value:
+            spec:
+              ports:
+                - name: http-80
+                  port: 80
+                  nodePort: 30200
+</code></pre>
+<p>where,</p>
+<ul>
+<li><strong>type: NodePort</strong> replaces the default LoadBalancer service, which would sit in <code>&lt;pending&gt;</code> forever on KIND.</li>
+<li><strong>externalTrafficPolicy: Cluster</strong> matters more than it looks. The default is <code>Local</code>, which serves the node port only on the node where the Envoy pod happens to be running. In KIND only the control plane node publishes node ports to your host, and the Envoy pod could land on any worker. <code>Cluster</code> lets any node forward the request.</li>
+<li><strong>nodePort: 30200</strong> pins the port, so the URL in this lab stays the same for everyone.</li>
+</ul>
+<p>Apply it,</p>
+<pre><code>kubectl apply -f envoy-nodeport.yaml
+</code></pre>
+<h2 id="create-the-gatewayclass">Create the GatewayClass</h2>
+<p>A GatewayClass has very little in it. It names a controller, and optionally points at a configuration object for that controller. Start from this skeleton,</p>
+<pre><code>---
+apiVersion: gateway.networking.k8s.io/v1
+kind: GatewayClass
+metadata:
+  name: xxx
+spec:
+  controllerName: xxx
+  parametersRef:
+    group: xxx
+    kind: xxx
+    name: xxx
+    namespace: xxx
+</code></pre>
+<p><strong>Problem Statement</strong></p>
+<ul>
+<li>name the class <code>eg</code></li>
+<li>controllerName<ul>
+<li><code>gateway.envoyproxy.io/gatewayclass-controller</code></li>
+</ul>
+</li>
+<li>parametersRef, pointing at the EnvoyProxy config you just created<ul>
+<li>group: <code>gateway.envoyproxy.io</code></li>
+<li>kind: <code>EnvoyProxy</code></li>
+<li>name: <code>envoy-nodeport</code></li>
+<li>namespace: <code>envoy-gateway-system</code></li>
+</ul>
+</li>
+</ul>
+<p>Which gives you,</p>
+<p><code>file: gateway-class.yaml</code></p>
+<pre><code>---
+apiVersion: gateway.networking.k8s.io/v1
+kind: GatewayClass
+metadata:
+  name: eg
+spec:
+  controllerName: gateway.envoyproxy.io/gatewayclass-controller
+  parametersRef:
+    group: gateway.envoyproxy.io
+    kind: EnvoyProxy
+    name: envoy-nodeport
+    namespace: envoy-gateway-system
+</code></pre>
+<p>Apply and validate,</p>
+<pre><code>kubectl apply -f gateway-class.yaml
+kubectl get gatewayclass
+</code></pre>
+<p>[ Expected output ]</p>
+<pre><code>NAME   CONTROLLER                                      ACCEPTED   AGE
+eg     gateway.envoyproxy.io/gatewayclass-controller   True       3s
+</code></pre>
+<p><code>ACCEPTED True</code> means a controller has claimed this class. If it stays empty, no controller recognised the <code>controllerName</code> you typed.</p>
+<h2 id="create-the-gateway">Create the Gateway</h2>
+<p>The Gateway is the cluster operator's object. To make that separation real, you are going to put it in its own namespace, away from the application.</p>
+<pre><code>kubectl create namespace gateway-infra
+</code></pre>
+<p><code>file: instavote-gateway.yaml</code></p>
+<pre><code>---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: instavote-gw
+  namespace: gateway-infra
+spec:
+  gatewayClassName: eg
+  listeners:
+    - name: http
+      protocol: HTTP
+      port: 80
+      allowedRoutes:
+        namespaces:
+          from: All
+</code></pre>
+<p>where,</p>
+<ul>
+<li><strong>gatewayClassName</strong> picks the implementation, exactly like <code>ingressClassName</code> did.</li>
+<li><strong>listeners</strong> is the real front door - one HTTP listener on port 80.</li>
+<li><strong>allowedRoutes.namespaces.from: All</strong> is the permission. Routes from any namespace may attach to this listener. Set it to <code>Same</code> and only routes in <code>gateway-infra</code> would be allowed in.</li>
+</ul>
+<p>Apply it,</p>
+<pre><code>kubectl apply -f instavote-gateway.yaml
+</code></pre>
+<p>Give it half a minute, then look at what appeared,</p>
+<pre><code>kubectl get gateway -n gateway-infra
+kubectl get pods,svc -n envoy-gateway-system
+</code></pre>
+<p>[ Expected output ]</p>
+<pre><code>NAME           CLASS   ADDRESS      PROGRAMMED   AGE
+instavote-gw   eg      172.19.0.2   True         3m14s
+
+NAME                                                             READY   STATUS    RESTARTS   AGE
+pod/envoy-gateway-8656bcc8b4-lg8qn                               1/1     Running   1          4m7s
+pod/envoy-gateway-infra-instavote-gw-8ddfa1b8-797b8bbccc-ndngt   2/2     Running   0          3m13s
+
+NAME                                                TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE
+service/envoy-gateway                               ClusterIP   10.96.157.96   &lt;none&gt;        18000/TCP...   83s
+service/envoy-gateway-infra-instavote-gw-8ddfa1b8   NodePort    10.96.71.228   &lt;none&gt;        80:30200/TCP   27s
+</code></pre>
+<p><code>Observe</code> - you never created that deployment or that service. Writing the Gateway object caused the controller to launch a dedicated Envoy proxy for it, and to publish it on node port 30200. <code>PROGRAMMED True</code> is the controller saying the data plane is up and carrying your configuration.</p>
+<p>Now try connecting to it,</p>
+<pre><code>curl -m 5 http://localhost:30200/
+</code></pre>
+<pre><code>curl: (28) Operation timed out after 5006 milliseconds with 0 bytes received
+</code></pre>
+<p>A Gateway with no routes attached is a door to nowhere. Envoy has a listener object but nothing to route to, so it never answers. Hold on to this - it is the first thing to check when a fresh Gateway appears dead.</p>
+<h2 id="add-the-missing-service">Add the missing Service</h2>
+<p>Before routing, the result app needs a Service. Check what exists,</p>
+<pre><code>kubectl get svc -n instavote
+</code></pre>
+<pre><code>NAME     TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE
+vote     NodePort    10.96.207.93   &lt;none&gt;        80:30000/TCP   131m
+</code></pre>
+<p>Only <code>vote</code> is there, and it is a NodePort left over from an earlier lab. Once the Gateway is routing, per application node ports stop being necessary - one entry point serves all of them.</p>
+<p><code>file: result-svc.yaml</code></p>
+<pre><code>---
+apiVersion: v1
+kind: Service
+metadata:
+  name: result
+  namespace: instavote
+spec:
+  type: ClusterIP
+  selector:
+    app: result
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+</code></pre>
+<pre><code>kubectl apply -f result-svc.yaml
+kubectl get endpointslices -n instavote
+</code></pre>
+<p>[ Expected output ]</p>
+<pre><code>NAME           ADDRESSTYPE   PORTS   ENDPOINTS                 AGE
+result-dv57l   IPv4          80      10.244.2.41               1s
+vote-hz9d5     IPv4          80      10.244.0.21,10.244.1.77   132m
+</code></pre>
+<p>Make sure both slices list at least one address. An empty EndpointSlice means the selector matched nothing, and no amount of routing will fix that.</p>
+<h2 id="write-the-httproute">Write the HTTPRoute</h2>
+<p><code>This lab uses no hostnames and no DNS.</code> An HTTPRoute with no <code>hostnames</code> field matches any Host header, so every URL here is plain <code>http://localhost:30200/&lt;path&gt;</code>. In a real cluster you would add <code>hostnames: [vote.example.com]</code> and point a DNS record at the Gateway address - the field goes in the same place, nothing else changes.</p>
+<p>Start from the skeleton,</p>
+<pre><code>---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: xxx
+  namespace: xxx
+spec:
+  parentRefs:
+    - name: xxx
+      namespace: xxx
+  rules:
+    - matches:
+        - path:
+            type: xxx
+            value: xxx
+      backendRefs:
+        - name: xxx
+          port: xxx
+</code></pre>
+<p><strong>Problem Statement</strong></p>
+<ul>
+<li>route named <code>instavote</code>, in the <code>instavote</code> namespace, alongside the app</li>
+<li>attaches to the Gateway <code>instavote-gw</code> in namespace <code>gateway-infra</code></li>
+<li>three rules<ul>
+<li>path prefix <code>/vote</code> goes to the <code>vote</code> service on port 80</li>
+<li>path prefix <code>/result</code> goes to the <code>result</code> service on port 80</li>
+<li>path prefix <code>/</code> goes to <code>vote</code>, as the catch all</li>
+</ul>
+</li>
+</ul>
+<p><code>file: instavote-route.yaml</code></p>
+<pre><code>---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: instavote
+  namespace: instavote
+spec:
+  parentRefs:
+    - name: instavote-gw
+      namespace: gateway-infra
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /vote
+      backendRefs:
+        - name: vote
+          port: 80
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /result
+      backendRefs:
+        - name: result
+          port: 80
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: vote
+          port: 80
+</code></pre>
+<p>where,</p>
+<ul>
+<li><strong>parentRefs</strong> is the attach. The route reaches across into <code>gateway-infra</code> and asks to join that listener. The app team never edits the Gateway itself.</li>
+<li><strong>matches</strong> can carry path, headers, query parameters and method. You start with path.</li>
+<li><strong>backendRefs</strong> points straight at a Service. There is no <code>backend.service.name</code> nesting like Ingress had.</li>
+</ul>
+<p>Apply it,</p>
+<pre><code>kubectl apply -f instavote-route.yaml
+</code></pre>
+<p>And test all three paths,</p>
+<pre><code>for p in / /vote /result; do printf &quot;%-8s -&gt; &quot; &quot;$p&quot;; curl -s -o /dev/null -w &quot;%{http_code}\n&quot; http://localhost:30200$p; done
+</code></pre>
+<p>[ Expected output ]</p>
+<pre><code>/        -&gt; 200
+/vote    -&gt; 404
+/result  -&gt; 404
+</code></pre>
+<p><code>Observe what happens.</code> The catch all works, and both prefixes return 404. Why would routing succeed and the page still be missing?</p>
+<h2 id="the-classic-path-routing-trap">The classic path routing trap</h2>
+<p>Look at who sent the 404,</p>
+<pre><code>curl -s -i http://localhost:30200/vote | head -8
+</code></pre>
+<p>[ Expected output ]</p>
+<pre><code>HTTP/1.1 404 Not Found
+server: gunicorn/19.10.0
+date: Tue, 29 Sep 2026 03:53:43 GMT
+content-type: text/html; charset=utf-8
+content-length: 232
+
+&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 3.2 Final//EN&quot;&gt;
+&lt;title&gt;404 Not Found&lt;/title&gt;
+</code></pre>
+<p><code>server: gunicorn</code> - that 404 came from the vote application itself, not from Envoy. And <code>/result</code> returns a 404 with <code>x-powered-by: Express</code>, which is the result app. So the routing is correct. The request arrived.</p>
+<p>Bingo. The gateway matched <code>/vote</code> and then forwarded <code>/vote</code> unchanged, and the vote app only ever serves <code>/</code>. It was never told it lives under a prefix.</p>
+<p>The fix is a <strong>URLRewrite</strong> filter, which strips the matched prefix before the request leaves Envoy. Add it to both prefix rules,</p>
+<p><code>file: instavote-route.yaml</code></p>
+<pre><code>[...]
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /vote
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /
+      backendRefs:
+        - name: vote
+          port: 80
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /result
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /
+      backendRefs:
+        - name: result
+          port: 80
+[...]
+</code></pre>
+<p>Apply and test again,</p>
+<pre><code>kubectl apply -f instavote-route.yaml
+for p in / /vote /result; do printf &quot;%-8s -&gt; &quot; &quot;$p&quot;; curl -s -o /dev/null -w &quot;%{http_code}\n&quot; http://localhost:30200$p; done
+</code></pre>
+<p>[ Expected output ]</p>
+<pre><code>/        -&gt; 200
+/vote    -&gt; 200
+/result  -&gt; 200
+</code></pre>
+<p>Open <code>http://localhost:30200/vote</code> and <code>http://localhost:30200/result</code> in your browser. Two applications, one entry point, one port.</p>
+<p><code>filters</code> is the part worth pausing on. With nginx Ingress the same rewrite was an annotation, spelled differently on every controller and portable to none of them. Here it is a typed field in the API, validated by the API server, and it reads the same on any conformant implementation.</p>
+<h2 id="read-the-status-do-not-guess">Read the status, do not guess</h2>
+<p>Every Gateway API object reports what the controller decided about it.</p>
+<pre><code>kubectl describe httproute instavote -n instavote
+</code></pre>
+<p>[ Expected output ]</p>
+<pre><code>Status:
+  Parents:
+    Conditions:
+      Message:               Route is accepted
+      Reason:                Accepted
+      Status:                True
+      Type:                  Accepted
+      Message:               Resolved all the Object references for the Route
+      Reason:                ResolvedRefs
+      Status:                True
+      Type:                  ResolvedRefs
+    Controller Name:         gateway.envoyproxy.io/gatewayclass-controller
+    Parent Ref:
+      Kind:       Gateway
+      Name:       instavote-gw
+      Namespace:  gateway-infra
+</code></pre>
+<p>Two separate questions are being answered here. <strong>Accepted</strong> says the Gateway let this route attach. <strong>ResolvedRefs</strong> says every backend the route points at actually exists.</p>
+<p>Now break it on purpose. Change the result backend to a service name which does not exist,</p>
+<pre><code>sed 's/name: result$/name: results/' instavote-route.yaml | kubectl apply -f -
+kubectl describe httproute instavote -n instavote
+</code></pre>
+<p>[ Expected output ]</p>
+<pre><code>      Message:               Failed to process route rule 1 backendRef 0: service instavote/results not found.
+      Reason:                BackendNotFound
+      Status:                False
+      Type:                  ResolvedRefs
+</code></pre>
+<p>And from outside,</p>
+<pre><code>curl -s -i http://localhost:30200/result | head -3
+</code></pre>
+<pre><code>HTTP/1.1 500 Internal Server Error
+date: Tue, 29 Sep 2026 03:54:33 GMT
+content-length: 0
+</code></pre>
+<p><code>Observe</code> - the route is still <strong>Accepted</strong>, because attaching to the Gateway worked fine. Only <strong>ResolvedRefs</strong> flipped. A 500 at the edge with a healthy looking route is almost always a name that does not resolve.</p>
+<p>Put it back,</p>
+<pre><code>kubectl apply -f instavote-route.yaml
+</code></pre>
+<h3 id="the-routing-checklist">The routing checklist</h3>
+<p>When a request does not arrive, walk this from the top. Four of the five usual failures sit below where people start looking.</p>
+<ul>
+<li>Is the Pod <code>Ready</code>? Not ready means not routed.</li>
+<li>Does the EndpointSlice list any address at all?</li>
+<li>Does the Service <code>targetPort</code> match the container port?</li>
+<li>Does the route's path match what the client actually sent?</li>
+<li>Does the app expect <code>/</code> when the route hands it <code>/vote</code>?</li>
+</ul>
+<h1 id="part-ii-splitting-traffic">PART II - Splitting Traffic</h1>
+<p>Everything so far, Ingress could have done. This part is where the two APIs part company. You are going to release a second version of the vote app, send yourself to it with a header, and then let a small slice of real traffic reach it.</p>
+<h2 id="deploy-a-second-version">Deploy a second version</h2>
+<p>The running <code>vote</code> deployment uses <code>schoolofdevops/vote:v2</code>, which asks Emacs vs Vi. You will deploy <code>v5</code> alongside it, which asks a different question, so you can tell the two apart from the page itself.</p>
+<p><code>file: vote-beta-deploy.yaml</code></p>
+<pre><code>---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vote-beta
+  namespace: instavote
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      role: vote-beta
+  template:
+    metadata:
+      labels:
+        app: python
+        role: vote-beta
+        version: v5
+    spec:
+      containers:
+        - name: app
+          image: schoolofdevops/vote:v5
+          ports:
+            - containerPort: 80
+              protocol: TCP
+</code></pre>
+<p><code>file: vote-beta-svc.yaml</code></p>
+<pre><code>---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vote-beta
+  namespace: instavote
+spec:
+  type: ClusterIP
+  selector:
+    role: vote-beta
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+</code></pre>
+<pre><code>kubectl apply -f vote-beta-deploy.yaml -f vote-beta-svc.yaml
+kubectl rollout status deployment/vote-beta -n instavote
+</code></pre>
+<p>[ Expected output ]</p>
+<pre><code>deployment &quot;vote-beta&quot; successfully rolled out
+</code></pre>
+<p>Note the label <code>role: vote-beta</code>. The existing <code>vote</code> Service selects <code>role: vote</code>, so the new pods can not accidentally join it. Two deployments, two Services, one route about to decide between them.</p>
+<h2 id="route-on-a-request-header">Route on a request header</h2>
+<p>Add a rule which matches the same path, plus a header. Put it <strong>first</strong>, so it reads in the order it is evaluated.</p>
+<p><code>file: instavote-route.yaml</code></p>
+<pre><code>[...]
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /vote
+          headers:
+            - name: x-beta
+              value: &quot;true&quot;
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /
+      backendRefs:
+        - name: vote-beta
+          port: 80
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /vote
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /
+      backendRefs:
+        - name: vote
+          port: 80
+[...]
+</code></pre>
+<p><code>path and headers sit under the same match - both conditions must hold for the rule to fire.</code></p>
+<p>Apply and compare two requests which differ only by one header,</p>
+<pre><code>kubectl apply -f instavote-route.yaml
+
+curl -s http://localhost:30200/vote | grep -i &quot;&lt;title&gt;&quot;
+curl -s -H &quot;x-beta: true&quot; http://localhost:30200/vote | grep -i &quot;&lt;title&gt;&quot;
+</code></pre>
+<p>[ Expected output ]</p>
+<pre><code>    &lt;title&gt;Emacs vs Vi!&lt;/title&gt;
+    &lt;title&gt;Amazon Echo vs Google Home!&lt;/title&gt;
+</code></pre>
+<p>That is a beta channel, in six lines of YAML, with no annotation and no controller specific syntax. Your team ships the new version, sets the header in their browser with an extension, and everyone else keeps seeing the old one.</p>
+<h2 id="release-a-canary-by-weight">Release a canary by weight</h2>
+<p>Header matching is for people who opt in. A canary is for traffic which did not opt in to anything. Give the plain <code>/vote</code> rule two backends and weights.</p>
+<p><code>file: instavote-route.yaml</code></p>
+<pre><code>[...]
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /vote
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /
+      backendRefs:
+        - name: vote
+          port: 80
+          weight: 90
+        - name: vote-beta
+          port: 80
+          weight: 10
+[...]
+</code></pre>
+<p>Apply, then send fifty requests and count which version answered,</p>
+<pre><code>kubectl apply -f instavote-route.yaml
+
+for i in $(seq 1 50); do
+  curl -s http://localhost:30200/vote | grep -om1 &quot;Emacs vs Vi\|Amazon Echo vs Google Home&quot;
+done | sort | uniq -c
+</code></pre>
+<p>[ Expected output ]</p>
+<pre><code>   6 Amazon Echo vs Google Home
+  44 Emacs vs Vi
+</code></pre>
+<p>Roughly one request in ten reached the new version. Weights are not percentages, they are shares - <code>90</code> and <code>10</code> behave the same as <code>9</code> and <code>1</code>, and the same as <code>900</code> and <code>100</code>.</p>
+<p><code>Observe</code> - change the weights to 50 and 50, re-apply, and run the loop again. How close to an even split do you get in fifty requests? Why is it never exactly half? Now roll the canary forward by moving the weights to 0 and 100, and notice that no deployment was touched and no pod restarted.</p>
+<h4 id="exercise">Exercise</h4>
+<p>Using what you just learned, extend the route,</p>
+<ul>
+<li>Add a <code>RequestHeaderModifier</code> filter to the <code>/result</code> rule which adds a header <code>x-served-by: gateway</code> to every request going to the result app. Confirm it arrived by reading the result pod's logs.</li>
+<li>Split <code>/vote</code> evenly between <code>vote</code> and <code>vote-beta</code>, then take <code>vote-beta</code> down to zero replicas without editing the route. What does the browser show, and what does <code>kubectl describe httproute</code> say? Which of the five checklist items would have caught it?</li>
+</ul>
+<h4 id="what-gateway-api-does-not-give-you">What Gateway API does not give you</h4>
+<ul>
+<li>It stops at the edge. Traffic between your pods - vote to redis, worker to db - is untouched by any of this. Encrypting that is a service mesh, not a Gateway.</li>
+<li>It issues no certificates. The Gateway names a TLS Secret, something else has to create and renew it, usually cert-manager.</li>
+<li>It creates no DNS records. The Gateway gets an address, publishing that address as a name is still ExternalDNS or your DNS console.</li>
+<li>Conformance varies. Core fields such as path and header matching work everywhere, but extended fields may be unimplemented on another controller. Check the conformance report before assuming a field is portable.</li>
+<li>More Gateways is not better. One shared Gateway with many routes attached is the point of the design. A Gateway per application recreates the per service load balancer bill you were trying to escape.</li>
+</ul>
+<h2 id="cleanup">Cleanup</h2>
+<p>Remove what this lab created,</p>
+<pre><code>kubectl delete -f instavote-route.yaml
+kubectl delete -f vote-beta-deploy.yaml -f vote-beta-svc.yaml
+kubectl delete -f instavote-gateway.yaml
+kubectl delete namespace gateway-infra
+kubectl delete -f gateway-class.yaml
+kubectl delete -f envoy-nodeport.yaml
+helm uninstall eg -n envoy-gateway-system
+</code></pre>
+<p><code>the result Service stays</code> - the result app needs it regardless of how traffic reaches the cluster.</p>
+<p>Uninstalling the chart leaves the Gateway API CRDs behind on purpose, so that other controllers using them keep working. Remove them only if you are sure nothing else needs them,</p>
+<pre><code>kubectl get crd | grep gateway.networking
+</code></pre>
+<h4 id="summary">Summary</h4>
+<p>You now have the whole north-south path in your hands. A GatewayClass naming the controller, a Gateway owned by the platform side holding the listener, and an HTTPRoute owned by the app team doing the routing - path matching, path rewriting, header matching and weighted release, all as typed fields rather than annotations. You also know where to look when a request does not arrive, which is the route's own status before anything else.</p>
+<p>What you have not touched is the traffic between the pods. vote still calls redis, worker still calls db, and none of that goes anywhere near the Gateway. In the next lab you are going to look at that side of the network, where policy and identity live.</p>
+<h5 id="reading-list">Reading List</h5>
+<ul>
+<li><a href="https://gateway-api.sigs.k8s.io/">Gateway API - Introduction</a></li>
+<li><a href="https://gateway-api.sigs.k8s.io/api-types/httproute/">Gateway API - HTTPRoute Reference</a></li>
+<li><a href="https://gateway-api.sigs.k8s.io/guides/migrating-from-ingress/">Migrating from Ingress to Gateway API</a></li>
+<li><a href="https://gateway.envoyproxy.io/docs/">Envoy Gateway Documentation</a></li>
+<li><a href="https://gateway-api.sigs.k8s.io/implementations/">Gateway API Conformance Reports</a></li>
+</ul>
+<p><strong>Search Keywords</strong></p>
+<ul>
+<li>kubernetes gateway api</li>
+<li>envoy gateway</li>
+<li>gatewayclass gateway httproute</li>
+<li>httproute path rewrite</li>
+<li>gateway api header matching</li>
+<li>gateway api traffic splitting</li>
+<li>gateway api vs ingress</li>
+<li>backendnotfound resolvedrefs</li>
+</ul>
+<h2 id="mini-project-publish-the-visualiser-through-the-gateway">Mini Project : Publish the Visualiser through the Gateway</h2>
+<p>The <code>kube-ops-view</code> visualiser runs in the <code>default</code> namespace with an Ingress object and no controller behind it, so that Ingress does nothing today. Replace it.</p>
+<p>Requirements,</p>
+<ul>
+<li>The visualiser must be reachable at <code>http://localhost:30200/ops</code></li>
+<li>The route lives in the <code>default</code> namespace, next to the app it belongs to</li>
+<li>The Gateway in <code>gateway-infra</code> must not be edited</li>
+<li><code>/ops</code> has to reach the application's <code>/</code></li>
+<li>The old Ingress object is deleted when you are done</li>
+</ul>
+<p>Validation is simple - the visualiser loads in your browser on the same port as the vote and result apps, and <code>kubectl get httproute -A</code> shows two routes attached to one Gateway.</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../ingress_nginx/" class="btn btn-neutral float-left" title="Lab K112 - Ingress"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../helm/" class="btn btn-neutral float-right" title="Lab K113 - Setup Prometheus and Grafana with HELM">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+      <p>Copyright @ 2017-2020 Gourav Shah, School of Devops. Some rights reserved. License CC BY-NC-SA</p>
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/schoolofdevops/kubernetes-labguide" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../ingress_nginx/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../helm/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
